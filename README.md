@@ -14,6 +14,12 @@
 > [!IMPORTANT]
 > **A single, always-current list of hackathons worth your weekend.** In-person, virtual, and hybrid — college, high-school, and open hackathons all in one place.
 
+## Stats
+
+A snapshot of the list, updated automatically.
+
+<img src="assets/hackathons-banner.svg" alt="Hackathon stats" width="760">
+
 Hi, we're [Jose Cruz](https://www.linkedin.com/in/josegaelcruz), [Vick Mahindru](https://www.linkedin.com/in/vickmahindru/), [Cai Zheng](https://www.linkedin.com/in/cai-zheng/), [Allyson Keightley](https://www.linkedin.com/in/allyson-keightley/), and [Henry](https://www.linkedin.com/in/hoanng15/). We built this because hackathon listings are scattered across a dozen sites, Discords, and group chats, and half of them are already over by the time you find them. This one starts from zero and stays current.
 
 Hackathons are the fastest way to build something real, meet your future team, and win prizes while you learn. Everything here is community-driven. If you find one, add it. Together we make the path clearer for everyone who comes after us.
@@ -115,11 +121,3 @@ The **Todd Mafia**, building and maintaining this list 💛
 </table>
 
 Want to join this wall? [Add a hackathon](https://github.com/Jose-Gael-Cruz-Lopez/hackathons/issues/new/choose) and you'll be credited as a contributor.
-
----
-
-## Stats
-
-A snapshot of the list, updated automatically.
-
-<img src="assets/hackathons-banner.svg" alt="Hackathon stats" width="760">
