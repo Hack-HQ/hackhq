@@ -118,10 +118,8 @@ Want to join this wall? [Add a hackathon](https://github.com/Jose-Gael-Cruz-Lope
 
 ---
 
-## Live Stats
+## Stats
 
-Auto-generated from the list above — updates every time a hackathon is added, opened, or closed.
+A snapshot of the list, updated automatically.
 
-<img src="assets/hackathons-banner.svg" alt="Hackathons live stats" width="100%">
-
-> <sub>Built by this repo's own [`generate_banner.py`](.github/scripts/generate_banner.py) — a stats card unique to this list, not a generic widget.</sub>
+<img src="assets/hackathons-banner.svg" alt="Hackathon stats" width="760">

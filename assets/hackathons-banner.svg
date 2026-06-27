@@ -1,48 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="840" height="230" viewBox="0 0 840 230" role="img" aria-label="Hackathons live stats">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0d1117"/>
-      <stop offset="1" stop-color="#161b22"/>
-    </linearGradient>
-    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#3fb950" stop-opacity="0"/>
-      <stop offset="0.5" stop-color="#3fb950" stop-opacity="0.7"/>
-      <stop offset="1" stop-color="#3fb950" stop-opacity="0"/>
-    </linearGradient>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="150" viewBox="0 0 760 150" role="img" aria-label="Hackathon stats">
+  <rect x="0.5" y="0.5" width="759" height="149" rx="10" fill="#0d1117" stroke="#21262d"/>
 
-  <rect x="1" y="1" width="838" height="228" rx="14" fill="url(#bg)" stroke="#30363d" stroke-width="1.5"/>
+  <text x="28" y="34" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="14" font-weight="600" fill="#e6edf3">Hackathons</text>
+  <text x="732" y="34" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#6e7681">as of June 27, 2026</text>
 
-  <!-- top accent sweep -->
-  <rect x="14" y="0" width="200" height="3" fill="url(#sweep)" rx="2">
-    <animate attributeName="x" from="-200" to="840" dur="3.5s" repeatCount="indefinite"/>
-  </rect>
+  <text x="28" y="74" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#e6edf3">7</text><text x="28" y="92" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">tracked</text>
+  <text x="210" y="74" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#57ab5a">1</text><text x="210" y="92" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">open</text>
+  <text x="370" y="74" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#daaa3f">6</text><text x="370" y="92" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">opens soon</text>
+  <text x="560" y="74" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#e5534b">0</text><text x="560" y="92" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">closing soon</text>
 
-  <!-- title -->
-  <text x="40" y="50" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="13" fill="#8b949e" letter-spacing="3">$ HACKATHONS --status</text>
+  <rect x="28" y="104" width="704" height="8" rx="4" fill="#21262d"/>
+  <rect x="28.0" y="104" width="704.0" height="8" fill="#3fb950"><title>In-Person: 7</title></rect>
 
-  <!-- live pill -->
-  <g>
-    <rect x="710" y="34" width="90" height="24" rx="12" fill="#3fb95022" stroke="#3fb95055"/>
-    <circle cx="726" cy="46" r="4" fill="#3fb950">
-      <animate attributeName="opacity" values="1;0.2;1" dur="1.4s" repeatCount="indefinite"/>
-    </circle>
-    <text x="737" y="50" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="12" font-weight="700" fill="#3fb950">LIVE</text>
-  </g>
-
-  <line x1="40" y1="66" x2="800" y2="66" stroke="#21262d" stroke-width="1"/>
-
-  <!-- stat blocks -->
-  <text x="40" y="118" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="40" font-weight="800" fill="#c9d1d9">7</text><text x="40" y="140" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="13" fill="#8b949e" letter-spacing="1">TRACKED</text>
-  <text x="230" y="118" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="40" font-weight="800" fill="#3fb950">1</text><text x="230" y="140" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="13" fill="#8b949e" letter-spacing="1">OPEN</text>
-  <text x="420" y="118" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="40" font-weight="800" fill="#d29922">6</text><text x="420" y="140" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="13" fill="#8b949e" letter-spacing="1">OPENS SOON</text>
-  <text x="640" y="118" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="40" font-weight="800" fill="#f85149">0</text><text x="640" y="140" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="13" fill="#8b949e" letter-spacing="1">CLOSING SOON</text>
-
-  <!-- format bar -->
-  <rect x="40" y="168" width="760" height="16" rx="3" fill="#21262d"/>
-  <rect x="40.0" y="168" width="760.0" height="16" fill="#3fb950" rx="3"><title>In-Person: 7</title><animate attributeName="width" from="0" to="760.0" begin="0.2s" dur="0.7s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1"/></rect>
-
-  <circle cx="46" cy="206" r="5" fill="#3fb950"/><text x="58" y="210" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="13" fill="#8b949e">In-Person <tspan fill="#c9d1d9" font-weight="700">7</tspan></text><circle cx="180" cy="206" r="5" fill="#58a6ff"/><text x="192" y="210" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="13" fill="#8b949e">Virtual <tspan fill="#c9d1d9" font-weight="700">0</tspan></text><circle cx="298" cy="206" r="5" fill="#bc8cff"/><text x="310" y="210" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="13" fill="#8b949e">Hybrid <tspan fill="#c9d1d9" font-weight="700">0</tspan></text>
-
-  <text x="800" y="210" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="12" fill="#6e7681">updated Jun 27, 2026</text>
+  <circle cx="32" cy="134" r="4" fill="#57ab5a"/><text x="43" y="138" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">In-person 7</text><circle cx="154.8" cy="134" r="4" fill="#539bf5"/><text x="165.8" y="138" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">Virtual 0</text><circle cx="263.20000000000005" cy="134" r="4" fill="#b083f0"/><text x="274.20000000000005" y="138" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">Hybrid 0</text>
 </svg>
