@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 Hackathons
+# Hackathons
 
 ### A curated, community-driven list of hackathons — updated daily.
 
@@ -39,14 +39,6 @@ Hackathons are the fastest way to build something real, meet your future team, a
 <!-- HACKATHONS_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Prize | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----- | ----------- | ----------- |
-| ✅ **[OPEN]** | Hack the North | Hack the North 2026 — Canada's Biggest Hackathon (36h) — Deadline: Aug 2026 | In-Person | Waterloo, ON, Canada | $50K+ in prizes | <a href="https://hackthenorth.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 25, 2026 |
-| ✅ **[OPEN]** | HackMIT | HackMIT 2026 (Weekend Hackathon; Open to Undergrads Worldwide) — Deadline: Sep 2026 | In-Person | Cambridge, MA | $20K+ in prizes | <a href="https://hackmit.org/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 24, 2026 |
-| ✅ **[OPEN]** | University of Pennsylvania | PennApps XXVI (World's First College Hackathon) — Deadline: Sep 2026 | In-Person | Philadelphia, PA | $30K+ in prizes | <a href="https://pennapps.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 22, 2026 |
-| ✅ **[OPEN]** | UC Berkeley | Cal Hacks 12.0 (Largest Collegiate Hackathon) — Deadline: Oct 2026 | In-Person | Berkeley, CA | $40K+ in prizes | <a href="https://calhacks.io/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 20, 2026 |
-| ✅ **[OPEN]** | Harvard University | HackHarvard 2026 (Global; Open to All Students) — Deadline: Oct 2026 | In-Person | Cambridge, MA | $25K+ in prizes | <a href="https://hackharvard.io/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 18, 2026 |
-| ✅ **[OPEN]** | Major League Hacking | MLH Global Hack Week (Beginner-Friendly; Year-Round) — Deadline: Rolling | Virtual | Online | Swag + prizes | <a href="https://mlh.io/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 15, 2026 |
-| ✅ **[OPEN]** | Stanford University | TreeHacks 2027 (36h; Travel Reimbursement Available) — Deadline: Jan 2027 | In-Person | Stanford, CA | $30K+ in prizes | <a href="https://www.treehacks.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 12, 2026 |
-| ✅ **[OPEN]** | UCLA | LA Hacks 2027 (SoCal's Largest Hackathon) — Deadline: Mar 2027 | Hybrid | Los Angeles, CA | $35K+ in prizes | <a href="https://lahacks.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 10, 2026 |
 <!-- HACKATHONS_TABLE_END -->
 
 ---
