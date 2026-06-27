@@ -115,3 +115,19 @@ The **Todd Mafia**, building and maintaining this list 💛
 </table>
 
 Want to join this wall? [Add a hackathon](https://github.com/Jose-Gael-Cruz-Lopez/hackathons/issues/new/choose) and you'll be credited as a contributor.
+
+---
+
+## Pac-Man Contribution Graph
+
+Watch Pac-Man chomp through this repo's contribution history 🟡
+
+<!-- pacman -->
+<picture>
+  <source media="(prefers-color-scheme: dark)"
+          srcset="https://raw.githubusercontent.com/Jose-Gael-Cruz-Lopez/hackathons/output/pacman-contribution-graph-dark.svg">
+  <source media="(prefers-color-scheme: light)"
+          srcset="https://raw.githubusercontent.com/Jose-Gael-Cruz-Lopez/hackathons/output/pacman-contribution-graph.svg">
+  <img alt="pacman contribution graph"
+       src="https://raw.githubusercontent.com/Jose-Gael-Cruz-Lopez/hackathons/output/pacman-contribution-graph.svg">
+</picture>
