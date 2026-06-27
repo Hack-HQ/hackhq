@@ -36,7 +36,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
+          git add README.md assets/hackathons-banner.svg
           git commit -m "chore: update closing-soon badges (${{ steps.run.outputs.changes }} changes)"
           for i in 1 2 3; do
             git fetch origin main && git rebase origin/main && git push origin main && break

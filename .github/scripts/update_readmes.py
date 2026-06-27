@@ -43,6 +43,13 @@ def main():
             "<!-- HACKATHONS_TABLE_END -->"
         )
 
+        # Regenerate the live stats banner from the freshly written table
+        try:
+            import generate_banner
+            generate_banner.main()
+        except Exception as e:
+            print(f"Warning: could not regenerate banner: {e}")
+
         # Set commit message
         now = datetime.now(util.PST)
         timestamp = now.strftime("%Y-%m-%d %H:%M PST")

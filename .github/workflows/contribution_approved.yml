@@ -42,7 +42,7 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git add .github/scripts/listings.json README.md
+          git add .github/scripts/listings.json README.md assets/hackathons-banner.svg
           git commit -m "${{ steps.process.outputs.commit_message }}"
           # Rebase and retry push up to 3 times
           for i in 1 2 3; do

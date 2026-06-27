@@ -118,16 +118,10 @@ Want to join this wall? [Add a hackathon](https://github.com/Jose-Gael-Cruz-Lope
 
 ---
 
-## Pac-Man Contribution Graph
+## Live Stats
 
-Watch Pac-Man chomp through this repo's contribution history 🟡
+Auto-generated from the list above — updates every time a hackathon is added, opened, or closed.
 
-<!-- pacman -->
-<picture>
-  <source media="(prefers-color-scheme: dark)"
-          srcset="https://raw.githubusercontent.com/Jose-Gael-Cruz-Lopez/hackathons/output/pacman-contribution-graph-dark.svg">
-  <source media="(prefers-color-scheme: light)"
-          srcset="https://raw.githubusercontent.com/Jose-Gael-Cruz-Lopez/hackathons/output/pacman-contribution-graph.svg">
-  <img alt="pacman contribution graph"
-       src="https://raw.githubusercontent.com/Jose-Gael-Cruz-Lopez/hackathons/output/pacman-contribution-graph.svg">
-</picture>
+<img src="assets/hackathons-banner.svg" alt="Hackathons live stats" width="100%">
+
+> <sub>Built by this repo's own [`generate_banner.py`](.github/scripts/generate_banner.py) — a stats card unique to this list, not a generic widget.</sub>

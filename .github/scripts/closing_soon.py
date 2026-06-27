@@ -107,6 +107,13 @@ def main():
         with open(README, "w") as f:
             f.write(new_content)
 
+    # Refresh the live stats banner (status counts may have changed)
+    try:
+        import generate_banner
+        generate_banner.main()
+    except Exception as e:
+        print(f"Warning: could not regenerate banner: {e}")
+
     print(f"Updated {total} row(s).")
     gh_out = os.environ.get("GITHUB_OUTPUT")
     if gh_out:
