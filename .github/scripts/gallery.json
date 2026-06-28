@@ -34,5 +34,17 @@
     "hackathon": "Late-night hacking",
     "credit": "Jose Cruz",
     "credit_url": "https://www.linkedin.com/in/josegaelcruz"
+  },
+  {
+    "image": "assets/gallery/gtm-welcome.jpg",
+    "hackathon": "The GTM Hackathon",
+    "credit": "Jose Cruz",
+    "credit_url": "https://www.linkedin.com/in/josegaelcruz"
+  },
+  {
+    "image": "assets/gallery/code-and-tell.jpg",
+    "hackathon": "Code & Tell (BU Spark!)",
+    "credit": "Jose Cruz",
+    "credit_url": "https://www.linkedin.com/in/josegaelcruz"
   }
 ]
