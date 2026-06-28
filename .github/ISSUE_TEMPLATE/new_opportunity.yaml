@@ -69,15 +69,25 @@ body:
       required: false
 
   - type: dropdown
-    id: active
+    id: status
     attributes:
-      label: Is this hackathon currently open for registration?
+      label: Status
+      description: Is registration currently open?
       multiple: false
       options:
-        - "Yes"
-        - "No"
+        - "Open - Registration is currently open"
+        - "Opens soon - Announced, registration not open yet"
     validations:
       required: true
+
+  - type: input
+    id: deadline
+    attributes:
+      label: Deadline (Optional)
+      description: Registration/application deadline (YYYY-MM-DD or MM/DD/YYYY).
+      placeholder: ex. 07/01/2026
+    validations:
+      required: false
 
   - type: input
     id: email
