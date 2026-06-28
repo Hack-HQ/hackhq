@@ -14,6 +14,49 @@ import re
 import util
 
 
+def get_first(data, *keys):
+    """Return first non-empty string value for keys."""
+    for key in keys:
+        value = data.get(key)
+        if value is None:
+            continue
+        text = str(value).strip()
+        if text:
+            return text
+    return ""
+
+
+def parse_state(data):
+    """Map issue fields to listing state."""
+    status = get_first(data, "status")
+    status_lc = status.lower()
+    if "soon" in status_lc:
+        return "opens_soon"
+    if "open" in status_lc:
+        return "open"
+
+    # Backward compatibility with older template field.
+    active_str = get_first(
+        data,
+        "is_this_hackathon_currently_open_for_registration?",
+        "is_this_hackathon_currently_open_for_registration",
+    ).lower()
+    if active_str == "no":
+        return "opens_soon"
+    return "open"
+
+
+def parse_deadline(data):
+    """Parse optional deadline and normalize to ISO YYYY-MM-DD."""
+    raw = get_first(data, "deadline", "deadline_(optional)")
+    if not raw:
+        return None
+    try:
+        return util.parse_deadline_date(raw).isoformat()
+    except ValueError:
+        util.fail("Invalid deadline format. Please use YYYY-MM-DD or MM/DD/YYYY.")
+
+
 def parse_issue_body(body, labels):
     """Parse the issue body based on issue type."""
     lines = body.strip().split("\n")
@@ -46,7 +89,7 @@ def handle_new_opportunity(data, username, is_quick_add=False):
     listings = util.get_listings_from_json()
 
     # Get URL - handle both full and quick templates
-    url = data.get("link_to_hackathon_page", "") or data.get("link", "") or data.get("link_to_hackathon", "")
+    url = get_first(data, "link_to_hackathon_page", "link", "link_to_hackathon")
     url = util.clean_url(url)
     if not url:
         util.fail("Missing required field: URL")
@@ -57,15 +100,13 @@ def handle_new_opportunity(data, username, is_quick_add=False):
             util.fail(f"Duplicate: This hackathon already exists (ID: {listing['id']})")
 
     # Get host name - handle both templates
-    company_name = (data.get("host/organizer", "") or
-                    data.get("host/organizer_name", "")).strip()
+    company_name = get_first(data, "host/organizer", "host/organizer_name") 
 
     # Get title - handle both templates
-    title = (data.get("hackathon_name", "") or
-             data.get("hackathon_name/edition", "")).strip()
+    title = get_first(data, "hackathon_name", "hackathon_name/edition")
 
     # Parse locations (default to "Online" if not provided)
-    locations_str = data.get("location", "") or data.get("location_(optional)", "")
+    locations_str = get_first(data, "location", "location_(optional)")
     if locations_str:
         # Support semicolon, pipe, or newline as separators
         locations = [loc.strip() for loc in re.split(r'[;|\n]', locations_str) if loc.strip()]
@@ -82,11 +123,10 @@ def handle_new_opportunity(data, username, is_quick_add=False):
         fmt = "In-Person"
 
     # Get prize (optional)
-    prize = (data.get("prize_pool_(optional)", "") or data.get("prize", "") or "—").strip() or "—"
-
-    # Get active status (default to Yes/True)
-    active_str = data.get("is_this_hackathon_currently_open_for_registration?", "Yes")
-    active = active_str == "Yes" or active_str == ""
+    prize = get_first(data, "prize_pool_(optional)", "prize") or "—"
+    # Map user-submitted status/deadline fields into canonical listing fields.
+    state = parse_state(data)
+    deadline = parse_deadline(data)
 
     # Create new listing
     new_listing = {
@@ -97,12 +137,15 @@ def handle_new_opportunity(data, username, is_quick_add=False):
         "locations": locations,
         "format": fmt,
         "prize": prize,
-        "active": True if is_quick_add else active,
+        "state": state,
+        "active": state != "closed",
         "is_visible": True,
         "date_posted": util.get_current_timestamp(),
         "date_updated": util.get_current_timestamp(),
         "source": username
     }
+    if deadline:
+        new_listing["deadline"] = deadline
 
     # Validate required fields
     if not new_listing["company_name"]:
@@ -116,7 +159,7 @@ def handle_new_opportunity(data, username, is_quick_add=False):
     # Set outputs
     util.set_output("commit_message", f"Add {company_name} - {title}")
     util.set_output("contributor_name", username)
-    email = data.get("email_associated_with_your_github_account_(optional)", "")
+    email = get_first(data, "email_associated_with_your_github_account_(optional)")
     util.set_output("contributor_email", email if email else "actions@github.com")
 
     print(f"Successfully added: {company_name} - {title}")

@@ -53,6 +53,9 @@ def check_schema(listings):
         for field in REQUIRED_FIELDS:
             if field not in listing:
                 raise ValueError(f"Listing {listing.get('id', 'unknown')} missing field: {field}")
+        deadline = listing.get("deadline")
+        if deadline is not None:
+            parse_deadline_date(deadline)
     return True
 
 
@@ -114,6 +117,19 @@ def format_date(timestamp):
     """Format Unix timestamp as readable date."""
     dt = datetime.fromtimestamp(timestamp, tz=PST)
     return dt.strftime("%b %d, %Y")
+
+
+def parse_deadline_date(value):
+    """Parse deadline date in YYYY-MM-DD or MM/DD/YYYY format."""
+    if not isinstance(value, str):
+        raise ValueError(f"Invalid deadline type: expected string, got {type(value).__name__}")
+    text = value.strip()
+    for fmt in ("%Y-%m-%d", "%m/%d/%Y"):
+        try:
+            return datetime.strptime(text, fmt).date()
+        except ValueError:
+            continue
+    raise ValueError(f"Invalid deadline '{value}' (expected YYYY-MM-DD or MM/DD/YYYY)")
 
 
 def embed_table(filepath, table, start_marker, end_marker):
