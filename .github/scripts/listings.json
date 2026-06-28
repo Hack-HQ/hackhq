@@ -372,5 +372,39 @@
     "date_posted": 1782511200,
     "date_updated": 1782511200,
     "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "17229838-845c-40aa-8776-44d5e27c1e14",
+    "company_name": "Arya Health",
+    "title": "Healthcare Hack NYC (Powered by Arya Health)",
+    "url": "https://luma.com/arya-health-hack",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782679191,
+    "date_updated": 1782679191,
+    "source": "hongchengw"
+  },
+  {
+    "id": "93da9a19-c60a-4811-a728-0e9c2f5a16bd",
+    "company_name": "Cerebral Valley",
+    "title": "The Future of Agentic AI in Healthcare (Abridge \u00d7 Anthropic \u00d7 Lightspeed)",
+    "url": "https://cerebralvalley.ai/e/abridge-hackathon",
+    "locations": [
+      "San Francisco, CA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782679191,
+    "date_updated": 1782679191,
+    "source": "hongchengw"
   }
 ]
