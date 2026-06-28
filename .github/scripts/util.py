@@ -90,11 +90,6 @@ def format_locations(locations):
     return f"<details><summary>{len(locations)} locations</summary>{joined}</details>"
 
 
-def get_status_badge(active):
-    """Return the status cell value for active/closed."""
-    return "✅ **[OPEN]**" if active else "🔒 **[CLOSED]**"
-
-
 def format_link(url):
     """Format the registration link as a blue button."""
     button_url = "https://img.shields.io/badge/Register-blue?style=for-the-badge"
