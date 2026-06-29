@@ -72,8 +72,8 @@ def main():
 def create_hackathons_table(listings):
     """Create a table for hackathons."""
     rows = []
-    header = "| Status | Host | Hackathon | Format | Location | Prize | Application | Date Posted |"
-    separator = "| ------ | ---- | --------- | ------ | -------- | ----- | ----------- | ----------- |"
+    header = "| Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |"
+    separator = "| ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |"
     rows.append(header)
     rows.append(separator)
 
@@ -84,6 +84,7 @@ def create_hackathons_table(listings):
         fmt = util.sanitize_table_cell(listing.get("format", ""))
         location = util.format_locations(listing.get("locations", []))
         prize = util.sanitize_table_cell(listing.get("prize", "—"))
+        deadline = util.sanitize_table_cell(util.format_deadline(listing.get("deadline")))
         date = util.format_date(listing["date_posted"])
 
         if state == "opens_soon":
@@ -96,7 +97,7 @@ def create_hackathons_table(listings):
             status = "✅ **[OPEN]**"
             link = util.format_link(listing["url"])
 
-        row = f"| {status} | {host} | {title} | {fmt} | {location} | {prize} | {link} | {date} |"
+        row = f"| {status} | {host} | {title} | {fmt} | {location} | {prize} | {deadline} | {link} | {date} |"
         rows.append(row)
 
     return "\n".join(rows)

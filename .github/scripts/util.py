@@ -120,7 +120,7 @@ def format_date(timestamp):
 
 
 def parse_deadline_date(value):
-    """Parse deadline date in YYYY-MM-DD or MM/DD/YYYY format."""
+    """Parse deadline date from YYYY-MM-DD or MM/DD/YYYY."""
     if not isinstance(value, str):
         raise ValueError(f"Invalid deadline type: expected string, got {type(value).__name__}")
     text = value.strip()
@@ -130,6 +130,13 @@ def parse_deadline_date(value):
         except ValueError:
             continue
     raise ValueError(f"Invalid deadline '{value}' (expected YYYY-MM-DD or MM/DD/YYYY)")
+
+
+def format_deadline(value):
+    """Format optional deadline for markdown tables."""
+    if not value:
+        return "—"
+    return parse_deadline_date(value).strftime("%b %d, %Y")
 
 
 def embed_table(filepath, table, start_marker, end_marker):
