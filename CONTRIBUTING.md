@@ -79,6 +79,32 @@ Editing via issues is not currently supported. To update a listing:
 
 ---
 
+## Featuring a Hackathon (Maintainers)
+
+Featured hackathons are the team-curated "don't miss these" picks. They get a ⭐ in the README, pin to the top of the list, and show a Featured badge and filter on the website.
+
+This is **team-curated featuring** (a flag maintainers set), not per-user saved favorites.
+
+To feature a hackathon:
+
+1. Open [`.github/scripts/listings.json`](.github/scripts/listings.json) and find the entry.
+2. Add `"featured": true` to it (omit the field or set `false` to un-feature):
+
+```json
+{
+  "company_name": "MIT",
+  "title": "HackMIT 2026 ...",
+  "url": "https://hackmit.org/",
+  "featured": true
+}
+```
+
+3. Commit / open a PR. The README and website are regenerated automatically — featured entries get a ⭐ and are pinned to the top.
+
+Keep the featured set small so it stays meaningful.
+
+---
+
 ## How the Automation Works
 
 1. **User submits** a link via the issue template
