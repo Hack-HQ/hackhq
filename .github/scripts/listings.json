@@ -15,7 +15,8 @@
     "date_posted": 1782586800,
     "date_updated": 1782586800,
     "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-09-20"
+    "deadline": "2026-09-20",
+    "featured": true
   },
   {
     "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
@@ -336,7 +337,8 @@
     "is_visible": true,
     "date_posted": 1782522000,
     "date_updated": 1782522000,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "source": "Jose-Gael-Cruz-Lopez",
+    "featured": true
   },
   {
     "id": "f24a6927-f19d-462f-b78f-add1f892010f",
@@ -353,7 +355,8 @@
     "is_visible": true,
     "date_posted": 1782518400,
     "date_updated": 1782518400,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "source": "Jose-Gael-Cruz-Lopez",
+    "featured": true
   },
   {
     "id": "d8eada21-a462-4b59-8fbf-6391e778cb42",
