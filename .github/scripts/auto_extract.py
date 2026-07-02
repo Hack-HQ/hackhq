@@ -210,6 +210,28 @@ def parse_issue_body(body):
     return data
 
 
+def parse_state(data):
+    """Map optional issue status field to listing state."""
+    status = (data.get("status", "") or "").strip().lower()
+    if "soon" in status:
+        return "opens_soon"
+    if "open" in status:
+        return "open"
+    # Sensible default for auto-extracted listings.
+    return "open"
+
+
+def parse_deadline(data):
+    """Parse optional deadline and normalize to ISO YYYY-MM-DD."""
+    raw = (data.get("deadline_optional", "") or data.get("deadline", "")).strip()
+    if not raw:
+        return None
+    try:
+        return util.parse_deadline_date(raw).isoformat()
+    except ValueError:
+        util.fail("Invalid deadline format. Please use YYYY-MM-DD or MM/DD/YYYY.")
+
+
 def extract_url_from_body(body):
     """Try multiple methods to extract URL from issue body."""
     # Method 1: Parse structured fields
@@ -267,6 +289,8 @@ def main():
     print(f"Extracted URL: {url}")
 
     notes = data.get("any_additional_context_optional", "") or data.get("notes", "")
+    state = parse_state(data)
+    deadline = parse_deadline(data)
 
     print(f"Fetching content from: {url}")
 
@@ -345,12 +369,15 @@ def main():
         "locations": locations,
         "format": fmt,
         "prize": extracted.get("prize", "—") or "—",
-        "active": True,
+        "state": state,
+        "active": state != "closed",
         "is_visible": True,
         "date_posted": util.get_current_timestamp(),
         "date_updated": util.get_current_timestamp(),
         "source": username
     }
+    if deadline:
+        new_listing["deadline"] = deadline
 
     # Save
     listings.append(new_listing)

@@ -1,8 +1,9 @@
-import { loadOpportunities } from "@/lib/parse-readme";
+import { loadSiteData } from "@/lib/parse-readme";
 import { Browser } from "@/components/browser";
+import Gallery from "@/components/gallery";
 
 export default function Home() {
-  const opportunities = loadOpportunities();
+  const { opportunities, statsBannerSrc, gallery } = loadSiteData();
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
@@ -44,7 +45,9 @@ export default function Home() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <Browser opportunities={opportunities} />
+        <Browser opportunities={opportunities} statsBannerSrc={statsBannerSrc} />
+
+        <Gallery gallery={gallery} />
       </main>
 
       <footer className="mt-16 border-t border-zinc-200 dark:border-zinc-900">

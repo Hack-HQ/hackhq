@@ -14,7 +14,8 @@
     "is_visible": true,
     "date_posted": 1782586800,
     "date_updated": 1782586800,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "source": "Jose-Gael-Cruz-Lopez",
+    "deadline": "2026-09-20"
   },
   {
     "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
@@ -31,7 +32,8 @@
     "is_visible": true,
     "date_posted": 1782583200,
     "date_updated": 1782583200,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "source": "Jose-Gael-Cruz-Lopez",
+    "deadline": "2026-07-16"
   },
   {
     "id": "06f72ca6-9ab3-4d22-aa00-bf5c8b362c33",
@@ -48,7 +50,8 @@
     "is_visible": true,
     "date_posted": 1782579600,
     "date_updated": 1782579600,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "source": "Jose-Gael-Cruz-Lopez",
+    "deadline": "2026-07-19"
   },
   {
     "id": "c12023ad-aab3-44e5-beb7-d0956ef987c2",
@@ -65,7 +68,8 @@
     "is_visible": true,
     "date_posted": 1782576000,
     "date_updated": 1782576000,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "source": "Jose-Gael-Cruz-Lopez",
+    "deadline": "2026-07-19"
   },
   {
     "id": "6420c553-d798-4c74-bc81-5e592ecbc22e",
@@ -82,7 +86,8 @@
     "is_visible": true,
     "date_posted": 1782572400,
     "date_updated": 1782572400,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "source": "Jose-Gael-Cruz-Lopez",
+    "deadline": "2026-07-26"
   },
   {
     "id": "0dd13a0e-b5ce-4dd0-a35c-f435b52ea23f",
@@ -99,7 +104,8 @@
     "is_visible": true,
     "date_posted": 1782568800,
     "date_updated": 1782568800,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "source": "Jose-Gael-Cruz-Lopez",
+    "deadline": "2026-08-13"
   },
   {
     "id": "421c6652-25a9-42c9-9ac9-5396f32396f5",
@@ -116,7 +122,8 @@
     "is_visible": true,
     "date_posted": 1782565200,
     "date_updated": 1782565200,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "source": "Jose-Gael-Cruz-Lopez",
+    "deadline": "2026-09-17"
   },
   {
     "id": "1b0b2e8f-8920-469e-978a-f34286dfcc56",
@@ -133,7 +140,8 @@
     "is_visible": true,
     "date_posted": 1782561600,
     "date_updated": 1782561600,
-    "source": "devpost"
+    "source": "devpost",
+    "deadline": "2026-08-17"
   },
   {
     "id": "2d9875e7-9574-4fcd-9fcb-138ce6ee81fd",
@@ -150,7 +158,8 @@
     "is_visible": true,
     "date_posted": 1782558000,
     "date_updated": 1782558000,
-    "source": "devpost"
+    "source": "devpost",
+    "deadline": "2026-06-29"
   },
   {
     "id": "f0109d92-c423-43b1-b6b5-fc93219a9bcb",
@@ -167,7 +176,8 @@
     "is_visible": true,
     "date_posted": 1782554400,
     "date_updated": 1782554400,
-    "source": "devpost"
+    "source": "devpost",
+    "deadline": "2026-07-09"
   },
   {
     "id": "bcea64f3-77d3-4b65-b61e-5f1714b428ac",
@@ -184,7 +194,8 @@
     "is_visible": true,
     "date_posted": 1782550800,
     "date_updated": 1782550800,
-    "source": "devpost"
+    "source": "devpost",
+    "deadline": "2026-06-29"
   },
   {
     "id": "8a6a6656-8eff-40ea-9688-6bb50b18d290",
@@ -201,7 +212,8 @@
     "is_visible": true,
     "date_posted": 1782547200,
     "date_updated": 1782547200,
-    "source": "devpost"
+    "source": "devpost",
+    "deadline": "2026-07-13"
   },
   {
     "id": "a30d17a5-32e2-4c5e-8c08-3ac5c42e48b9",
@@ -218,7 +230,8 @@
     "is_visible": true,
     "date_posted": 1782543600,
     "date_updated": 1782543600,
-    "source": "devpost"
+    "source": "devpost",
+    "deadline": "2026-07-15"
   },
   {
     "id": "a29c2b18-ef1b-432c-8a41-44b7ffab0af0",
@@ -235,7 +248,8 @@
     "is_visible": true,
     "date_posted": 1782540000,
     "date_updated": 1782540000,
-    "source": "devpost"
+    "source": "devpost",
+    "deadline": "2026-08-14"
   },
   {
     "id": "4c7865aa-543e-4ac8-9f47-808da1bffddc",
@@ -252,7 +266,8 @@
     "is_visible": true,
     "date_posted": 1782536400,
     "date_updated": 1782536400,
-    "source": "devpost"
+    "source": "devpost",
+    "deadline": "2026-07-11"
   },
   {
     "id": "91a0436e-2b6e-4d1b-b659-6786b39e37ca",
@@ -269,23 +284,24 @@
     "is_visible": true,
     "date_posted": 1782532800,
     "date_updated": 1782532800,
-    "source": "devpost"
+    "source": "devpost",
+    "deadline": "2026-08-03"
   },
   {
     "id": "651caba5-0669-4d1d-843b-e7892d0d4207",
     "company_name": "University of Michigan",
-    "title": "MHacks 2026 (Student Hackathon; Applications Coming Soon)",
+    "title": "MHacks 2026 (Student Hackathon; Applications Open)",
     "url": "https://mhacks.org/",
     "locations": [
       "Ann Arbor, MI"
     ],
     "format": "In-Person",
     "prize": "$40K+ in prizes",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1782529200,
-    "date_updated": 1782529200,
+    "date_updated": 1783004757,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
@@ -439,6 +455,59 @@
     "is_visible": true,
     "date_posted": 1782748800,
     "date_updated": 1782748800,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "130e9d0c-5b3d-46da-808c-9c2df26b88d2",
+    "company_name": "Ramp",
+    "title": "Builders Cup 2026 (One-Day Hackathon for Students Graduating 2027+)",
+    "url": "https://luma.com/nrletiv9",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "deadline": "2026-07-17",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783014300,
+    "date_updated": 1783014300,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "b2c0f34a-5642-4b46-80dd-d68d63ac3fed",
+    "company_name": "UMass Amherst",
+    "title": "HackUMass XIV (36-Hour Student Hackathon; Pre-Registration Open)",
+    "url": "https://www.hackumass.com/",
+    "locations": [
+      "Amherst, MA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783014300,
+    "date_updated": 1783014300,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "c1840896-a8ba-4821-ad8a-20e89d05deae",
+    "company_name": "AITHORS \u00d7 Okareo",
+    "title": "First Ever Agent Evalathon \u2014 Jul 6\u201313, 2026",
+    "url": "https://aithors.ai/hackathon",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "TBA",
+    "deadline": "2026-07-04",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783014300,
+    "date_updated": 1783014300,
     "source": "Jose-Gael-Cruz-Lopez"
   }
 ]

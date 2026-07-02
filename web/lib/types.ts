@@ -17,6 +17,11 @@ export type Opportunity = {
   daysUntilDeadline: number | null;
 };
 
+export type GalleryPhoto = {
+  src: string;
+  alt: string;
+};
+
 export const SECTION_LABELS: Record<Section, string> = {
   HACKATHONS: "Hackathons",
 };

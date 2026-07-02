@@ -3,17 +3,24 @@
 import { useMemo, useState } from "react";
 import { Opportunity, Status, STATUS_LABELS } from "@/lib/types";
 import { OpportunityCard } from "./opportunity-card";
+import StatsBanner from "./stats-banner";
 
 const STATUSES: Status[] = ["CLOSING_SOON", "OPEN", "OPENS_SOON"];
 
 const STATUS_DOT: Record<Status, string> = {
-  CLOSING_SOON: "bg-orange-500",
+  CLOSING_SOON: "bg-red-500",
   OPEN: "bg-emerald-500",
-  OPENS_SOON: "bg-blue-500",
+  OPENS_SOON: "bg-amber-500",
   CLOSED: "bg-zinc-400",
 };
 
-export function Browser({ opportunities }: { opportunities: Opportunity[] }) {
+export function Browser({
+  opportunities,
+  statsBannerSrc,
+}: {
+  opportunities: Opportunity[];
+  statsBannerSrc: string | null;
+}) {
   const [query, setQuery] = useState("");
   const [activeStatuses, setActiveStatuses] = useState<Set<Status>>(new Set());
 
@@ -74,32 +81,7 @@ export function Browser({ opportunities }: { opportunities: Opportunity[] }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat
-          label="Closing soon"
-          value={counts.CLOSING_SOON}
-          accent="text-orange-600 dark:text-orange-400"
-          dot="bg-orange-500"
-        />
-        <Stat
-          label="Open"
-          value={counts.OPEN}
-          accent="text-emerald-600 dark:text-emerald-400"
-          dot="bg-emerald-500"
-        />
-        <Stat
-          label="Opens soon"
-          value={counts.OPENS_SOON}
-          accent="text-blue-600 dark:text-blue-400"
-          dot="bg-blue-500"
-        />
-        <Stat
-          label="Total tracked"
-          value={opportunities.length}
-          accent="text-zinc-900 dark:text-zinc-100"
-          dot="bg-zinc-400"
-        />
-      </div>
+      <StatsBanner statsBannerSrc={statsBannerSrc} compact />
 
       <div className="flex flex-col gap-3">
         <input
@@ -118,7 +100,7 @@ export function Browser({ opportunities }: { opportunities: Opportunity[] }) {
               onClick={() => toggleStatus(s)}
               dotClass={STATUS_DOT[s]}
             >
-              {STATUS_LABELS[s]}
+              {STATUS_LABELS[s]} ({counts[s]})
             </Pill>
           ))}
           {(activeStatuses.size > 0 || query) && (
@@ -151,30 +133,6 @@ export function Browser({ opportunities }: { opportunities: Opportunity[] }) {
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  accent,
-  dot,
-}: {
-  label: string;
-  value: number;
-  accent: string;
-  dot: string;
-}) {
-  return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-      <div className="flex items-center gap-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
-        <span className={`h-1.5 w-1.5 rounded-full ${dot}`} aria-hidden />
-        {label}
-      </div>
-      <div className={`mt-1 text-2xl font-semibold tabular-nums ${accent}`}>
-        {value}
-      </div>
     </div>
   );
 }

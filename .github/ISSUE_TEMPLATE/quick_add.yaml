@@ -53,3 +53,24 @@ body:
       placeholder: Cambridge, MA
     validations:
       required: false
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status
+      description: Is registration currently open?
+      multiple: false
+      options:
+        - "Open - Registration is currently open"
+        - "Opens soon - Announced, registration not open yet"
+    validations:
+      required: true
+
+  - type: input
+    id: deadline
+    attributes:
+      label: Deadline (Optional)
+      description: Registration/application deadline (YYYY-MM-DD or MM/DD/YYYY).
+      placeholder: ex. 07/01/2026
+    validations:
+      required: false

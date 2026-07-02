@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import {
+  GalleryPhoto,
   Opportunity,
   Section,
   Status,
@@ -9,6 +10,9 @@ import {
 } from "./types";
 
 const README_PATH = path.join(process.cwd(), "..", "README.md");
+const REPO_ROOT = path.join(process.cwd(), "..");
+const REPO_RAW_BASE =
+  "https://raw.githubusercontent.com/Jose-Gael-Cruz-Lopez/hackhq/main/";
 
 const TABLE_RE = /<!-- (\w+)_TABLE_START -->([\s\S]*?)<!-- \1_TABLE_END -->/g;
 
@@ -21,6 +25,10 @@ const MONTH_MAP: Record<string, number> = {
 
 const DATE_RE =
   /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\s+(\d{1,2}),?\s+(\d{4})\b/g;
+const GALLERY_BLOCK_RE =
+  /<!-- GALLERY_START -->([\s\S]*?)<!-- GALLERY_END -->/;
+const IMG_RE =
+  /<img\s+[^>]*src="([^"]+)"[^>]*alt="([^"]*)"[^>]*>/g;
 
 function parseStatus(cell: string): Status {
   if (cell.includes("CLOSING SOON")) return "CLOSING_SOON";
@@ -63,6 +71,42 @@ function inlineDeadline(text: string): string {
 
 function stableId(...parts: string[]): string {
   return crypto.createHash("md5").update(parts.join("|")).digest("hex").slice(0, 10);
+}
+
+function resolveAssetSrc(src: string): string {
+  if (!src) return "";
+  if (src.startsWith("http://") || src.startsWith("https://")) return src;
+
+  const relative = src.replace(/^\/+/, "");
+  const localPath = path.join(REPO_ROOT, relative);
+  if (fs.existsSync(localPath)) {
+    return `/repo-assets/${relative.replace(/^assets\//, "")}`;
+  }
+
+  return `${REPO_RAW_BASE}${relative}`;
+}
+
+function extractStatsBannerSrc(markdown: string): string | null {
+  const tag = markdown.match(/<img\s+[^>]*alt="Hackathon stats"[^>]*>/i);
+  if (!tag) return null;
+  const src = tag[0].match(/src="([^"]+)"/i);
+  return src ? resolveAssetSrc(src[1]) : null;
+}
+
+function extractGallery(markdown: string): GalleryPhoto[] {
+  const block = markdown.match(GALLERY_BLOCK_RE);
+  if (!block) return [];
+
+  const photos: GalleryPhoto[] = [];
+  let m: RegExpExecArray | null;
+  const re = new RegExp(IMG_RE.source, "g");
+  while ((m = re.exec(block[1])) !== null) {
+    photos.push({
+      src: resolveAssetSrc(m[1]),
+      alt: m[2] || "Hackathon photo",
+    });
+  }
+  return photos;
 }
 
 function parseTableRows(
@@ -154,16 +198,33 @@ const SECTION_ALIAS: Record<string, Section> = {
 
 export function loadOpportunities(): Opportunity[] {
   const md = fs.readFileSync(README_PATH, "utf-8");
+  return parseOpportunities(md);
+}
+
+function parseOpportunities(markdown: string): Opportunity[] {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const all: Opportunity[] = [];
   let m: RegExpExecArray | null;
   const re = new RegExp(TABLE_RE.source, "g");
-  while ((m = re.exec(md)) !== null) {
+  while ((m = re.exec(markdown)) !== null) {
     const key = SECTION_ALIAS[m[1]];
     if (!key) continue;
     all.push(...parseTableRows(key, m[2], today));
   }
   return all;
+}
+
+export function loadSiteData(): {
+  opportunities: Opportunity[];
+  statsBannerSrc: string | null;
+  gallery: GalleryPhoto[];
+} {
+  const md = fs.readFileSync(README_PATH, "utf-8");
+  return {
+    opportunities: parseOpportunities(md),
+    statsBannerSrc: extractStatsBannerSrc(md),
+    gallery: extractGallery(md),
+  };
 }

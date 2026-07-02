@@ -4,7 +4,8 @@ closing_soon.py — flag opportunities closing within 7 days as 🔥 [CLOSING SO
 
 Scans every <!-- *_TABLE_START --> ... <!-- *_TABLE_END --> region in README.md.
 For each row with status ✅ [OPEN] or 🔥 [CLOSING SOON]:
-  - Find the earliest upcoming date in the row
+  - Prefer structured deadline (YYYY-MM-DD or MM/DD/YYYY) if present
+  - Otherwise find the earliest upcoming date in the row text
   - If 0–7 days away: flip status to 🔥 [CLOSING SOON]
   - If >7 days away: flip status back to ✅ [OPEN]
   - If unparseable / past / Rolling / Check site: leave alone
@@ -29,6 +30,7 @@ MONTHS = (
     "Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec"
 )
 DATE_RE = re.compile(rf"\b({MONTHS})\s+(\d{{1,2}}),?\s+(\d{{4}})\b")
+ISO_DATE_RE = re.compile(r"\b(\d{4}-\d{2}-\d{2})\b")
 
 TABLE_RE = re.compile(r"(<!-- \w+_TABLE_START -->)(.*?)(<!-- \w+_TABLE_END -->)", re.DOTALL)
 
@@ -56,13 +58,28 @@ def earliest_upcoming(text: str, today: datetime):
     return min(upcoming) if upcoming else None
 
 
+def parse_iso_deadline(row: str):
+    """Return structured row deadline if a YYYY-MM-DD token exists."""
+    m = ISO_DATE_RE.search(row)
+    if not m:
+        return None
+    try:
+        return datetime.strptime(m.group(1), "%Y-%m-%d").replace(tzinfo=PST)
+    except ValueError:
+        return None
+
+
 def update_row(row: str, today: datetime):
     """Return (new_row, changed)."""
     has_open = OPEN in row
     has_closing = CLOSING in row
     if not (has_open or has_closing):
         return row, False
-    deadline = earliest_upcoming(row, today)
+    # Skip the trailing "Date Posted" cell: a row posted today would otherwise
+    # parse as a deadline 0 days away and be falsely flagged as closing soon.
+    cells = row.rstrip().rstrip("|").split("|")
+    scan_text = "|".join(cells[:-1]) if len(cells) > 1 else row
+    deadline = parse_iso_deadline(scan_text) or earliest_upcoming(scan_text, today)
     if not deadline:
         return row, False
     days_until = (deadline.date() - today.date()).days
