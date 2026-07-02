@@ -291,18 +291,18 @@
   {
     "id": "651caba5-0669-4d1d-843b-e7892d0d4207",
     "company_name": "University of Michigan",
-    "title": "MHacks 2026 (Student Hackathon; Applications Coming Soon)",
+    "title": "MHacks 2026 (Student Hackathon; Applications Open)",
     "url": "https://mhacks.org/",
     "locations": [
       "Ann Arbor, MI"
     ],
     "format": "In-Person",
     "prize": "$40K+ in prizes",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1782529200,
-    "date_updated": 1782529200,
+    "date_updated": 1783004757,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
@@ -425,5 +425,92 @@
     "date_posted": 1782679191,
     "date_updated": 1782679191,
     "source": "hongchengw"
+  },
+  {
+    "id": "af1e3755-6040-4c3b-adac-b27c948a692f",
+    "company_name": "Arcangel",
+    "title": "Arcangel AI: $1,000,000 IP-A-THON (Early Access; Approval Required)",
+    "url": "https://luma.com/98z2mych",
+    "locations": [
+      "TBA"
+    ],
+    "format": "In-Person",
+    "prize": "$1,000,000",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782749100,
+    "date_updated": 1782749100,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "e87fb32d-3bb3-44d2-9472-17845bcfe034",
+    "company_name": "HackBeanpot",
+    "title": "HackBeanpot (Student Hackathon; Next Cycle Not Yet Posted)",
+    "url": "https://www.hackbeanpot.com/",
+    "locations": [
+      "Boston, MA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782748800,
+    "date_updated": 1782748800,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "130e9d0c-5b3d-46da-808c-9c2df26b88d2",
+    "company_name": "Ramp",
+    "title": "Builders Cup 2026 (One-Day Hackathon for Students Graduating 2027+)",
+    "url": "https://luma.com/nrletiv9",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "deadline": "2026-07-17",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783014300,
+    "date_updated": 1783014300,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "b2c0f34a-5642-4b46-80dd-d68d63ac3fed",
+    "company_name": "UMass Amherst",
+    "title": "HackUMass XIV (36-Hour Student Hackathon; Pre-Registration Open)",
+    "url": "https://www.hackumass.com/",
+    "locations": [
+      "Amherst, MA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783014300,
+    "date_updated": 1783014300,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "c1840896-a8ba-4821-ad8a-20e89d05deae",
+    "company_name": "AITHORS \u00d7 Okareo",
+    "title": "First Ever Agent Evalathon \u2014 Jul 6\u201313, 2026",
+    "url": "https://aithors.ai/hackathon",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "TBA",
+    "deadline": "2026-07-04",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783014300,
+    "date_updated": 1783014300,
+    "source": "Jose-Gael-Cruz-Lopez"
   }
 ]

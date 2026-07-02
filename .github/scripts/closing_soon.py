@@ -75,7 +75,11 @@ def update_row(row: str, today: datetime):
     has_closing = CLOSING in row
     if not (has_open or has_closing):
         return row, False
-    deadline = parse_iso_deadline(row) or earliest_upcoming(row, today)
+    # Skip the trailing "Date Posted" cell: a row posted today would otherwise
+    # parse as a deadline 0 days away and be falsely flagged as closing soon.
+    cells = row.rstrip().rstrip("|").split("|")
+    scan_text = "|".join(cells[:-1]) if len(cells) > 1 else row
+    deadline = parse_iso_deadline(scan_text) or earliest_upcoming(scan_text, today)
     if not deadline:
         return row, False
     days_until = (deadline.date() - today.date()).days
