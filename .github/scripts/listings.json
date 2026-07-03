@@ -512,5 +512,24 @@
     "date_posted": 1783014300,
     "date_updated": 1783014300,
     "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "74830296-690a-4566-9022-00e552a0907f",
+    "company_name": "CS Girlies",
+    "title": "CS Girlies Annual Hackathon - Technology For Wellness",
+    "url": "https://cs-girlies-wellness-hackathon.devpost.com",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$5,000 in Prizes",
+    "deadline": "2026-07-04",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783105200,
+    "date_updated": 1783105200,
+    "source": "Allyson-Keightley"
   }
+
 ]
