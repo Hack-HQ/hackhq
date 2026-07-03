@@ -512,5 +512,41 @@
     "date_posted": 1783014300,
     "date_updated": 1783014300,
     "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "74830296-690a-4566-9022-00e552a0907f",
+    "company_name": "CS Girlies",
+    "title": "CS Girlies Annual Hackathon - Technology For Wellness \u2014 Aug 14 \u2013 Aug 16, 2026",
+    "url": "https://cs-girlies-wellness-hackathon.devpost.com",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$5,000 in Prizes",
+    "deadline": "2026-08-14",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783105200,
+    "date_updated": 1783105200,
+    "source": "Allyson-Keightley"
+  },
+  {
+    "id": "1e31d21c-0355-494e-a0a2-2431a51301a6",
+    "company_name": "Carleton University",
+    "title": "cuHacking 2026 \u2014 Jul 10 \u2013 Jul 12, 2026",
+    "url": "https://cuhacking.ca",
+    "locations": [
+      "Ottawa, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783105200,
+    "date_updated": 1783105200,
+    "source": "Allyson-Keightley"
   }
+
 ]
