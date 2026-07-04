@@ -2,12 +2,12 @@
   <rect x="0.5" y="0.5" width="759" height="149" rx="10" fill="#0d1117" stroke="#21262d"/>
 
   <text x="28" y="34" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="14" font-weight="600" fill="#e6edf3">HackHQ</text>
-  <text x="732" y="34" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#6e7681">as of July 3, 2026</text>
+  <text x="732" y="34" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#6e7681">as of July 4, 2026</text>
 
   <text x="28" y="74" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#e6edf3">31</text><text x="28" y="92" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">tracked</text>
-  <text x="210" y="74" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#57ab5a">23</text><text x="210" y="92" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">open</text>
+  <text x="210" y="74" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#57ab5a">21</text><text x="210" y="92" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">open</text>
   <text x="370" y="74" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#daaa3f">6</text><text x="370" y="92" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">opens soon</text>
-  <text x="560" y="74" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#e5534b">2</text><text x="560" y="92" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">closing soon</text>
+  <text x="560" y="74" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#e5534b">4</text><text x="560" y="92" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="12.5" fill="#9198a1">closing soon</text>
 
   <rect x="28" y="104" width="704" height="8" rx="4" fill="#21262d"/>
   <rect x="28.0" y="104" width="386.1" height="8" fill="#3fb950"><title>In-Person: 17</title></rect><rect x="414.1" y="104" width="317.9" height="8" fill="#58a6ff"><title>Virtual: 14</title></rect>
