@@ -86,7 +86,7 @@ export function SubmitSection() {
           <div className="kicker text-center text-coral">
             Pillar 04 · Contribute
           </div>
-          <h2 className="display mt-3 text-center text-[clamp(2.2rem,5vw,3.8rem)] text-paper">
+          <h2 className="display mt-3 text-center text-[clamp(1.5rem,3.4vw,2.6rem)] text-paper">
             Add a hackathon
             <br />
             in 60 seconds
