@@ -1,7 +1,7 @@
 name: Close Hackathon
 description: Request to close/archive a hackathon listing
 title: "Close Hackathon"
-labels: ["close_opportunity"]
+labels: ["close_opportunity", "community"]
 body:
   - type: markdown
     attributes:

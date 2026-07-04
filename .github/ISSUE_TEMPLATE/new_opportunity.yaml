@@ -1,7 +1,7 @@
 name: New Hackathon
 description: Contribute a hackathon to our list
 title: "New Hackathon"
-labels: ["new_opportunity"]
+labels: ["new_opportunity", "community"]
 body:
   - type: markdown
     attributes:

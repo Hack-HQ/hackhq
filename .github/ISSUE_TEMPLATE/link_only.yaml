@@ -1,7 +1,7 @@
 name: Add Hackathon (Just Paste Link)
 description: Just paste the link - AI will extract all the details automatically!
 title: "Add: "
-labels: ["new_opportunity", "auto_extract"]
+labels: ["new_opportunity", "auto_extract", "community"]
 body:
   - type: markdown
     attributes:

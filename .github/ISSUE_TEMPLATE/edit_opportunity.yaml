@@ -1,7 +1,7 @@
 name: Edit Hackathon (Not Supported)
 description: "⚠️ Editing is not supported. To update a listing: close it and re-add with corrected details."
 title: "Edit Hackathon"
-labels: ["edit_opportunity"]
+labels: ["edit_opportunity", "community"]
 body:
   - type: markdown
     attributes:

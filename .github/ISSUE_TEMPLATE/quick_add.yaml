@@ -1,7 +1,7 @@
 name: Quick Add
 description: Quickly add a hackathon with just a link and basic info
 title: "Quick Add"
-labels: ["new_opportunity", "quick_add"]
+labels: ["new_opportunity", "quick_add", "community"]
 body:
   - type: markdown
     attributes:
