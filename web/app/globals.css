@@ -1,26 +1,282 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ------------------------------------------------
+   HackHQ design system
+   Fusion: Magnetto-style giant rounded containers + glass
+   pill nav  ×  dark-techy mono kickers  ×  HackHQ brand
+   (coral / ink / paper, Space Grotesk / Inter / Space Mono)
+   ------------------------------------------------ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-grotesk), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
+  --font-mono: var(--font-smono), monospace;
+
+  --color-coral: #ed5b29;
+  --color-coral-bright: #ff7a45;
+  --color-ink: #100f0f;
+  --color-ink-deep: #0a0909;
+  --color-ink-soft: #1b1917;
+  --color-paper: #f5ede6;
+  --color-paper-dim: #e9ded3;
+  --color-open: #17b26a;
+  --color-soon: #f5a623;
+  --color-register: #3b6bf0;
+  --color-muted: #9ba1a5;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --shell-radius: clamp(28px, 4.5vw, 84px);
+  --card-radius: clamp(20px, 2.2vw, 40px);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ink-deep);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-coral);
+  color: var(--color-paper);
+}
+
+/* Giant rounded section container (Magnetto shell) */
+.shell {
+  border-radius: var(--shell-radius);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.glass-dark {
+  background: rgba(12, 10, 8, 0.55);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Mono kicker - the "built by devs" label */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+/* Display headline */
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.94;
+}
+
+/* Status marker dot pulses (globe + cards) */
+@keyframes hq-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(237, 91, 41, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(237, 91, 41, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(237, 91, 41, 0);
+  }
+}
+
+.pulse-coral {
+  animation: hq-pulse 1.8s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-coral {
+    animation: none;
+  }
+}
+
+/* Theme marquee */
+@keyframes hq-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: hq-marquee 36s linear infinite;
+  width: max-content;
+}
+
+.marquee-mask {
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 10%,
+    #000 90%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 10%,
+    #000 90%,
+    transparent 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* Globe marker elements (created imperatively by mapbox) */
+.hq-marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.hq-marker:hover {
+  transform: scale(1.45);
+}
+
+.hq-marker[data-state="open"] {
+  background: #17b26a;
+  box-shadow: 0 0 0 5px rgba(23, 178, 106, 0.25), 0 0 14px rgba(23, 178, 106, 0.8);
+}
+
+.hq-marker[data-state="opens_soon"] {
+  background: #f5a623;
+  box-shadow: 0 0 0 5px rgba(245, 166, 35, 0.22), 0 0 14px rgba(245, 166, 35, 0.7);
+}
+
+.hq-marker[data-state="closing_soon"] {
+  background: #ed5b29;
+  box-shadow: 0 0 0 5px rgba(237, 91, 41, 0.28), 0 0 16px rgba(237, 91, 41, 0.9);
+  animation: hq-pulse 1.8s ease-out infinite;
+}
+
+.hq-marker[data-state="closed"] {
+  background: #6b6560;
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+/* Mapbox chrome cleanup + branded popup */
+.mapboxgl-ctrl-logo,
+.mapboxgl-ctrl-attrib {
+  opacity: 0.35 !important;
+}
+
+.hq-popup .mapboxgl-popup-content {
+  background: rgba(23, 19, 15, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  color: #fbf7f1;
+  font-family: var(--font-sans);
+  padding: 12px 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.hq-popup .mapboxgl-popup-tip {
+  border-top-color: rgba(23, 19, 15, 0.92) !important;
+  border-bottom-color: rgba(23, 19, 15, 0.92) !important;
+}
+
+/* Thin techy scrollbar for rails */
+.rail-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.rail-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.rail-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* Card hover lift */
+.lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.lift:hover {
+  transform: translateY(-4px);
+}
+
+/* Hack Radio vinyl spin (Framer DiscPlayer rebuild) */
+@keyframes hq-disc-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ----- Dossier folder card (Framer "Document Folder" rebuild) -----
+   3D folder: front flap swings open on hover (rotateY, origin left,
+   springy bezier) while the classified paper slides up out of it. */
+
+.dossier {
+  perspective: 1400px;
+}
+
+.dossier-spring {
+  transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dossier-front {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+
+.dossier:hover .dossier-front {
+  transform: rotateY(-15deg);
+}
+
+.dossier-paper {
+  box-shadow:
+    0px -2.1px 1.26px -1.5px rgba(0, 0, 0, 0.18),
+    0px -4.6px 2.76px -2.25px rgba(0, 0, 0, 0.17),
+    0px -10.2px 6.14px -3px rgba(0, 0, 0, 0.14),
+    0px -26px 15.6px -3.75px rgba(0, 0, 0, 0.06);
+}
+
+.dossier:hover .dossier-paper {
+  transform: translateY(-40px) rotate(-4deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dossier-spring,
+  .dossier:hover .dossier-front,
+  .dossier:hover .dossier-paper {
+    transition: none;
+    transform: none;
+  }
 }
