@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, Space_Mono } from "next/font/google";
+import { Syncopate, Inter, Space_Mono } from "next/font/google";
 import "./globals.css";
 
 // HackHQ type system (per product design brief §08):
-// - Space Grotesk: techy geometric display - headlines, big numbers
+// - Syncopate: wide, blocky display face matching the HACKHQ wordmark -
+//   headlines, big numbers
 // - Inter: the workhorse for all UI text
 // - Space Mono: kickers, metadata, countdowns - "built by devs" energy
-const grotesk = Space_Grotesk({
-  variable: "--font-grotesk",
+const syncopate = Syncopate({
+  variable: "--font-syncopate",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
@@ -36,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${grotesk.variable} ${inter.variable} ${smono.variable} h-full antialiased`}
+      className={`${syncopate.variable} ${inter.variable} ${smono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full" suppressHydrationWarning>
