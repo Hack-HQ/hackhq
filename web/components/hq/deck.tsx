@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import type { Hackathon, HackState } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
 import { useHQ } from "./store";
