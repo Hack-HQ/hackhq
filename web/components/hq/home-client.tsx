@@ -21,7 +21,7 @@ export function HomeClient({
       <Preloader />
       <NavPill />
       <main>
-        <GlobeHero hackathons={hackathons} />
+        <GlobeHero />
         <StatsStrip stats={stats} />
         <ThemeMarquee hackathons={hackathons} />
         <SubmitSection />
