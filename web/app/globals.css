@@ -239,44 +239,5 @@ body {
   }
 }
 
-/* ----- Dossier folder card (Framer "Document Folder" rebuild) -----
-   3D folder: front flap swings open on hover (rotateY, origin left,
-   springy bezier) while the classified paper slides up out of it. */
-
-.dossier {
-  perspective: 1400px;
-}
-
-.dossier-spring {
-  transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.dossier-front {
-  transform-origin: left center;
-  transform-style: preserve-3d;
-}
-
-.dossier:hover .dossier-front {
-  transform: rotateY(-15deg);
-}
-
-.dossier-paper {
-  box-shadow:
-    0px -2.1px 1.26px -1.5px rgba(0, 0, 0, 0.18),
-    0px -4.6px 2.76px -2.25px rgba(0, 0, 0, 0.17),
-    0px -10.2px 6.14px -3px rgba(0, 0, 0, 0.14),
-    0px -26px 15.6px -3.75px rgba(0, 0, 0, 0.06);
-}
-
-.dossier:hover .dossier-paper {
-  transform: translateY(-40px) rotate(-4deg);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dossier-spring,
-  .dossier:hover .dossier-front,
-  .dossier:hover .dossier-paper {
-    transition: none;
-    transform: none;
-  }
-}
+/* Dossier folder card: motion now lives in components/hq/deck.tsx
+   (framer-motion springs ported from the Framer "Document Folder"). */
