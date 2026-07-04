@@ -549,4 +549,23 @@
     "source": "Allyson-Keightley"
   }
 
+,
+  {
+    "id": "b703a6ab-c107-4bab-808f-076e0ec65afa",
+    "company_name": "UCLA",
+    "title": "LA Hacks AI Hackathon 2026 \u2014 Oct 17\u201318, 2026",
+    "url": "https://ai.lahacks.com/",
+    "locations": [
+      "Los Angeles, CA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "deadline": "2026-08-28",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783207800,
+    "date_updated": 1783207800,
+    "source": "ChimdumebiNebolisa"
+  }
 ]
