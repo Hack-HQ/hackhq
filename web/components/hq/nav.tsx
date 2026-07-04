@@ -1,11 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { REPO_URL } from "@/lib/types-hq";
 
 const LINKS: [string, string][] = [
-  ["GLOBE", "#globe"],
-  ["DECK", "#deck"],
-  ["TRACKER", "#tracker"],
+  ["GLOBE", "/globe"],
+  ["DECK", "/deck"],
+  ["MY HQ", "/my"],
 ];
 
 export function NavPill() {
@@ -24,13 +25,13 @@ export function NavPill() {
         {/* Links */}
         <div className="hidden items-center sm:flex">
           {LINKS.map(([label, href]) => (
-            <a
+            <Link
               key={label}
               href={href}
               className="rounded-full px-4 py-2.5 font-mono text-[11px] tracking-[0.18em] text-paper/80 transition hover:bg-white/10 hover:text-paper"
             >
               {label}
-            </a>
+            </Link>
           ))}
           <a
             href={REPO_URL}
