@@ -68,11 +68,9 @@ export function DetailModal() {
           )}
 
           <div className="mt-5 flex flex-wrap gap-2">
-            <InfoChip icon={h.format === "Virtual" ? "🌐" : "📍"}>
-              {h.location}
-            </InfoChip>
+            <InfoChip>{h.location}</InfoChip>
             {h.deadline && (
-              <InfoChip icon="⏰">
+              <InfoChip>
                 Deadline {deadlineDisplay(h)}
                 {cd ? ` · ${cd}` : ""}
               </InfoChip>
