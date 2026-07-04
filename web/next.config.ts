@@ -14,6 +14,13 @@ const nextConfig: NextConfig = {
     ],
     dangerouslyAllowSVG: true,
   },
+  turbopack: {
+    resolveAlias: {
+      // Vendored Framer modules (components/vendor/*) import "framer" for
+      // design-tool APIs; route that package to a tiny local shim.
+      framer: "./components/vendor/framer-shim.ts",
+    },
+  },
 };
 
 export default nextConfig;
