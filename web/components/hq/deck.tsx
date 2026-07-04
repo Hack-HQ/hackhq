@@ -210,30 +210,50 @@ function Paperclip() {
   );
 }
 
+/* Exact motion values lifted from the Framer "Document Folder" module
+   (framer.com/m/Document-card-U9IiCH.js): #141414 folder, white paper
+   that lifts with a +6° tilt under a 5-layer shadow, spring bounce .2. */
+const PAPER_LIFT_SHADOW =
+  "0px -0.77px 0.46px -0.75px rgba(0,0,0,0.18), 0px -2.1px 1.26px -1.5px rgba(0,0,0,0.18), 0px -4.61px 2.76px -2.25px rgba(0,0,0,0.17), 0px -10.23px 6.14px -3px rgba(0,0,0,0.14), 0px -26px 15.6px -3.75px rgba(0,0,0,0.06)";
+const SPRING = { type: "spring", bounce: 0.2, duration: 1 } as const;
+const SPRING_SLOW = { type: "spring", bounce: 0.2, duration: 1.5 } as const;
+
 /**
- * Hackathon as a classified dossier - native rebuild of the Framer
- * "Document Folder" card: 3D folder whose flap swings open on hover while
- * the paper slides out, with a rotated status stamp and vertical edge label.
+ * Hackathon as a classified dossier - faithful port of the Framer
+ * "Document Folder" card, driven by real hackathon data: the paper
+ * lifts and tilts out of the folder on hover while the flap swings open.
  */
 function HackCard({ h }: { h: Hackathon }) {
   const { setSelected } = useHQ();
+  const reduceMotion = useReducedMotion();
   const meta = STATE_META[h.state];
   const cd = countdown(h);
   const dim = h.state === "closed";
 
   return (
-    <article
+    <motion.article
       onClick={() => setSelected(h)}
-      className={`dossier group relative aspect-[318/380] cursor-pointer ${dim ? "opacity-55 saturate-50" : ""}`}
+      initial="rest"
+      animate="rest"
+      whileHover={reduceMotion ? undefined : "open"}
+      className={`group relative aspect-[318/380] cursor-pointer ${dim ? "opacity-55 saturate-50" : ""}`}
+      style={{ perspective: 1400 }}
     >
       {/* Folder back */}
-      <div className="absolute inset-x-0 top-6 bottom-0 rounded-2xl bg-[#2a221a]">
+      <div className="absolute inset-x-0 top-6 bottom-0 rounded-[21.6px] bg-[#141414]">
         {/* folder tab */}
-        <div className="absolute -top-3.5 left-0 h-5 w-24 rounded-t-lg bg-[#2a221a]" />
+        <div className="absolute -top-3.5 left-0 h-5 w-24 rounded-t-lg bg-[#141414]" />
       </div>
 
-      {/* Paper - slides out on hover */}
-      <div className="dossier-paper dossier-spring absolute inset-x-4 top-2 bottom-32 rounded-lg bg-paper px-4 pt-3.5">
+      {/* Paper - lifts + tilts out on hover */}
+      <motion.div
+        variants={{
+          rest: { y: 0, rotate: 0, boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)" },
+          open: { y: -44, rotate: 6, boxShadow: PAPER_LIFT_SHADOW },
+        }}
+        transition={SPRING}
+        className="absolute inset-x-4 top-2 bottom-32 rounded-lg bg-white px-4 pt-3.5"
+      >
         <div className="kicker text-[8px] text-ink/40">
           HackHQ dossier · {h.format}
         </div>
@@ -256,10 +276,14 @@ function HackCard({ h }: { h: Hackathon }) {
             </span>
           ))}
         </div>
-      </div>
+      </motion.div>
 
-      {/* Folder front flap */}
-      <div className="dossier-front dossier-spring absolute inset-x-0 bottom-0 top-[30%] rounded-2xl border border-white/10 bg-gradient-to-b from-[#241d16] to-ink shadow-[inset_0_2px_2px_rgba(255,255,255,0.14)]">
+      {/* Folder front flap - swings open (3D, hinged on the left) */}
+      <motion.div
+        variants={{ rest: { rotateY: 0 }, open: { rotateY: -15 } }}
+        transition={SPRING_SLOW}
+        style={{ transformOrigin: "left center", transformStyle: "preserve-3d" }}
+        className="absolute inset-x-0 bottom-0 top-[30%] rounded-[21.6px] bg-[#141414] shadow-[inset_0_3px_2px_rgba(255,255,255,0.2)]">
         {/* Paperclip */}
         <div className="absolute -top-2.5 left-5 rotate-[8deg] text-paper/35">
           <Paperclip />
@@ -309,8 +333,8 @@ function HackCard({ h }: { h: Hackathon }) {
             </div>
           </div>
         </div>
-      </div>
-    </article>
+      </motion.div>
+    </motion.article>
   );
 }
 
