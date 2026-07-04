@@ -76,13 +76,13 @@ body {
   text-transform: uppercase;
 }
 
-/* Display headline */
+/* Display headline - Syncopate, matched to the HACKHQ wordmark */
 .display {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: -0.03em;
-  line-height: 0.94;
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
 
 /* Status marker dot pulses (globe + cards) */
