@@ -8,7 +8,7 @@
    ------------------------------------------------ */
 
 @theme inline {
-  --font-display: var(--font-grotesk), sans-serif;
+  --font-display: var(--font-syncopate), sans-serif;
   --font-sans: var(--font-inter), sans-serif;
   --font-mono: var(--font-smono), monospace;
 
