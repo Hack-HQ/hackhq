@@ -1,21 +1,31 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Space_Grotesk, Inter, Space_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// HackHQ type system (per product design brief §08):
+// - Space Grotesk: techy geometric display - headlines, big numbers
+// - Inter: the workhorse for all UI text
+// - Space Mono: kickers, metadata, countdowns - "built by devs" energy
+const grotesk = Space_Grotesk({
+  variable: "--font-grotesk",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const smono = Space_Mono({
+  variable: "--font-smono",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "HackHQ — Your Headquarters for Every Hackathon",
+  title: "HackHQ · A Living Map of the Hackathon World",
   description:
-    "Your headquarters for every hackathon worth joining. In-person, virtual, and hybrid events — college, high-school, and open hackathons, all in one place. Updated daily.",
+    "Spin the globe, flip through the deck, track your applications. Every hackathon worth joining - in-person and virtual - on one living 3D map. Updated daily, open source.",
 };
 
 export default function RootLayout({
@@ -26,10 +36,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${grotesk.variable} ${inter.variable} ${smono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+      <body className="min-h-full" suppressHydrationWarning>
         {children}
       </body>
     </html>
