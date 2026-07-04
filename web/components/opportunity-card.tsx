@@ -26,7 +26,7 @@ export function OpportunityCard({ opp }: { opp: Opportunity }) {
         : opp.daysUntilDeadline === 1
         ? "Tomorrow"
         : `${opp.daysUntilDeadline} days`
-      : opp.deadlineRaw || "—";
+      : opp.deadlineRaw || "TBD";
 
   return (
     <a
