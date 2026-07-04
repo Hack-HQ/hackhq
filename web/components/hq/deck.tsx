@@ -269,7 +269,6 @@ function HackCard({ h }: { h: Hackathon }) {
           className="absolute right-4 top-4 rounded-full px-3 py-1 font-mono text-[8px] font-bold tracking-[0.16em] text-ink"
           style={{ background: meta.color }}
         >
-          {h.state === "closing_soon" ? "⚠ " : ""}
           {meta.label}
         </span>
 
