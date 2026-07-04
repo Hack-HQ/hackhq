@@ -35,7 +35,7 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="kicker text-coral">Pillar 02 · Browse</div>
-            <h2 className="display mt-3 text-[clamp(2.6rem,6.5vw,5.5rem)]">
+            <h2 className="display mt-3 text-[clamp(1.8rem,4.5vw,3.6rem)]">
               The deck
             </h2>
           </div>
