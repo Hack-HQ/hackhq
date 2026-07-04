@@ -20,6 +20,7 @@ export function GlobeHero() {
             ref={videoRef}
             className="h-full w-full object-cover"
             src="/rednote-summit-opening.mp4"
+            poster="/rednote-summit-poster.jpg"
             autoPlay
             muted
             loop
