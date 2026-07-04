@@ -51,9 +51,9 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-paper/55">
-            Run your hackathon hunt like a pipeline. Tap ♡ on any card to save
-            it, then drag it from Interested to Going. Saved in your browser -
-            no account needed.
+            Run your hackathon hunt like a pipeline. Tap ♡ on any card in the
+            deck or globe to save it here, then drag it from Interested to
+            Going.
           </p>
         </div>
 
