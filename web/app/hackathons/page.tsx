@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { loadSiteData } from "@/lib/parse-readme";
-import { Browser } from "@/components/browser";
+import { Browser } from "@/components/legacy/browser";
 
 export const metadata = {
   title: "All hackathons · HackHQ",
