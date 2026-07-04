@@ -77,11 +77,7 @@ export function SubmitSection() {
 
   return (
     <section id="submit" className="p-2 pt-0">
-      <div className="shell flex min-h-[70vh] items-center justify-center bg-[radial-gradient(80%_120%_at_20%_0%,#3a1c10_0%,#17130f_50%,#0c0a08_100%)] px-5 py-16 sm:px-10">
-        {/* faint coral ember */}
-        <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-coral/20 blur-[120px]" />
-        <div className="pointer-events-none absolute -bottom-40 -left-24 h-96 w-96 rounded-full bg-register/10 blur-[120px]" />
-
+      <div className="shell flex min-h-[70vh] items-center justify-center bg-ink px-5 py-16 sm:px-10">
         <div className="glass w-full max-w-2xl rounded-[2.5rem] p-8 sm:p-12">
           <div className="kicker text-center text-coral">
             Pillar 04 · Contribute
