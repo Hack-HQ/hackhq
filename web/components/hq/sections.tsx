@@ -164,10 +164,10 @@ export function Footer() {
             <FooterCol
               title="Site"
               links={[
-                ["The globe", "#globe"],
-                ["The deck", "#deck"],
-                ["My HackHQ", "#tracker"],
-                ["Submit", "#submit"],
+                ["The globe", "/globe"],
+                ["The deck", "/deck"],
+                ["My HackHQ", "/my"],
+                ["Submit", "/#submit"],
               ]}
             />
             <FooterCol
