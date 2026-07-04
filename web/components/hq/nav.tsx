@@ -14,13 +14,13 @@ export function NavPill() {
     <nav className="fixed inset-x-0 top-4 z-50 flex justify-center px-3">
       <div className="glass-dark flex items-center gap-1 rounded-3xl p-2 pl-2.5 shadow-[0_16px_48px_rgba(0,0,0,0.45)]">
         {/* Logo chip - HQ monogram */}
-        <a
-          href="#globe"
+        <Link
+          href="/"
           className="mr-1 flex items-center rounded-2xl bg-ink px-3.5 py-3.5 ring-1 ring-white/10 transition hover:ring-coral/60"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/hackhq-monogram.svg" alt="HackHQ" className="h-4 w-auto" />
-        </a>
+        </Link>
 
         {/* Links */}
         <div className="hidden items-center sm:flex">
@@ -44,12 +44,12 @@ export function NavPill() {
         </div>
 
         {/* Submit CTA */}
-        <a
-          href="#submit"
+        <Link
+          href="/#submit"
           className="ml-1 flex items-center gap-2 rounded-2xl bg-paper px-5 py-3 font-mono text-[11px] font-bold tracking-[0.18em] text-ink transition hover:bg-white"
         >
           + SUBMIT
-        </a>
+        </Link>
       </div>
     </nav>
   );
