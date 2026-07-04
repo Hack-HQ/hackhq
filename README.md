@@ -47,7 +47,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 <!-- HACKATHONS_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |
-| ✅ **[OPEN]** | MIT | ⭐ HackMIT 2026 (Weekend Hackathon; Open to Undergrads Worldwide) | In-Person | Cambridge, MA | $20K+ in prizes | Sep 20, 2026 | <a href="https://hackmit.org/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 27, 2026 |
+| 🔥 **[CLOSING SOON]** | MIT | ⭐ HackMIT 2026 (Weekend Hackathon; Open to Undergrads Worldwide) | In-Person | Cambridge, MA | $20K+ in prizes | Jul 04, 2026 | <a href="https://hackmit.org/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 27, 2026 |
 | ⏳ **[OPENS SOON]** | Hackathons @ Berkeley | ⭐ Cal Hacks (Collegiate Hackathon; 2026 Cycle Not Yet Posted) | In-Person | Berkeley / San Francisco, CA | TBA | — | <a href="https://calhacks.io/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jun 26, 2026 |
 | ⏳ **[OPENS SOON]** | UCLA | ⭐ LA Hacks (Student Hackathon; Next Event Mid-April 2027) | In-Person | Los Angeles, CA | $60K in prizes | — | <a href="https://lahacks.com/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jun 26, 2026 |
 | ✅ **[OPEN]** | Carleton University | cuHacking 2026 — Jul 10 – Jul 12, 2026 | In-Person | Ottawa, ON | TBA | — | <a href="https://cuhacking.ca"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 03, 2026 |
