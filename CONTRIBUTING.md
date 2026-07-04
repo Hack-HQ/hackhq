@@ -2,6 +2,16 @@
 
 Thank you for your interest in contributing! This repository aims to be a single, always-current list of hackathons worth attending.
 
+## Two Ways to Contribute
+
+There are two lanes, and most people only need the first:
+
+**1. Add hackathons — open to everyone, no repo access needed.**
+Spotted a hackathon, a wrong deadline, or a page that needs verifying? Open an issue (see [How to Add a Hackathon](#how-to-add-a-hackathon) below). A maintainer approves it and the automation does the rest. You'll be credited as a contributor, and you never need push access to do this. Issues in this lane are tagged [`community`](../../issues?q=is%3Aissue+label%3Acommunity).
+
+**2. Work on the software — invited developers.**
+Building the site, the automation scripts, and fixing bugs is done by developers we invite to the repo. Those issues carry labels like `frontend`, `backend`, `infra`, `security`, and `bug`, and are locked to collaborators. Not on the dev team yet? You can still propose code by **forking the repo and opening a pull request** — a maintainer reviews it. Want to join the team? Add a few hackathons first, then reach out to a maintainer.
+
 ## How to Add a Hackathon
 
 ### Just Paste the Link! (Recommended)

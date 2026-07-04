@@ -1,7 +1,7 @@
 name: Share a Hackathon Photo
 description: Add a photo to the community gallery from a hackathon you found here
 title: "Photo: "
-labels: ["gallery"]
+labels: ["gallery", "community"]
 body:
   - type: markdown
     attributes:
