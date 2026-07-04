@@ -240,10 +240,8 @@ function HackCard({ h }: { h: Hackathon }) {
           {h.prize ?? "Prizes on site"}
         </div>
         <div className="mt-1.5 flex flex-col gap-1 font-mono text-[10px] leading-relaxed text-ink/60">
-          <span>
-            {h.format === "Virtual" ? "🌐" : "📍"} {h.location}
-          </span>
-          {cd && <span className="text-coral">⏰ {cd.toUpperCase()}</span>}
+          <span>{h.location}</span>
+          {cd && <span className="text-coral">{cd.toUpperCase()}</span>}
           {h.themes.length > 0 && <span>{h.themes.map((t) => `#${t}`).join(" ")}</span>}
         </div>
         {/* Rotated status stamp */}
