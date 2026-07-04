@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Syncopate, Inter, Space_Mono } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 // HackHQ type system (per product design brief §08):
@@ -35,7 +36,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
+  const page = (
     <html
       lang="en"
       className={`${syncopate.variable} ${inter.variable} ${smono.variable} h-full antialiased`}
@@ -45,5 +46,13 @@ export default function RootLayout({
         {children}
       </body>
     </html>
+  );
+
+  // ClerkProvider requires a publishable key; without one (pre-setup) the
+  // site must still run, so only wrap once the key exists.
+  return process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
+    <ClerkProvider>{page}</ClerkProvider>
+  ) : (
+    page
   );
 }
