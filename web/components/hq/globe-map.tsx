@@ -106,13 +106,34 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       el.addEventListener("mouseenter", () => {
         const meta = STATE_META[h.state];
         const cd = countdown(h);
+
+        const root = document.createElement("div");
+
+        const statusRow = document.createElement("div");
+        statusRow.style.fontFamily = "var(--font-mono)";
+        statusRow.style.fontSize = "10px";
+        statusRow.style.letterSpacing = "0.22em";
+        statusRow.style.color = meta.color;
+        statusRow.style.marginBottom = "4px";
+        statusRow.textContent = `● ${meta.label}${cd ? ` · ${cd.toUpperCase()}` : ""}`;
+
+        const titleRow = document.createElement("div");
+        titleRow.style.fontWeight = "600";
+        titleRow.style.fontSize = "14px";
+        titleRow.style.lineHeight = "1.25";
+        titleRow.textContent = h.title;
+
+        const metaRow = document.createElement("div");
+        metaRow.style.fontSize = "12px";
+        metaRow.style.color = "#9ba1a5";
+        metaRow.style.marginTop = "3px";
+        metaRow.textContent = `${h.host} · ${h.location}`;
+
+        root.append(statusRow, titleRow, metaRow);
+
         popup
           .setLngLat([h.lng!, h.lat!])
-          .setHTML(
-            `<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.22em;color:${meta.color};margin-bottom:4px;">● ${meta.label}${cd ? ` · ${cd.toUpperCase()}` : ""}</div>
-             <div style="font-weight:600;font-size:14px;line-height:1.25;">${h.title}</div>
-             <div style="font-size:12px;color:#9ba1a5;margin-top:3px;">${h.host} · ${h.location}</div>`,
-          )
+          .setDOMContent(root)
           .addTo(map);
       });
       el.addEventListener("mouseleave", () => popup.remove());
