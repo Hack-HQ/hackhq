@@ -18,6 +18,20 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     contentDispositionType: "attachment",
   },
+  async headers() {
+    return [
+      {
+        // Repo assets are copied into public/repo-assets at build time
+        // (scripts/copy-repo-assets.mjs). Serve them with nosniff and an
+        // immutable long cache since their paths are content-stable.
+        source: "/repo-assets/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+    ];
+  },
   turbopack: {
     resolveAlias: {
       // Vendored Framer modules (components/vendor/*) import "framer" for

@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# generated at build time by scripts/copy-repo-assets.mjs (copied from ../assets)
+/public/repo-assets/
+
 # production
 /build
 
