@@ -8,7 +8,6 @@ import unittest
 from datetime import date
 
 import util
-import contribution_approved as ca
 import auto_extract as ax
 
 
@@ -55,24 +54,30 @@ class ParseIssueBody(unittest.TestCase):
             "### Hackathon Name\nHackMIT 2026\n\n"
             "### Link to Hackathon Page\nhttps://hackmit.org\n"
         )
-        data = ca.parse_issue_body(body, [])
+        data = util.parse_issue_body(body)
         self.assertEqual(data["hackathon_name"], "HackMIT 2026")
         self.assertEqual(data["link_to_hackathon_page"], "https://hackmit.org")
 
     def test_skips_no_response_placeholder(self):
-        data = ca.parse_issue_body("### Prize Pool (optional)\n_No response_\n", [])
+        data = util.parse_issue_body("### Prize Pool (optional)\n_No response_\n")
         self.assertFalse(data.get("prize_pool_(optional)"))
+
+    def test_strip_symbols_normalizes_keys(self):
+        data = util.parse_issue_body("### Deadline (optional)\n2026-07-04\n", strip_symbols=True)
+        self.assertEqual(data.get("deadline_optional"), "2026-07-04")
 
 
 class ParseStateAndDeadline(unittest.TestCase):
     def test_state(self):
-        self.assertEqual(ca.parse_state({"status": "Opens soon"}), "opens_soon")
-        self.assertEqual(ca.parse_state({"status": "Open now"}), "open")
-        self.assertEqual(ca.parse_state({}), "open")
+        self.assertEqual(util.parse_state({"status": "Opens soon"}), "opens_soon")
+        self.assertEqual(util.parse_state({"status": "Open now"}), "open")
+        self.assertEqual(util.parse_state({}), "open")
 
     def test_deadline(self):
-        self.assertEqual(ca.parse_deadline({"deadline": "2026-07-04"}), "2026-07-04")
-        self.assertIsNone(ca.parse_deadline({}))
+        self.assertEqual(
+            util.parse_deadline({"deadline": "2026-07-04"}, "deadline"), "2026-07-04"
+        )
+        self.assertIsNone(util.parse_deadline({}, "deadline"))
 
 
 class SsrfGuard(unittest.TestCase):

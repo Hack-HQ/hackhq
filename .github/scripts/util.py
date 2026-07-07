@@ -258,6 +258,80 @@ def generate_uuid():
     return str(uuid.uuid4())
 
 
+DEFAULT_REPO = "Jose-Gael-Cruz-Lopez/hackhq"
+
+
+def repo_slug():
+    """owner/repo — from GITHUB_REPOSITORY (set by Actions) or the default."""
+    return os.environ.get("GITHUB_REPOSITORY") or DEFAULT_REPO
+
+
+def repo_url():
+    """Base GitHub URL for this repository."""
+    return f"https://github.com/{repo_slug()}"
+
+
+def parse_issue_body(body, strip_symbols=False):
+    """Parse a GitHub issue body's '### Field' sections into a {field: value} dict.
+
+    Field names are lowercased with spaces -> underscores. Set strip_symbols=True
+    to also drop ? ( ) from keys (used where field lookups omit those chars).
+    Shared by contribution_approved.py and auto_extract.py.
+    """
+    data = {}
+    current_field = None
+    current_value = []
+    for line in body.strip().split("\n"):
+        if line.startswith("### "):
+            if current_field and current_value:
+                data[current_field] = "\n".join(current_value).strip()
+            name = line[4:].strip().lower().replace(" ", "_")
+            if strip_symbols:
+                name = name.replace("?", "").replace("(", "").replace(")", "")
+            current_field = name
+            current_value = []
+        elif current_field:
+            if line.strip() and line.strip() != "_No response_":
+                current_value.append(line)
+    if current_field and current_value:
+        data[current_field] = "\n".join(current_value).strip()
+    return data
+
+
+def parse_state(data):
+    """Map issue status fields to a listing state (open / opens_soon)."""
+    status = str(data.get("status") or "").strip().lower()
+    if "soon" in status:
+        return "opens_soon"
+    if "open" in status:
+        return "open"
+    # Backward compatibility with the older registration-open field.
+    active = str(
+        data.get("is_this_hackathon_currently_open_for_registration?")
+        or data.get("is_this_hackathon_currently_open_for_registration")
+        or ""
+    ).strip().lower()
+    if active == "no":
+        return "opens_soon"
+    return "open"
+
+
+def parse_deadline(data, *keys):
+    """Return an ISO deadline from the first present key, or None (fail on bad format)."""
+    raw = ""
+    for key in keys:
+        value = data.get(key)
+        if value and str(value).strip():
+            raw = str(value).strip()
+            break
+    if not raw:
+        return None
+    try:
+        return parse_deadline_date(raw).isoformat()
+    except ValueError:
+        fail("Invalid deadline format. Please use YYYY-MM-DD or MM/DD/YYYY.")
+
+
 def clean_url(url):
     """Clean and normalize a URL."""
     url = url.strip()

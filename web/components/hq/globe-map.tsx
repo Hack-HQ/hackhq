@@ -5,7 +5,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Hackathon } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
-import { useHQ } from "./store";
+import { useSelection } from "./store";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
@@ -21,7 +21,7 @@ const SECONDS_PER_REVOLUTION = 110;
 export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const { setSelected } = useHQ();
+  const { setSelected } = useSelection();
   const [zoomedIn, setZoomedIn] = useState(false);
   const hasToken = Boolean(mapboxgl.accessToken);
 

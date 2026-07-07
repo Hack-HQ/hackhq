@@ -1,5 +1,10 @@
 import type { NextConfig } from "next";
 
+// Single source of repo identity (mirrors lib/repo.ts; kept inline so the
+// config file has no local-module import). Override via NEXT_PUBLIC_REPO_SLUG.
+const REPO_SLUG =
+  process.env.NEXT_PUBLIC_REPO_SLUG ?? "Jose-Gael-Cruz-Lopez/hackhq";
+
 const nextConfig: NextConfig = {
   logging: {
     browserToTerminal: false,
@@ -9,7 +14,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "raw.githubusercontent.com",
-        pathname: "/Jose-Gael-Cruz-Lopez/hackhq/**",
+        pathname: `/${REPO_SLUG}/**`,
       },
     ],
     dangerouslyAllowSVG: true,

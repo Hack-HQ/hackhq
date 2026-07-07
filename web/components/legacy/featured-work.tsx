@@ -46,7 +46,7 @@ export function FeaturedWork({
               className={SIZES[i] === "large" ? "tile-lg" : "tile-sm"}
               delay={i * 60}
             >
-              <ProjectTile opp={opp} size={SIZES[i]} index={i} />
+              <ProjectTile opp={opp} size={SIZES[i] ?? "small"} index={i} />
             </Reveal>
           ))}
         </div>

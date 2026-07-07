@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Hackathon, HackState } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
-import { useHQ } from "./store";
+import { useSelection, useTracker } from "./store";
 
 type StatusFilter = "all" | HackState;
 type FormatFilter = "all" | "In-Person" | "Virtual";
@@ -169,7 +169,7 @@ function FilterPill({
 }
 
 function SaveHeart({ h, dark }: { h: Hackathon; dark?: boolean }) {
-  const { isTracked, save, remove } = useHQ();
+  const { isTracked, save, remove } = useTracker();
   const tracked = isTracked(h.id);
   return (
     <button
@@ -225,7 +225,7 @@ const SPRING_SLOW = { type: "spring", bounce: 0.2, duration: 1.5 } as const;
  * lifts and tilts out of the folder on hover while the flap swings open.
  */
 function HackCard({ h }: { h: Hackathon }) {
-  const { setSelected } = useHQ();
+  const { setSelected } = useSelection();
   const reduceMotion = useReducedMotion();
   const meta = STATE_META[h.state];
   const cd = countdown(h);
@@ -340,7 +340,7 @@ function HackCard({ h }: { h: Hackathon }) {
 }
 
 function HackRow({ h }: { h: Hackathon }) {
-  const { setSelected } = useHQ();
+  const { setSelected } = useSelection();
   const meta = STATE_META[h.state];
   const cd = countdown(h);
 

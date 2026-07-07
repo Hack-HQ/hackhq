@@ -261,57 +261,11 @@ Return ONLY valid JSON, no other text."""
         util.fail(f"OpenAI API error: {str(e)}")
 
 
-def parse_issue_body(body):
-    """Parse the issue body to get URL and notes."""
-    lines = body.strip().split("\n")
-    data = {}
-
-    current_field = None
-    current_value = []
-
-    for line in lines:
-        if line.startswith("### "):
-            if current_field and current_value:
-                data[current_field] = "\n".join(current_value).strip()
-            # Convert "Link to Hackathon" -> "link_to_hackathon"
-            current_field = line[4:].strip().lower().replace(" ", "_").replace("?", "").replace("(", "").replace(")", "")
-            current_value = []
-        elif current_field:
-            if line.strip() and line.strip() != "_No response_":
-                current_value.append(line)
-
-    if current_field and current_value:
-        data[current_field] = "\n".join(current_value).strip()
-
-    return data
-
-
-def parse_state(data):
-    """Map optional issue status field to listing state."""
-    status = (data.get("status", "") or "").strip().lower()
-    if "soon" in status:
-        return "opens_soon"
-    if "open" in status:
-        return "open"
-    # Sensible default for auto-extracted listings.
-    return "open"
-
-
-def parse_deadline(data):
-    """Parse optional deadline and normalize to ISO YYYY-MM-DD."""
-    raw = (data.get("deadline_optional", "") or data.get("deadline", "")).strip()
-    if not raw:
-        return None
-    try:
-        return util.parse_deadline_date(raw).isoformat()
-    except ValueError:
-        util.fail("Invalid deadline format. Please use YYYY-MM-DD or MM/DD/YYYY.")
-
-
 def extract_url_from_body(body):
     """Try multiple methods to extract URL from issue body."""
-    # Method 1: Parse structured fields
-    data = parse_issue_body(body)
+    # Method 1: Parse structured fields (strip_symbols matches the field keys
+    # this script looks up, e.g. deadline_optional).
+    data = util.parse_issue_body(body, strip_symbols=True)
 
     # Try various field names
     url_fields = [
@@ -365,8 +319,8 @@ def main():
     print(f"Extracted URL: {url}")
 
     notes = data.get("any_additional_context_optional", "") or data.get("notes", "")
-    state = parse_state(data)
-    deadline = parse_deadline(data)
+    state = util.parse_state(data)
+    deadline = util.parse_deadline(data, "deadline_optional", "deadline")
 
     print(f"Fetching content from: {url}")
 

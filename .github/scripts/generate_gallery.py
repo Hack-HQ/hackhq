@@ -51,12 +51,20 @@ def esc(text):
 
 def tile(photo):
     image = esc(photo["image"])
-    hackathon = esc(photo.get("hackathon", ""))
+    # Surface caption + credit so contributor attribution isn't dropped. In a
+    # justified image collage there's no room for a visible caption line, so the
+    # metadata rides along in the alt/title (hover tooltip + accessibility).
+    parts = [p for p in (photo.get("hackathon", ""), photo.get("caption", "")) if p]
+    credit = photo.get("credit", "")
+    credit_url = photo.get("credit_url", "")
+    if credit:
+        parts.append(f"Photo: {credit}" + (f" ({credit_url})" if credit_url else ""))
+    label = esc(" · ".join(parts)) if parts else esc(photo.get("hackathon", ""))
     # Fixed height + no width keeps each photo's aspect ratio, so they tile
     # together like a collage instead of sitting in separate boxes.
     return (
         f'<a href="{image}">'
-        f'<img src="{image}" height="{ROW_HEIGHT}" alt="{hackathon}"></a>'
+        f'<img src="{image}" height="{ROW_HEIGHT}" alt="{label}" title="{label}"></a>'
     )
 
 

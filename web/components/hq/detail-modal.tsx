@@ -2,19 +2,21 @@
 
 import { useEffect } from "react";
 import { STATE_META, countdown, deadlineDisplay } from "@/lib/types-hq";
-import { useHQ } from "./store";
+import { lockScroll } from "@/lib/scroll-lock";
+import { useSelection, useTracker } from "./store";
 
 export function DetailModal() {
-  const { selected, setSelected, isTracked, save, remove } = useHQ();
+  const { selected, setSelected } = useSelection();
+  const { isTracked, save, remove } = useTracker();
 
   useEffect(() => {
     if (!selected) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSelected(null);
     window.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
+    const release = lockScroll();
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      release();
     };
   }, [selected, setSelected]);
 

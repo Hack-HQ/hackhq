@@ -1,5 +1,7 @@
 /** Client-safe types + display helpers shared across HackHQ components. */
 
+import { REPO_URL } from "./repo";
+
 export type HackState = "open" | "opens_soon" | "closing_soon" | "closed";
 
 export type Hackathon = {
@@ -66,7 +68,7 @@ export function submitIssueUrl(name = "", url = ""): string {
   const body = encodeURIComponent(
     `**Hackathon name:** ${name || "…"}\n**URL:** ${url || "…"}\n**Location (City, ST or Online):** …\n**Deadline:** …\n**Prize pool:** …\n\n_Submitted via hackhq.dev - the pipeline will extract the rest._`,
   );
-  return `https://github.com/Jose-Gael-Cruz-Lopez/hackhq/issues/new?title=${title}&body=${body}`;
+  return `${REPO_URL}/issues/new?title=${title}&body=${body}`;
 }
 
-export const REPO_URL = "https://github.com/Jose-Gael-Cruz-Lopez/hackhq";
+export { REPO_URL };
