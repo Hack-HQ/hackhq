@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "raw.githubusercontent.com",
-        pathname: "/Jose-Gael-Cruz-Lopez/hackhq/**",
+        pathname: "/Hack-HQ/hackhq/**",
       },
     ],
     dangerouslyAllowSVG: true,
@@ -22,12 +22,18 @@ const nextConfig: NextConfig = {
     return [
       {
         // Repo assets are copied into public/repo-assets at build time
-        // (scripts/copy-repo-assets.mjs). Serve them with nosniff and an
-        // immutable long cache since their paths are content-stable.
+        // (scripts/copy-repo-assets.mjs). Their PATHS are stable but their
+        // CONTENT is not — the stats banner and gallery photos are regenerated
+        // and committed by CI at the same filename. A long/immutable cache would
+        // freeze the live banner for returning visitors (and next/image), so use
+        // a short CDN cache that revalidates and serves stale while doing so.
         source: "/repo-assets/:path*",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, s-maxage=300, stale-while-revalidate=86400",
+          },
         ],
       },
     ];

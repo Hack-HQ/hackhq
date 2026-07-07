@@ -18,7 +18,7 @@ const LISTINGS_PATH = path.join(
   "listings.json",
 );
 const REPO_RAW_BASE =
-  "https://raw.githubusercontent.com/Jose-Gael-Cruz-Lopez/hackhq/main/";
+  "https://raw.githubusercontent.com/Hack-HQ/hackhq/main/";
 
 const TABLE_RE = /<!-- (\w+)_TABLE_START -->([\s\S]*?)<!-- \1_TABLE_END -->/g;
 
