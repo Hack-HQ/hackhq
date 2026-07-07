@@ -1,37 +1,52 @@
 # HackHQ Web
 
-The web frontend for **HackHQ** — a browsable, searchable interface for the
-hackathon listings maintained in the repository root
-[`../README.md`](../README.md).
+The web frontend for **HackHQ** — a browsable interface for the hackathon
+listings maintained in this repository.
 
-It's a [Next.js](https://nextjs.org) (App Router) app that renders the listings
-as a filterable directory, with a live stats banner and a community photo
-gallery.
+It's a [Next.js](https://nextjs.org) (App Router) app with a 3D globe, card
+deck, and member tracker, plus a legacy searchable directory at `/hackathons`.
 
 ## What it does
 
-- **Browse & search** every tracked hackathon by host, name, format, or location.
-- **Filter by status** — Open, Closing Soon, and Opens Soon — with live counts.
-- **Sort intelligently** — closing-soon events first, then by nearest deadline.
-- **Stats banner** — an at-a-glance snapshot of totals (tracked, open, opens
-  soon, closing soon) and format breakdown.
-- **Gallery** — real photos from hackathons people found through the list.
+- **Home (`/`)** — hero, stats, and entry points into the globe and deck.
+- **Globe (`/globe`)** — 3D Mapbox map with status-colored markers.
+- **Deck (`/deck`)** — flip through hackathons as tactile cards or a dense list.
+- **My HackHQ (`/my`)** — personal tracker pipeline (optional Clerk sign-in).
+- **All hackathons (`/hackathons`)** — legacy README-driven search and filters.
 
 ## How it works
 
-This app has **no database**. The repository root `README.md` is the single
-source of truth, and the app parses it at request time.
+This app has **no database**. Listing data lives in the repo and is read from
+disk when pages are generated.
 
-On each render, `lib/parse-readme.ts` reads `../README.md` and extracts:
+### Data sources
 
-| Content       | Source in `../README.md`                                              |
-| ------------- | -------------------------------------------------------------------- |
-| Listings      | Table rows between `<!-- HACKATHONS_TABLE_START -->` and `<!-- HACKATHONS_TABLE_END -->` |
-| Stats banner  | The `<img alt="Hackathon stats" ...>` tag                            |
-| Gallery       | `<img>` tags between `<!-- GALLERY_START -->` and `<!-- GALLERY_END -->` |
+| Route(s) | Loader | Source file |
+| -------- | ------ | ----------- |
+| `/`, `/deck`, `/globe`, `/my` | `loadHackathons()` in `lib/listings.ts` | `../.github/scripts/listings.json` |
+| `/hackathons` | `loadSiteData()` in `lib/parse-readme.ts` | `../README.md` (table + stats banner) |
 
-Because parsing happens at runtime, **any update to the root `README.md` is
-reflected on the next render** — no rebuild required in development.
+`listings.json` is the source of truth for the main HackHQ experience.
+`parse-readme.ts` still powers the legacy `/hackathons` page, which parses the
+README table between `<!-- HACKATHONS_TABLE_START -->` and
+`<!-- HACKATHONS_TABLE_END -->`.
+
+### Render model
+
+Production pages are **statically generated at build time** (`next build`).
+Both loaders use `fs.readFileSync` during that build step, so listing data,
+deadline-derived status, and counts are baked into the HTML/JSON payload when
+the site is built — not on each visitor request.
+
+| Route | Production render mode |
+| ----- | ---------------------- |
+| `/`, `/deck`, `/globe`, `/my`, `/hackathons` | Static (prerendered) |
+| `/repo-assets/[...path]` | Dynamic (serves files from `../assets/` on demand) |
+
+**Development (`npm run dev`)** differs: Next.js re-executes server components
+when you refresh or when files change, so edits to `listings.json` or
+`README.md` show up without a full rebuild. In production, changes to those
+files require a new deploy/build to appear on the site.
 
 ### Assets
 
@@ -39,46 +54,65 @@ Images referenced in the README (e.g. `assets/hackathons-banner.svg`) are
 resolved by `resolveAssetSrc()` in `lib/parse-readme.ts`:
 
 1. **Local first** — if the file exists under `../assets/`, it's served by the
-   route handler at `app/repo-assets/[...path]/route.ts`. This keeps the UI in
-   sync with your current branch/working tree.
+   route handler at `app/repo-assets/[...path]/route.ts`.
 2. **Remote fallback** — otherwise it falls back to the file on `main` via
    `raw.githubusercontent.com`.
-
-Local assets are preferred so the stats banner always matches the counts parsed
-from your local `README.md`.
 
 ## Project structure
 
 ```text
 web/
 ├── app/
-│   ├── page.tsx                     # Home page; loads data via loadSiteData()
-│   ├── layout.tsx                   # Root layout & metadata
-│   └── repo-assets/[...path]/route.ts  # Serves files from ../assets
+│   ├── page.tsx                       # Home; loadHackathons() + HomeClient
+│   ├── globe/page.tsx                 # 3D globe
+│   ├── deck/page.tsx                  # Card deck
+│   ├── my/page.tsx                    # Member tracker hub
+│   ├── hackathons/page.tsx            # Legacy README browser
+│   ├── layout.tsx                     # Root layout, fonts, optional ClerkProvider
+│   └── repo-assets/[...path]/route.ts # Serves files from ../assets
 ├── components/
-│   ├── browser.tsx                  # Search, filters, results grid (client)
-│   ├── opportunity-card.tsx         # Single listing card
-│   ├── stats-banner.tsx             # Stats banner image
-│   └── gallery.tsx                  # Photo gallery
-└── lib/
-    ├── parse-readme.ts              # Parses ../README.md into typed data
-    └── types.ts                     # Opportunity / GalleryPhoto types
+│   ├── hq/                            # Current HackHQ UI (globe, deck, nav, …)
+│   └── legacy/                        # README-driven browser, gallery, cards
+├── lib/
+│   ├── listings.ts                    # Reads listings.json, enriches for frontend
+│   ├── parse-readme.ts                # Parses ../README.md (legacy /hackathons)
+│   ├── types-hq.ts                    # Hackathon types and display helpers
+│   └── types.ts                       # Legacy opportunity types
+└── proxy.ts                           # Clerk middleware (when keys are configured)
 ```
 
 ## Getting started
 
 > Requires **Node.js >= 20.9.0**.
 
-This app must be run from the `web/` directory so that `../README.md` and
-`../assets/` resolve correctly.
+Run from the `web/` directory so that `../.github/scripts/listings.json`,
+`../README.md`, and `../assets/` resolve correctly.
 
 ```bash
 cd web
+cp .env.example .env.local   # then fill in values (see below)
 npm install
 npm run dev
 ```
 
-Then open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000).
+
+## Environment variables
+
+Copy `.env.example` to `.env.local` (gitignored) and set the values you need.
+
+| Variable | Required | Used by | If missing |
+| -------- | -------- | ------- | ---------- |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | For globe | `components/hq/globe-map.tsx` | Globe shows a placeholder instead of the Mapbox map |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For auth | `app/layout.tsx`, `app/my/page.tsx`, `proxy.ts` | Site runs without Clerk; `/my` shows setup instructions |
+| `CLERK_SECRET_KEY` | For auth | `app/my/page.tsx`, `proxy.ts` | Same as above — both Clerk keys are needed together |
+
+Clerk is **optional**. When both Clerk keys are set, `ClerkProvider` wraps the
+app and `/my` offers sign-in. Without them, the tracker still works locally;
+nothing is persisted server-side.
+
+> **Note:** The `/my` sign-in gate is currently enforced on the client only
+> (`my-client.tsx`). There is no server-side route protection yet.
 
 ## Scripts
 
@@ -96,16 +130,23 @@ npm run build
 npm run start
 ```
 
+After changing `listings.json` or `README.md`, run a new build (or redeploy)
+for production to pick up the updates.
+
 ## Tech stack
 
 - [Next.js 16](https://nextjs.org) (App Router)
 - [React 19](https://react.dev)
 - [Tailwind CSS 4](https://tailwindcss.com)
+- [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) (globe)
+- [Clerk](https://clerk.com/) (optional auth)
 - TypeScript
 
 ## Notes
 
-- Listings, stats, and gallery are derived from `../README.md`; edit that file
-  (or the generator scripts in `.github/scripts/`) to change what's shown here.
+- To change what appears on `/`, `/deck`, `/globe`, and `/my`, edit
+  `.github/scripts/listings.json` (or the generator scripts under
+  `.github/scripts/`).
+- The legacy `/hackathons` page reads from the root `README.md` instead.
 - `next.config.ts` allows optimized `raw.githubusercontent.com` images and the
   inline SVG banner.
