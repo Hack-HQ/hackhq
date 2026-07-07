@@ -1,6 +1,11 @@
 import path from "node:path";
 import type { NextConfig } from "next";
 
+// Single source of repo identity (mirrors lib/repo.ts; kept inline so the
+// config file has no local-module import). Override via NEXT_PUBLIC_REPO_SLUG.
+const REPO_SLUG =
+  process.env.NEXT_PUBLIC_REPO_SLUG ?? "Hack-HQ/hackhq";
+
 const nextConfig: NextConfig = {
   // The data pages read the repo-root README.md and .github/scripts/listings.json
   // at request time (hourly ISR revalidation). Those files live outside web/, so
@@ -20,7 +25,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "raw.githubusercontent.com",
-        pathname: "/Hack-HQ/hackhq/**",
+        pathname: `/${REPO_SLUG}/**`,
       },
     ],
     dangerouslyAllowSVG: true,

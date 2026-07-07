@@ -26,64 +26,6 @@ def get_first(data, *keys):
     return ""
 
 
-def parse_state(data):
-    """Map issue fields to listing state."""
-    status = get_first(data, "status")
-    status_lc = status.lower()
-    if "soon" in status_lc:
-        return "opens_soon"
-    if "open" in status_lc:
-        return "open"
-
-    # Backward compatibility with older template field.
-    active_str = get_first(
-        data,
-        "is_this_hackathon_currently_open_for_registration?",
-        "is_this_hackathon_currently_open_for_registration",
-    ).lower()
-    if active_str == "no":
-        return "opens_soon"
-    return "open"
-
-
-def parse_deadline(data):
-    """Parse optional deadline and normalize to ISO YYYY-MM-DD."""
-    raw = get_first(data, "deadline", "deadline_(optional)")
-    if not raw:
-        return None
-    try:
-        return util.parse_deadline_date(raw).isoformat()
-    except ValueError:
-        util.fail("Invalid deadline format. Please use YYYY-MM-DD or MM/DD/YYYY.")
-
-
-def parse_issue_body(body, labels):
-    """Parse the issue body based on issue type."""
-    lines = body.strip().split("\n")
-    data = {}
-
-    current_field = None
-    current_value = []
-
-    for line in lines:
-        # Check for field headers (### Field Name)
-        if line.startswith("### "):
-            if current_field and current_value:
-                data[current_field] = "\n".join(current_value).strip()
-            current_field = line[4:].strip().lower().replace(" ", "_")
-            current_value = []
-        elif current_field:
-            # Skip "_No response_" placeholders
-            if line.strip() != "_No response_":
-                current_value.append(line)
-
-    # Don't forget the last field
-    if current_field and current_value:
-        data[current_field] = "\n".join(current_value).strip()
-
-    return data
-
-
 def handle_new_opportunity(data, username, is_quick_add=False):
     """Handle adding a new hackathon."""
     listings = util.get_listings_from_json()
@@ -125,8 +67,8 @@ def handle_new_opportunity(data, username, is_quick_add=False):
     # Get prize (optional)
     prize = get_first(data, "prize_pool_(optional)", "prize") or "—"
     # Map user-submitted status/deadline fields into canonical listing fields.
-    state = parse_state(data)
-    deadline = parse_deadline(data)
+    state = util.parse_state(data)
+    deadline = util.parse_deadline(data, "deadline", "deadline_(optional)")
 
     # Create new listing
     new_listing = {
@@ -223,7 +165,7 @@ def main():
     username = issue.get("user", {}).get("login", "unknown")
 
     # Parse the issue body
-    data = parse_issue_body(body, labels)
+    data = util.parse_issue_body(body)
 
     # Check if this is a quick add
     is_quick_add = "quick_add" in labels

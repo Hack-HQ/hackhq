@@ -150,8 +150,8 @@ export function ScrollGallery({
               aria-hidden
               className="gallery-backdrop absolute inset-0"
               style={{
-                backgroundImage: flyers[active].src
-                  ? `url(${flyers[active].src})`
+                backgroundImage: flyers[active]?.src
+                  ? `url(${flyers[active]?.src})`
                   : undefined,
               }}
             />

@@ -3,10 +3,11 @@
 import { useMemo, useState } from "react";
 import type { Hackathon } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
-import { STAGES, useHQ, type Stage } from "./store";
+import { STAGES, useSelection, useTracker, type Stage } from "./store";
 
 export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
-  const { tracked, move, remove, setSelected } = useHQ();
+  const { tracked, move, remove } = useTracker();
+  const { setSelected } = useSelection();
   const [dragId, setDragId] = useState<string | null>(null);
   const [overStage, setOverStage] = useState<Stage | null>(null);
 
@@ -22,7 +23,7 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
         items: Object.entries(tracked)
           .filter(([, stage]) => stage === s.id)
           .map(([id]) => byId[id])
-          .filter(Boolean)
+          .filter((h): h is Hackathon => Boolean(h))
           .sort((a, b) => (a.daysLeft ?? 9999) - (b.daysLeft ?? 9999)),
       })),
     [tracked, byId],

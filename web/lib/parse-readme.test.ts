@@ -30,10 +30,10 @@ describe("parseOpportunities", () => {
   it("parses a well-formed hackathons table", () => {
     const ops = parseOpportunities(md);
     expect(ops).toHaveLength(1);
-    expect(ops[0].organization).toBe("MIT");
-    expect(ops[0].title).toBe("HackMIT 2026");
-    expect(ops[0].status).toBe("OPEN");
-    expect(ops[0].url).toBe("https://hackmit.org/");
+    expect(ops[0]?.organization).toBe("MIT");
+    expect(ops[0]?.title).toBe("HackMIT 2026");
+    expect(ops[0]?.status).toBe("OPEN");
+    expect(ops[0]?.url).toBe("https://hackmit.org/");
   });
 
   it("returns [] when there is no table", () => {

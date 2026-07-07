@@ -15,6 +15,8 @@ import re
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
+import util
+
 PST = ZoneInfo("America/Los_Angeles")
 README = os.path.join(os.path.dirname(__file__), "..", "..", "README.md")
 DIGEST = os.path.join(os.path.dirname(__file__), "..", "..", "digest.md")
@@ -123,7 +125,7 @@ def main():
     out = []
     out.append(f"# 📬 Weekly Digest — {today.strftime('%B %d, %Y')}\n")
     out.append(
-        f"_Auto-generated. Source: [README.md](https://github.com/Jose-Gael-Cruz-Lopez/hackhq)._\n"
+        f"_Auto-generated. Source: [README.md]({util.repo_url()})._\n"
     )
 
     if closing_rows:
@@ -142,7 +144,7 @@ def main():
         out.append("\nNo new entries or closing-soon flags this week. Stay tuned 🌱\n")
 
     out.append(
-        f"\n---\n_Want to contribute? [Open an issue](https://github.com/Jose-Gael-Cruz-Lopez/hackhq/issues/new/choose)._"
+        f"\n---\n_Want to contribute? [Open an issue]({util.repo_url()}/issues/new/choose)._"
     )
 
     with open(DIGEST, "w") as f:

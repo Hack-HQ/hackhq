@@ -72,7 +72,7 @@ export function parsePrizeValue(prize: string | undefined): number {
   if (!prize) return 0;
   const m = prize.replace(/,/g, "").match(/\$\s*([\d.]+)\s*([kKmM])?/);
   if (!m) return 0;
-  const n = parseFloat(m[1]);
+  const n = parseFloat(m[1] ?? "");
   if (Number.isNaN(n)) return 0;
   const mult = m[2]?.toLowerCase() === "m" ? 1_000_000 : m[2] ? 1_000 : 1;
   return n * mult;
@@ -95,7 +95,9 @@ function noEmDash(s: string): string {
 
 export function splitTitle(title: string): { title: string; tagline: string | null } {
   const m = title.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
-  if (m && m[1].length >= 6) return { title: m[1].trim(), tagline: m[2].trim() };
+  if (m && (m[1] ?? "").length >= 6) {
+    return { title: (m[1] ?? "").trim(), tagline: (m[2] ?? "").trim() };
+  }
   return { title: title.trim(), tagline: null };
 }
 

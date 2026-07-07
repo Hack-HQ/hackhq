@@ -8,6 +8,7 @@ import {
   Status,
   SECTION_LABELS,
 } from "./types";
+import { REPO_RAW_BASE } from "./repo";
 
 const README_PATH = path.join(process.cwd(), "..", "README.md");
 const REPO_ROOT = path.join(process.cwd(), "..");
@@ -17,8 +18,6 @@ const LISTINGS_PATH = path.join(
   "scripts",
   "listings.json",
 );
-const REPO_RAW_BASE =
-  "https://raw.githubusercontent.com/Hack-HQ/hackhq/main/";
 
 const TABLE_RE = /<!-- (\w+)_TABLE_START -->([\s\S]*?)<!-- \1_TABLE_END -->/g;
 
@@ -45,7 +44,7 @@ function parseStatus(cell: string): Status {
 
 function extractUrl(cell: string): string {
   const m = cell.match(/href="([^"]+)"/);
-  return m ? m[1] : "";
+  return m ? (m[1] ?? "") : "";
 }
 
 function earliestUpcomingDate(text: string, today: Date): Date | null {
@@ -53,10 +52,10 @@ function earliestUpcomingDate(text: string, today: Date): Date | null {
   const re = new RegExp(DATE_RE.source, "g");
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) {
-    const monthIdx = MONTH_MAP[m[1].toLowerCase().replace(".", "")];
+    const monthIdx = MONTH_MAP[(m[1] ?? "").toLowerCase().replace(".", "")];
     if (monthIdx === undefined) continue;
-    const day = parseInt(m[2], 10);
-    const year = parseInt(m[3], 10);
+    const day = parseInt(m[2] ?? "", 10);
+    const year = parseInt(m[3] ?? "", 10);
     const d = new Date(year, monthIdx, day);
     if (d >= today && (!earliest || d < earliest)) earliest = d;
   }
@@ -95,7 +94,7 @@ function loadFeaturedUrls(): Set<string> {
 
 function inlineDeadline(text: string): string {
   const m = text.match(/Deadline:\s*([^|]+?)(?:\s*\(Event:|$)/i);
-  return m ? m[1].trim() : "";
+  return m ? (m[1] ?? "").trim() : "";
 }
 
 function stableId(...parts: string[]): string {
@@ -119,7 +118,7 @@ function extractStatsBannerSrc(markdown: string): string | null {
   const tag = markdown.match(/<img\s+[^>]*alt="Hackathon stats"[^>]*>/i);
   if (!tag) return null;
   const src = tag[0].match(/src="([^"]+)"/i);
-  return src ? resolveAssetSrc(src[1]) : null;
+  return src ? resolveAssetSrc(src[1] ?? "") : null;
 }
 
 function extractGallery(markdown: string): GalleryPhoto[] {
@@ -129,9 +128,9 @@ function extractGallery(markdown: string): GalleryPhoto[] {
   const photos: GalleryPhoto[] = [];
   let m: RegExpExecArray | null;
   const re = new RegExp(IMG_RE.source, "g");
-  while ((m = re.exec(block[1])) !== null) {
+  while ((m = re.exec(block[1] ?? "")) !== null) {
     photos.push({
-      src: resolveAssetSrc(m[1]),
+      src: resolveAssetSrc(m[1] ?? ""),
       alt: m[2] || "Hackathon photo",
     });
   }
@@ -150,7 +149,7 @@ function parseTableRows(
     .filter((l) => l.startsWith("|"));
   if (lines.length < 3) return [];
 
-  const headers = lines[0]
+  const headers = (lines[0] ?? "")
     .split("|")
     .slice(1, -1)
     .map((s) => s.trim());
@@ -257,9 +256,9 @@ export function parseOpportunities(markdown: string): Opportunity[] {
   let m: RegExpExecArray | null;
   const re = new RegExp(TABLE_RE.source, "g");
   while ((m = re.exec(markdown)) !== null) {
-    const key = SECTION_ALIAS[m[1]];
+    const key = SECTION_ALIAS[m[1] ?? ""];
     if (!key) continue;
-    all.push(...parseTableRows(key, m[2], today, featuredUrls));
+    all.push(...parseTableRows(key, m[2] ?? "", today, featuredUrls));
   }
   return all;
 }

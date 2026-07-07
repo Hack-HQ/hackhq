@@ -79,7 +79,7 @@ export function FormatsCard({ formats }: { formats: FormatStat[] }) {
             0{active + 1}
           </span>
           <span className="text-sm font-medium">
-            {formats[active].label}
+            {formats[active]?.label}
           </span>
         </div>
 

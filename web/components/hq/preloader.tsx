@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { lockScroll } from "@/lib/scroll-lock";
 
 /**
  * Curtain-reveal load screen - native rebuild of the Framer
@@ -28,16 +29,16 @@ export function Preloader() {
       setGone(true);
       return;
     }
-    document.body.style.overflow = "hidden";
+    const release = lockScroll();
     const t1 = setTimeout(() => setCollapsed(true), HOLD_MS);
     const t2 = setTimeout(() => {
       setGone(true);
-      document.body.style.overflow = "";
+      release();
     }, TOTAL_MS);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
-      document.body.style.overflow = "";
+      release();
     };
   }, []);
 

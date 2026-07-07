@@ -29,21 +29,23 @@ import FramerDiscPlayer from "@/components/vendor/DiscPlayer";
 const FRAMER_DEMO_MP3 =
   "https://framerusercontent.com/assets/8w3IUatLX9a5JVJ6XPCVuHi94.mp3";
 
-declare global {
-  interface Window {
-    __hqAudioPatched?: boolean;
-  }
-}
+// Intercept only `new Audio(FRAMER_DEMO_MP3)` so the vendored component's demo
+// track is silenced (the only sound is the user's Spotify). Runs lazily from
+// the component below rather than as a top-level import side effect, and is
+// idempotent, so it only takes effect when the disc player is actually used and
+// is safe under React's double render.
+let demoAudioMuted = false;
 
-if (typeof window !== "undefined" && !window.__hqAudioPatched) {
-  window.__hqAudioPatched = true;
+function muteFramerDemoAudio() {
+  if (demoAudioMuted || typeof window === "undefined") return;
+  demoAudioMuted = true;
   const RealAudio = window.Audio;
   const PatchedAudio = function (this: unknown, src?: string) {
     const a = new RealAudio(src);
     if (src === FRAMER_DEMO_MP3) {
       // The demo track must NEVER be heard: silence the element for real
-      // and make play() a no-op, so the only sound is the user's Spotify.
-      // ('ended' also never fires, so the needle never lifts mid-session.)
+      // and make play() a no-op. ('ended' also never fires, so the needle
+      // never lifts mid-session.)
       a.muted = true;
       a.volume = 0;
       a.play = () => Promise.resolve();
@@ -98,6 +100,10 @@ function parseSpotifyUri(input: string): string | null {
 }
 
 export function DiscPlayer() {
+  // Scope the demo-audio muting to the disc player: patch only when this
+  // component is actually rendered, not at module import time.
+  muteFramerDemoAudio();
+
   const [panelOpen, setPanelOpen] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [hasMusic, setHasMusic] = useState(false);
