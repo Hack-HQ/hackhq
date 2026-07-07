@@ -6,8 +6,7 @@
     "copy-assets": "node scripts/copy-repo-assets.mjs",
     "predev": "node scripts/copy-repo-assets.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/copy-repo-assets.mjs",
-    "build": "next build",
+    "build": "node scripts/copy-repo-assets.mjs && next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run"

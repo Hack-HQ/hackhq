@@ -110,17 +110,30 @@ export function themesFor(text: string): string[] {
 }
 
 export function loadHackathons(): Hackathon[] {
+  let contents: string;
+  try {
+    contents = fs.readFileSync(LISTINGS_PATH, "utf8");
+  } catch (err) {
+    // A read failure means the data file isn't available to this runtime (e.g.
+    // missing from the serverless bundle). Re-throw instead of returning [] —
+    // under ISR an empty render would be committed to the cache and blank the
+    // site. Throwing makes Next discard the regeneration and keep the last-good
+    // page (and fails the build loudly if the file is genuinely absent).
+    console.error(`[listings] could not read ${LISTINGS_PATH}:`, err);
+    throw err;
+  }
+
   let raw: RawListing[];
   try {
-    const parsed = JSON.parse(fs.readFileSync(LISTINGS_PATH, "utf8"));
+    const parsed = JSON.parse(contents);
     if (!Array.isArray(parsed)) {
       throw new Error("listings.json did not parse to an array");
     }
     raw = parsed;
   } catch (err) {
-    // Degrade gracefully: a missing/malformed listings.json shouldn't hard-fail
-    // the whole build. Render an empty site and log a warning instead.
-    console.error(`[listings] could not load ${LISTINGS_PATH}:`, err);
+    // File was readable but its contents are empty/malformed - a genuine data
+    // problem, not a bundling issue. Degrade to an empty site.
+    console.error(`[listings] could not parse ${LISTINGS_PATH}:`, err);
     return [];
   }
   const today = new Date();
