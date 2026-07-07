@@ -102,7 +102,7 @@ function stableId(...parts: string[]): string {
   return crypto.createHash("md5").update(parts.join("|")).digest("hex").slice(0, 10);
 }
 
-function resolveAssetSrc(src: string): string {
+export function resolveAssetSrc(src: string): string {
   if (!src) return "";
   if (src.startsWith("http://") || src.startsWith("https://")) return src;
 
@@ -242,7 +242,7 @@ export function loadOpportunities(): Opportunity[] {
   return md ? parseOpportunities(md) : [];
 }
 
-function parseOpportunities(markdown: string): Opportunity[] {
+export function parseOpportunities(markdown: string): Opportunity[] {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 

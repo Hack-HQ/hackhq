@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored third-party Framer components (minified, not ours to lint).
+    "components/vendor/**",
   ]),
 ]);
 
