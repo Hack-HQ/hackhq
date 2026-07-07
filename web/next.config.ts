@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
       },
     ],
     dangerouslyAllowSVG: true,
+    // Pair the SVG allowance with a strict CSP + forced download so a
+    // user-influenced SVG served through next/image can't execute script.
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    contentDispositionType: "attachment",
   },
   turbopack: {
     resolveAlias: {

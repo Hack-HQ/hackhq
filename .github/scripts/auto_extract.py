@@ -8,10 +8,13 @@ This script:
 3. Adds the hackathon to listings.json
 """
 
+import ipaddress
 import json
 import os
+import socket
 import sys
 import re
+from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 import util
@@ -24,6 +27,65 @@ except ImportError:
     HAS_OPENAI = False
 
 
+MAX_REDIRECTS = 5
+
+
+def _resolved_ips_are_public(host):
+    """Resolve a hostname and ensure no address is private/loopback/internal.
+
+    Returns (ok, reason). Blocks SSRF to the cloud metadata endpoint
+    (169.254.169.254), localhost, and RFC1918 / link-local / reserved ranges.
+    """
+    try:
+        infos = socket.getaddrinfo(host, None)
+    except socket.gaierror:
+        return False, f"Could not resolve host: {host}"
+    for info in infos:
+        ip_str = info[4][0]
+        try:
+            ip = ipaddress.ip_address(ip_str)
+        except ValueError:
+            return False, f"Unresolvable address for host: {host}"
+        if (ip.is_private or ip.is_loopback or ip.is_link_local
+                or ip.is_reserved or ip.is_multicast or ip.is_unspecified):
+            return False, f"Refusing to fetch internal address {ip} (host {host})"
+    return True, None
+
+
+def _validate_fetch_url(url):
+    """Allow only http(s) URLs pointing at public hosts."""
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        return False, f"Only http(s) URLs may be fetched (got '{parsed.scheme}')"
+    if not parsed.hostname:
+        return False, "URL has no host"
+    return _resolved_ips_are_public(parsed.hostname)
+
+
+def safe_get(url, headers, timeout=30):
+    """requests.get with SSRF protection and per-hop redirect validation.
+
+    Never falls back to verify=False — TLS errors propagate. Redirects are
+    followed manually so every hop's host is re-checked against the SSRF guard.
+    """
+    current = url
+    for _ in range(MAX_REDIRECTS + 1):
+        ok, reason = _validate_fetch_url(current)
+        if not ok:
+            raise ValueError(reason)
+        response = requests.get(
+            current, headers=headers, timeout=timeout, allow_redirects=False
+        )
+        if response.is_redirect or response.status_code in (301, 302, 303, 307, 308):
+            location = response.headers.get("Location")
+            if not location:
+                return response
+            current = urljoin(current, location)
+            continue
+        return response
+    raise ValueError("Too many redirects while fetching URL")
+
+
 def fetch_page_content(url):
     """Fetch and parse webpage content."""
     headers = {
@@ -33,11 +95,9 @@ def fetch_page_content(url):
     }
 
     try:
-        try:
-            response = requests.get(url, headers=headers, timeout=30, allow_redirects=True)
-        except requests.exceptions.SSLError:
-            print(f"SSL verification failed for {url}, retrying without verification...")
-            response = requests.get(url, headers=headers, timeout=30, allow_redirects=True, verify=False)
+        # Fail closed on TLS errors (no verify=False fallback) and block SSRF to
+        # internal/loopback/link-local hosts, re-checking on every redirect hop.
+        response = safe_get(url, headers=headers, timeout=30)
         response.raise_for_status()
 
         soup = BeautifulSoup(response.text, "html.parser")
@@ -309,11 +369,14 @@ def main():
 
     print(f"Extracted: {json.dumps(extracted, indent=2)}")
 
-    # Validate extracted data
-    company_name = extracted.get("company_name", "").strip()
-    title = extracted.get("title", "").strip()
-    locations = extracted.get("locations", [])
-    fmt = extracted.get("format", "")
+    # Validate extracted data. Model output is fully untrusted: coalesce nulls
+    # (a JSON `null` makes .get() return None, so a bare .strip() would crash),
+    # and sanitize the free-text host/title before they reach listings.json or a
+    # commit message.
+    company_name = util.sanitize_field(extracted.get("company_name"))
+    title = util.sanitize_field(extracted.get("title"))
+    locations = extracted.get("locations") or []
+    fmt = (extracted.get("format") or "").strip()
 
     if not company_name or company_name == "Unknown":
         util.fail("AI extraction failed: could not determine the host/organizer. Please use the Quick Add template instead.")
@@ -344,20 +407,20 @@ def main():
     # Check for duplicates (by URL or by host+title)
     listings = util.get_listings_from_json()
     for listing in listings:
-        if listing["url"] == url:
+        if listing.get("url") == url:
             util.set_output("is_duplicate", "true")
-            util.set_output("duplicate_id", listing["id"])
+            util.set_output("duplicate_id", listing.get("id", ""))
             util.set_output("duplicate_reason", f"This URL already exists in the repository")
             util.set_output("commit_message", "")
-            print(f"DUPLICATE DETECTED: URL already exists (ID: {listing['id']})")
+            print(f"DUPLICATE DETECTED: URL already exists (ID: {listing.get('id')})")
             sys.exit(0)
-        if (listing["company_name"].lower() == company_name.lower() and
-                listing["title"].lower() == title.lower()):
+        if (str(listing.get("company_name", "")).lower() == company_name.lower() and
+                str(listing.get("title", "")).lower() == title.lower()):
             util.set_output("is_duplicate", "true")
-            util.set_output("duplicate_id", listing["id"])
+            util.set_output("duplicate_id", listing.get("id", ""))
             util.set_output("duplicate_reason", f"'{company_name} - {title}' already exists in the repository")
             util.set_output("commit_message", "")
-            print(f"DUPLICATE DETECTED: {company_name} - {title} already exists (ID: {listing['id']})")
+            print(f"DUPLICATE DETECTED: {company_name} - {title} already exists (ID: {listing.get('id')})")
             sys.exit(0)
 
     # Create the listing
@@ -397,4 +460,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit:
+        # util.fail() and the duplicate path exit intentionally — let them.
+        raise
+    except Exception as e:
+        util.fail(f"Unexpected error during extraction: {e}")

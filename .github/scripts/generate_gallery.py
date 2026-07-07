@@ -37,7 +37,16 @@ def load_gallery():
 
 
 def esc(text):
-    return (str(text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
+    # Escape &, <, >, " and ' so a value containing a quote cannot break out of
+    # the href/src/alt attributes below.
+    return (
+        str(text)
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#39;")
+    )
 
 
 def tile(photo):
