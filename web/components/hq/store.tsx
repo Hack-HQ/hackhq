@@ -43,6 +43,9 @@ export function HQProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(LS_KEY);
+      // Deliberate post-mount hydration: localStorage is unavailable during SSR,
+      // and doing this in a lazy initializer would cause a hydration mismatch.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (raw) setTracked(JSON.parse(raw));
     } catch {
       /* first visit / corrupted - start fresh */
@@ -71,7 +74,8 @@ export function HQProvider({ children }: { children: React.ReactNode }) {
   const remove = useCallback(
     (id: string) =>
       setTracked((t) => {
-        const { [id]: _, ...rest } = t;
+        const rest = { ...t };
+        delete rest[id];
         return rest;
       }),
     [],

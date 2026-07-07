@@ -68,7 +68,7 @@ const THEME_RULES: [RegExp, string][] = [
   [/high.?school/i, "HIGH SCHOOL"],
 ];
 
-function parsePrizeValue(prize: string | undefined): number {
+export function parsePrizeValue(prize: string | undefined): number {
   if (!prize) return 0;
   const m = prize.replace(/,/g, "").match(/\$\s*([\d.]+)\s*([kKmM])?/);
   if (!m) return 0;
@@ -78,7 +78,7 @@ function parsePrizeValue(prize: string | undefined): number {
   return n * mult;
 }
 
-function deriveState(raw: RawListing, daysLeft: number | null): HackState {
+export function deriveState(raw: RawListing, daysLeft: number | null): HackState {
   if (raw.state === "opens_soon") return "opens_soon";
   if (raw.state === "closed" || raw.active === false) return "closed";
   if (daysLeft !== null) {
@@ -93,13 +93,13 @@ function noEmDash(s: string): string {
   return s.replace(/\s*—\s*/g, " - ").trim();
 }
 
-function splitTitle(title: string): { title: string; tagline: string | null } {
+export function splitTitle(title: string): { title: string; tagline: string | null } {
   const m = title.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
   if (m && m[1].length >= 6) return { title: m[1].trim(), tagline: m[2].trim() };
   return { title: title.trim(), tagline: null };
 }
 
-function themesFor(text: string): string[] {
+export function themesFor(text: string): string[] {
   const out: string[] = [];
   for (const [re, tag] of THEME_RULES) {
     if (re.test(text) && !out.includes(tag)) out.push(tag);

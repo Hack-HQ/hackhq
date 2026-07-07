@@ -175,7 +175,8 @@ function SaveHeart({ h, dark }: { h: Hackathon; dark?: boolean }) {
     <button
       onClick={(e) => {
         e.stopPropagation();
-        tracked ? remove(h.id) : save(h.id);
+        if (tracked) remove(h.id);
+        else save(h.id);
       }}
       aria-label={tracked ? "Remove from tracker" : "Save to tracker"}
       title={tracked ? "Remove from My HackHQ" : "Save to My HackHQ"}

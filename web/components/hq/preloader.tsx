@@ -22,6 +22,9 @@ export function Preloader() {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // Reduced-motion users skip the curtain. Deliberate post-mount decision
+      // (matchMedia is unavailable during SSR, so this can't be a lazy init).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setGone(true);
       return;
     }
