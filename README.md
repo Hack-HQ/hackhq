@@ -11,7 +11,7 @@
 
 <h3>
 
-🌐 &nbsp;Live at [**hackhq.dev**](https://hackhq.dev) — a living map of the hackathon world
+🌐 &nbsp;**hackhq.dev** — _coming soon_ 🚧 · a living map of the hackathon world
 
 </h3>
 
@@ -21,7 +21,7 @@
 
 ## The Website
 
-[**hackhq.dev**](https://hackhq.dev) turns this list into an interactive experience — every hackathon below, in-person and virtual, rendered on one living 3D map and updated daily.
+**hackhq.dev** _(coming soon)_ 🚧 will turn this list into an interactive experience — every hackathon below, in-person and virtual, rendered on one living 3D map and updated daily.
 
 - 🌍 **3D Globe** — spin an interactive globe and see where hackathons are happening around the world.
 - 🃏 **The Deck** — flip through hackathons card-by-card to find your next build weekend.
