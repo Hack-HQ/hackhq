@@ -227,19 +227,24 @@ const SECTION_ALIAS: Record<string, Section> = {
   HACKATHONS: "HACKATHONS",
 };
 
-/** Read the root README, or null if it's missing/unreadable (degrade, not crash). */
-function readReadme(): string | null {
+/**
+ * Read the root README. A read failure means the file isn't available to this
+ * runtime (e.g. missing from the serverless bundle); re-throw rather than
+ * returning null, because under ISR rendering an empty page would be committed
+ * to the cache and blank the site. Throwing makes Next keep the last-good page
+ * (and fails the build loudly if the README is genuinely absent).
+ */
+function readReadme(): string {
   try {
     return fs.readFileSync(README_PATH, "utf-8");
   } catch (err) {
     console.error(`[parse-readme] could not read ${README_PATH}:`, err);
-    return null;
+    throw err;
   }
 }
 
 export function loadOpportunities(): Opportunity[] {
-  const md = readReadme();
-  return md ? parseOpportunities(md) : [];
+  return parseOpportunities(readReadme());
 }
 
 function parseOpportunities(markdown: string): Opportunity[] {
@@ -265,9 +270,6 @@ export function loadSiteData(): {
   gallery: GalleryPhoto[];
 } {
   const md = readReadme();
-  if (!md) {
-    return { opportunities: [], statsBannerSrc: null, gallery: [] };
-  }
   return {
     opportunities: parseOpportunities(md),
     statsBannerSrc: extractStatsBannerSrc(md),
