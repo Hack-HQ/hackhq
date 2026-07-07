@@ -9,6 +9,7 @@ from datetime import date
 
 import util
 import auto_extract as ax
+import deadline_watcher as dw
 
 
 class ParseDeadlineDate(unittest.TestCase):
@@ -89,6 +90,43 @@ class SsrfGuard(unittest.TestCase):
     def test_rejects_non_http_scheme(self):
         ok, _ = ax._validate_fetch_url("file:///etc/passwd")
         self.assertFalse(ok)
+
+
+class DeadlineWatcherRules(unittest.TestCase):
+    def _base(self, **over):
+        d = {
+            "found": True,
+            "deadline": "2026-08-01",
+            "deadline_type": "application",
+            "confidence": "high",
+            "evidence": "Applications close August 1, 2026",
+        }
+        d.update(over)
+        return d
+
+    def test_accepts_high_confidence_application(self):
+        self.assertEqual(
+            dw._accept(self._base(), today=date(2026, 7, 1)),
+            ("2026-08-01", "Applications close August 1, 2026"),
+        )
+
+    def test_rejects_past_deadline(self):
+        # High confidence + participant-facing, but the date is already past
+        # relative to the run date, so it must not become a proposal.
+        self.assertIsNone(dw._accept(self._base(), today=date(2026, 12, 1)))
+
+    def test_rejects_low_confidence(self):
+        self.assertIsNone(dw._accept(self._base(confidence="medium")))
+
+    def test_rejects_non_participant_deadline(self):
+        self.assertIsNone(dw._accept(self._base(deadline_type="other")))
+
+    def test_rejects_missing_evidence(self):
+        self.assertIsNone(dw._accept(self._base(evidence="")))
+
+    def test_rejects_not_found_or_bad_date(self):
+        self.assertIsNone(dw._accept(self._base(found=False)))
+        self.assertIsNone(dw._accept(self._base(deadline="sometime in August")))
 
 
 if __name__ == "__main__":
