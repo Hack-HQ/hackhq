@@ -19,6 +19,8 @@ import re
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+import util
+
 PST = ZoneInfo("America/Los_Angeles")
 README = os.path.join(os.path.dirname(__file__), "..", "..", "README.md")
 
@@ -124,12 +126,13 @@ def main():
         with open(README, "w") as f:
             f.write(new_content)
 
-    # Refresh the live stats banner (status counts may have changed)
+    # Refresh the live stats banner (status counts may have changed). Surface a
+    # failure as a workflow annotation so a stale banner isn't shipped silently.
     try:
         import generate_banner
         generate_banner.main()
     except Exception as e:
-        print(f"Warning: could not regenerate banner: {e}")
+        util.warn(f"could not regenerate stats banner (it may be stale): {e}")
 
     print(f"Updated {total} row(s).")
     gh_out = os.environ.get("GITHUB_OUTPUT")

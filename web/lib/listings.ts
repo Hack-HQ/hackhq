@@ -108,7 +108,19 @@ function themesFor(text: string): string[] {
 }
 
 export function loadHackathons(): Hackathon[] {
-  const raw: RawListing[] = JSON.parse(fs.readFileSync(LISTINGS_PATH, "utf8"));
+  let raw: RawListing[];
+  try {
+    const parsed = JSON.parse(fs.readFileSync(LISTINGS_PATH, "utf8"));
+    if (!Array.isArray(parsed)) {
+      throw new Error("listings.json did not parse to an array");
+    }
+    raw = parsed;
+  } catch (err) {
+    // Degrade gracefully: a missing/malformed listings.json shouldn't hard-fail
+    // the whole build. Render an empty site and log a warning instead.
+    console.error(`[listings] could not load ${LISTINGS_PATH}:`, err);
+    return [];
+  }
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 

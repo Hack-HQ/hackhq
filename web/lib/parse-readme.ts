@@ -227,9 +227,19 @@ const SECTION_ALIAS: Record<string, Section> = {
   HACKATHONS: "HACKATHONS",
 };
 
+/** Read the root README, or null if it's missing/unreadable (degrade, not crash). */
+function readReadme(): string | null {
+  try {
+    return fs.readFileSync(README_PATH, "utf-8");
+  } catch (err) {
+    console.error(`[parse-readme] could not read ${README_PATH}:`, err);
+    return null;
+  }
+}
+
 export function loadOpportunities(): Opportunity[] {
-  const md = fs.readFileSync(README_PATH, "utf-8");
-  return parseOpportunities(md);
+  const md = readReadme();
+  return md ? parseOpportunities(md) : [];
 }
 
 function parseOpportunities(markdown: string): Opportunity[] {
@@ -254,7 +264,10 @@ export function loadSiteData(): {
   statsBannerSrc: string | null;
   gallery: GalleryPhoto[];
 } {
-  const md = fs.readFileSync(README_PATH, "utf-8");
+  const md = readReadme();
+  if (!md) {
+    return { opportunities: [], statsBannerSrc: null, gallery: [] };
+  }
   return {
     opportunities: parseOpportunities(md),
     statsBannerSrc: extractStatsBannerSrc(md),

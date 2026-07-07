@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { Syncopate, Inter, Space_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { validateEnv } from "@/lib/env";
 import "./globals.css";
+
+// Validate/log environment configuration once when the server boots.
+validateEnv();
 
 // HackHQ type system (per product design brief §08):
 // - Syncopate: wide, blocky display face matching the HACKHQ wordmark -

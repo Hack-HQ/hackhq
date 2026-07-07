@@ -2,6 +2,9 @@ import { loadHackathons } from "@/lib/listings";
 import { PageShell } from "@/components/hq/page-shell";
 import { Deck } from "@/components/hq/deck";
 
+// ISR: keep deadline-derived status/countdowns fresh without a rebuild (#47).
+export const revalidate = 3600;
+
 export const metadata = {
   title: "The Deck · HackHQ",
   description:

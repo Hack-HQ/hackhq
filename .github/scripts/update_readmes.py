@@ -43,19 +43,21 @@ def main():
             "<!-- HACKATHONS_TABLE_END -->"
         )
 
-        # Regenerate the live stats banner from the freshly written table
+        # Regenerate the live stats banner from the freshly written table.
+        # Surface failures as workflow annotations so a stale banner isn't
+        # committed silently.
         try:
             import generate_banner
             generate_banner.main()
         except Exception as e:
-            print(f"Warning: could not regenerate banner: {e}")
+            util.warn(f"could not regenerate stats banner (it may be stale): {e}")
 
         # Rebuild the community photo gallery
         try:
             import generate_gallery
             generate_gallery.main()
         except Exception as e:
-            print(f"Warning: could not regenerate gallery: {e}")
+            util.warn(f"could not regenerate photo gallery (it may be stale): {e}")
 
         # Set commit message
         now = datetime.now(util.PST)
