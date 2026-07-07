@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "copy-assets": "node scripts/copy-repo-assets.mjs",
+    "predev": "node scripts/copy-repo-assets.mjs",
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/copy-repo-assets.mjs && next build",
     "start": "next start",
     "lint": "eslint"
   },
