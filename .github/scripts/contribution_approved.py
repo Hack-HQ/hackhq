@@ -100,10 +100,10 @@ def handle_new_opportunity(data, username, is_quick_add=False):
             util.fail(f"Duplicate: This hackathon already exists (ID: {listing['id']})")
 
     # Get host name - handle both templates
-    company_name = get_first(data, "host/organizer", "host/organizer_name") 
+    company_name = util.sanitize_field(get_first(data, "host/organizer", "host/organizer_name")) 
 
     # Get title - handle both templates
-    title = get_first(data, "hackathon_name", "hackathon_name/edition")
+    title = util.sanitize_field(get_first(data, "hackathon_name", "hackathon_name/edition"))
 
     # Parse locations (default to "Online" if not provided)
     locations_str = get_first(data, "location", "location_(optional)")
@@ -159,8 +159,10 @@ def handle_new_opportunity(data, username, is_quick_add=False):
     # Set outputs
     util.set_output("commit_message", f"Add {company_name} - {title}")
     util.set_output("contributor_name", username)
+    # Validate the contributor-supplied email before it reaches `git config`;
+    # fall back to the bot address if it isn't a clean single-line address.
     email = get_first(data, "email_associated_with_your_github_account_(optional)")
-    util.set_output("contributor_email", email if email else "actions@github.com")
+    util.set_output("contributor_email", email if util.is_valid_email(email) else "actions@github.com")
 
     print(f"Successfully added: {company_name} - {title}")
 

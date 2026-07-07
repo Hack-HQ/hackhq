@@ -23,16 +23,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          pip install requests beautifulsoup4 openai
+          pip install -r .github/scripts/requirements.txt
 
       - name: Extract opportunity details
         id: extract
@@ -47,11 +47,13 @@ jobs:
 
       - name: Commit and push changes
         if: steps.extract.outputs.is_duplicate != 'true' && steps.extract.outputs.commit_message != ''
+        env:
+          COMMIT_MSG: ${{ steps.extract.outputs.commit_message }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .github/scripts/listings.json README.md assets/hackathons-banner.svg
-          git commit -m "${{ steps.extract.outputs.commit_message }}" || echo "No changes to commit"
+          git commit -m "$COMMIT_MSG" || echo "No changes to commit"
           # Rebase and retry push up to 3 times
           for i in 1 2 3; do
             git fetch origin main && git rebase origin/main && git push origin main && break
@@ -61,7 +63,7 @@ jobs:
 
       - name: Handle duplicate detection
         if: steps.extract.outputs.is_duplicate == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
           script: |
             const duplicateReason = process.env.DUPLICATE_REASON || 'This opportunity already exists in the repository';
@@ -83,7 +85,7 @@ jobs:
 
       - name: Comment on issue (success)
         if: success() && steps.extract.outputs.is_duplicate != 'true' && steps.extract.outputs.commit_message != ''
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
           script: |
             let extractedData = {};
@@ -123,7 +125,7 @@ jobs:
 
       - name: Close issue
         if: success() && steps.extract.outputs.is_duplicate != 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
           script: |
             await github.rest.issues.update({
@@ -135,7 +137,7 @@ jobs:
 
       - name: Comment on issue (failure)
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
           script: |
             const errorMessage = process.env.ERROR_MSG || 'An unknown error occurred during extraction.';

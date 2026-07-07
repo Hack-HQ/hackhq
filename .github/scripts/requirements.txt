@@ -1,3 +1,4 @@
-requests>=2.28.0
-beautifulsoup4>=4.11.0
-openai>=1.0.0
+# Pinned for reproducible CI (see issue #45). Bump deliberately.
+requests==2.32.3
+beautifulsoup4==4.12.3
+openai==1.54.4

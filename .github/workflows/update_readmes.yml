@@ -8,16 +8,19 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   update-readme:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.11'
 
@@ -37,11 +40,13 @@ jobs:
 
       - name: Commit and push
         if: steps.check.outputs.has_changes == 'true'
+        env:
+          COMMIT_MSG: ${{ steps.update.outputs.commit_message }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md assets/hackathons-banner.svg
-          git commit -m "${{ steps.update.outputs.commit_message }}"
+          git commit -m "${COMMIT_MSG:-chore: update README}"
           for i in 1 2 3; do
             git fetch origin main && git rebase origin/main && git push origin main && break
             echo "Push attempt $i failed, retrying..."
@@ -50,6 +55,8 @@ jobs:
 
       - name: Report failure
         if: failure()
+        env:
+          ERROR_MSG: ${{ steps.update.outputs.error_message }}
         run: |
-          echo "Error updating README: ${{ steps.update.outputs.error_message }}"
+          echo "Error updating README: ${ERROR_MSG:-Unknown error}"
           exit 1

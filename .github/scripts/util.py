@@ -2,8 +2,10 @@
 Utility functions for managing hackathon listings.
 """
 
+import html
 import json
 import os
+import re
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -105,16 +107,55 @@ def format_locations(locations):
     return f"<details><summary>{len(locations)} locations</summary>{joined}</details>"
 
 
+def escape_attr(value):
+    """Escape a value for safe interpolation into an HTML attribute.
+
+    Escapes &, <, >, " and ' so a value containing a quote cannot break out of
+    an href/src/alt attribute in the generated README markup.
+    """
+    return html.escape(str(value), quote=True)
+
+
+_CONTROL_CHARS = re.compile(r"[\x00-\x1f\x7f]")
+_WHITESPACE = re.compile(r"\s+")
+
+
+def sanitize_field(value, max_len=200):
+    """Normalize an untrusted free-text field (host / title).
+
+    Removes control characters, collapses whitespace, and truncates. These
+    values flow into commit messages, listings.json, and generated markup, so
+    stripping control/newline characters stops them smuggling extra lines or
+    breaking formatting even when the shell interpolation is already quoted.
+    """
+    text = _CONTROL_CHARS.sub(" ", str(value or ""))
+    text = _WHITESPACE.sub(" ", text).strip()
+    if len(text) > max_len:
+        text = text[:max_len].rstrip()
+    return text
+
+
+_EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$")
+
+
+def is_valid_email(email):
+    """Return True for a syntactically valid, single-line email address."""
+    if not isinstance(email, str):
+        return False
+    email = email.strip()
+    return len(email) <= 254 and bool(_EMAIL_RE.match(email))
+
+
 def format_link(url):
     """Format the registration link as a blue button."""
     button_url = "https://img.shields.io/badge/Register-blue?style=for-the-badge"
-    return f'<a href="{url}"><img src="{button_url}" alt="Register"></a>'
+    return f'<a href="{escape_attr(url)}"><img src="{button_url}" alt="Register"></a>'
 
 
 def format_website_link(url):
     """Format a plain website link as a gray button (for upcoming events)."""
     button_url = "https://img.shields.io/badge/Website-gray?style=for-the-badge"
-    return f'<a href="{url}"><img src="{button_url}" alt="Website"></a>'
+    return f'<a href="{escape_attr(url)}"><img src="{button_url}" alt="Website"></a>'
 
 
 def resolve_state(listing):
