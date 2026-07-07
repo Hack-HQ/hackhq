@@ -9,7 +9,30 @@
 [![Contributors](https://img.shields.io/github/contributors/Jose-Gael-Cruz-Lopez/hackhq?style=for-the-badge&color=0091EA&labelColor=000000)](https://github.com/Jose-Gael-Cruz-Lopez/hackhq/graphs/contributors)
 [![Open Issues](https://img.shields.io/github/issues/Jose-Gael-Cruz-Lopez/hackhq?style=for-the-badge&label=Submissions&color=FF6D00&labelColor=000000)](https://github.com/Jose-Gael-Cruz-Lopez/hackhq/issues)
 
+<h3>
+
+🌐 &nbsp;Live at [**hackhq.dev**](https://hackhq.dev) — a living map of the hackathon world
+
+</h3>
+
+**Spin the globe · Flip through the deck · Track your applications**
+
 </div>
+
+## The Website
+
+[**hackhq.dev**](https://hackhq.dev) turns this list into an interactive experience — every hackathon below, in-person and virtual, rendered on one living 3D map and updated daily.
+
+- 🌍 **3D Globe** — spin an interactive globe and see where hackathons are happening around the world.
+- 🃏 **The Deck** — flip through hackathons card-by-card to find your next build weekend.
+- 🔎 **Browse & Search** — filter every listing by host, name, format, or location, with live counts for Open, Closing Soon, and Opens Soon.
+- ⏱️ **Smart Sort** — closing-soon events surface first, then by nearest deadline.
+- 📌 **Track Your Applications** — sign in to save hackathons and keep tabs on the ones you've applied to.
+- 📊 **Live Stats & Gallery** — an at-a-glance snapshot of the scene, plus real photos from the community.
+
+> **How it stays in sync.** The globe, deck, and tracker read from `.github/scripts/listings.json`; this README's table powers the `/hackathons` browser. Built with Next.js 16, React 19, Tailwind CSS 4, Mapbox GL, and Clerk. See [`web/README.md`](web/README.md) to run it locally.
+
+---
 
 ## Stats
 
@@ -35,6 +58,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 
 ## Table of Contents
 
+- [The Website](#the-website)
 - [Hackathons](#hackathons-1)
 - [Resources](#resources)
 - [Contributing](#contributing)
