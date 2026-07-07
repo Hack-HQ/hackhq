@@ -21,6 +21,7 @@ import json
 import os
 import re
 import sys
+from datetime import datetime
 
 import util
 from auto_extract import fetch_page_content
@@ -92,8 +93,13 @@ def _extract_deadline(client, listing, page):
         return None
 
 
-def _accept(extracted):
-    """Apply the safety rules. Returns (iso_deadline, evidence) or None."""
+def _accept(extracted, today=None):
+    """Apply the safety rules. Returns (iso_deadline, evidence) or None.
+
+    `today` (a date) is the reference point for the past-date guard; it defaults
+    to the current date in PST. Passing it explicitly keeps the check
+    deterministic in tests and consistent across a single run.
+    """
     if not isinstance(extracted, dict) or not extracted.get("found"):
         return None
     if extracted.get("confidence") != "high":
@@ -105,10 +111,17 @@ def _accept(extracted):
         return None
     raw = str(extracted.get("deadline") or "").strip()
     try:
-        iso = util.parse_deadline_date(raw).isoformat()
+        parsed = util.parse_deadline_date(raw)
     except ValueError:
         return None
-    return iso, evidence
+    # Reject past / prior-cycle dates. The prompt asks the model to avoid these,
+    # but enforce it in code too: a page that says "Applications closed <past
+    # date>" must never become a proposal.
+    if today is None:
+        today = datetime.now(util.PST).date()
+    if parsed < today:
+        return None
+    return parsed.isoformat(), evidence
 
 
 def _build_report(proposals):
@@ -124,11 +137,18 @@ def _build_report(proposals):
         "",
     ]
     for p in proposals:
+        # company/title come from listings.json and evidence is a verbatim quote
+        # from an untrusted fetched page; sanitize (strip newlines/control chars,
+        # truncate) so they can't break the markdown or smuggle @mentions/links
+        # into the opened issue.
+        company = util.sanitize_field(p["company"], max_len=120)
+        title = util.sanitize_field(p["title"], max_len=160)
+        evidence = util.sanitize_field(p["evidence"], max_len=280)
         lines += [
-            f"### {p['company']} — {p['title']}",
+            f"### {company} — {title}",
             f"- **Proposed deadline:** `{p['deadline']}` ({p['type']})",
             f"- **Source:** {p['url']}",
-            f"- **Evidence:** > {p['evidence']}",
+            f"- **Evidence:** > {evidence}",
             f"- **Listing id:** `{p['id']}`",
             "",
         ]
@@ -157,6 +177,7 @@ def main():
         return
 
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    today = datetime.now(util.PST).date()
     proposals = []
     for listing in candidates:
         url = util.clean_url(listing["url"])
@@ -166,7 +187,7 @@ def main():
                 util.warn(f"could not fetch {url}: {page['error']}")
                 continue
             extracted = _extract_deadline(client, listing, page)
-            accepted = _accept(extracted)
+            accepted = _accept(extracted, today)
         except Exception as e:  # never let one listing abort the whole run
             util.warn(f"deadline check failed for {url}: {e}")
             continue

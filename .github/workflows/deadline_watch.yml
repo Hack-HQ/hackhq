@@ -2,13 +2,19 @@ name: Deadline Watcher
 
 on:
   schedule:
-    - cron: '0 15 * * 1'  # Mondays 15:00 UTC (~7am PT)
+    - cron: '0 15 * * 1'  # Mondays 15:00 UTC (07:00 PST / 08:00 PDT)
   workflow_dispatch:
 
 # Review-only: reads the repo, opens an issue. Never pushes or edits listings.
 permissions:
   contents: read
   issues: write
+
+# Serialize the scheduled run and any manual dispatch so two overlapping runs
+# can't open/refresh the review issue at the same time.
+concurrency:
+  group: deadline-watch
+  cancel-in-progress: false
 
 jobs:
   watch:
@@ -37,15 +43,28 @@ jobs:
             --description "Auto-proposed deadlines pending maintainer review" \
             --repo "${{ github.repository }}" 2>/dev/null || true
 
-      - name: Open review issue
+      - name: Open or refresh review issue
         if: steps.scan.outputs.has_content == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COUNT: ${{ steps.scan.outputs.count }}
+          REPO: ${{ github.repository }}
         run: |
           DATE=$(date '+%B %d, %Y')
-          gh issue create \
-            --title "🔎 Deadline watcher: ${COUNT} proposed deadline(s) — ${DATE}" \
-            --body-file deadline_proposals.md \
-            --label "deadline-proposal" \
-            --repo "${{ github.repository }}"
+          TITLE="🔎 Deadline watcher: ${COUNT} proposed deadline(s) — ${DATE}"
+          # Reuse the existing open proposal issue instead of opening a fresh one
+          # every week — otherwise unaddressed proposals pile up as duplicates.
+          EXISTING=$(gh issue list --repo "$REPO" --label "deadline-proposal" \
+            --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue edit "$EXISTING" --repo "$REPO" \
+              --title "$TITLE" --body-file deadline_proposals.md
+            gh issue comment "$EXISTING" --repo "$REPO" \
+              --body "Refreshed on ${DATE}: ${COUNT} listing(s) still missing a deadline."
+            echo "Refreshed existing issue #$EXISTING"
+          else
+            gh issue create --repo "$REPO" \
+              --title "$TITLE" \
+              --body-file deadline_proposals.md \
+              --label "deadline-proposal"
+          fi

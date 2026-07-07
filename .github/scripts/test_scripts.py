@@ -106,9 +106,14 @@ class DeadlineWatcherRules(unittest.TestCase):
 
     def test_accepts_high_confidence_application(self):
         self.assertEqual(
-            dw._accept(self._base()),
+            dw._accept(self._base(), today=date(2026, 7, 1)),
             ("2026-08-01", "Applications close August 1, 2026"),
         )
+
+    def test_rejects_past_deadline(self):
+        # High confidence + participant-facing, but the date is already past
+        # relative to the run date, so it must not become a proposal.
+        self.assertIsNone(dw._accept(self._base(), today=date(2026, 12, 1)))
 
     def test_rejects_low_confidence(self):
         self.assertIsNone(dw._accept(self._base(confidence="medium")))
