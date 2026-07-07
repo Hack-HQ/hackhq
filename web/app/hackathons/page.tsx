@@ -2,6 +2,10 @@ import Link from "next/link";
 import { loadSiteData } from "@/lib/parse-readme";
 import { Browser } from "@/components/legacy/browser";
 
+// ISR: re-parse the README + re-derive status on a schedule so the legacy
+// browser doesn't freeze deadline state at build time (#47).
+export const revalidate = 3600;
+
 export const metadata = {
   title: "All hackathons · HackHQ",
   description:

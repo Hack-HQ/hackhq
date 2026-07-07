@@ -238,6 +238,15 @@ def fail(message):
     exit(1)
 
 
+def warn(message):
+    """Emit a GitHub Actions warning annotation (visible in the run/PR UI).
+
+    Use for non-fatal problems (e.g. a banner that couldn't be regenerated) so
+    they surface loudly instead of being buried in a plain print.
+    """
+    print(f"::warning::{message}")
+
+
 def get_current_timestamp():
     """Get current Unix timestamp."""
     return int(datetime.now(tz=PST).timestamp())

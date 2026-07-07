@@ -1,6 +1,9 @@
 import { loadHackathons } from "@/lib/listings";
 import { MyClient } from "@/components/hq/my-client";
 
+// ISR: keep deadline-derived status/countdowns fresh without a rebuild (#47).
+export const revalidate = 3600;
+
 export const metadata = {
   title: "My HackHQ · Members Hub",
   description:

@@ -14,6 +14,7 @@ import os
 import socket
 import sys
 import re
+import time
 from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
@@ -62,20 +63,34 @@ def _validate_fetch_url(url):
     return _resolved_ips_are_public(parsed.hostname)
 
 
+def _get_with_retries(url, headers, timeout, retries=2, backoff=1.5):
+    """GET a single URL, retrying only transient network errors with backoff."""
+    last_exc = None
+    for attempt in range(retries + 1):
+        try:
+            return requests.get(
+                url, headers=headers, timeout=timeout, allow_redirects=False
+            )
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+            last_exc = e
+            if attempt < retries:
+                time.sleep(backoff * (attempt + 1))
+    raise last_exc
+
+
 def safe_get(url, headers, timeout=30):
     """requests.get with SSRF protection and per-hop redirect validation.
 
     Never falls back to verify=False — TLS errors propagate. Redirects are
     followed manually so every hop's host is re-checked against the SSRF guard.
+    Transient network errors are retried with backoff.
     """
     current = url
     for _ in range(MAX_REDIRECTS + 1):
         ok, reason = _validate_fetch_url(current)
         if not ok:
             raise ValueError(reason)
-        response = requests.get(
-            current, headers=headers, timeout=timeout, allow_redirects=False
-        )
+        response = _get_with_retries(current, headers, timeout)
         if response.is_redirect or response.status_code in (301, 302, 303, 307, 308):
             location = response.headers.get("Location")
             if not location:
@@ -227,7 +242,8 @@ Return ONLY valid JSON, no other text."""
                 {"role": "user", "content": prompt}
             ],
             temperature=0.1,
-            max_tokens=1000
+            max_tokens=1000,
+            timeout=60,
         )
 
         result_text = response.choices[0].message.content.strip()

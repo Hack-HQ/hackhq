@@ -1,6 +1,17 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The data pages read the repo-root README.md and .github/scripts/listings.json
+  // at request time (hourly ISR revalidation). Those files live outside web/, so
+  // Next's serverless file tracing must be told to bundle them or the runtime
+  // read fails with ENOENT. Set the tracing root to the repo root — there's no
+  // lockfile there, so it would otherwise default to web/ and exclude the parent
+  // files — and explicitly include the two data files for every route.
+  outputFileTracingRoot: path.join(process.cwd(), ".."),
+  outputFileTracingIncludes: {
+    "/**": ["../README.md", "../.github/scripts/listings.json"],
+  },
   logging: {
     browserToTerminal: false,
   },
