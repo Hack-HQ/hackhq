@@ -10,6 +10,7 @@ from datetime import date
 import util
 import auto_extract as ax
 import deadline_watcher as dw
+import seed_supabase as seed
 
 
 class ParseDeadlineDate(unittest.TestCase):
@@ -127,6 +128,41 @@ class DeadlineWatcherRules(unittest.TestCase):
     def test_rejects_not_found_or_bad_date(self):
         self.assertIsNone(dw._accept(self._base(found=False)))
         self.assertIsNone(dw._accept(self._base(deadline="sometime in August")))
+
+
+class BuildRow(unittest.TestCase):
+    def _listing(self, **overrides):
+        base = {
+            "id": "c0182709-2212-41a1-94ef-47689f05192f",
+            "company_name": "MIT",
+            "title": "HackMIT 2026",
+            "url": "https://hackmit.org/",
+        }
+        base.update(overrides)
+        return base
+
+    def test_renames_company_name_to_host(self):
+        row = seed.build_row(self._listing())
+        self.assertEqual(row["host"], "MIT")
+        self.assertNotIn("company_name", row)
+
+    def test_defaults_for_absent_optional_fields(self):
+        row = seed.build_row(self._listing())
+        self.assertEqual(row["locations"], [])
+        self.assertIsNone(row["deadline"])
+        self.assertFalse(row["featured"])
+        self.assertTrue(row["active"])
+        self.assertTrue(row["is_visible"])
+
+    def test_passes_through_deadline_and_featured(self):
+        row = seed.build_row(self._listing(deadline="2026-07-05", featured=True))
+        self.assertEqual(row["deadline"], "2026-07-05")
+        self.assertTrue(row["featured"])
+
+    def test_omits_geo_columns_for_geocoder(self):
+        row = seed.build_row(self._listing())
+        for column in ("lat", "lng", "geo_status"):
+            self.assertNotIn(column, row)
 
 
 if __name__ == "__main__":
