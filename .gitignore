@@ -1,3 +1,11 @@
 .github/scripts/__pycache__/
 digest.md
 deadline_proposals.md
+
+# env files
+.env
+.env.*
+!.env.example
+
+# node
+node_modules/
