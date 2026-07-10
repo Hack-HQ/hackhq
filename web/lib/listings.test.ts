@@ -6,6 +6,7 @@ import {
   siteStats,
   splitTitle,
   themesFor,
+  siteStats,
 } from "./listings";
 import type { Hackathon } from "./types-hq";
 
@@ -180,5 +181,41 @@ describe("themesFor", () => {
 
   it("returns [] when nothing matches", () => {
     expect(themesFor("generic build weekend")).toEqual([]);
+  });
+});
+
+const hackathon = (prizeValue: number): Hackathon => ({
+  id: "1",
+  host: "X",
+  title: "T",
+  tagline: null,
+  url: "https://x.com",
+  location: "Boston, MA",
+  format: "In-Person",
+  prize: null,
+  prizeValue,
+  state: "open",
+  deadline: null,
+  daysLeft: null,
+  lat: 42,
+  lng: -71,
+  themes: [],
+  postedAt: 0,
+});
+
+describe("siteStats", () => {
+  it.each([
+    [500, "$500+"],
+    [1, "$1+"],
+    [499, "$499+"],
+    [1_000, "$1K+"],
+    [1_999, "$1K+"],
+    [2_000_000, "$2M+"],
+  ])("formats prize total %i as %s", (prizeValue, expected) => {
+    expect(siteStats([hackathon(prizeValue)]).prizeDisplay).toBe(expected);
+  });
+
+  it("shows $0+ when there is no prize value", () => {
+    expect(siteStats([hackathon(0)]).prizeDisplay).toBe("$0+");
   });
 });
