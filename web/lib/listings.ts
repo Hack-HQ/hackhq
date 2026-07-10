@@ -55,14 +55,14 @@ const GEO: Record<string, [number, number]> = {
 
 const THEME_RULES: [RegExp, string][] = [
   [/\bai\b|artificial intelligence|agent|llm|gpt|gemini|claude/i, "AI"],
-  [/web3|crypto|eth|blockchain|chain/i, "WEB3"],
-  [/health|bio|med/i, "HEALTH"],
+  [/web3|crypto|\beth(ereum)?\b|blockchain|\bchain\b/i, "WEB3"],
+  [/health|\bbio(tech|medical)?\b|\bmed(ical|icine|tech)?\b/i, "HEALTH"],
   [/climate|sustain|energy/i, "CLIMATE"],
-  [/fintech|finance|trading|quant/i, "FINTECH"],
+  [/fintech|finance|trading|\bquant\b/i, "FINTECH"],
   [/game|gaming/i, "GAMING"],
   [/robot|hardware|embedded/i, "HARDWARE"],
   [/security|cyber|ctf/i, "SECURITY"],
-  [/data|analytics/i, "DATA"],
+  [/\bdata\b|analytics/i, "DATA"],
   [/space|aero/i, "SPACE"],
   [/education|edtech|student/i, "EDU"],
   [/high.?school/i, "HIGH SCHOOL"],

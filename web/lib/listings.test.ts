@@ -181,4 +181,28 @@ describe("themesFor", () => {
   it("returns [] when nothing matches", () => {
     expect(themesFor("generic build weekend")).toEqual([]);
   });
+
+  it.each([
+    ["Backblaze Generative Media Hackathon", "HEALTH"],
+    ["Quantum Computing Hackathon", "FINTECH"],
+    ["Ethics in Tech Hack", "WEB3"],
+    ["Biography of Code", "HEALTH"],
+    ["Immediate Impact Buildathon", "HEALTH"],
+    ["Social Media Weekend", "HEALTH"],
+  ])("does not false-positive %s as %s", (text, tag) => {
+    expect(themesFor(text)).not.toContain(tag);
+  });
+
+  it.each([
+    ["Health Hack", "HEALTH"],
+    ["Biotech Jam", "HEALTH"],
+    ["Medical Innovation Hack", "HEALTH"],
+    ["Quant Trading Challenge", "FINTECH"],
+    ["Ethereum Builders", "WEB3"],
+    ["Blockchain Challenge", "WEB3"],
+    ["Data Hackathon", "DATA"],
+    ["Analytics Challenge", "DATA"],
+  ])("tags %s as %s", (text, tag) => {
+    expect(themesFor(text)).toContain(tag);
+  });
 });
