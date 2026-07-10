@@ -78,6 +78,11 @@ export function parsePrizeValue(prize: string | undefined): number {
   return n * mult;
 }
 
+export function daysUntilDeadline(deadline: string, today: Date): number {
+  const d = new Date(`${deadline}T00:00:00`);
+  return Math.round((d.getTime() - today.getTime()) / 86_400_000);
+}
+
 export function deriveState(raw: RawListing, daysLeft: number | null): HackState {
   if (raw.state === "opens_soon") return "opens_soon";
   if (raw.state === "closed" || raw.active === false) return "closed";
@@ -148,8 +153,7 @@ export function loadHackathons(): Hackathon[] {
       const location = r.locations?.[0] ?? "TBA";
       let daysLeft: number | null = null;
       if (r.deadline) {
-        const d = new Date(`${r.deadline}T23:59:59`);
-        daysLeft = Math.ceil((d.getTime() - today.getTime()) / 86_400_000);
+        daysLeft = daysUntilDeadline(r.deadline, today);
       }
       const { title, tagline } = splitTitle(r.title);
 
