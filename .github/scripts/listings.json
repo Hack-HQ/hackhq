@@ -9,14 +9,13 @@
     ],
     "format": "In-Person",
     "prize": "$20K+ in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782586800,
     "date_updated": 1782586800,
     "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-05",
-    "featured": true
+    "deadline": "2026-07-05"
   },
   {
     "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
@@ -154,8 +153,8 @@
     ],
     "format": "Virtual",
     "prize": "$80,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782558000,
     "date_updated": 1782558000,
@@ -172,8 +171,8 @@
     ],
     "format": "Virtual",
     "prize": "$70,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782554400,
     "date_updated": 1782554400,
@@ -190,8 +189,8 @@
     ],
     "format": "Virtual",
     "prize": "$50,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782550800,
     "date_updated": 1782550800,
@@ -507,8 +506,8 @@
     "format": "Virtual",
     "prize": "TBA",
     "deadline": "2026-07-04",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1783014300,
     "date_updated": 1783014300,
@@ -530,7 +529,7 @@
     "is_visible": true,
     "date_posted": 1783105200,
     "date_updated": 1783105200,
-    "source": "Allyson-Keightley"
+    "source": "akeight"
   },
   {
     "id": "1e31d21c-0355-494e-a0a2-2431a51301a6",
@@ -547,7 +546,7 @@
     "is_visible": true,
     "date_posted": 1783105200,
     "date_updated": 1783105200,
-    "source": "Allyson-Keightley"
+    "source": "akeight"
   }
 
 ,
@@ -568,5 +567,58 @@
     "date_posted": 1783207800,
     "date_updated": 1783207800,
     "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "6b363f65-cd6a-47e3-8d2d-031776f25933",
+    "company_name": "Virginia Tech",
+    "title": "VTHacks Code for the Cup \u2014 Fall 2026",
+    "url": "https://vthacks.com/",
+    "locations": [
+      "Blacksburg, VA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783666800,
+    "date_updated": 1783666800,
+    "source": "Tenz1ng"
+  }, 
+  {
+    "id": "4dcf8a02-80eb-4943-a22c-5ee51e7660d1",
+    "company_name": "University of Michigan Dearborn",
+    "title": "Hack Dearborn 2026 \u2014 Oct 3\u20134, 2026",
+    "url": "https://hackdearborn.org/",
+    "locations": [
+      "Dearborn, MI"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783666800,
+    "date_updated": 1783666800,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "4dcf8a02-80eb-4943-a22c-5ee51e7660d1",
+    "company_name": "University of Waterloo",
+    "title": "Hack the North \u2014 Sept 18\u201320, 2026",
+    "url": "https://hackthenorth.com",
+    "locations": [
+      "Toronto, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "deadline": "2026-07-27",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783666800,
+    "date_updated": 1783666800,
+    "source": "akeight",
+    "featured": true
   }
 ]
