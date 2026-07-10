@@ -129,5 +129,24 @@ class DeadlineWatcherRules(unittest.TestCase):
         self.assertIsNone(dw._accept(self._base(deadline="sometime in August")))
 
 
+class DeadlineWatcherReport(unittest.TestCase):
+    def test_build_report_sanitizes_url(self):
+        report = dw._build_report(
+            [
+                {
+                    "id": "abc",
+                    "company": "Acme",
+                    "title": "Hack",
+                    "url": "https://example.com\n@mention",
+                    "deadline": "2026-08-01",
+                    "type": "application",
+                    "evidence": "Applications close August 1, 2026",
+                }
+            ]
+        )
+        self.assertIn("https://example.com @mention", report)
+        self.assertNotIn("\n@mention", report)
+
+
 if __name__ == "__main__":
     unittest.main()

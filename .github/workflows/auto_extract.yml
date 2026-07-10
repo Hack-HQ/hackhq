@@ -20,6 +20,7 @@ jobs:
       && contains(github.event.issue.labels.*.name, 'approved')
       && contains(github.event.issue.labels.*.name, 'auto_extract')
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
