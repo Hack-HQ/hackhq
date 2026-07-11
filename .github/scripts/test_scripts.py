@@ -81,6 +81,28 @@ class ParseStateAndDeadline(unittest.TestCase):
         self.assertIsNone(util.parse_deadline({}, "deadline"))
 
 
+class CleanUrl(unittest.TestCase):
+    def test_empty_returns_empty(self):
+        # Must not manufacture "https://" out of nothing (issue #73).
+        self.assertEqual(util.clean_url(""), "")
+
+    def test_whitespace_returns_empty(self):
+        self.assertEqual(util.clean_url("   "), "")
+
+    def test_host_less_scheme_returns_empty(self):
+        self.assertEqual(util.clean_url("https://"), "")
+        self.assertEqual(util.clean_url("http://"), "")
+
+    def test_valid_host_normalizes(self):
+        self.assertEqual(util.clean_url("example.com"), "https://example.com")
+
+    def test_strips_tracking_params(self):
+        self.assertEqual(
+            util.clean_url("https://example.com/e?utm_source=x&a=1"),
+            "https://example.com/e?a=1",
+        )
+
+
 class SsrfGuard(unittest.TestCase):
     def test_blocks_internal_hosts(self):
         for host in ("127.0.0.1", "localhost", "169.254.169.254", "10.0.0.1"):
