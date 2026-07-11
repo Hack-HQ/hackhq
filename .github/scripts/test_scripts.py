@@ -85,6 +85,42 @@ class ParseStateAndDeadline(unittest.TestCase):
         self.assertIsNone(util.parse_deadline({}, "deadline"))
 
 
+class CleanUrl(unittest.TestCase):
+    def test_empty_returns_empty(self):
+        # Must not manufacture "https://" out of nothing (issue #73).
+        self.assertEqual(util.clean_url(""), "")
+
+    def test_whitespace_returns_empty(self):
+        self.assertEqual(util.clean_url("   "), "")
+
+    def test_host_less_scheme_returns_empty(self):
+        self.assertEqual(util.clean_url("https://"), "")
+        self.assertEqual(util.clean_url("http://"), "")
+
+    def test_valid_host_normalizes(self):
+        self.assertEqual(util.clean_url("example.com"), "https://example.com")
+
+    def test_strips_tracking_params(self):
+        self.assertEqual(
+            util.clean_url("https://example.com/e?utm_source=x&a=1"),
+            "https://example.com/e?a=1",
+        )
+
+
+class ContributionApprovedUrlGuard(unittest.TestCase):
+    def test_bare_scheme_url_is_rejected(self):
+        # A host-less scheme is truthy (passes the raw check) but clean_url
+        # reduces it to "", which must not be written as an empty-url listing.
+        import contribution_approved as ca
+        data = {
+            "link_to_hackathon_page": "https://",
+            "hackathon_name": "X",
+            "host_organizer": "Y",
+        }
+        with self.assertRaises(SystemExit):  # util.fail -> exit(1)
+            ca.handle_new_opportunity(data, "tester")
+
+
 class SsrfGuard(unittest.TestCase):
     def test_blocks_internal_hosts(self):
         for host in ("127.0.0.1", "localhost", "169.254.169.254", "10.0.0.1"):
