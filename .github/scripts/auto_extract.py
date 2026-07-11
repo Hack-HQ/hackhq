@@ -15,7 +15,7 @@ import socket
 import sys
 import re
 import time
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, urlunparse
 import requests
 from bs4 import BeautifulSoup
 import util
@@ -31,26 +31,41 @@ except ImportError:
 MAX_REDIRECTS = 5
 
 
-def _resolved_ips_are_public(host):
-    """Resolve a hostname and ensure no address is private/loopback/internal.
+def _resolve_and_validate(host):
+    """Resolve a hostname once and ensure every A/AAAA record is public.
 
-    Returns (ok, reason). Blocks SSRF to the cloud metadata endpoint
+    Returns ``(ok, reason, ip_set, pinned_ip)``. ``ip_set`` is a frozenset of the
+    resolved address strings and ``pinned_ip`` is one validated address the caller
+    can connect to directly. Blocks SSRF to the cloud metadata endpoint
     (169.254.169.254), localhost, and RFC1918 / link-local / reserved ranges.
     """
     try:
         infos = socket.getaddrinfo(host, None)
     except socket.gaierror:
-        return False, f"Could not resolve host: {host}"
+        return False, f"Could not resolve host: {host}", frozenset(), None
+    ips = []
     for info in infos:
         ip_str = info[4][0]
         try:
             ip = ipaddress.ip_address(ip_str)
         except ValueError:
-            return False, f"Unresolvable address for host: {host}"
+            return False, f"Unresolvable address for host: {host}", frozenset(), None
         if (ip.is_private or ip.is_loopback or ip.is_link_local
                 or ip.is_reserved or ip.is_multicast or ip.is_unspecified):
-            return False, f"Refusing to fetch internal address {ip} (host {host})"
-    return True, None
+            return False, f"Refusing to fetch internal address {ip} (host {host})", frozenset(), None
+        ips.append(ip_str)
+    if not ips:
+        return False, f"Could not resolve host: {host}", frozenset(), None
+    return True, None, frozenset(ips), ips[0]
+
+
+def _resolved_ips_are_public(host):
+    """Resolve a hostname and ensure no address is private/loopback/internal.
+
+    Returns (ok, reason). Thin wrapper over :func:`_resolve_and_validate`.
+    """
+    ok, reason, _, _ = _resolve_and_validate(host)
+    return ok, reason
 
 
 def _validate_fetch_url(url):
@@ -63,12 +78,72 @@ def _validate_fetch_url(url):
     return _resolved_ips_are_public(parsed.hostname)
 
 
-def _get_with_retries(url, headers, timeout, retries=2, backoff=1.5):
+def _validate_and_pin(url):
+    """Validate scheme/host and resolve+validate the host in one place.
+
+    Returns ``(ok, reason, host, ip_set, pinned_ip)`` so the caller can connect
+    to the exact IP that was validated (closing the check-then-connect gap).
+    """
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        return False, f"Only http(s) URLs may be fetched (got '{parsed.scheme}')", None, frozenset(), None
+    host = parsed.hostname
+    if not host:
+        return False, "URL has no host", None, frozenset(), None
+    ok, reason, ip_set, pinned_ip = _resolve_and_validate(host)
+    return ok, reason, host, ip_set, pinned_ip
+
+
+class _PinnedIPAdapter(requests.adapters.HTTPAdapter):
+    """HTTPAdapter that connects to a pre-validated IP for a specific host.
+
+    Closes the SSRF DNS-rebinding (TOCTOU) gap in ``safe_get``: instead of letting
+    the transport resolve DNS a second, unchecked time, the socket connects to the
+    exact IP that the SSRF guard already validated as public. The original
+    hostname is preserved for the ``Host`` header, the TLS SNI (``server_hostname``)
+    and certificate hostname verification (``assert_hostname``), so normal HTTPS to
+    public hosts keeps working and certificates are still checked against the name.
+    """
+
+    def __init__(self, host, pinned_ip, **kwargs):
+        self._pinned_host = host
+        self._pinned_ip = pinned_ip
+        super().__init__(**kwargs)
+
+    def send(self, request, **kwargs):
+        parsed = urlparse(request.url)
+        if parsed.hostname == self._pinned_host:
+            ip = self._pinned_ip
+            # Bracket IPv6 literals for the URL netloc.
+            netloc_host = f"[{ip}]" if ":" in ip else ip
+            netloc = f"{netloc_host}:{parsed.port}" if parsed.port else netloc_host
+            request.url = urlunparse(parsed._replace(netloc=netloc))
+            # Preserve the real hostname for the Host header (urllib3 would
+            # otherwise derive it from the IP in the rewritten URL).
+            request.headers["Host"] = self._pinned_host
+            if parsed.scheme == "https":
+                # SNI + certificate hostname must match the real host, not the IP.
+                pool_kw = self.poolmanager.connection_pool_kw
+                pool_kw["server_hostname"] = self._pinned_host
+                pool_kw["assert_hostname"] = self._pinned_host
+        return super().send(request, **kwargs)
+
+
+def _build_pinned_session(host, pinned_ip):
+    """A one-host requests.Session whose connections are pinned to pinned_ip."""
+    session = requests.Session()
+    adapter = _PinnedIPAdapter(host, pinned_ip)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
+def _get_with_retries(session, url, headers, timeout, retries=2, backoff=1.5):
     """GET a single URL, retrying only transient network errors with backoff."""
     last_exc = None
     for attempt in range(retries + 1):
         try:
-            return requests.get(
+            return session.get(
                 url, headers=headers, timeout=timeout, allow_redirects=False
             )
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
@@ -84,13 +159,33 @@ def safe_get(url, headers, timeout=30):
     Never falls back to verify=False — TLS errors propagate. Redirects are
     followed manually so every hop's host is re-checked against the SSRF guard.
     Transient network errors are retried with backoff.
+
+    Each hop is resolved and validated, then the connection is *pinned* to the
+    validated IP so DNS is not resolved again on the wire (issue #74). As defense
+    in depth, the host is re-resolved and the fetch is rejected if its address set
+    changed between the check and the connect (a DNS-rebinding resolver).
     """
     current = url
     for _ in range(MAX_REDIRECTS + 1):
-        ok, reason = _validate_fetch_url(current)
+        ok, reason, host, ip_set, pinned_ip = _validate_and_pin(current)
         if not ok:
             raise ValueError(reason)
-        response = _get_with_retries(current, headers, timeout)
+        # Re-resolve and require an identical address set. This defeats a
+        # DNS-rebinding attacker that answers the validation with a public IP and
+        # the connect with an internal one: any change means we refuse to fetch.
+        ok2, reason2, ip_set2, _ = _resolve_and_validate(host)
+        if not ok2:
+            raise ValueError(reason2)
+        if ip_set != ip_set2:
+            raise ValueError(
+                f"Host {host} resolved to a different address set between "
+                f"validation and connect (possible DNS rebinding); refusing to fetch"
+            )
+        session = _build_pinned_session(host, pinned_ip)
+        try:
+            response = _get_with_retries(session, current, headers, timeout)
+        finally:
+            session.close()
         if response.is_redirect or response.status_code in (301, 302, 303, 307, 308):
             location = response.headers.get("Location")
             if not location:
