@@ -32,8 +32,17 @@ const DATE_RE =
   /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\s+(\d{1,2}),?\s+(\d{4})\b/g;
 const GALLERY_BLOCK_RE =
   /<!-- GALLERY_START -->([\s\S]*?)<!-- GALLERY_END -->/;
-const IMG_RE =
-  /<img\s+[^>]*src="([^"]+)"[^>]*alt="([^"]*)"[^>]*>/g;
+const IMG_TAG_RE = /<img\s+[^>]*>/gi;
+
+function parseImgAttributes(tag: string): { src: string; alt: string } | null {
+  const srcMatch = tag.match(/(?:^|\s)src="([^"]+)"/i);
+  if (!srcMatch) return null;
+  const altMatch = tag.match(/(?:^|\s)alt="([^"]*)"/i);
+  return {
+    src: srcMatch[1] ?? "",
+    alt: altMatch?.[1] || "Hackathon photo",
+  };
+}
 
 function parseStatus(cell: string): Status {
   if (cell.includes("CLOSING SOON")) return "CLOSING_SOON";
@@ -107,7 +116,7 @@ export function resolveAssetSrc(src: string): string {
 
   const relative = src.replace(/^\/+/, "");
   const localPath = path.join(REPO_ROOT, relative);
-  if (fs.existsSync(localPath)) {
+  if (relative.startsWith("assets/") && fs.existsSync(localPath)) {
     return `/repo-assets/${relative.replace(/^assets\//, "")}`;
   }
 
@@ -121,17 +130,19 @@ function extractStatsBannerSrc(markdown: string): string | null {
   return src ? resolveAssetSrc(src[1] ?? "") : null;
 }
 
-function extractGallery(markdown: string): GalleryPhoto[] {
+export function extractGallery(markdown: string): GalleryPhoto[] {
   const block = markdown.match(GALLERY_BLOCK_RE);
   if (!block) return [];
 
   const photos: GalleryPhoto[] = [];
   let m: RegExpExecArray | null;
-  const re = new RegExp(IMG_RE.source, "g");
+  const re = new RegExp(IMG_TAG_RE.source, "gi");
   while ((m = re.exec(block[1] ?? "")) !== null) {
+    const parsed = parseImgAttributes(m[0]);
+    if (!parsed) continue;
     photos.push({
-      src: resolveAssetSrc(m[1] ?? ""),
-      alt: m[2] || "Hackathon photo",
+      src: resolveAssetSrc(parsed.src),
+      alt: parsed.alt,
     });
   }
   return photos;

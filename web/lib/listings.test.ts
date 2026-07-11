@@ -113,6 +113,21 @@ describe("siteStats", () => {
     expect(stats.closingSoon).toBe(1);
     expect(stats.open).toBe(1);
   });
+
+  it.each([
+    [500, "$500+"],
+    [1, "$1+"],
+    [499, "$499+"],
+    [1_000, "$1K+"],
+    [1_999, "$1K+"],
+    [2_000_000, "$2M+"],
+  ])("formats prize total %i as %s", (prizeValue, expected) => {
+    expect(siteStats([hackStub({ prizeValue })]).prizeDisplay).toBe(expected);
+  });
+
+  it("shows $0+ when there is no prize value", () => {
+    expect(siteStats([hackStub({ prizeValue: 0 })]).prizeDisplay).toBe("$0+");
+  });
 });
 
 describe("parsePrizeValue", () => {

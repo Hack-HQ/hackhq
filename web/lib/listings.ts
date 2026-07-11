@@ -208,7 +208,11 @@ export function siteStats(list: Hackathon[]): SiteStats {
   const prizeDisplay =
     prizeTotal >= 1_000_000
       ? `$${(prizeTotal / 1_000_000).toFixed(1).replace(/\.0$/, "")}M+`
-      : `$${Math.round(prizeTotal / 1000)}K+`;
+      : prizeTotal >= 1_000
+        ? `$${Math.floor(prizeTotal / 1000)}K+`
+        : prizeTotal > 0
+          ? `$${prizeTotal.toLocaleString("en-US")}+`
+          : "$0+";
   return {
     total: list.length,
     open: live.filter((h) => h.state === "open" || h.state === "closing_soon").length,
