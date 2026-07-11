@@ -47,12 +47,12 @@ def parse_table(section_key: str, body: str):
     if len(lines) < 3:
         return []
 
-    headers = [h.strip() for h in lines[0].split("|")[1:-1]]
+    headers = util.split_table_cells(lines[0])
     data_lines = [l for l in lines[1:] if not re.match(r"^\|\s*-+", l.strip())]
 
     rows = []
     for line in data_lines:
-        cells = [c.strip() for c in line.split("|")[1:-1]]
+        cells = util.split_table_cells(line)
         if len(cells) != len(headers):
             continue
         row = dict(zip(headers, cells))

@@ -92,6 +92,14 @@ function cleanTitle(text: string): string {
     .trim();
 }
 
+/** Split a markdown table row on unescaped pipe delimiters. */
+function splitTableCells(line: string): string[] {
+  const inner = line.trim().replace(/^\|/, "").replace(/\|$/, "");
+  return inner
+    .split(/(?<!\\)\|/)
+    .map((s) => s.trim().replace(/\\\|/g, "|"));
+}
+
 /**
  * Featured flags come from the structured source of truth (listings.json),
  * not the README markup. This is the single place to swap to Supabase later:
@@ -176,10 +184,7 @@ function parseTableRows(
     .filter((l) => l.startsWith("|"));
   if (lines.length < 3) return [];
 
-  const headers = (lines[0] ?? "")
-    .split("|")
-    .slice(1, -1)
-    .map((s) => s.trim());
+  const headers = splitTableCells(lines[0] ?? "");
 
   const headerIdx = (...names: string[]) => {
     for (const name of names) {
@@ -205,7 +210,7 @@ function parseTableRows(
   const dataLines = lines.slice(1).filter((l) => !/^\|\s*-+/.test(l));
 
   return dataLines.map((line) => {
-    const cells = line.split("|").slice(1, -1).map((s) => s.trim());
+    const cells = splitTableCells(line);
     const get = (i: number) => (i >= 0 ? cells[i] || "" : "");
 
     const status = parseStatus(get(idx.status));

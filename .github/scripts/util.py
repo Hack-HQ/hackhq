@@ -169,6 +169,15 @@ def sanitize_table_cell(value):
     return value.strip()
 
 
+def split_table_cells(line):
+    """Split a markdown table row on unescaped pipe delimiters."""
+    text = line.strip().strip("|")
+    return [
+        c.strip().replace("\\|", "|")
+        for c in re.split(r"(?<!\\)\|", text)
+    ]
+
+
 def format_locations(locations):
     """Format location list for display."""
     if not locations:
