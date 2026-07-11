@@ -9,7 +9,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: add_opportunity
+  group: repo-writes
   cancel-in-progress: false
 
 jobs:
