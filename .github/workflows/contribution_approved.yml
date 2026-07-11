@@ -5,7 +5,7 @@ on:
     types: [labeled]
 
 concurrency:
-  group: add_opportunity
+  group: repo-writes
   cancel-in-progress: false
 
 permissions:
