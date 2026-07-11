@@ -6,6 +6,7 @@ import html
 import json
 import os
 import re
+import tempfile
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -44,9 +45,33 @@ def get_listings_from_json():
 
 
 def save_listings_to_json(listings):
-    """Save listings to the JSON file."""
-    with open(LISTINGS_FILE, "w") as f:
-        json.dump(listings, f, indent=2)
+    """Save listings to the JSON file atomically.
+
+    Serialize to a temp file in the same directory as listings.json, flush and
+    fsync it, then os.replace() it over the target. The replace is atomic on
+    POSIX, so a crash mid-write can never leave a half-written listings.json;
+    readers always see either the old file or the fully written new one. The
+    temp file is cleaned up if anything goes wrong.
+    """
+    directory = os.path.dirname(LISTINGS_FILE) or "."
+    tmp = tempfile.NamedTemporaryFile(
+        mode="w",
+        dir=directory,
+        prefix=".listings-",
+        suffix=".json.tmp",
+        delete=False,
+    )
+    try:
+        json.dump(listings, tmp, indent=2)
+        tmp.flush()
+        os.fsync(tmp.fileno())
+        tmp.close()
+        os.replace(tmp.name, LISTINGS_FILE)
+    except BaseException:
+        tmp.close()
+        if os.path.exists(tmp.name):
+            os.unlink(tmp.name)
+        raise
 
 
 def check_schema(listings):
