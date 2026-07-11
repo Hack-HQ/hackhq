@@ -13,7 +13,7 @@ export function GlobeHero() {
       video.pause();
       return;
     }
-    void video.play();
+    video.play().catch(() => {});
   }, []);
 
   return (
