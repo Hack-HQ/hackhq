@@ -41,8 +41,11 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md assets/hackathons-banner.svg
           git commit -m "chore: update closing-soon badges (${CHANGES:-0} changes)"
+          ok=false
           for i in 1 2 3; do
-            git fetch origin main && git rebase origin/main && git push origin main && break
-            echo "Push attempt $i failed, retrying..."
+            git fetch origin main || { sleep 2; continue; }
+            if git rebase origin/main && git push origin main; then ok=true; break; fi
+            git rebase --abort 2>/dev/null || true
             sleep 2
           done
+          $ok || { echo "::error::push failed after 3 attempts"; exit 1; }
