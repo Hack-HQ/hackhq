@@ -547,9 +547,7 @@
     "date_posted": 1783105200,
     "date_updated": 1783105200,
     "source": "akeight"
-  }
-
-,
+  },
   {
     "id": "b703a6ab-c107-4bab-808f-076e0ec65afa",
     "company_name": "UCLA",
@@ -756,5 +754,124 @@
     "date_posted": 1783726800,
     "date_updated": 1783726800,
     "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "7f558665-234c-40ff-8ae4-35f4999123d3",
+    "company_name": "Rensselaer Polytechnic Institute",
+    "title": "HackRPI 2026 (Intercollegiate Hackathon; Registration Open)",
+    "url": "https://hackrpi.com/",
+    "locations": [
+      "Troy, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "7f7e5157-6738-420b-841d-a1b019b14000",
+    "company_name": "Stony Brook University",
+    "title": "SBUHacks (Collegiate Hackathon; Applications Coming Soon)",
+    "url": "https://hack.sbcs.io/",
+    "locations": [
+      "Stony Brook, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "91e1f610-aacd-4c73-9563-09968fd9dc7d",
+    "company_name": "New Jersey Institute of Technology",
+    "title": "GirlHacks 2026 (Women in Computing Hackathon; Registration Open)",
+    "url": "https://www.njitgirlhacks.com/",
+    "locations": [
+      "Newark, NJ"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "0b3da014-fca8-4d8a-990c-dcc4da60363e",
+    "company_name": "Cornell University",
+    "title": "BigRed//Hacks 2026 (Collegiate Hackathon; Applications Coming Soon)",
+    "url": "https://www.bigredhacks.com/",
+    "locations": [
+      "Ithaca, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "e7bd9721-b790-4110-9afd-a42e8aa6dc0a",
+    "company_name": "Columbia University",
+    "title": "DivHacks 2026 (Collegiate Hackathon; Registration Open)",
+    "url": "https://www.columbiadivhacks.org/",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "Hybrid",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "3f098796-acad-4fdf-83a3-c0406f446bcb",
+    "company_name": "Florida International University",
+    "title": "ShellHacks 2026 (Florida's Largest Hackathon; Applications Coming Soon)",
+    "url": "https://shellhacks.net/",
+    "locations": [
+      "Miami, FL"
+    ],
+    "format": "In-Person",
+    "prize": "$20,000 in prizes",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "24255447-911f-4807-886c-605b7fe5072b",
+    "company_name": "University of Pittsburgh",
+    "title": "SteelHacks XIII (Student Hackathon; Applications Coming Soon)",
+    "url": "https://steelhacks.org/",
+    "locations": [
+      "Pittsburgh, PA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
   }
 ]
