@@ -86,20 +86,38 @@ def save_listings_to_json(listings):
 
 
 def check_schema(listings):
-    """Validate that all listings have required fields."""
+    """Validate that all listings have required fields.
+
+    Collect every problem across all listings and report them together in a
+    single raised ValueError, rather than failing on the first bad entry. That
+    way one malformed listing doesn't mask the others or block regeneration of
+    the README/banner/gallery for the good ones. Returns True when all listings
+    are valid.
+    """
+    errors = []
     for listing in listings:
-        for field in REQUIRED_FIELDS:
-            if field not in listing:
-                raise ValueError(f"Listing {listing.get('id', 'unknown')} missing field: {field}")
+        listing_id = listing.get("id", "unknown")
+        missing = [field for field in REQUIRED_FIELDS if field not in listing]
+        if missing:
+            errors.append(
+                f"Listing {listing_id} missing field(s): {', '.join(missing)}"
+            )
         deadline = listing.get("deadline")
         if deadline is not None:
-            parse_deadline_date(deadline)
+            try:
+                parse_deadline_date(deadline)
+            except ValueError as e:
+                errors.append(f"Listing {listing_id} has invalid deadline: {e}")
         featured = listing.get("featured")
         if featured is not None and not isinstance(featured, bool):
-            raise ValueError(
-                f"Listing {listing.get('id', 'unknown')} has invalid 'featured' "
+            errors.append(
+                f"Listing {listing_id} has invalid 'featured' "
                 f"(expected boolean, got {type(featured).__name__})"
             )
+    if errors:
+        raise ValueError(
+            f"Found {len(errors)} invalid listing(s):\n" + "\n".join(errors)
+        )
     return True
 
 
