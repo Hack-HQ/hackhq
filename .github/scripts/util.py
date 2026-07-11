@@ -235,10 +235,12 @@ def format_website_link(url):
 
 def resolve_state(listing):
     """Return one of 'open', 'opens_soon', 'closed' for a listing."""
+    if listing.get("active") is False:
+        return "closed"
     state = listing.get("state")
     if state in ("open", "opens_soon", "closed"):
         return state
-    return "open" if listing.get("active", True) else "closed"
+    return "open"
 
 
 def format_date(timestamp):
