@@ -78,11 +78,37 @@ def _validate_fetch_url(url):
     return _resolved_ips_are_public(parsed.hostname)
 
 
+def _idna_ascii(host):
+    """Return the ASCII (IDNA/punycode) form of ``host``.
+
+    ``requests`` IDNA-encodes a non-ASCII host to punycode when it prepares the
+    URL it actually puts on the wire, so the pinned host must be stored and
+    compared in that same ASCII form. Otherwise an internationalized (Unicode)
+    hostname would never equal ``urlparse(request.url).hostname`` inside the
+    adapter, the pin would be skipped, and the transport would re-resolve DNS
+    unchecked — the exact DNS-rebinding hole this guard closes. Raises
+    ``ValueError`` on an invalid international label (fail closed).
+    """
+    host = host.lower()
+    try:
+        host.encode("ascii")
+        return host  # already ASCII — requests leaves it unchanged
+    except UnicodeEncodeError:
+        pass
+    try:
+        import idna  # requests' own IDNA dependency; matches its uts46 encoding
+        return idna.encode(host, uts46=True).decode("ascii")
+    except Exception as e:
+        raise ValueError(f"URL has an invalid international host label: {host!r}") from e
+
+
 def _validate_and_pin(url):
     """Validate scheme/host and resolve+validate the host in one place.
 
     Returns ``(ok, reason, host, ip_set, pinned_ip)`` so the caller can connect
-    to the exact IP that was validated (closing the check-then-connect gap).
+    to the exact IP that was validated (closing the check-then-connect gap). The
+    returned ``host`` is normalized to its ASCII (IDNA) form so it matches the
+    host ``requests`` will send, and so resolution and pinning use one identity.
     """
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https"):
@@ -90,6 +116,10 @@ def _validate_and_pin(url):
     host = parsed.hostname
     if not host:
         return False, "URL has no host", None, frozenset(), None
+    try:
+        host = _idna_ascii(host)
+    except ValueError as e:
+        return False, str(e), None, frozenset(), None
     ok, reason, ip_set, pinned_ip = _resolve_and_validate(host)
     return ok, reason, host, ip_set, pinned_ip
 
@@ -112,20 +142,27 @@ class _PinnedIPAdapter(requests.adapters.HTTPAdapter):
 
     def send(self, request, **kwargs):
         parsed = urlparse(request.url)
-        if parsed.hostname == self._pinned_host:
-            ip = self._pinned_ip
-            # Bracket IPv6 literals for the URL netloc.
-            netloc_host = f"[{ip}]" if ":" in ip else ip
-            netloc = f"{netloc_host}:{parsed.port}" if parsed.port else netloc_host
-            request.url = urlunparse(parsed._replace(netloc=netloc))
-            # Preserve the real hostname for the Host header (urllib3 would
-            # otherwise derive it from the IP in the rewritten URL).
-            request.headers["Host"] = self._pinned_host
-            if parsed.scheme == "https":
-                # SNI + certificate hostname must match the real host, not the IP.
-                pool_kw = self.poolmanager.connection_pool_kw
-                pool_kw["server_hostname"] = self._pinned_host
-                pool_kw["assert_hostname"] = self._pinned_host
+        if parsed.hostname != self._pinned_host:
+            # Fail closed. Forwarding a request whose host is not the one we
+            # validated and pinned (e.g. an IDNA-encoding mismatch) would let the
+            # transport resolve DNS a second, unchecked time — the TOCTOU hole.
+            raise ValueError(
+                f"Refusing to fetch: request host {parsed.hostname!r} does not "
+                f"match the validated pinned host {self._pinned_host!r}"
+            )
+        ip = self._pinned_ip
+        # Bracket IPv6 literals for the URL netloc.
+        netloc_host = f"[{ip}]" if ":" in ip else ip
+        netloc = f"{netloc_host}:{parsed.port}" if parsed.port else netloc_host
+        request.url = urlunparse(parsed._replace(netloc=netloc))
+        # Preserve the real hostname for the Host header (urllib3 would
+        # otherwise derive it from the IP in the rewritten URL).
+        request.headers["Host"] = self._pinned_host
+        if parsed.scheme == "https":
+            # SNI + certificate hostname must match the real host, not the IP.
+            pool_kw = self.poolmanager.connection_pool_kw
+            pool_kw["server_hostname"] = self._pinned_host
+            pool_kw["assert_hostname"] = self._pinned_host
         return super().send(request, **kwargs)
 
 

@@ -211,6 +211,52 @@ class SsrfDnsRebinding(unittest.TestCase):
         self.assertEqual(pool_kw["server_hostname"], "good.example")
         self.assertEqual(pool_kw["assert_hostname"], "good.example")
 
+    def test_idna_ascii_normalizes_unicode_host(self):
+        # requests puts the punycode form on the wire, so the pin must be stored
+        # in that same ASCII form or an IDN host silently bypasses the guard.
+        self.assertEqual(ax._idna_ascii("münchen.de"), "xn--mnchen-3ya.de")
+        self.assertEqual(ax._idna_ascii("EXAMPLE.com"), "example.com")  # ascii, lowercased
+        with self.assertRaises(ValueError):
+            ax._idna_ascii("ÿ" * 100)  # invalid (over-long) international label
+
+    def test_validate_and_pin_normalizes_idn_host(self):
+        # An internationalized hostname is normalized to punycode before resolve
+        # and pin, so the adapter's later comparison against the (punycode) request
+        # URL matches and the connection is actually pinned rather than bypassed.
+        with mock.patch(
+            "auto_extract.socket.getaddrinfo",
+            return_value=self._addrinfo("93.184.216.34"),
+        ):
+            ok, reason, host, ip_set, pinned = ax._validate_and_pin("http://münchen.de/")
+        self.assertTrue(ok, reason)
+        self.assertEqual(host, "xn--mnchen-3ya.de")
+
+    def test_safe_get_pins_idn_host_not_bypassed(self):
+        # Full path: an IDN host must be fetched through a session pinned to the
+        # punycode host, not forwarded unpinned (which re-resolves DNS on the wire).
+        fake = mock.Mock(is_redirect=False, status_code=200)
+        with mock.patch(
+            "auto_extract.socket.getaddrinfo",
+            return_value=self._addrinfo("93.184.216.34"),
+        ), mock.patch("auto_extract._get_with_retries", return_value=fake) as get:
+            ax.safe_get("http://münchen.de/path", headers={})
+        session = get.call_args[0][0]
+        adapter = session.get_adapter("http://xn--mnchen-3ya.de/path")
+        self.assertIsInstance(adapter, ax._PinnedIPAdapter)
+        self.assertEqual(adapter._pinned_host, "xn--mnchen-3ya.de")
+
+    def test_adapter_fails_closed_on_host_mismatch(self):
+        # If the prepared request's host is not the pinned host, the adapter must
+        # refuse rather than forward it unpinned (the fail-open TOCTOU hole).
+        adapter = ax._PinnedIPAdapter("good.example", "93.184.216.34")
+        prepared = requests.Request(
+            "GET", "https://evil.example/path", headers={"User-Agent": "x"}
+        ).prepare()
+        with mock.patch("requests.adapters.HTTPAdapter.send", return_value="sent") as send:
+            with self.assertRaises(ValueError):
+                adapter.send(prepared)
+        send.assert_not_called()
+
 
 class DeadlineWatcherRules(unittest.TestCase):
     def _base(self, **over):
