@@ -86,7 +86,11 @@ def update_row(row: str, today: datetime):
     # named "cuHacking 2026 — Jul 10 – Jul 12, 2026" with a "—" Deadline) or the
     # trailing "Date Posted" cell, and mistakes it for a registration deadline
     # (issue #70).
-    cells = [c.strip() for c in row.strip().strip("|").split("|")]
+    # Split on unescaped pipes only: sanitize_table_cell escapes a literal "|"
+    # inside a cell as "\|", and splitting on that would shift the Deadline out
+    # of DEADLINE_COL. Separator pipes are always space-padded ("| "), so a "\|"
+    # (backslash immediately before the pipe) is unambiguously an escaped value.
+    cells = [c.strip() for c in re.split(r"(?<!\\)\|", row.strip().strip("|"))]
     if len(cells) <= DEADLINE_COL:
         return row, False
     deadline_cell = cells[DEADLINE_COL]

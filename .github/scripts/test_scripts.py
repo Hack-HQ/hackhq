@@ -360,6 +360,21 @@ class ClosingSoonDeadlineCell(unittest.TestCase):
         self.assertFalse(changed)
         self.assertEqual(new_row, row)
 
+    def test_escaped_pipe_in_cell_does_not_shift_deadline_column(self):
+        # A literal "|" in a cell is escaped as "\|" by sanitize_table_cell.
+        # Splitting on it would push the Deadline out of column 6 and misread the
+        # badge. The Host cell holds "Foo \| Bar"; the real Deadline (Jul 15, 4
+        # days out) must still be read and flip the row to CLOSING SOON.
+        row = (
+            "| ✅ **[OPEN]** | Foo \\| Bar | Some Hack — Aug 20, 2026 | Online | "
+            "Remote | $10k | Jul 15, 2026 | "
+            '<a href="https://example.org">Register</a> | Jul 01, 2026 |'
+        )
+        new_row, changed = cs.update_row(row, self.TODAY)
+        self.assertTrue(changed)
+        self.assertIn(cs.CLOSING, new_row)
+        self.assertNotIn(cs.OPEN, new_row)
+
 
 if __name__ == "__main__":
     unittest.main()
