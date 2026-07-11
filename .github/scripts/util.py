@@ -85,35 +85,56 @@ def save_listings_to_json(listings):
         raise
 
 
+def _listing_errors(listing):
+    """Return a list of schema-error messages for one listing (empty if valid)."""
+    errors = []
+    listing_id = listing.get("id", "unknown")
+    missing = [field for field in REQUIRED_FIELDS if field not in listing]
+    if missing:
+        errors.append(f"Listing {listing_id} missing field(s): {', '.join(missing)}")
+    deadline = listing.get("deadline")
+    if deadline is not None:
+        try:
+            parse_deadline_date(deadline)
+        except ValueError as e:
+            errors.append(f"Listing {listing_id} has invalid deadline: {e}")
+    featured = listing.get("featured")
+    if featured is not None and not isinstance(featured, bool):
+        errors.append(
+            f"Listing {listing_id} has invalid 'featured' "
+            f"(expected boolean, got {type(featured).__name__})"
+        )
+    return errors
+
+
+def partition_valid_listings(listings):
+    """Split ``listings`` into ``(valid, errors)`` without raising.
+
+    ``valid`` is the listings that pass schema validation; ``errors`` is a flat
+    list of human-readable messages for every problem found across all listings.
+    This lets a consumer regenerate output from the good listings while surfacing
+    the bad ones, so one malformed entry can't block the whole build.
+    """
+    valid = []
+    errors = []
+    for listing in listings:
+        listing_errors = _listing_errors(listing)
+        if listing_errors:
+            errors.extend(listing_errors)
+        else:
+            valid.append(listing)
+    return valid, errors
+
+
 def check_schema(listings):
     """Validate that all listings have required fields.
 
-    Collect every problem across all listings and report them together in a
-    single raised ValueError, rather than failing on the first bad entry. That
-    way one malformed listing doesn't mask the others or block regeneration of
-    the README/banner/gallery for the good ones. Returns True when all listings
-    are valid.
+    Collects every problem across all listings and reports them together in a
+    single raised ValueError, rather than failing on the first bad entry. Returns
+    True when all listings are valid. For non-fatal regeneration that skips only
+    the malformed rows, use :func:`partition_valid_listings` instead.
     """
-    errors = []
-    for listing in listings:
-        listing_id = listing.get("id", "unknown")
-        missing = [field for field in REQUIRED_FIELDS if field not in listing]
-        if missing:
-            errors.append(
-                f"Listing {listing_id} missing field(s): {', '.join(missing)}"
-            )
-        deadline = listing.get("deadline")
-        if deadline is not None:
-            try:
-                parse_deadline_date(deadline)
-            except ValueError as e:
-                errors.append(f"Listing {listing_id} has invalid deadline: {e}")
-        featured = listing.get("featured")
-        if featured is not None and not isinstance(featured, bool):
-            errors.append(
-                f"Listing {listing_id} has invalid 'featured' "
-                f"(expected boolean, got {type(featured).__name__})"
-            )
+    _, errors = partition_valid_listings(listings)
     if errors:
         raise ValueError(
             f"Found {len(errors)} invalid listing(s):\n" + "\n".join(errors)

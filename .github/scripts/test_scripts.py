@@ -231,6 +231,45 @@ class CheckSchemaCollectsAll(unittest.TestCase):
         self.assertIn("prize", msg)
         self.assertNotIn("good", msg)
 
+    def test_partition_splits_valid_and_errors(self):
+        good = self._valid(id="good")
+        bad = self._valid(id="bad")
+        del bad["url"]
+        valid, errors = util.partition_valid_listings([good, bad])
+        self.assertEqual(valid, [good])
+        self.assertTrue(any("bad" in e and "url" in e for e in errors))
+
+
+class UpdateReadmesSkipsBadRows(unittest.TestCase):
+    """A single malformed listing must not block regeneration (issue #75 AC#4)."""
+
+    def _valid(self, **over):
+        listing = {field: "x" for field in util.REQUIRED_FIELDS}
+        listing.update(over)
+        return listing
+
+    def test_one_bad_listing_does_not_block_regeneration(self):
+        import update_readmes
+        good = self._valid(
+            id="good", company_name="Good Co", title="Good Hack",
+            date_posted=1783771200, locations=["Troy, NY"], state="open",
+        )
+        bad = self._valid(id="bad")
+        del bad["url"]  # missing a required field
+        with mock.patch.object(util, "get_listings_from_json", return_value=[good, bad]), \
+                mock.patch.object(util, "embed_table") as embed, \
+                mock.patch.object(util, "set_output"), \
+                mock.patch("generate_banner.main"), \
+                mock.patch("generate_gallery.main"), \
+                mock.patch.object(util, "warn") as warn:
+            update_readmes.main()
+        # Regeneration ran for the good listing despite the bad one (no hard fail).
+        embed.assert_called_once()
+        table = embed.call_args[0][1]
+        self.assertIn("Good Hack", table)
+        # The malformed listing surfaced as a warning, not an abort.
+        self.assertTrue(any("bad" in str(c) for c in warn.call_args_list))
+
 
 if __name__ == "__main__":
     unittest.main()
