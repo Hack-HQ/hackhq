@@ -37,11 +37,22 @@ VALID_FORMATS = ["In-Person", "Virtual", "Hybrid"]
 
 
 def get_listings_from_json():
-    """Load listings from the JSON file."""
+    """Load listings from the JSON file.
+
+    Returns [] when the file is absent. Raises a clear ValueError (naming the
+    file and the failing line/column/byte offset) when the file exists but is
+    corrupt, instead of letting a raw JSONDecodeError traceback escape.
+    """
     if not os.path.exists(LISTINGS_FILE):
         return []
     with open(LISTINGS_FILE, "r") as f:
-        return json.load(f)
+        try:
+            return json.load(f)
+        except json.JSONDecodeError as e:
+            raise ValueError(
+                f"{LISTINGS_FILE} is not valid JSON: {e.msg} "
+                f"(line {e.lineno}, column {e.colno}, byte offset {e.pos})"
+            ) from e
 
 
 def save_listings_to_json(listings):
