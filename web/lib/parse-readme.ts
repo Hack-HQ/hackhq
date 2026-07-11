@@ -10,8 +10,21 @@ import {
 } from "./types";
 import { REPO_RAW_BASE } from "./repo";
 
-const README_PATH = path.join(process.cwd(), "..", "README.md");
-const REPO_ROOT = path.join(process.cwd(), "..");
+// The README and listings.json live at the repo root, one level ABOVE this
+// Next.js project (web/). Turbopack's NFT file tracer can't follow reads that
+// climb out of the project via `..`, so a plain `fs` read rooted here makes it
+// give up and trace the ENTIRE repo into the serverless bundle — surfacing the
+// "whole project was traced unintentionally" build warning (#77 item 5) with
+// web/next.config.ts as the canary unexpected file.
+//
+// These two data files are instead bundled deterministically via
+// `outputFileTracingIncludes` in next.config.ts, so the tracer does not need to
+// discover them. We mark `process.cwd()` opaque with `turbopackIgnore` here so
+// every path derived from REPO_ROOT is unknown at trace time and nothing under
+// the repo root gets pulled in. This is trace-time only — at runtime
+// `process.cwd()` still resolves normally and the reads work as before.
+const REPO_ROOT = path.join(/*turbopackIgnore: true*/ process.cwd(), "..");
+const README_PATH = path.join(REPO_ROOT, "README.md");
 const LISTINGS_PATH = path.join(
   REPO_ROOT,
   ".github",
@@ -86,7 +99,7 @@ function cleanTitle(text: string): string {
  */
 function loadFeaturedUrls(): Set<string> {
   try {
-    const raw = fs.readFileSync(LISTINGS_PATH, "utf-8");
+    const raw = fs.readFileSync(/*turbopackIgnore: true*/ LISTINGS_PATH, "utf-8");
     const listings = JSON.parse(raw) as Array<{
       url?: string;
       featured?: boolean;
@@ -115,8 +128,11 @@ export function resolveAssetSrc(src: string): string {
   if (src.startsWith("http://") || src.startsWith("https://")) return src;
 
   const relative = src.replace(/^\/+/, "");
-  const localPath = path.join(REPO_ROOT, relative);
-  if (relative.startsWith("assets/") && fs.existsSync(localPath)) {
+  const localPath = path.join(/*turbopackIgnore: true*/ REPO_ROOT, relative);
+  if (
+    relative.startsWith("assets/") &&
+    fs.existsSync(/*turbopackIgnore: true*/ localPath)
+  ) {
     return `/repo-assets/${relative.replace(/^assets\//, "")}`;
   }
 
@@ -246,7 +262,7 @@ const SECTION_ALIAS: Record<string, Section> = {
  */
 function readReadme(): string {
   try {
-    return fs.readFileSync(README_PATH, "utf-8");
+    return fs.readFileSync(/*turbopackIgnore: true*/ README_PATH, "utf-8");
   } catch (err) {
     console.error(`[parse-readme] could not read ${README_PATH}:`, err);
     throw err;
