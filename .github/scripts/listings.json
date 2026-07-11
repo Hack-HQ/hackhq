@@ -584,7 +584,7 @@
     "date_posted": 1783666800,
     "date_updated": 1783666800,
     "source": "Tenz1ng"
-  }, 
+  },
   {
     "id": "4dcf8a02-80eb-4943-a22c-5ee51e7660d1",
     "company_name": "University of Michigan Dearborn",
@@ -624,7 +624,7 @@
   {
     "id": "6e9591fd-add1-4e0f-90ea-5002c3fc6c9b",
     "company_name": "HackHarvard",
-    "title": "HackHarvard 2026 \u2014 Oct 16\u201318, 2026",
+    "title": "HackHarvard 2026 (Student Hackathon; Applications Coming Soon)",
     "url": "https://hackharvard.io/",
     "locations": [
       "Cambridge, MA"
@@ -641,7 +641,7 @@
   {
     "id": "27b4386f-3867-46e2-a685-b9cf40ad5453",
     "company_name": "DubHacks",
-    "title": "DubHacks 2026 \u2014 Oct 17\u201318, 2026",
+    "title": "DubHacks 2026 (Collegiate Hackathon; Applications Coming Soon)",
     "url": "https://dubhacks.co/",
     "locations": [
       "Seattle, WA"
@@ -658,7 +658,7 @@
   {
     "id": "668030a6-6da3-45b9-afea-9640ce79a34d",
     "company_name": "Hack the Valley",
-    "title": "Hack the Valley 11 \u2014 Oct 16\u201318, 2026",
+    "title": "Hack the Valley 11 (Pre-Registration Open)",
     "url": "https://hackthevalley.io/",
     "locations": [
       "Toronto, ON"
@@ -675,7 +675,7 @@
   {
     "id": "50cb89da-27df-43aa-b3ee-2fe2bc0c22dd",
     "company_name": "HackNC",
-    "title": "HackNC 2026",
+    "title": "HackNC 2026 (Student Hackathon; Interest Form Open)",
     "url": "https://hacknc.com/",
     "locations": [
       "Chapel Hill, NC"
@@ -692,7 +692,7 @@
   {
     "id": "8dd82be1-13a4-4651-b89d-36ba8ae35d5f",
     "company_name": "McMaster University",
-    "title": "DeltaHacks 13 \u2014 Jan 9\u201310, 2027",
+    "title": "DeltaHacks 13 (Student Hackathon; Interest Form Open)",
     "url": "https://www.deltahacks.com/",
     "locations": [
       "Hamilton, ON"
@@ -709,7 +709,7 @@
   {
     "id": "632953bb-00f6-4a0f-aa8f-383ef624a36a",
     "company_name": "nwPlus",
-    "title": "nwHacks 2027 \u2014 Jan 16\u201317, 2027",
+    "title": "nwHacks 2027 (Student Hackathon; Applications Coming Soon)",
     "url": "https://nwhacks.io/",
     "locations": [
       "Vancouver, BC"
@@ -726,7 +726,7 @@
   {
     "id": "5c02aeb4-e812-4535-af24-d11b35f44d40",
     "company_name": "Hack@Brown",
-    "title": "Hack@Brown 2027 \u2014 Feb 6\u20137, 2027",
+    "title": "Hack@Brown 2027 (Student Hackathon; Applications Coming Soon)",
     "url": "https://hackatbrown.org/",
     "locations": [
       "Providence, RI"
@@ -743,7 +743,7 @@
   {
     "id": "80a97e38-1adf-4fc1-9781-59cfa558f330",
     "company_name": "University of Toronto",
-    "title": "UofTHacks 14 \u2014 Jan 2027",
+    "title": "UofTHacks 14 (Student Hackathon; Next Cycle January 2027)",
     "url": "https://uofthacks.com/",
     "locations": [
       "Toronto, ON"
