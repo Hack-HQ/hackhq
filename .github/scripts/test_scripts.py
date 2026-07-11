@@ -6,10 +6,14 @@ Covers the core parsing/validation helpers with happy-path + malformed input.
 
 import json
 import os
+import socket
 import tempfile
 import unittest
 from datetime import date, datetime
 from unittest import mock
+from urllib.parse import urlparse
+
+import requests
 
 import util
 import auto_extract as ax
@@ -131,6 +135,81 @@ class SsrfGuard(unittest.TestCase):
     def test_rejects_non_http_scheme(self):
         ok, _ = ax._validate_fetch_url("file:///etc/passwd")
         self.assertFalse(ok)
+
+
+class SsrfDnsRebinding(unittest.TestCase):
+    """Regression tests for the check-then-connect (TOCTOU) SSRF gap, issue #74."""
+
+    @staticmethod
+    def _addrinfo(ip):
+        """A getaddrinfo-shaped result for a single address."""
+        family = socket.AF_INET6 if ":" in ip else socket.AF_INET
+        return [(family, socket.SOCK_STREAM, 6, "", (ip, 0))]
+
+    def test_rejects_rebind_to_private_ip(self):
+        # Resolver answers the validation with a public IP and the re-check with
+        # the cloud metadata endpoint: the fetch must be refused, never performed.
+        with mock.patch(
+            "auto_extract.socket.getaddrinfo",
+            side_effect=[self._addrinfo("93.184.216.34"), self._addrinfo("169.254.169.254")],
+        ) as m:
+            with self.assertRaises(ValueError):
+                ax.safe_get("https://victim.example", headers={})
+        # Only the two resolver calls happened — no socket connection was attempted.
+        self.assertEqual(m.call_count, 2)
+
+    def test_rejects_address_set_change_between_check_and_connect(self):
+        # Even when both answers are public, a changed address set means the host
+        # rebound between check and connect, so we refuse rather than connect.
+        with mock.patch(
+            "auto_extract.socket.getaddrinfo",
+            side_effect=[self._addrinfo("93.184.216.34"), self._addrinfo("203.0.113.7")],
+        ) as m:
+            with self.assertRaises(ValueError):
+                ax.safe_get("https://victim.example", headers={})
+        self.assertEqual(m.call_count, 2)
+
+    def test_validate_and_pin_accepts_stable_public_ip(self):
+        with mock.patch(
+            "auto_extract.socket.getaddrinfo",
+            return_value=self._addrinfo("93.184.216.34"),
+        ):
+            ok, reason, host, ip_set, pinned = ax._validate_and_pin("https://good.example/path")
+        self.assertTrue(ok, reason)
+        self.assertEqual(host, "good.example")
+        self.assertEqual(pinned, "93.184.216.34")
+        self.assertIn("93.184.216.34", ip_set)
+
+    def test_safe_get_pins_stable_public_ip(self):
+        # A stable public IP passes the guard: safe_get builds a pinned session
+        # and performs the fetch (transport mocked so no real network I/O).
+        fake = mock.Mock(is_redirect=False, status_code=200)
+        with mock.patch(
+            "auto_extract.socket.getaddrinfo",
+            return_value=self._addrinfo("93.184.216.34"),
+        ), mock.patch("auto_extract._get_with_retries", return_value=fake) as get:
+            out = ax.safe_get("https://good.example/path", headers={})
+        self.assertIs(out, fake)
+        session = get.call_args[0][0]
+        adapter = session.get_adapter("https://good.example/path")
+        self.assertIsInstance(adapter, ax._PinnedIPAdapter)
+
+    def test_adapter_dials_ip_but_keeps_host_and_sni(self):
+        # The connection is dialed at the validated IP, while the Host header, TLS
+        # SNI and certificate hostname stay bound to the original hostname.
+        adapter = ax._PinnedIPAdapter("good.example", "93.184.216.34")
+        prepared = requests.Request(
+            "GET", "https://good.example/path", headers={"User-Agent": "x"}
+        ).prepare()
+        with mock.patch("requests.adapters.HTTPAdapter.send", return_value="sent") as send:
+            out = adapter.send(prepared)
+        self.assertEqual(out, "sent")
+        dialed = send.call_args[0][0]
+        self.assertEqual(urlparse(dialed.url).hostname, "93.184.216.34")
+        self.assertEqual(dialed.headers["Host"], "good.example")
+        pool_kw = adapter.poolmanager.connection_pool_kw
+        self.assertEqual(pool_kw["server_hostname"], "good.example")
+        self.assertEqual(pool_kw["assert_hostname"], "good.example")
 
 
 class DeadlineWatcherRules(unittest.TestCase):
