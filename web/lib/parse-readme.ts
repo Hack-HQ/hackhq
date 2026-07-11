@@ -99,7 +99,7 @@ function cleanTitle(text: string): string {
  */
 function loadFeaturedUrls(): Set<string> {
   try {
-    const raw = fs.readFileSync(LISTINGS_PATH, "utf-8");
+    const raw = fs.readFileSync(/*turbopackIgnore: true*/ LISTINGS_PATH, "utf-8");
     const listings = JSON.parse(raw) as Array<{
       url?: string;
       featured?: boolean;
@@ -128,8 +128,11 @@ export function resolveAssetSrc(src: string): string {
   if (src.startsWith("http://") || src.startsWith("https://")) return src;
 
   const relative = src.replace(/^\/+/, "");
-  const localPath = path.join(REPO_ROOT, relative);
-  if (relative.startsWith("assets/") && fs.existsSync(localPath)) {
+  const localPath = path.join(/*turbopackIgnore: true*/ REPO_ROOT, relative);
+  if (
+    relative.startsWith("assets/") &&
+    fs.existsSync(/*turbopackIgnore: true*/ localPath)
+  ) {
     return `/repo-assets/${relative.replace(/^assets\//, "")}`;
   }
 
@@ -259,7 +262,7 @@ const SECTION_ALIAS: Record<string, Section> = {
  */
 function readReadme(): string {
   try {
-    return fs.readFileSync(README_PATH, "utf-8");
+    return fs.readFileSync(/*turbopackIgnore: true*/ README_PATH, "utf-8");
   } catch (err) {
     console.error(`[parse-readme] could not read ${README_PATH}:`, err);
     throw err;
