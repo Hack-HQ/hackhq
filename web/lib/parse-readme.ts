@@ -35,9 +35,9 @@ const GALLERY_BLOCK_RE =
 const IMG_TAG_RE = /<img\s+[^>]*>/gi;
 
 function parseImgAttributes(tag: string): { src: string; alt: string } | null {
-  const srcMatch = tag.match(/\bsrc="([^"]+)"/i);
+  const srcMatch = tag.match(/(?:^|\s)src="([^"]+)"/i);
   if (!srcMatch) return null;
-  const altMatch = tag.match(/\balt="([^"]*)"/i);
+  const altMatch = tag.match(/(?:^|\s)alt="([^"]*)"/i);
   return {
     src: srcMatch[1] ?? "",
     alt: altMatch?.[1] || "Hackathon photo",
