@@ -6,6 +6,7 @@ import html
 import json
 import os
 import re
+import tempfile
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -36,34 +37,108 @@ VALID_FORMATS = ["In-Person", "Virtual", "Hybrid"]
 
 
 def get_listings_from_json():
-    """Load listings from the JSON file."""
+    """Load listings from the JSON file.
+
+    Returns [] when the file is absent. Raises a clear ValueError (naming the
+    file and the failing line/column/byte offset) when the file exists but is
+    corrupt, instead of letting a raw JSONDecodeError traceback escape.
+    """
     if not os.path.exists(LISTINGS_FILE):
         return []
     with open(LISTINGS_FILE, "r") as f:
-        return json.load(f)
+        try:
+            return json.load(f)
+        except json.JSONDecodeError as e:
+            raise ValueError(
+                f"{LISTINGS_FILE} is not valid JSON: {e.msg} "
+                f"(line {e.lineno}, column {e.colno}, byte offset {e.pos})"
+            ) from e
 
 
 def save_listings_to_json(listings):
-    """Save listings to the JSON file."""
-    with open(LISTINGS_FILE, "w") as f:
-        json.dump(listings, f, indent=2)
+    """Save listings to the JSON file atomically.
+
+    Serialize to a temp file in the same directory as listings.json, flush and
+    fsync it, then os.replace() it over the target. The replace is atomic on
+    POSIX, so a crash mid-write can never leave a half-written listings.json;
+    readers always see either the old file or the fully written new one. The
+    temp file is cleaned up if anything goes wrong.
+    """
+    directory = os.path.dirname(LISTINGS_FILE) or "."
+    tmp = tempfile.NamedTemporaryFile(
+        mode="w",
+        dir=directory,
+        prefix=".listings-",
+        suffix=".json.tmp",
+        delete=False,
+    )
+    try:
+        json.dump(listings, tmp, indent=2)
+        tmp.flush()
+        os.fsync(tmp.fileno())
+        tmp.close()
+        os.replace(tmp.name, LISTINGS_FILE)
+    except BaseException:
+        tmp.close()
+        if os.path.exists(tmp.name):
+            os.unlink(tmp.name)
+        raise
+
+
+def _listing_errors(listing):
+    """Return a list of schema-error messages for one listing (empty if valid)."""
+    errors = []
+    listing_id = listing.get("id", "unknown")
+    missing = [field for field in REQUIRED_FIELDS if field not in listing]
+    if missing:
+        errors.append(f"Listing {listing_id} missing field(s): {', '.join(missing)}")
+    deadline = listing.get("deadline")
+    if deadline is not None:
+        try:
+            parse_deadline_date(deadline)
+        except ValueError as e:
+            errors.append(f"Listing {listing_id} has invalid deadline: {e}")
+    featured = listing.get("featured")
+    if featured is not None and not isinstance(featured, bool):
+        errors.append(
+            f"Listing {listing_id} has invalid 'featured' "
+            f"(expected boolean, got {type(featured).__name__})"
+        )
+    return errors
+
+
+def partition_valid_listings(listings):
+    """Split ``listings`` into ``(valid, errors)`` without raising.
+
+    ``valid`` is the listings that pass schema validation; ``errors`` is a flat
+    list of human-readable messages for every problem found across all listings.
+    This lets a consumer regenerate output from the good listings while surfacing
+    the bad ones, so one malformed entry can't block the whole build.
+    """
+    valid = []
+    errors = []
+    for listing in listings:
+        listing_errors = _listing_errors(listing)
+        if listing_errors:
+            errors.extend(listing_errors)
+        else:
+            valid.append(listing)
+    return valid, errors
 
 
 def check_schema(listings):
-    """Validate that all listings have required fields."""
-    for listing in listings:
-        for field in REQUIRED_FIELDS:
-            if field not in listing:
-                raise ValueError(f"Listing {listing.get('id', 'unknown')} missing field: {field}")
-        deadline = listing.get("deadline")
-        if deadline is not None:
-            parse_deadline_date(deadline)
-        featured = listing.get("featured")
-        if featured is not None and not isinstance(featured, bool):
-            raise ValueError(
-                f"Listing {listing.get('id', 'unknown')} has invalid 'featured' "
-                f"(expected boolean, got {type(featured).__name__})"
-            )
+    """Validate that all listings have required fields.
+
+    Collects every problem across all listings and reports them together in a
+    single raised ValueError, rather than failing on the first bad entry. Returns
+    True when all listings are valid. For non-fatal regeneration that skips only
+    the malformed rows, use :func:`partition_valid_listings` instead.
+    """
+    _, errors = partition_valid_listings(listings)
+    if errors:
+        raise ValueError(
+            f"Found {len(errors)} invalid listing(s):\n" + "\n".join(errors)
+        )
     return True
 
 

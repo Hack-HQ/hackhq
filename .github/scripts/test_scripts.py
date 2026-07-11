@@ -4,8 +4,12 @@ Run with:  python -m unittest discover -s .github/scripts -p 'test_*.py'
 Covers the core parsing/validation helpers with happy-path + malformed input.
 """
 
+import json
+import os
+import tempfile
 import unittest
 from datetime import date
+from unittest import mock
 
 import util
 import auto_extract as ax
@@ -146,6 +150,125 @@ class DeadlineWatcherReport(unittest.TestCase):
         )
         self.assertIn("https://example.com @mention", report)
         self.assertNotIn("\n@mention", report)
+
+
+class SaveListingsAtomic(unittest.TestCase):
+    def test_round_trip_and_no_temp_files(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "listings.json")
+            data = [{"id": "a", "n": 1}, {"id": "b", "n": 2}]
+            with mock.patch.object(util, "LISTINGS_FILE", path):
+                util.save_listings_to_json(data)
+                self.assertEqual(util.get_listings_from_json(), data)
+            with open(path) as f:
+                written = f.read()
+            # Content is exactly what was intended after the atomic replace.
+            self.assertEqual(json.loads(written), data)
+            self.assertEqual(written, json.dumps(data, indent=2))
+            # No temp files left behind in the target directory.
+            leftovers = [n for n in os.listdir(d) if n != "listings.json"]
+            self.assertEqual(leftovers, [], f"temp files left behind: {leftovers}")
+
+    def test_replace_overwrites_existing_file(self):
+        # A second save fully replaces the first (atomic swap, not append).
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "listings.json")
+            with mock.patch.object(util, "LISTINGS_FILE", path):
+                util.save_listings_to_json([{"id": "old"}])
+                util.save_listings_to_json([{"id": "new"}])
+                self.assertEqual(util.get_listings_from_json(), [{"id": "new"}])
+            leftovers = [n for n in os.listdir(d) if n != "listings.json"]
+            self.assertEqual(leftovers, [], f"temp files left behind: {leftovers}")
+
+
+class GetListingsCorrupt(unittest.TestCase):
+    def test_corrupt_file_raises_clear_error(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "listings.json")
+            with open(path, "w") as f:
+                f.write('[{"id": "a"} {"id": "b"}]')  # missing comma -> invalid
+            with mock.patch.object(util, "LISTINGS_FILE", path):
+                with self.assertRaises(ValueError) as ctx:
+                    util.get_listings_from_json()
+            msg = str(ctx.exception)
+            # Error names the file and is our wrapped error, not a raw traceback.
+            self.assertIn(path, msg)
+            self.assertNotIsInstance(ctx.exception, json.JSONDecodeError)
+
+    def test_missing_file_returns_empty(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "does_not_exist.json")
+            with mock.patch.object(util, "LISTINGS_FILE", path):
+                self.assertEqual(util.get_listings_from_json(), [])
+
+
+class CheckSchemaCollectsAll(unittest.TestCase):
+    def _valid(self, **over):
+        listing = {field: "x" for field in util.REQUIRED_FIELDS}
+        listing.update(over)
+        return listing
+
+    def test_valid_listings_pass(self):
+        self.assertTrue(util.check_schema([self._valid(id="ok")]))
+
+    def test_reports_all_invalid_entries(self):
+        bad_missing = self._valid(id="bad1")
+        del bad_missing["url"]
+        del bad_missing["prize"]
+        bad_deadline = self._valid(id="bad2", deadline="not-a-date")
+        bad_featured = self._valid(id="bad3", featured="yes")
+        with self.assertRaises(ValueError) as ctx:
+            util.check_schema(
+                [self._valid(id="good"), bad_missing, bad_deadline, bad_featured]
+            )
+        msg = str(ctx.exception)
+        # Every invalid entry is reported, not just the first.
+        self.assertIn("bad1", msg)
+        self.assertIn("bad2", msg)
+        self.assertIn("bad3", msg)
+        # Missing field names are surfaced; the valid entry is not flagged.
+        self.assertIn("url", msg)
+        self.assertIn("prize", msg)
+        self.assertNotIn("good", msg)
+
+    def test_partition_splits_valid_and_errors(self):
+        good = self._valid(id="good")
+        bad = self._valid(id="bad")
+        del bad["url"]
+        valid, errors = util.partition_valid_listings([good, bad])
+        self.assertEqual(valid, [good])
+        self.assertTrue(any("bad" in e and "url" in e for e in errors))
+
+
+class UpdateReadmesSkipsBadRows(unittest.TestCase):
+    """A single malformed listing must not block regeneration (issue #75 AC#4)."""
+
+    def _valid(self, **over):
+        listing = {field: "x" for field in util.REQUIRED_FIELDS}
+        listing.update(over)
+        return listing
+
+    def test_one_bad_listing_does_not_block_regeneration(self):
+        import update_readmes
+        good = self._valid(
+            id="good", company_name="Good Co", title="Good Hack",
+            date_posted=1783771200, locations=["Troy, NY"], state="open",
+        )
+        bad = self._valid(id="bad")
+        del bad["url"]  # missing a required field
+        with mock.patch.object(util, "get_listings_from_json", return_value=[good, bad]), \
+                mock.patch.object(util, "embed_table") as embed, \
+                mock.patch.object(util, "set_output"), \
+                mock.patch("generate_banner.main"), \
+                mock.patch("generate_gallery.main"), \
+                mock.patch.object(util, "warn") as warn:
+            update_readmes.main()
+        # Regeneration ran for the good listing despite the bad one (no hard fail).
+        embed.assert_called_once()
+        table = embed.call_args[0][1]
+        self.assertIn("Good Hack", table)
+        # The malformed listing surfaced as a warning, not an abort.
+        self.assertTrue(any("bad" in str(c) for c in warn.call_args_list))
 
 
 if __name__ == "__main__":
