@@ -333,14 +333,25 @@ def parse_deadline(data, *keys):
 
 
 def clean_url(url):
-    """Clean and normalize a URL."""
-    url = url.strip()
+    """Clean and normalize a URL.
+
+    Returns "" for empty or host-less input. clean_url must never manufacture a
+    URL out of nothing: an empty or whitespace-only value used to become
+    "https://" (and "http://"/"https://" alone stayed host-less), which then
+    slipped past callers' emptiness checks and produced a broken Register link.
+    Callers should treat "" as a missing URL.
+    """
+    url = (url or "").strip()
+    if not url:
+        return ""
     if not url.startswith(("http://", "https://")):
         url = "https://" + url
     # Remove common tracking parameters
     tracking_params = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]
     from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
     parsed = urlparse(url)
+    if not parsed.netloc:
+        return ""
     params = parse_qs(parsed.query)
     cleaned_params = {k: v for k, v in params.items() if k not in tracking_params}
     cleaned_query = urlencode(cleaned_params, doseq=True)
