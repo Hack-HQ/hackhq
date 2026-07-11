@@ -103,6 +103,20 @@ class CleanUrl(unittest.TestCase):
         )
 
 
+class ContributionApprovedUrlGuard(unittest.TestCase):
+    def test_bare_scheme_url_is_rejected(self):
+        # A host-less scheme is truthy (passes the raw check) but clean_url
+        # reduces it to "", which must not be written as an empty-url listing.
+        import contribution_approved as ca
+        data = {
+            "link_to_hackathon_page": "https://",
+            "hackathon_name": "X",
+            "host_organizer": "Y",
+        }
+        with self.assertRaises(SystemExit):  # util.fail -> exit(1)
+            ca.handle_new_opportunity(data, "tester")
+
+
 class SsrfGuard(unittest.TestCase):
     def test_blocks_internal_hosts(self):
         for host in ("127.0.0.1", "localhost", "169.254.169.254", "10.0.0.1"):

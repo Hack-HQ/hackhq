@@ -37,6 +37,11 @@ def handle_new_opportunity(data, username, is_quick_add=False):
     if not url.strip():
         util.fail("Missing required field: URL")
     url = util.clean_url(url)
+    # Re-check after normalization: a bare/host-less scheme ("https://", "//x")
+    # is truthy above but clean_url reduces it to "", which would otherwise be
+    # written as an empty url and rendered as a broken Register button.
+    if not url:
+        util.fail("Missing required field: URL")
 
     # Check for duplicates
     for listing in listings:
