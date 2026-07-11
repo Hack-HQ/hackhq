@@ -8,12 +8,13 @@ import json
 import os
 import tempfile
 import unittest
-from datetime import date
+from datetime import date, datetime
 from unittest import mock
 
 import util
 import auto_extract as ax
 import deadline_watcher as dw
+import closing_soon as cs
 
 
 class ParseDeadlineDate(unittest.TestCase):
@@ -305,6 +306,74 @@ class UpdateReadmesSkipsBadRows(unittest.TestCase):
         self.assertIn("Good Hack", table)
         # The malformed listing surfaced as a warning, not an abort.
         self.assertTrue(any("bad" in str(c) for c in warn.call_args_list))
+
+
+class ClosingSoonDeadlineCell(unittest.TestCase):
+    """Regression tests for issue #70.
+
+    The closing-soon badge must be derived from the Deadline cell alone, never
+    from event dates that live in the Hackathon title (or any other) cell.
+    """
+
+    # Today is 1 day before cuHacking's *event* end date (Jul 12, 2026) — the
+    # date the old code harvested out of the title and mistook for a deadline.
+    TODAY = datetime(2026, 7, 11, tzinfo=cs.PST)
+
+    def test_event_date_in_title_with_dash_deadline_stays_open(self):
+        # Exact cuHacking-style row from issue #70: event dates in the title,
+        # "—" (no deadline) in the Deadline cell. Must NOT become CLOSING SOON.
+        row = (
+            "| ✅ **[OPEN]** | Carleton University | "
+            "cuHacking 2026 — Jul 10 – Jul 12, 2026 | In-Person | Ottawa, ON | "
+            "TBA | — | "
+            '<a href="https://cuhacking.ca"><img '
+            'src="https://img.shields.io/badge/Register-blue?style=for-the-badge" '
+            'alt="Register"></a> | Jul 03, 2026 |'
+        )
+        new_row, changed = cs.update_row(row, self.TODAY)
+        self.assertFalse(changed)
+        self.assertEqual(new_row, row)
+        self.assertIn(cs.OPEN, new_row)
+        self.assertNotIn(cs.CLOSING, new_row)
+
+    def test_real_deadline_within_seven_days_becomes_closing_soon(self):
+        # Deadline Jul 15, 2026 is 4 days from TODAY -> CLOSING SOON. The far-off
+        # event date (Aug 20) in the title must be ignored entirely.
+        row = (
+            "| ✅ **[OPEN]** | Some Org | Some Hack — Aug 20, 2026 | Online | "
+            "Remote | $10k | Jul 15, 2026 | "
+            '<a href="https://example.org">Register</a> | Jul 01, 2026 |'
+        )
+        new_row, changed = cs.update_row(row, self.TODAY)
+        self.assertTrue(changed)
+        self.assertIn(cs.CLOSING, new_row)
+        self.assertNotIn(cs.OPEN, new_row)
+
+    def test_real_deadline_beyond_seven_days_stays_open(self):
+        # Deadline Aug 20 is > 7 days away; title event date is irrelevant.
+        row = (
+            "| ✅ **[OPEN]** | Some Org | Some Hack — Jul 12, 2026 | Online | "
+            "Remote | $10k | Aug 20, 2026 | "
+            '<a href="https://example.org">Register</a> | Jul 01, 2026 |'
+        )
+        new_row, changed = cs.update_row(row, self.TODAY)
+        self.assertFalse(changed)
+        self.assertEqual(new_row, row)
+
+    def test_escaped_pipe_in_cell_does_not_shift_deadline_column(self):
+        # A literal "|" in a cell is escaped as "\|" by sanitize_table_cell.
+        # Splitting on it would push the Deadline out of column 6 and misread the
+        # badge. The Host cell holds "Foo \| Bar"; the real Deadline (Jul 15, 4
+        # days out) must still be read and flip the row to CLOSING SOON.
+        row = (
+            "| ✅ **[OPEN]** | Foo \\| Bar | Some Hack — Aug 20, 2026 | Online | "
+            "Remote | $10k | Jul 15, 2026 | "
+            '<a href="https://example.org">Register</a> | Jul 01, 2026 |'
+        )
+        new_row, changed = cs.update_row(row, self.TODAY)
+        self.assertTrue(changed)
+        self.assertIn(cs.CLOSING, new_row)
+        self.assertNotIn(cs.OPEN, new_row)
 
 
 if __name__ == "__main__":
