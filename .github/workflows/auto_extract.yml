@@ -56,11 +56,14 @@ jobs:
           git add .github/scripts/listings.json README.md assets/hackathons-banner.svg
           git commit -m "$COMMIT_MSG" || echo "No changes to commit"
           # Rebase and retry push up to 3 times
+          ok=false
           for i in 1 2 3; do
-            git fetch origin main && git rebase origin/main && git push origin main && break
-            echo "Push attempt $i failed, retrying..."
+            git fetch origin main || { sleep 2; continue; }
+            if git rebase origin/main && git push origin main; then ok=true; break; fi
+            git rebase --abort 2>/dev/null || true
             sleep 2
           done
+          $ok || { echo "::error::push failed after 3 attempts"; exit 1; }
 
       - name: Handle duplicate detection
         if: steps.extract.outputs.is_duplicate == 'true'
