@@ -2,6 +2,8 @@
 
 # HackHQ
 
+<img src="assets/hackhq-hero.gif" width="720" alt="HackHQ — the opening animation from the RedNote Red Hackathon Summit" />
+
 ### Your headquarters for every hackathon worth joining.
 
 [![Stars](https://img.shields.io/github/stars/Jose-Gael-Cruz-Lopez/hackhq?style=for-the-badge&color=FFD700&labelColor=000000&cacheSeconds=86400)](https://github.com/Jose-Gael-Cruz-Lopez/hackhq/stargazers)
