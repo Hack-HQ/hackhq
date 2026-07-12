@@ -13,9 +13,9 @@
     "active": false,
     "is_visible": true,
     "date_posted": 1782586800,
-    "date_updated": 1782586800,
+    "date_updated": 1783771200,
     "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-05"
+    "deadline": "2026-07-04"
   },
   {
     "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
@@ -31,9 +31,8 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782583200,
-    "date_updated": 1782583200,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-16"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "06f72ca6-9ab3-4d22-aa00-bf5c8b362c33",
@@ -49,9 +48,8 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782579600,
-    "date_updated": 1782579600,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-19"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "c12023ad-aab3-44e5-beb7-d0956ef987c2",
@@ -63,13 +61,12 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782576000,
-    "date_updated": 1782576000,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-19"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "6420c553-d798-4c74-bc81-5e592ecbc22e",
@@ -85,9 +82,8 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782572400,
-    "date_updated": 1782572400,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-26"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "0dd13a0e-b5ce-4dd0-a35c-f435b52ea23f",
@@ -103,9 +99,8 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782568800,
-    "date_updated": 1782568800,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-08-13"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "421c6652-25a9-42c9-9ac9-5396f32396f5",
@@ -121,9 +116,8 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782565200,
-    "date_updated": 1782565200,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-09-17"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "1b0b2e8f-8920-469e-978a-f34286dfcc56",
@@ -164,20 +158,20 @@
   {
     "id": "f0109d92-c423-43b1-b6b5-fc93219a9bcb",
     "company_name": "Qwen Cloud",
-    "title": "Global AI Hackathon Series with Qwen Cloud \u2014 May 26 \u2013 Jul 9, 2026",
+    "title": "Global AI Hackathon Series with Qwen Cloud \u2014 May 26 \u2013 Jul 20, 2026",
     "url": "https://qwencloud-hackathon.devpost.com/",
     "locations": [
       "Online"
     ],
     "format": "Virtual",
     "prize": "$70,000",
-    "state": "closed",
-    "active": false,
+    "state": "open",
+    "active": true,
     "is_visible": true,
     "date_posted": 1782554400,
-    "date_updated": 1782554400,
+    "date_updated": 1783771200,
     "source": "devpost",
-    "deadline": "2026-07-09"
+    "deadline": "2026-07-20"
   },
   {
     "id": "bcea64f3-77d3-4b65-b61e-5f1714b428ac",
@@ -261,13 +255,12 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782536400,
-    "date_updated": 1782536400,
-    "source": "devpost",
-    "deadline": "2026-07-11"
+    "date_updated": 1783771200,
+    "source": "devpost"
   },
   {
     "id": "91a0436e-2b6e-4d1b-b659-6786b39e37ca",
@@ -402,11 +395,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782679191,
-    "date_updated": 1782679191,
+    "date_updated": 1783771200,
     "source": "hongchengw"
   },
   {
@@ -453,11 +446,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782748800,
-    "date_updated": 1782748800,
+    "date_updated": 1783771200,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
@@ -470,12 +463,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "deadline": "2026-07-17",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1783014300,
-    "date_updated": 1783014300,
+    "date_updated": 1783771200,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
@@ -523,12 +515,11 @@
     ],
     "format": "Virtual",
     "prize": "$5,000 in Prizes",
-    "deadline": "2026-08-14",
     "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1783105200,
-    "date_updated": 1783105200,
+    "date_updated": 1783771200,
     "source": "akeight"
   },
   {
@@ -558,12 +549,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "deadline": "2026-08-28",
     "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1783207800,
-    "date_updated": 1783207800,
+    "date_updated": 1783771200,
     "source": "ChimdumebiNebolisa"
   },
   {
@@ -843,14 +833,14 @@
   {
     "id": "3f098796-acad-4fdf-83a3-c0406f446bcb",
     "company_name": "Florida International University",
-    "title": "ShellHacks 2026 (Florida's Largest Hackathon; Applications Coming Soon)",
+    "title": "ShellHacks 2026 (Florida's Largest Hackathon; Registration Open)",
     "url": "https://shellhacks.net/",
     "locations": [
       "Miami, FL"
     ],
     "format": "In-Person",
     "prize": "$20,000 in prizes",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1783771200,
