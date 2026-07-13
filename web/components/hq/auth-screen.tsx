@@ -12,6 +12,35 @@ const clerkAppearance = {
     colorInputForeground: "#f5ede6",
     borderRadius: "1.25rem",
   },
+  elements: {
+    socialButtonsBlockButton: {
+      backgroundColor: "#100f0f",
+      border: "1px solid rgba(245, 237, 230, 0.18)",
+      boxShadow: "inset 0 0 0 1px rgba(237, 91, 41, 0.16)",
+      color: "#f5ede6",
+      padding: "0.5rem",
+    },
+    socialButtonsBlockButtonText: {
+      color: "#f5ede6",
+      fontWeight: "700",
+      letterSpacing: "0.01em",
+    },
+    socialButtonsBlockButtonArrow: {
+      color: "#f5ede6",
+    },
+    socialButtonsBlockButton__hover: {
+      backgroundColor: "#1b1917",
+      borderColor: "rgba(237, 91, 41, 0.7)",
+      color: "#f5ede6",
+    },
+    socialButtonsBlockButton__focus: {
+      boxShadow:
+        "0 0 0 2px #1b1917, 0 0 0 4px rgba(237, 91, 41, 0.85)",
+    },
+    formFieldInput: {
+      padding: "0.5rem",
+    },
+  },
 };
 
 type AuthScreenProps = {
