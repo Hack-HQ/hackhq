@@ -90,6 +90,100 @@ class ParseStateAndDeadline(unittest.TestCase):
         self.assertIsNone(util.parse_deadline({}, "deadline"))
 
 
+class ResolveState(unittest.TestCase):
+    def test_active_false_overrides_open_state(self):
+        listing = {"state": "open", "active": False}
+        self.assertEqual(util.resolve_state(listing), "closed")
+
+    def test_active_false_overrides_opens_soon_state(self):
+        listing = {"state": "opens_soon", "active": False}
+        self.assertEqual(util.resolve_state(listing), "closed")
+
+    def test_explicit_closed_state(self):
+        self.assertEqual(util.resolve_state({"state": "closed", "active": True}), "closed")
+
+    def test_active_true_honors_stored_state(self):
+        self.assertEqual(util.resolve_state({"state": "opens_soon", "active": True}), "opens_soon")
+
+
+class CloseOpportunityState(unittest.TestCase):
+    """Closing a listing must set canonical structured state, not just active."""
+
+    def _listing(self, **over):
+        base = {field: "x" for field in util.REQUIRED_FIELDS}
+        base.update(
+            {
+                "id": "test-id",
+                "company_name": "MIT",
+                "title": "HackMIT 2026",
+                "url": "https://hackmit.org/",
+                "locations": ["Cambridge, MA"],
+                "format": "In-Person",
+                "prize": "$20K",
+                "state": "open",
+                "active": True,
+                "is_visible": True,
+                "date_posted": 1,
+                "date_updated": 1,
+                "source": "tester",
+            }
+        )
+        base.update(over)
+        return base
+
+    def test_close_sets_state_and_active(self):
+        import contribution_approved as ca
+
+        listing = self._listing()
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "listings.json")
+            with open(path, "w") as f:
+                json.dump([listing], f)
+            with mock.patch.object(util, "LISTINGS_FILE", path), \
+                    mock.patch.object(util, "set_output"):
+                ca.handle_close_opportunity(
+                    {
+                        "host/organizer_name": "MIT",
+                        "hackathon_name": "HackMIT 2026",
+                    },
+                    "maintainer",
+                )
+            with open(path) as f:
+                saved = json.load(f)[0]
+        self.assertFalse(saved["active"])
+        self.assertEqual(saved["state"], "closed")
+        self.assertEqual(util.resolve_state(saved), "closed")
+
+    def test_close_from_opens_soon_is_idempotent(self):
+        import contribution_approved as ca
+
+        listing = self._listing(state="opens_soon")
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "listings.json")
+            with open(path, "w") as f:
+                json.dump([listing], f)
+            with mock.patch.object(util, "LISTINGS_FILE", path), \
+                    mock.patch.object(util, "set_output"):
+                ca.handle_close_opportunity(
+                    {
+                        "host/organizer_name": "MIT",
+                        "hackathon_name": "HackMIT 2026",
+                    },
+                    "maintainer",
+                )
+                ca.handle_close_opportunity(
+                    {
+                        "host/organizer_name": "MIT",
+                        "hackathon_name": "HackMIT 2026",
+                    },
+                    "maintainer",
+                )
+            with open(path) as f:
+                saved = json.load(f)[0]
+        self.assertEqual(saved["state"], "closed")
+        self.assertFalse(saved["active"])
+
+
 class SplitTableCells(unittest.TestCase):
     def test_escaped_pipe_stays_in_one_cell(self):
         row = (

@@ -106,8 +106,13 @@ export function daysUntilDeadline(deadline: string, today: Date): number {
 }
 
 export function deriveState(raw: RawListing, daysLeft: number | null): HackState {
-  if (raw.state === "opens_soon") return "opens_soon";
+  // Closed wins over every other signal — including opens_soon. A listing that
+  // was explicitly closed (state="closed", or active=false) must never render as
+  // OPENS SOON. This ordering mirrors util.resolve_state, which the README
+  // generator uses; if the two disagree, the same listing shows a different
+  // status on the site than in the README.
   if (raw.state === "closed" || raw.active === false) return "closed";
+  if (raw.state === "opens_soon") return "opens_soon";
   if (daysLeft !== null) {
     if (daysLeft < 0) return "closed";
     if (daysLeft <= 7) return "closing_soon";

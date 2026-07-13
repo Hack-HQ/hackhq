@@ -160,6 +160,18 @@ describe("deriveState", () => {
     expect(deriveState(raw({}), 30)).toBe("open");
     expect(deriveState(raw({}), null)).toBe("open");
   });
+
+  // Closed must beat opens_soon, matching util.resolve_state (which the README
+  // generator uses). If these two disagree, the same listing renders CLOSED in
+  // the README but OPENS SOON on the site.
+  it("lets closed win over opens_soon (parity with util.resolve_state)", () => {
+    expect(deriveState(raw({ state: "opens_soon", active: false }), null)).toBe(
+      "closed",
+    );
+    expect(deriveState(raw({ state: "opens_soon", active: true }), null)).toBe(
+      "opens_soon",
+    );
+  });
 });
 
 describe("splitTitle", () => {
