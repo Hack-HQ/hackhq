@@ -230,14 +230,26 @@ function HackCard({ h }: { h: Hackathon }) {
   const meta = STATE_META[h.state];
   const cd = countdown(h);
   const dim = h.state === "closed";
+  const openDetails = () => setSelected(h);
+  const onOpenKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (e.target !== e.currentTarget) return;
+    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+      e.preventDefault();
+      openDetails();
+    }
+  };
 
   return (
     <motion.article
-      onClick={() => setSelected(h)}
+      onClick={openDetails}
+      onKeyDown={onOpenKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${h.title}`}
       initial="rest"
       animate="rest"
       whileHover={reduceMotion ? undefined : "open"}
-      className={`group relative aspect-[318/380] cursor-pointer ${dim ? "opacity-55 saturate-50" : ""}`}
+      className={`group relative aspect-[318/380] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-ink ${dim ? "opacity-55 saturate-50" : ""}`}
       style={{ perspective: 1400 }}
     >
       {/* Folder back */}
@@ -343,11 +355,23 @@ function HackRow({ h }: { h: Hackathon }) {
   const { setSelected } = useSelection();
   const meta = STATE_META[h.state];
   const cd = countdown(h);
+  const openDetails = () => setSelected(h);
+  const onOpenKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) return;
+    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+      e.preventDefault();
+      openDetails();
+    }
+  };
 
   return (
     <div
-      onClick={() => setSelected(h)}
-      className={`flex cursor-pointer items-center gap-4 px-5 py-4 transition hover:bg-ink/4 sm:px-7 ${h.state === "closed" ? "opacity-50" : ""}`}
+      onClick={openDetails}
+      onKeyDown={onOpenKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${h.title}`}
+      className={`flex cursor-pointer items-center gap-4 px-5 py-4 transition hover:bg-ink/4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-inset sm:px-7 ${h.state === "closed" ? "opacity-50" : ""}`}
     >
       <span
         className="h-2.5 w-2.5 shrink-0 rounded-full"
