@@ -433,6 +433,32 @@ class UpdateReadmesSkipsBadRows(unittest.TestCase):
         self.assertTrue(any("bad" in str(c) for c in warn.call_args_list))
 
 
+class BannerDateFormat(unittest.TestCase):
+    def test_format_banner_date_avoids_platform_strftime_directive(self):
+        import generate_banner as gb
+
+        dt = datetime(2026, 7, 5, tzinfo=gb.PST)
+        self.assertEqual(gb.format_banner_date(dt), "July 5, 2026")
+
+    def test_svg_includes_formatted_date(self):
+        import generate_banner as gb
+
+        dt = datetime(2026, 12, 9, tzinfo=gb.PST)
+        out = gb.svg(
+            {
+                "total": 1,
+                "open": 1,
+                "opens_soon": 0,
+                "closing": 0,
+                "in_person": 1,
+                "virtual": 0,
+                "hybrid": 0,
+            },
+            today=dt,
+        )
+        self.assertIn("as of December 9, 2026", out)
+
+
 class ClosingSoonDeadlineCell(unittest.TestCase):
     """Regression tests for issue #70.
 

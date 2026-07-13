@@ -92,8 +92,15 @@ def bar_segments(s, width):
     return segs
 
 
-def svg(s):
-    now = datetime.now(tz=PST).strftime("%B %-d, %Y")
+def format_banner_date(dt: datetime) -> str:
+    """Readable banner date without platform-specific strftime directives."""
+    return f"{dt.strftime('%B')} {dt.day}, {dt.strftime('%Y')}"
+
+
+def svg(s, today=None):
+    if today is None:
+        today = datetime.now(tz=PST)
+    now = format_banner_date(today)
     W, H = 760, 150
     pad = 28
     font = "-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
