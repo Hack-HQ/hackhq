@@ -85,7 +85,7 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
                     className="h-1.5 w-1.5 rounded-full"
                     style={{ background: col.color }}
                   />
-                  {col.label}
+                  <span id={`tracker-stage-${col.id}`}>{col.label}</span>
                 </span>
                 <span className="font-mono text-[10px] text-paper/35">
                   {col.items.length}
@@ -98,6 +98,7 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
                     key={h.id}
                     h={h}
                     dragging={dragId === h.id}
+                    stageId={col.id}
                     onDragStart={() => setDragId(h.id)}
                     onDragEnd={() => {
                       setDragId(null);
@@ -105,6 +106,7 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
                     }}
                     onOpen={() => setSelected(h)}
                     onRemove={() => remove(h.id)}
+                    onMoveStage={(stage) => move(h.id, stage)}
                   />
                 ))}
                 {col.items.length === 0 && (
@@ -156,20 +158,34 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
 function TrackerCard({
   h,
   dragging,
+  stageId,
   onDragStart,
   onDragEnd,
   onOpen,
   onRemove,
+  onMoveStage,
 }: {
   h: Hackathon;
   dragging: boolean;
+  stageId: Stage;
   onDragStart: () => void;
   onDragEnd: () => void;
   onOpen: () => void;
   onRemove: () => void;
+  onMoveStage: (stage: Stage) => void;
 }) {
   const meta = STATE_META[h.state];
   const cd = countdown(h);
+  const stageIndex = STAGES.findIndex((stage) => stage.id === stageId);
+  const prevStage = stageIndex > 0 ? STAGES[stageIndex - 1] : null;
+  const nextStage = stageIndex < STAGES.length - 1 ? STAGES[stageIndex + 1] : null;
+  const onOpenKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) return;
+    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+      e.preventDefault();
+      onOpen();
+    }
+  };
 
   return (
     <div
@@ -177,7 +193,12 @@ function TrackerCard({
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       onClick={onOpen}
-      className={`group cursor-grab rounded-2xl border border-white/10 bg-ink-soft p-3.5 transition active:cursor-grabbing ${
+      onKeyDown={onOpenKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${h.title}`}
+      aria-describedby={`tracker-stage-${stageId}`}
+      className={`group cursor-grab rounded-2xl border border-white/10 bg-ink-soft p-3.5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-ink active:cursor-grabbing ${
         dragging ? "opacity-40" : "hover:border-white/25"
       }`}
     >
@@ -215,6 +236,34 @@ function TrackerCard({
           {cd.toUpperCase()}
         </div>
       )}
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        {prevStage && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMoveStage(prevStage.id);
+            }}
+            aria-label={`Move ${h.title} to ${prevStage.label}`}
+            className="rounded-full border border-white/20 px-3 py-1 font-mono text-[9px] tracking-[0.14em] text-paper/80 transition hover:border-white/35 hover:bg-white/10"
+          >
+            ← {prevStage.label.toUpperCase()}
+          </button>
+        )}
+        {nextStage && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMoveStage(nextStage.id);
+            }}
+            aria-label={`Move ${h.title} to ${nextStage.label}`}
+            className="rounded-full border border-coral/40 px-3 py-1 font-mono text-[9px] tracking-[0.14em] text-coral transition hover:border-coral hover:bg-coral/12"
+          >
+            {nextStage.label.toUpperCase()} →
+          </button>
+        )}
+      </div>
     </div>
   );
 }
