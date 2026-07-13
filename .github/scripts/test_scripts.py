@@ -501,5 +501,18 @@ class ClosingSoonDeadlineCell(unittest.TestCase):
         self.assertNotIn(cs.OPEN, new_row)
 
 
+class WeeklyDigestWorkflow(unittest.TestCase):
+    def test_serializes_and_reuses_open_digest_issue(self):
+        path = os.path.join(
+            os.path.dirname(__file__), "..", "workflows", "weekly_digest.yml"
+        )
+        with open(path) as f:
+            content = f.read()
+        self.assertIn("group: weekly-digest", content)
+        self.assertIn("cancel-in-progress: false", content)
+        self.assertIn("Open or refresh digest issue", content)
+        self.assertIn('gh issue list --repo "$REPO" --label "digest"', content)
+
+
 if __name__ == "__main__":
     unittest.main()
