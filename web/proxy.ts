@@ -1,20 +1,27 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { isClerkConfigured } from "@/lib/env";
 
 // Clerk only takes over once its keys exist in .env.local — until then the
 // site runs exactly as before (the /my hub shows setup instructions instead).
 //
-// NOTE (intentional, for now): clerkMiddleware() here only wires up Clerk's
-// session context — it does NOT protect any route (no createRouteMatcher /
-// auth.protect()). The /my sign-in gate is enforced on the client only
-// (my-client.tsx). That's acceptable today because nothing is persisted
-// server-side, but a route matcher + auth.protect() MUST be added here before
-// any real server-side persistence is introduced. See web/README.md.
-const clerkConfigured =
-  Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) &&
-  Boolean(process.env.CLERK_SECRET_KEY);
+// /my is protected here, server-side: a signed-out visitor never reaches the
+// page. signInUrl/signUpUrl are pinned in code rather than left to
+// NEXT_PUBLIC_CLERK_SIGN_IN_URL / _SIGN_UP_URL, because when those are unset
+// Clerk redirects to its hosted account portal instead — so a deployment
+// carrying only the two Clerk keys would silently bypass the /auth screens.
+const isProtectedRoute = createRouteMatcher(["/my(.*)"]);
 
-export default clerkConfigured ? clerkMiddleware() : () => NextResponse.next();
+export default isClerkConfigured()
+  ? clerkMiddleware(
+      async (auth, request) => {
+        if (isProtectedRoute(request)) {
+          await auth.protect();
+        }
+      },
+      { signInUrl: "/auth/sign-in", signUpUrl: "/auth/sign-up" },
+    )
+  : () => NextResponse.next();
 
 export const config = {
   matcher: [
