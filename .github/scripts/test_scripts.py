@@ -90,6 +90,29 @@ class ParseStateAndDeadline(unittest.TestCase):
         self.assertIsNone(util.parse_deadline({}, "deadline"))
 
 
+class SplitTableCells(unittest.TestCase):
+    def test_escaped_pipe_stays_in_one_cell(self):
+        row = (
+            "| ✅ **[OPEN]** | Foo \\| Bar | Some Hack | In-Person | "
+            "Boston, MA | $10k | Jul 15, 2026 | "
+            '<a href="https://example.org">Register</a> | Jul 01, 2026 |'
+        )
+        cells = util.split_table_cells(row)
+        self.assertEqual(cells[1], "Foo | Bar")
+        self.assertEqual(cells[2], "Some Hack")
+        self.assertEqual(cells[6], "Jul 15, 2026")
+
+    def test_ordinary_row_unchanged(self):
+        row = (
+            "| ✅ **[OPEN]** | MIT | HackMIT 2026 | In-Person | Cambridge, MA | "
+            "$20K | Jul 04, 2026 | <a href=\"https://hackmit.org/\">Register</a> | "
+            "Jun 27, 2026 |"
+        )
+        cells = util.split_table_cells(row)
+        self.assertEqual(cells[1], "MIT")
+        self.assertEqual(cells[2], "HackMIT 2026")
+
+
 class CleanUrl(unittest.TestCase):
     def test_empty_returns_empty(self):
         # Must not manufacture "https://" out of nothing (issue #73).
