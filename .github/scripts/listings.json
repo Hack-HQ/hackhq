@@ -1024,5 +1024,56 @@
     "id": "c7d0456c-ba85-4000-b89a-3e4fad723aaa",
     "date_posted": 1783793100,
     "date_updated": 1783793100
+  },
+  {
+    "id": "a3b17fc3-cd9e-4be5-ab6d-367bfd6c2d72",
+    "company_name": "OnlyExit Hacker House",
+    "title": "Hack Your Way Into the Hacker House \u2014 Jul 18, 2026",
+    "url": "https://luma.com/hack-to-hacker-house",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "In-Person",
+    "prize": "Fast-track OnlyExit Hacker House interview",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783857600,
+    "date_updated": 1783857600,
+    "source": "hongchengw"
+  },
+  {
+    "id": "76d95c1a-9603-43d7-ab9f-60f92c2ea977",
+    "company_name": "localhost:nyc",
+    "title": "Checkout: The Travel & Hospitality Hackathon \u2014 Aug 8, 2026",
+    "url": "https://luma.com/s7v4kw23",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783857600,
+    "date_updated": 1783857600,
+    "source": "hongchengw"
+  },
+  {
+    "id": "d96f83cf-8a49-4048-84d0-db0a799c9d38",
+    "company_name": "University of Central Florida",
+    "title": "Knight Hacks IX \u2014 Oct 9\u201311, 2026",
+    "url": "https://2026.knighthacks.org/",
+    "locations": [
+      "Orlando, FL"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783857600,
+    "date_updated": 1783857600,
+    "source": "Tenz1ng"
   }
 ]
