@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { Hackathon } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
+import { countKnownTracked } from "@/lib/tracker-utils";
 import { STAGES, useSelection, useTracker, type Stage } from "./store";
 
 export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
@@ -29,7 +30,10 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
     [tracked, byId],
   );
 
-  const trackedCount = Object.keys(tracked).length;
+  const trackedCount = useMemo(
+    () => countKnownTracked(tracked, hackathons.map((h) => h.id)),
+    [tracked, hackathons],
+  );
 
   // Deadline radar: the most urgent live deadline you're tracking.
   const urgent = useMemo(() => {
@@ -130,7 +134,7 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
               <div className="kicker text-[9px] text-coral">Deadline radar</div>
               <div className="mt-1 text-sm font-semibold text-paper">
                 {urgent
-                  ? `${urgent.title} closes in ${urgent.daysLeft} day${urgent.daysLeft === 1 ? "" : "s"}`
+                  ? `${urgent.title} ${countdown(urgent) ?? ""}`.trim()
                   : trackedCount > 0
                     ? "No upcoming deadlines on your radar - you're clear."
                     : "Track a hackathon and its deadline shows up here."}

@@ -184,6 +184,29 @@ class CloseOpportunityState(unittest.TestCase):
         self.assertFalse(saved["active"])
 
 
+class SplitTableCells(unittest.TestCase):
+    def test_escaped_pipe_stays_in_one_cell(self):
+        row = (
+            "| ✅ **[OPEN]** | Foo \\| Bar | Some Hack | In-Person | "
+            "Boston, MA | $10k | Jul 15, 2026 | "
+            '<a href="https://example.org">Register</a> | Jul 01, 2026 |'
+        )
+        cells = util.split_table_cells(row)
+        self.assertEqual(cells[1], "Foo | Bar")
+        self.assertEqual(cells[2], "Some Hack")
+        self.assertEqual(cells[6], "Jul 15, 2026")
+
+    def test_ordinary_row_unchanged(self):
+        row = (
+            "| ✅ **[OPEN]** | MIT | HackMIT 2026 | In-Person | Cambridge, MA | "
+            "$20K | Jul 04, 2026 | <a href=\"https://hackmit.org/\">Register</a> | "
+            "Jun 27, 2026 |"
+        )
+        cells = util.split_table_cells(row)
+        self.assertEqual(cells[1], "MIT")
+        self.assertEqual(cells[2], "HackMIT 2026")
+
+
 class CleanUrl(unittest.TestCase):
     def test_empty_returns_empty(self):
         # Must not manufacture "https://" out of nothing (issue #73).
@@ -527,6 +550,32 @@ class UpdateReadmesSkipsBadRows(unittest.TestCase):
         self.assertTrue(any("bad" in str(c) for c in warn.call_args_list))
 
 
+class BannerDateFormat(unittest.TestCase):
+    def test_format_banner_date_avoids_platform_strftime_directive(self):
+        import generate_banner as gb
+
+        dt = datetime(2026, 7, 5, tzinfo=gb.PST)
+        self.assertEqual(gb.format_banner_date(dt), "July 5, 2026")
+
+    def test_svg_includes_formatted_date(self):
+        import generate_banner as gb
+
+        dt = datetime(2026, 12, 9, tzinfo=gb.PST)
+        out = gb.svg(
+            {
+                "total": 1,
+                "open": 1,
+                "opens_soon": 0,
+                "closing": 0,
+                "in_person": 1,
+                "virtual": 0,
+                "hybrid": 0,
+            },
+            today=dt,
+        )
+        self.assertIn("as of December 9, 2026", out)
+
+
 class ClosingSoonDeadlineCell(unittest.TestCase):
     """Regression tests for issue #70.
 
@@ -593,6 +642,19 @@ class ClosingSoonDeadlineCell(unittest.TestCase):
         self.assertTrue(changed)
         self.assertIn(cs.CLOSING, new_row)
         self.assertNotIn(cs.OPEN, new_row)
+
+
+class WeeklyDigestWorkflow(unittest.TestCase):
+    def test_serializes_and_reuses_open_digest_issue(self):
+        path = os.path.join(
+            os.path.dirname(__file__), "..", "workflows", "weekly_digest.yml"
+        )
+        with open(path) as f:
+            content = f.read()
+        self.assertIn("group: weekly-digest", content)
+        self.assertIn("cancel-in-progress: false", content)
+        self.assertIn("Open or refresh digest issue", content)
+        self.assertIn('gh issue list --repo "$REPO" --label "digest"', content)
 
 
 if __name__ == "__main__":
