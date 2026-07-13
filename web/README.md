@@ -11,7 +11,7 @@ deck, and member tracker, plus a legacy searchable directory at `/hackathons`.
 - **Home (`/`)** — hero, stats, and entry points into the globe and deck.
 - **Globe (`/globe`)** — 3D Mapbox map with status-colored markers.
 - **Deck (`/deck`)** — flip through hackathons as tactile cards or a dense list.
-- **My HackHQ (`/my`)** — personal tracker pipeline (optional Clerk sign-in).
+- **My HackHQ (`/my`)** — protected personal tracker pipeline (optional Clerk sign-in).
 - **All hackathons (`/hackathons`)** — legacy README-driven search and filters.
 
 ## How it works
@@ -66,7 +66,8 @@ web/
 │   ├── page.tsx                       # Home; loadHackathons() + HomeClient
 │   ├── globe/page.tsx                 # 3D globe
 │   ├── deck/page.tsx                  # Card deck
-│   ├── my/page.tsx                    # Member tracker hub
+│   ├── my/page.tsx                    # Protected member tracker hub
+│   ├── auth/[[...auth]]/page.tsx      # Clerk sign-in/sign-up
 │   ├── hackathons/page.tsx            # Legacy README browser
 │   ├── layout.tsx                     # Root layout, fonts, optional ClerkProvider
 │   └── repo-assets/[...path]/route.ts # Serves files from ../assets
@@ -106,13 +107,21 @@ Copy `.env.example` to `.env.local` (gitignored) and set the values you need.
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | For globe | `components/hq/globe-map.tsx` | Globe shows a placeholder instead of the Mapbox map |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For auth | `app/layout.tsx`, `app/my/page.tsx`, `proxy.ts` | Site runs without Clerk; `/my` shows setup instructions |
 | `CLERK_SECRET_KEY` | For auth | `app/my/page.tsx`, `proxy.ts` | Same as above — both Clerk keys are needed together |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` | For auth redirects | Clerk middleware/components | Defaults may not match the app's embedded auth routes |
+| `NEXT_PUBLIC_CLERK_SIGN_UP_URL` | For auth redirects | Clerk middleware/components | Defaults may not match the app's embedded auth routes |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL` | For auth redirects | Clerk components | Users may return to `/` after sign-in |
+| `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL` | For auth redirects | Clerk components | Users may return to `/` after sign-up |
 
 Clerk is **optional**. When both Clerk keys are set, `ClerkProvider` wraps the
-app and `/my` offers sign-in. Without them, the tracker still works locally;
-nothing is persisted server-side.
+app, `/my` is protected server-side, and users can sign in with Google, GitHub,
+or email/password. Without them, the tracker still works locally; nothing is
+persisted server-side.
 
-> **Note:** The `/my` sign-in gate is currently enforced on the client only
-> (`my-client.tsx`). There is no server-side route protection yet.
+To finish Clerk setup in the dashboard, enable Google and GitHub under social
+connections, enable email/password under email authentication, and make sure
+local development redirects allow `http://localhost:3000`,
+`http://localhost:3000/auth/sign-in`, `http://localhost:3000/auth/sign-up`,
+and `http://localhost:3000/my`.
 
 ## Scripts
 
