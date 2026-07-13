@@ -131,7 +131,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 | 🔒 **[CLOSED]** | Hack the 6ix | Hack the 6ix 2026 — Jul 17–19, 2026 | In-Person | Toronto, ON, Canada | TBA | — | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | Devpost | H0: Hack the Zero Stack with Vercel v0 and AWS Databases — May 27 – Jun 29, 2026 | Virtual | Online | $80,000 | Jun 29, 2026 | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | UiPath | UiPath AgentHack — May 15 – Jun 29, 2026 | Virtual | Online | $50,000 | Jun 29, 2026 | :lock: | Jun 27, 2026 |
-| 🔒 **[CLOSED]** | Agentic AI Build Week | Agentic AI Build Week 2026 — Jun 9 – Jul 11, 2026 | In-Person | Galaxy Innovation Park | TBA | — | :lock: | Jun 26, 2026 |
+| 🔒 **[CLOSED]** | Agentic AI Build Week | Agentic AI Build Week 2026 — Jun 9 – Jul 11, 2026 | In-Person | Ho Chi Minh City, Vietnam | TBA | — | :lock: | Jun 26, 2026 |
 <!-- HACKATHONS_TABLE_END -->
 
 ---
