@@ -5,7 +5,6 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Hackathon } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
-import { useSelection } from "./store";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
@@ -21,7 +20,6 @@ const SECONDS_PER_REVOLUTION = 110;
 export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const { setSelected } = useSelection();
   const [zoomedIn, setZoomedIn] = useState(false);
   const hasToken = Boolean(mapboxgl.accessToken);
 
@@ -141,13 +139,16 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
         e.stopPropagation();
         spinEnabled = false;
         popup.remove();
+        // Clicking a marker only flies the camera in — it deliberately does NOT
+        // open the detail card, which would cover the very map you just zoomed
+        // into. The hover popup carries the quick facts; full details live in
+        // the Deck / hackathons list.
         map.flyTo({
           center: [h.lng!, h.lat!],
           zoom: 9.5,
           duration: 2600,
           essential: true,
         });
-        setSelected(h);
       });
 
       return new mapboxgl.Marker({ element: el })
