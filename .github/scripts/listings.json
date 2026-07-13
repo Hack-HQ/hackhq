@@ -863,5 +863,166 @@
     "date_posted": 1783771200,
     "date_updated": 1783771200,
     "source": "Tenz1ng"
+  },
+  {
+    "company_name": "OpenAI",
+    "title": "OpenAI Build Week: Join a global week of building with Codex \u2014 Jul 13\u201321, 2026",
+    "url": "https://openai.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$100,000",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-07-21",
+    "id": "04555631-8888-4d5a-b192-384c42fa0577",
+    "date_posted": 1783821900,
+    "date_updated": 1783821900
+  },
+  {
+    "company_name": "DataHub",
+    "title": "Build with DataHub: The Agent Hackathon \u2014 Jul 6\u2013 Aug 10, 2026",
+    "url": "https://datahub.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$20,500",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-08-10",
+    "id": "f9654f6f-b75f-48b0-b14f-c080bbe0e52d",
+    "date_posted": 1783818300,
+    "date_updated": 1783818300
+  },
+  {
+    "company_name": "Cockroach Labs",
+    "title": "CockroachDB \u00d7 AWS Hackathon \u2014 Build with Agentic Memory \u2014 Jun 30\u2013 Aug 18, 2026",
+    "url": "https://cockroachdb-ai.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$8,750",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-08-18",
+    "id": "aa0347df-a7fe-4f3c-818e-7423e8c96f1a",
+    "date_posted": 1783814700,
+    "date_updated": 1783814700
+  },
+  {
+    "company_name": "Rice University",
+    "title": "HackRice 16 (Student Hackathon; Interest Form Open)",
+    "url": "https://hackrice.com/",
+    "locations": [
+      "Houston, TX"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "ChimdumebiNebolisa",
+    "id": "55843864-d4f0-4a6a-b79c-46ff7a5e9a12",
+    "date_posted": 1783811100,
+    "date_updated": 1783811100
+  },
+  {
+    "company_name": "HexLabs",
+    "title": "HackGT 13 \u2014 Sep 25\u201327, 2026",
+    "url": "https://hack.gt/",
+    "locations": [
+      "Atlanta, GA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "ChimdumebiNebolisa",
+    "id": "a1e90390-077a-4bd0-8901-175337e0052c",
+    "date_posted": 1783807500,
+    "date_updated": 1783807500
+  },
+  {
+    "company_name": "Africa Deep Tech Foundation",
+    "title": "Africa Deep Tech Challenge 2026 \u2014 The Laptop LLM Challenge",
+    "url": "https://adtc-2026.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$16,500",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-08-24",
+    "id": "57177cd1-cff8-4e80-b701-6811dbcdb1a4",
+    "date_posted": 1783803900,
+    "date_updated": 1783803900
+  },
+  {
+    "company_name": "DevNetwork",
+    "title": "DevNetwork [API + Cloud + AI] Hackathon 2026 \u2014 Aug 17\u2013 Sep 3, 2026",
+    "url": "https://api-cloud-ai-hackathon-2026.devpost.com/",
+    "locations": [
+      "Santa Clara, CA",
+      "Online"
+    ],
+    "format": "Hybrid",
+    "prize": "$12,500",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-09-03",
+    "id": "6438aace-1294-464a-9150-dc56259b6653",
+    "date_posted": 1783800300,
+    "date_updated": 1783800300
+  },
+  {
+    "company_name": "Lincoln Financial Group",
+    "title": "codeLinc 11 with Lincoln Financial & AWS \u2014 Oct 3\u20134, 2026",
+    "url": "https://codelinc11.devpost.com/",
+    "locations": [
+      "Greensboro, NC"
+    ],
+    "format": "In-Person",
+    "prize": "$10,000",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-10-04",
+    "id": "103a5d7c-312b-4bcf-adef-4ab702c4fc33",
+    "date_posted": 1783796700,
+    "date_updated": 1783796700
+  },
+  {
+    "company_name": "OneAquaHealth",
+    "title": "OneAquaHealth IEEE Global Hackathon \u2014 Sep 16\u201330, 2026",
+    "url": "https://oneaquahealth-ieee-hackathon.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$3,000",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-08-31",
+    "id": "c7d0456c-ba85-4000-b89a-3e4fad723aaa",
+    "date_posted": 1783793100,
+    "date_updated": 1783793100
   }
 ]
