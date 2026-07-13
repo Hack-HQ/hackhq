@@ -11,6 +11,16 @@ export type EnvReport = {
 
 let reported = false;
 
+// Sign-in is only wired up when BOTH keys exist: the publishable key mounts
+// <ClerkProvider>, the secret key lets the proxy verify sessions. Anything less
+// and every Clerk-dependent surface (/auth, the /my gate) must stay switched off.
+export function isClerkConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
+      process.env.CLERK_SECRET_KEY,
+  );
+}
+
 export function validateEnv(): EnvReport {
   const mapbox = Boolean(process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
   const pub = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);

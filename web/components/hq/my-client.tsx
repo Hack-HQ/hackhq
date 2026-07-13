@@ -1,8 +1,8 @@
 "use client";
 
 import { UserButton, useAuth, useUser } from "@clerk/nextjs";
+import Link from "next/link";
 import type { Hackathon } from "@/lib/types-hq";
-import { AuthScreen } from "./auth-screen";
 import { PageShell } from "./page-shell";
 import { Tracker } from "./tracker";
 
@@ -49,10 +49,36 @@ function GatedHub({ hackathons }: { hackathons: Hackathon[] }) {
   );
 }
 
-/* ----- Signed-out: the members gate ----- */
+/* ----- Signed-out: the members gate -----
+   proxy.ts redirects signed-out visitors to /auth/sign-in before this page
+   renders, so this is only a backstop. It links to that screen rather than
+   embedding <SignIn> again: the form uses path routing bound to /auth/sign-in
+   and misbehaves when mounted on another route. */
 
 function SignInGate() {
-  return <AuthScreen mode="sign-in" />;
+  return (
+    <section className="p-2 pt-0">
+      <div className="shell flex min-h-[78vh] flex-col items-center justify-center gap-8 bg-ink px-5 py-16 text-center sm:px-10">
+        <div>
+          <div className="kicker text-coral">Members · Pillar 03</div>
+          <h1 className="display mt-4 text-[clamp(1.6rem,4vw,2.8rem)] text-paper">
+            My HackHQ
+          </h1>
+          <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-paper/60">
+            Your hackathon pipeline lives here. Sign in with Google, GitHub, or
+            email to open your hub.
+          </p>
+        </div>
+
+        <Link
+          href="/auth/sign-in"
+          className="rounded-full bg-coral px-7 py-4 font-mono text-[12px] font-bold tracking-[0.18em] text-paper transition hover:bg-coral-bright"
+        >
+          SIGN IN
+        </Link>
+      </div>
+    </section>
+  );
 }
 
 /* ----- Signed-in: hub header ----- */

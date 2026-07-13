@@ -105,23 +105,22 @@ Copy `.env.example` to `.env.local` (gitignored) and set the values you need.
 | Variable | Required | Used by | If missing |
 | -------- | -------- | ------- | ---------- |
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | For globe | `components/hq/globe-map.tsx` | Globe shows a placeholder instead of the Mapbox map |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For auth | `app/layout.tsx`, `app/my/page.tsx`, `proxy.ts` | Site runs without Clerk; `/my` shows setup instructions |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For auth | `app/layout.tsx`, `app/my/page.tsx`, `proxy.ts` | Site runs without Clerk; `/my` shows setup instructions and `/auth/*` redirects to `/my` |
 | `CLERK_SECRET_KEY` | For auth | `app/my/page.tsx`, `proxy.ts` | Same as above — both Clerk keys are needed together |
-| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` | For auth redirects | Clerk middleware/components | Defaults may not match the app's embedded auth routes |
-| `NEXT_PUBLIC_CLERK_SIGN_UP_URL` | For auth redirects | Clerk middleware/components | Defaults may not match the app's embedded auth routes |
-| `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL` | For auth redirects | Clerk components | Users may return to `/` after sign-in |
-| `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL` | For auth redirects | Clerk components | Users may return to `/` after sign-up |
 
-Clerk is **optional**. When both Clerk keys are set, `ClerkProvider` wraps the
-app, `/my` is protected server-side, and users can sign in with Google, GitHub,
-or email/password. Without them, the tracker still works locally; nothing is
-persisted server-side.
+The two keys are the only Clerk variables you need. The auth routes
+(`/auth/sign-in`, `/auth/sign-up`) and the post-sign-in landing (`/my`) are
+pinned in `proxy.ts` and `components/hq/auth-screen.tsx` rather than read from
+`NEXT_PUBLIC_CLERK_*_URL` env vars — when those are unset, Clerk redirects to
+its hosted account portal instead of the app's own screens.
+
+Clerk is **optional**. When both keys are set, `ClerkProvider` wraps the app,
+`/my` is protected in `proxy.ts` (signed-out visitors are redirected to
+`/auth/sign-in`), and users can sign in with Google, GitHub, or email/password.
+Without them, the tracker still works locally; nothing is persisted server-side.
 
 To finish Clerk setup in the dashboard, enable Google and GitHub under social
-connections, enable email/password under email authentication, and make sure
-local development redirects allow `http://localhost:3000`,
-`http://localhost:3000/auth/sign-in`, `http://localhost:3000/auth/sign-up`,
-and `http://localhost:3000/my`.
+connections, and enable email/password under email authentication.
 
 ## Scripts
 
