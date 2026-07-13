@@ -59,6 +59,7 @@ const GEO: Record<string, [number, number]> = {
   "Miami, FL": [25.7617, -80.1918],
   "New York, NY": [40.7128, -74.006],
   "Newark, NJ": [40.7357, -74.1724],
+  "Orlando, FL": [28.5384, -81.3789],
   "Ottawa, ON": [45.4215, -75.6972],
   "Philadelphia, PA": [39.9526, -75.1652],
   "Pittsburgh, PA": [40.4406, -79.9959],
