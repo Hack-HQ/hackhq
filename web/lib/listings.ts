@@ -136,7 +136,11 @@ export function loadHackathons(): Hackathon[] {
   // Deterministic jitter so co-located markers don't stack exactly.
   const seen: Record<string, number> = {};
 
-  return raw
+  // Locations we could not place. Collected while mapping and reported once
+  // below — a listing dropping off the globe should never be silent (#111).
+  const unplaceable: string[] = [];
+
+  const hackathons = raw
     .filter((r) => r.is_visible !== false)
     .map((r) => {
       const location = r.locations?.[0] ?? "TBA";
@@ -164,6 +168,13 @@ export function loadHackathons(): Hackathon[] {
         const angle = n * 2.4;
         lat = geo[0] + (n > 1 ? 0.01 * Math.sin(angle) : 0);
         lng = geo[1] + (n > 1 ? 0.01 * Math.cos(angle) : 0);
+      } else if (
+        !geo &&
+        r.format !== "Virtual" &&
+        !isUnmappable(location) &&
+        !unplaceable.includes(location)
+      ) {
+        unplaceable.push(location);
       }
 
       const format =
@@ -198,6 +209,16 @@ export function loadHackathons(): Hackathon[] {
       if (order[a.state] !== order[b.state]) return order[a.state] - order[b.state];
       return (a.daysLeft ?? 9999) - (b.daysLeft ?? 9999);
     });
+
+  if (unplaceable.length > 0) {
+    console.warn(
+      `[listings] ${unplaceable.length} location(s) have no coordinates and will ` +
+        `not appear on the globe: ${unplaceable.join(", ")}. ` +
+        `Add them to GEO in lib/geo.ts.`,
+    );
+  }
+
+  return hackathons;
 }
 
 export function siteStats(list: Hackathon[]): SiteStats {
