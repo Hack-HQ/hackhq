@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   coordsFor,
+  coordsForListing,
   isUnmappable,
   knownLocations,
   normalizeLocation,
@@ -55,6 +56,21 @@ describe("coordsFor", () => {
 
   it("returns null for a location it has never seen", () => {
     expect(coordsFor("Atlantis, XX")).toBeNull();
+  });
+});
+
+describe("coordsForListing", () => {
+  it("places a non-virtual listing", () => {
+    expect(coordsForListing("Boston, MA", "In-Person")).toEqual([
+      42.3601, -71.0589,
+    ]);
+    expect(coordsForListing("Boston, MA", "Hybrid")).not.toBeNull();
+  });
+
+  it("keeps a virtual listing off the map even when its city is known", () => {
+    // The case listings.json does not currently contain, and exactly the one
+    // that would scatter online events across the globe if the rule were lost.
+    expect(coordsForListing("Boston, MA", "Virtual")).toBeNull();
   });
 });
 

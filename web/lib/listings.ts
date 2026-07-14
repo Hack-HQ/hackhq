@@ -9,7 +9,7 @@ import path from "node:path";
  *  - days-until-deadline, cleaned titles, theme tags, prize parsing
  */
 
-import { coordsFor, isUnmappable, normalizeLocation } from "./geo";
+import { coordsForListing, isUnmappable, normalizeLocation } from "./geo";
 import type { HackState, Hackathon, SiteStats } from "./types-hq";
 
 export type { HackState, Hackathon, SiteStats };
@@ -152,8 +152,8 @@ export function loadHackathons(): Hackathon[] {
 
       let lat: number | null = null;
       let lng: number | null = null;
-      const geo = coordsFor(location);
-      if (geo && r.format !== "Virtual") {
+      const geo = coordsForListing(location, r.format);
+      if (geo) {
         // Count co-located listings by the *normalized* key. Keying this on the
         // raw string would restart the count for every spelling ("Toronto, ON"
         // vs "Toronto, ON, Canada"), so two listings now sharing one set of

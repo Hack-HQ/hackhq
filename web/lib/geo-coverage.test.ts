@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { coordsFor, isUnmappable } from "./geo";
+import { loadHackathons } from "./listings";
 
 /**
  * The guard for #111.
@@ -53,13 +54,22 @@ describe("globe coordinate coverage", () => {
     ).toEqual([]);
   });
 
-  it("keeps virtual listings off the map on purpose", () => {
-    const raw: RawListing[] = JSON.parse(fs.readFileSync(LISTINGS_PATH, "utf8"));
-    const virtual = raw.filter((r) => r.format === "Virtual");
+  it("keeps virtual listings off the map even when their location is known", () => {
+    // Not a coverage gap: a virtual hackathon has nowhere to be. But "Virtual"
+    // and a real city are not mutually exclusive in the data — a listing can be
+    // Virtual and still carry "Boston, MA" — so the exclusion has to hold on
+    // *behaviour*, not on the current shape of listings.json.
+    //
+    // Asserting merely that some virtual listings exist would be a fact about
+    // the data, not about the code, and would start failing the day the repo
+    // happens to have none.
+    const virtual = loadHackathons().filter((h) => h.format === "Virtual");
 
-    // Not a coverage gap: a virtual hackathon has nowhere to be. This asserts
-    // the exclusion is deliberate, so a future "fix" for the test above can't
-    // start scattering online events across the globe.
-    expect(virtual.length).toBeGreaterThan(0);
+    for (const h of virtual) {
+      expect(
+        [h.lat, h.lng],
+        `${h.title} is Virtual but was given coordinates from "${h.location}"`,
+      ).toEqual([null, null]);
+    }
   });
 });

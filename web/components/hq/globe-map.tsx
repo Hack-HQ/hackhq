@@ -226,10 +226,15 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
           {unmapped > 0 && (
             // The globe can only show what it has coordinates for. Say so out
             // loud rather than quietly rendering an incomplete map (#111).
+            //
+            // Deliberately does not state WHY a listing is missing. The cause is
+            // either "no venue announced yet" (TBA) or "we failed to place a real
+            // city" — and this component cannot tell them apart. Naming the first
+            // cause would tell visitors a hackathon has no venue when it may
+            // simply be one we haven't geocoded.
             <p className="mt-3 font-mono text-[11px] tracking-[0.12em] text-paper/50">
-              {unmapped} {unmapped === 1 ? "hackathon has" : "hackathons have"} no
-              announced venue yet and {unmapped === 1 ? "is" : "are"} not on the
-              map. Find {unmapped === 1 ? "it" : "them"} in the deck.
+              {unmapped} {unmapped === 1 ? "hackathon is" : "hackathons are"} not on
+              the map yet. Find {unmapped === 1 ? "it" : "them"} in the deck.
             </p>
           )}
         </div>

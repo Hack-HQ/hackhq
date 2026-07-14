@@ -109,6 +109,23 @@ export function coordsFor(location: string): [number, number] | null {
   return GEO[normalizeLocation(location)] ?? null;
 }
 
+/**
+ * Coordinates for a listing — the rule the globe actually runs on.
+ *
+ * Virtual is not merely "a listing that happens to have no city": a Virtual
+ * listing can still carry a real location string, and it must *still* stay off
+ * the map. Keeping that rule here, rather than inline at the call site, is what
+ * lets it be tested without depending on today's listings.json happening to
+ * contain such a listing.
+ */
+export function coordsForListing(
+  location: string,
+  format?: string,
+): [number, number] | null {
+  if (format === "Virtual") return null;
+  return coordsFor(location);
+}
+
 /** Every location string the globe knows how to place. Used by the tests. */
 export function knownLocations(): string[] {
   return Object.keys(GEO);
