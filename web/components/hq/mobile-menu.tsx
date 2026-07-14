@@ -17,7 +17,7 @@ import { REPO_URL } from "@/lib/types-hq";
  * links take over.
  */
 export function MobileMenu() {
-  const pathname = usePathname() ?? "/";
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -46,16 +46,52 @@ export function MobileMenu() {
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [open]);
 
+  // The panel stops existing at `sm` and up, but `sm:hidden` is CSS — the state
+  // stays true. Rotating a phone to landscape therefore hid the panel with focus
+  // still inside it (focus fell to <body>), left this component's document-level
+  // key handler live on desktop, and popped the panel back open on rotating
+  // back. Close it when the breakpoint is crossed so the state matches reality.
+  useEffect(() => {
+    if (!open) return;
+    const desktop = window.matchMedia("(min-width: 640px)");
+    const onChange = () => {
+      if (desktop.matches) setOpen(false);
+    };
+    onChange();
+    desktop.addEventListener("change", onChange);
+    return () => desktop.removeEventListener("change", onChange);
+  }, [open]);
+
+  // Close when focus leaves the menu entirely.
+  //
+  // A disclosure needs no focus trap — but it does need focus *management*.
+  // Without this, a keyboard user could tab out of the open panel, activate a
+  // hackathon card, and end up with the detail modal stacked on top of a still
+  // open nav panel: two overlays at once, one Escape tearing down both.
+  const onBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (!rootRef.current?.contains(e.relatedTarget as Node | null)) {
+      setOpen(false);
+    }
+  };
 
   return (
-    <div ref={rootRef} className="relative sm:hidden">
+    // Not `relative`: with no positioned ancestor here, the panel below resolves
+    // against the fixed <nav>, whose height IS the pill's height.
+    <div
+      ref={rootRef}
+      onBlur={onBlur}
+      className="sm:hidden"
+    >
       <button
         ref={buttonRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="hq-mobile-menu"
-        aria-label={open ? "Close menu" : "Open menu"}
+        // A stable name. Flipping it to "Close menu" while open would break
+        // voice control ("click Open menu" stops matching the thing it opened),
+        // and aria-expanded already carries the state.
+        aria-label="Menu"
         className="flex items-center rounded-2xl px-3.5 py-3.5 text-paper/80 transition hover:bg-white/10 hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
       >
         <MenuIcon open={open} />
@@ -64,11 +100,15 @@ export function MobileMenu() {
       {open && (
         <div
           id="hq-mobile-menu"
-          // Pinned to the viewport rather than the button: anchored to the
-          // button, a 13rem panel hangs off the left edge of a 375px screen,
-          // because the pill is centred and the button sits near its right.
-          // inset-x-3 matches the nav's own px-3 gutter.
-          className="glass-dark fixed inset-x-3 top-[5.5rem] flex flex-col gap-1 rounded-3xl p-2 shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
+          // Anchored to the <nav>, not to a magic offset. `top-[5.5rem]` was a
+          // guess at where the pill ends, and it only held while the pill's
+          // height happened to match: the pill is sized by px-based text, so a
+          // browser minimum-font-size setting (Chrome and Firefox both go to
+          // 24px) grew the pill past the offset and the panel landed ON TOP of
+          // it — for exactly the users who set larger text. `top-full` tracks
+          // the real height instead. inset-x-3 matches the nav's px-3 gutter,
+          // which keeps the panel on screen at 375px.
+          className="glass-dark absolute inset-x-3 top-full mt-3 flex flex-col gap-1 rounded-3xl p-2 shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
         >
           {NAV_LINKS.map(([label, href]) => {
             const active = isActiveRoute(pathname, href);
@@ -76,10 +116,11 @@ export function MobileMenu() {
               <Link
                 key={label}
                 href={href}
-                // Navigating doesn't unmount the nav, so the panel has to be
-                // dismissed here or it stays open over the new page. Closing on
-                // the press (rather than reacting to the route) also covers a
-                // tap on the section you're already in, which changes nothing.
+                // Dismiss on the press. A route change does remount the nav (each
+                // page renders its own PageShell), but that lands after the
+                // navigation resolves — and it never happens at all for GITHUB
+                // below, which opens a new tab. Closing here covers both, plus a
+                // tap on the section you are already in.
                 onClick={() => setOpen(false)}
                 aria-current={active ? "page" : undefined}
                 className={`rounded-2xl px-4 py-3 font-mono text-[11px] tracking-[0.18em] transition hover:bg-white/10 hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-inset ${

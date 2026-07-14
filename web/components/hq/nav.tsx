@@ -7,7 +7,7 @@ import { MobileMenu } from "./mobile-menu";
 import { REPO_URL } from "@/lib/types-hq";
 
 export function NavPill() {
-  const pathname = usePathname() ?? "/";
+  const pathname = usePathname();
 
   return (
     <nav className="fixed inset-x-0 top-4 z-50 flex justify-center px-3">
