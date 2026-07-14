@@ -9,6 +9,7 @@ import path from "node:path";
  *  - days-until-deadline, cleaned titles, theme tags, prize parsing
  */
 
+import { coordsFor, isUnmappable, normalizeLocation } from "./geo";
 import type { HackState, Hackathon, SiteStats } from "./types-hq";
 
 export type { HackState, Hackathon, SiteStats };
@@ -34,45 +35,6 @@ type RawListing = {
   is_visible?: boolean;
   date_posted?: number;
   deadline?: string;
-};
-
-/** Static geocode table - one entry per unique location string in listings.json. */
-const GEO: Record<string, [number, number]> = {
-  "Amherst, MA": [42.3732, -72.5199],
-  "Ann Arbor, MI": [42.2808, -83.743],
-  "Atlanta, GA": [33.749, -84.388],
-  "Austin, TX": [30.2672, -97.7431],
-  "Berkeley / San Francisco, CA": [37.8715, -122.273],
-  "Blacksburg, VA": [37.2296, -80.4139],
-  "Boston, MA": [42.3601, -71.0589],
-  "Cambridge, MA": [42.3736, -71.1097],
-  "Chapel Hill, NC": [35.9132, -79.0558],
-  "College Park, MD": [38.9897, -76.9378],
-  "Dearborn, MI": [42.3223, -83.1763],
-  "Greensboro, NC": [36.0726, -79.792],
-  "Hamilton, ON": [43.2557, -79.8711],
-  "Ho Chi Minh City, Vietnam": [10.7769, 106.7009],
-  "Houston, TX": [29.7604, -95.3698],
-  "Ithaca, NY": [42.444, -76.5019],
-  "Kolkata, India": [22.5726, 88.3639],
-  "Los Angeles, CA": [34.0522, -118.2437],
-  "Miami, FL": [25.7617, -80.1918],
-  "New York, NY": [40.7128, -74.006],
-  "Newark, NJ": [40.7357, -74.1724],
-  "Orlando, FL": [28.5384, -81.3789],
-  "Ottawa, ON": [45.4215, -75.6972],
-  "Philadelphia, PA": [39.9526, -75.1652],
-  "Pittsburgh, PA": [40.4406, -79.9959],
-  "Providence, RI": [41.824, -71.4128],
-  "San Francisco, CA": [37.7749, -122.4194],
-  "Santa Clara, CA": [37.3541, -121.9552],
-  "Seattle, WA": [47.6062, -122.3321],
-  "Stony Brook, NY": [40.9257, -73.1409],
-  "Toronto, ON": [43.6532, -79.3832],
-  // Legacy key — older listings spell Toronto with the country suffix.
-  "Toronto, ON, Canada": [43.6532, -79.3832],
-  "Troy, NY": [42.7284, -73.6918],
-  "Vancouver, BC": [49.2827, -123.1207],
 };
 
 const THEME_RULES: [RegExp, string][] = [
@@ -186,9 +148,14 @@ export function loadHackathons(): Hackathon[] {
 
       let lat: number | null = null;
       let lng: number | null = null;
-      const geo = GEO[location];
+      const geo = coordsFor(location);
       if (geo && r.format !== "Virtual") {
-        const n = (seen[location] = (seen[location] ?? 0) + 1);
+        // Count co-located listings by the *normalized* key. Keying this on the
+        // raw string would restart the count for every spelling ("Toronto, ON"
+        // vs "Toronto, ON, Canada"), so two listings now sharing one set of
+        // coordinates would both take the n=1 zero-offset and stack exactly.
+        const key = normalizeLocation(location);
+        const n = (seen[key] = (seen[key] ?? 0) + 1);
         // Spiral-offset co-located markers just enough to stay individually
         // clickable when zoomed into a city. Keep this SMALL: 0.01° is ~1.1km,
         // which separates pins at city zoom while keeping every marker inside
