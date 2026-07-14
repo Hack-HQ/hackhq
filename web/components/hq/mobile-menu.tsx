@@ -56,7 +56,7 @@ export function MobileMenu() {
         aria-expanded={open}
         aria-controls="hq-mobile-menu"
         aria-label={open ? "Close menu" : "Open menu"}
-        className="flex items-center rounded-2xl px-3.5 py-3.5 text-paper/80 transition hover:bg-white/10 hover:text-paper"
+        className="flex items-center rounded-2xl px-3.5 py-3.5 text-paper/80 transition hover:bg-white/10 hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
       >
         <MenuIcon open={open} />
       </button>
@@ -82,7 +82,7 @@ export function MobileMenu() {
                 // tap on the section you're already in, which changes nothing.
                 onClick={() => setOpen(false)}
                 aria-current={active ? "page" : undefined}
-                className={`rounded-2xl px-4 py-3 font-mono text-[11px] tracking-[0.18em] transition hover:bg-white/10 hover:text-paper ${
+                className={`rounded-2xl px-4 py-3 font-mono text-[11px] tracking-[0.18em] transition hover:bg-white/10 hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-inset ${
                   active ? "bg-white/10 text-paper" : "text-paper/80"
                 }`}
               >
@@ -96,7 +96,7 @@ export function MobileMenu() {
             target="_blank"
             rel="noreferrer"
             onClick={() => setOpen(false)}
-            className="rounded-2xl px-4 py-3 font-mono text-[11px] tracking-[0.18em] text-paper/50 transition hover:bg-white/10 hover:text-paper"
+            className="rounded-2xl px-4 py-3 font-mono text-[11px] tracking-[0.18em] text-paper/50 transition hover:bg-white/10 hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-inset"
           >
             ★ GITHUB
           </a>
