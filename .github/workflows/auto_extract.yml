@@ -46,6 +46,18 @@ jobs:
         run: |
           python .github/scripts/update_readmes.py
 
+      # A listing whose city has no coordinates is live in the README and the
+      # deck but absent from the globe (#111). geo-coverage.test.ts catches that
+      # on pull requests, but this job pushes straight to main with the default
+      # GITHUB_TOKEN, and GitHub starts no workflow runs for such pushes — so Web
+      # CI never sees these commits. Ask the same question here instead.
+      #
+      # Never blocks: the listing still lands, and this only names the city a
+      # maintainer needs to add.
+      - name: Check globe coverage
+        id: geo
+        run: python .github/scripts/check_geo_coverage.py
+
       - name: Commit and push changes
         if: steps.extract.outputs.is_duplicate != 'true' && steps.extract.outputs.commit_message != ''
         env:
@@ -122,6 +134,15 @@ jobs:
               body += `> Note: ${warning}\n\n`;
             }
 
+            // Named, not silent: this listing is live everywhere except the
+            // globe until someone adds the city (#111).
+            const missingGeo = (process.env.MISSING_GEO || '').trim();
+            if (missingGeo) {
+              body += `> **Not on the globe yet.**\n`;
+              body += `> \`\`\`\n${missingGeo.split('\n').map(l => `> ${l}`).join('\n')}\n> \`\`\`\n`;
+              body += `> The listing is live in the README and the deck. A maintainer can put it on the map by adding the location to \`.github/scripts/geocodes.json\`.\n\n`;
+            }
+
             body += `The opportunity has been added to the README. Thank you for contributing!`;
 
             await github.rest.issues.createComment({
@@ -133,6 +154,7 @@ jobs:
         env:
           EXTRACTED_DATA: ${{ steps.extract.outputs.extracted_data }}
           WARNING_MSG: ${{ steps.extract.outputs.warning }}
+          MISSING_GEO: ${{ steps.geo.outputs.missing }}
 
       - name: Close issue
         if: success() && steps.extract.outputs.is_duplicate != 'true'

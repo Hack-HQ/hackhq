@@ -123,6 +123,17 @@ Keep the featured set small so it stays meaningful.
 4. **Automation adds** the hackathon to the table
 5. **Issue is closed** with a summary of what was added
 
+### Hackathons in a new city (maintainers)
+
+The globe places a listing using the coordinate table in
+[`.github/scripts/geocodes.json`](.github/scripts/geocodes.json). When an
+approved hackathon is the first one in a given city, the automation adds the
+listing as normal and then **comments on the issue** saying it isn't on the globe
+yet. Add the city to `coordinates` (or to `unmappable` if the venue genuinely has
+no place on a map, like `TBA`) and it appears on the next deploy.
+
+A missing city never blocks a contribution — it just can't do so quietly.
+
 ---
 
 ## Guidelines
