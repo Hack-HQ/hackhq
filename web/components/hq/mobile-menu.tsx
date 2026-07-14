@@ -64,7 +64,11 @@ export function MobileMenu() {
       {open && (
         <div
           id="hq-mobile-menu"
-          className="glass-dark absolute right-0 top-[calc(100%+0.6rem)] flex w-52 flex-col gap-1 rounded-3xl p-2 shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
+          // Pinned to the viewport rather than the button: anchored to the
+          // button, a 13rem panel hangs off the left edge of a 375px screen,
+          // because the pill is centred and the button sits near its right.
+          // inset-x-3 matches the nav's own px-3 gutter.
+          className="glass-dark fixed inset-x-3 top-[5.5rem] flex flex-col gap-1 rounded-3xl p-2 shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
         >
           {NAV_LINKS.map(([label, href]) => {
             const active = isActiveRoute(pathname, href);
