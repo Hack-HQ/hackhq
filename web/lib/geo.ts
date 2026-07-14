@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+
 /**
  * Location -> coordinates for the globe.
  *
@@ -8,9 +11,30 @@
  *  - Lookups normalize first, so "Toronto, ON" and "Toronto, ON, Canada" are
  *    the same key rather than two entries that must both be remembered.
  *  - Anything that still misses is a *reported* miss: loadHackathons warns,
- *    the globe surfaces a count, and a coverage test fails CI. Only the
- *    locations listed in UNMAPPABLE are allowed to have no coordinates.
+ *    the globe surfaces a count, a coverage test fails CI on pull requests, and
+ *    the listing automation comments on the issue. Only the locations named in
+ *    `unmappable` are allowed to have no coordinates.
+ *
+ * The table itself lives in .github/scripts/geocodes.json because the listing
+ * automation (Python) has to answer the same question this module does, and the
+ * two must not drift. Server-side only — like lib/listings.ts, this reads from
+ * disk at build/render time and must not be pulled into a client component.
  */
+
+const GEOCODES_PATH = path.join(
+  process.cwd(),
+  "..",
+  ".github",
+  "scripts",
+  "geocodes.json",
+);
+
+type GeocodeFile = {
+  coordinates: Record<string, [number, number]>;
+  unmappable: string[];
+};
+
+const FILE: GeocodeFile = JSON.parse(fs.readFileSync(GEOCODES_PATH, "utf8"));
 
 /** Country suffixes we drop: the city + region prefix already disambiguates. */
 const COUNTRY_SUFFIXES = [
@@ -49,55 +73,17 @@ export function normalizeLocation(location: string): string {
 }
 
 /**
- * Coordinates for every location we place on the globe, keyed by the
- * normalized form. Add a city here the moment a listing introduces it — the
- * coverage test in geo-coverage.test.ts fails CI until you do.
+ * Coordinates for every location we place on the globe, keyed by the normalized
+ * form. Add a city here the moment a listing introduces one — the coverage test
+ * fails CI until you do.
  */
-const GEO: Record<string, [number, number]> = {
-  "amherst, ma": [42.3732, -72.5199],
-  "ann arbor, mi": [42.2808, -83.743],
-  "atlanta, ga": [33.749, -84.388],
-  "austin, tx": [30.2672, -97.7431],
-  "berkeley / san francisco, ca": [37.8715, -122.273],
-  "blacksburg, va": [37.2296, -80.4139],
-  "boston, ma": [42.3601, -71.0589],
-  "cambridge, ma": [42.3736, -71.1097],
-  "chapel hill, nc": [35.9132, -79.0558],
-  "college park, md": [38.9897, -76.9378],
-  "dearborn, mi": [42.3223, -83.1763],
-  "greensboro, nc": [36.0726, -79.792],
-  "hamilton, on": [43.2557, -79.8711],
-  "ho chi minh city, vietnam": [10.7769, 106.7009],
-  "houston, tx": [29.7604, -95.3698],
-  "ithaca, ny": [42.444, -76.5019],
-  "kolkata, india": [22.5726, 88.3639],
-  "los angeles, ca": [34.0522, -118.2437],
-  "miami, fl": [25.7617, -80.1918],
-  "new york, ny": [40.7128, -74.006],
-  "newark, nj": [40.7357, -74.1724],
-  "orlando, fl": [28.5384, -81.3789],
-  "ottawa, on": [45.4215, -75.6972],
-  "philadelphia, pa": [39.9526, -75.1652],
-  "pittsburgh, pa": [40.4406, -79.9959],
-  "providence, ri": [41.824, -71.4128],
-  "san francisco, ca": [37.7749, -122.4194],
-  "santa clara, ca": [37.3541, -121.9552],
-  "seattle, wa": [47.6062, -122.3321],
-  "stony brook, ny": [40.9257, -73.1409],
-  "toronto, on": [43.6532, -79.3832],
-  "troy, ny": [42.7284, -73.6918],
-  "vancouver, bc": [49.2827, -123.1207],
-};
+const GEO = FILE.coordinates;
 
 /**
- * Locations that legitimately have no point on a map. These are *allowed* to
- * be coordinate-less; everything else that misses GEO is a bug, not a shrug.
- *
- * Keep this list to locations that actually appear in listings.json. A venue
- * name nobody has submitted yet belongs here only once it shows up — until
- * then the coverage test is the thing that tells us it arrived.
+ * Locations that legitimately have no point on a map. These are *allowed* to be
+ * coordinate-less; everything else that misses the table is a bug, not a shrug.
  */
-const UNMAPPABLE = new Set(["tba"]);
+const UNMAPPABLE = new Set(FILE.unmappable);
 
 /** True when a location is knowingly un-mappable rather than merely missing. */
 export function isUnmappable(location: string): boolean {

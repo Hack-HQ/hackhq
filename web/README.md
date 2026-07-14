@@ -33,22 +33,26 @@ README table between `<!-- HACKATHONS_TABLE_START -->` and
 
 ### Putting a listing on the globe
 
-The globe can only render a listing it has coordinates for, so `lib/geo.ts`
-maps each location string to a lat/lng. Lookups normalize first — case,
-whitespace, and a trailing country are all ignored, so `Toronto, ON` and
-`Toronto, ON, Canada` resolve to the same city rather than needing two entries.
+The globe can only render a listing it has coordinates for. The table lives in
+[`.github/scripts/geocodes.json`](../.github/scripts/geocodes.json) and is read
+by two things that must never disagree: `lib/geo.ts` (the site) and
+`.github/scripts/check_geo_coverage.py` (the listing automation).
 
-**If CI fails with "N listing(s) would silently disappear from the globe":** a
-listing arrived with a location that isn't in the table. The failure names it.
-Either
+Lookups normalize first — case, whitespace, and a trailing country are all
+ignored, so `Toronto, ON`, `Toronto, ON, Canada`, and `Toronto, Canada` all
+resolve to one Toronto rather than needing three entries.
 
-- add it to `GEO` in `lib/geo.ts` (city coordinates, normalized key), or
-- add it to `UNMAPPABLE` if it genuinely has no place on a map (e.g. `TBA`).
+**A listing in a city we can't place is reported, never dropped in silence** (#111):
 
-That guard is `lib/geo-coverage.test.ts`, which reads the real `listings.json`.
-It exists because a missing coordinate used to drop the listing from the map in
-silence — visible in the deck and the README, absent from the globe (#111).
-Virtual listings are excluded from the map on purpose and never fail the check.
+| Path | What happens |
+| ---- | ------------ |
+| Pull request | `lib/geo-coverage.test.ts` fails CI, naming the location |
+| Automated add (issue → `approved`) | The workflow comments on the issue naming the location. It does **not** block the add — those jobs push to `main` with the default `GITHUB_TOKEN`, so no Web CI run is created for them |
+| Either way | `loadHackathons()` warns, and the globe states how many listings it isn't showing |
+
+To fix a report, add the location to `coordinates` in `geocodes.json` — or to
+`unmappable` if it genuinely has no place on a map (e.g. `TBA`). Virtual
+listings are excluded from the map on purpose and never trip the check.
 
 ### Render model
 
