@@ -31,6 +31,25 @@ disk when pages are generated.
 README table between `<!-- HACKATHONS_TABLE_START -->` and
 `<!-- HACKATHONS_TABLE_END -->`.
 
+### Putting a listing on the globe
+
+The globe can only render a listing it has coordinates for, so `lib/geo.ts`
+maps each location string to a lat/lng. Lookups normalize first — case,
+whitespace, and a trailing country are all ignored, so `Toronto, ON` and
+`Toronto, ON, Canada` resolve to the same city rather than needing two entries.
+
+**If CI fails with "N listing(s) would silently disappear from the globe":** a
+listing arrived with a location that isn't in the table. The failure names it.
+Either
+
+- add it to `GEO` in `lib/geo.ts` (city coordinates, normalized key), or
+- add it to `UNMAPPABLE` if it genuinely has no place on a map (e.g. `TBA`).
+
+That guard is `lib/geo-coverage.test.ts`, which reads the real `listings.json`.
+It exists because a missing coordinate used to drop the listing from the map in
+silence — visible in the deck and the README, absent from the globe (#111).
+Virtual listings are excluded from the map on purpose and never fail the check.
+
 ### Render model
 
 Production pages are **statically generated at build time** (`next build`).
