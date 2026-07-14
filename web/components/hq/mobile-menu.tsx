@@ -20,6 +20,7 @@ export function MobileMenu() {
   const pathname = usePathname() ?? "/";
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   // Escape closes and hands focus back to the button that opened the panel —
   // without the restore, a keyboard user is dumped at the top of the document.
@@ -34,8 +35,19 @@ export function MobileMenu() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // A tap anywhere outside the menu dismisses it. Focus is not moved here: the
+  // pointer has already gone where the user wants it, unlike the Escape case.
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [open]);
+
   return (
-    <div className="relative sm:hidden">
+    <div ref={rootRef} className="relative sm:hidden">
       <button
         ref={buttonRef}
         type="button"
