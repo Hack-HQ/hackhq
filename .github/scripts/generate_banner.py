@@ -8,6 +8,14 @@ Stats shown:
   - total hackathons tracked
   - open / opens-soon / closing-soon counts
   - in-person / virtual / hybrid format mix (animated stacked bar)
+
+NOTE FOR WORKFLOW AUTHORS: the banner carries an "as of {today}" date, so this
+script rewrites the SVG on *every* run — including days when the README table
+is byte-for-byte unchanged. Any workflow that regenerates the banner must
+therefore gate its commit on what is staged (`git add ...` then
+`git diff --cached --quiet`), never on the README diff alone: a README-only gate
+throws the fresh banner away and lets the committed date go stale (#112).
+test_workflows.py enforces this.
 """
 
 import os
