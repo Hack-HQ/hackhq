@@ -42,15 +42,30 @@ jobs:
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
+          # Which of the two actually changed? The banner carries today's date, so
+          # it changes on every run - meaning this job now commits daily. Without
+          # this, a day with no badge flips would land a commit reading "update
+          # closing-soon badges (0 changes)", which describes work it didn't do.
+          if git diff --cached --quiet -- README.md; then
+            echo "readme_changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "readme_changed=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Commit and push
         if: steps.check.outputs.has_changes == 'true'
         env:
           CHANGES: ${{ steps.run.outputs.changes }}
+          README_CHANGED: ${{ steps.check.outputs.readme_changed }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: update closing-soon badges (${CHANGES:-0} changes)"
+          if [ "$README_CHANGED" = "true" ]; then
+            MSG="chore: update closing-soon badges (${CHANGES:-0} changes)"
+          else
+            MSG="chore: refresh stats banner"
+          fi
+          git commit -m "$MSG"
           ok=false
           for i in 1 2 3; do
             git fetch origin main || { sleep 2; continue; }
