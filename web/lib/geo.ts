@@ -104,9 +104,47 @@ export function isUnmappable(location: string): boolean {
   return UNMAPPABLE.has(normalizeLocation(location));
 }
 
+/**
+ * The table as a Map, plus a city-only index.
+ *
+ * A Map, not the object literal, because `GEO["constructor"]` walks the
+ * prototype chain and hands back `Object` — truthy, not an array. That sails
+ * through a `?? null` check, `lat = geo[0] + 0` becomes NaN, `NaN !== null`
+ * passes the globe's filter, and mapbox throws on setLngLat([NaN, NaN]),
+ * taking the whole map down. Location strings are LLM-extracted from
+ * user-filed issues, so "constructor" is not a hypothetical input.
+ */
+const TABLE = new Map<string, [number, number]>(Object.entries(GEO));
+
+/**
+ * City name -> coordinates, for the cities whose name is unambiguous in TABLE.
+ *
+ * Stripping the country off "Toronto, Canada" leaves "toronto", which matches
+ * no key ("toronto, on" has the province). Rather than re-introducing the
+ * duplicate entries this module exists to delete, resolve a bare city name when
+ * exactly one city in the table carries it. Two cities sharing a name (a
+ * Cambridge, MA and a Cambridge, UK) make the name ambiguous, so it resolves to
+ * nothing and the coverage test speaks up — a loud miss beats a confident pin
+ * in the wrong country.
+ */
+const CITY_INDEX = (() => {
+  const byCity = new Map<string, [number, number][]>();
+  for (const [key, coords] of TABLE) {
+    const city = key.split(",")[0]?.trim() ?? "";
+    if (!city) continue;
+    byCity.set(city, [...(byCity.get(city) ?? []), coords]);
+  }
+  const unique = new Map<string, [number, number]>();
+  for (const [city, hits] of byCity) {
+    if (hits.length === 1 && hits[0]) unique.set(city, hits[0]);
+  }
+  return unique;
+})();
+
 /** Coordinates for a location, or null when the table has no entry. */
 export function coordsFor(location: string): [number, number] | null {
-  return GEO[normalizeLocation(location)] ?? null;
+  const key = normalizeLocation(location);
+  return TABLE.get(key) ?? CITY_INDEX.get(key) ?? null;
 }
 
 /**
@@ -128,5 +166,5 @@ export function coordsForListing(
 
 /** Every location string the globe knows how to place. Used by the tests. */
 export function knownLocations(): string[] {
-  return Object.keys(GEO);
+  return [...TABLE.keys()];
 }

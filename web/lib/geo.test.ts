@@ -57,6 +57,27 @@ describe("coordsFor", () => {
   it("returns null for a location it has never seen", () => {
     expect(coordsFor("Atlantis, XX")).toBeNull();
   });
+
+  it("does not hand back inherited object properties", () => {
+    // A plain-object lookup returns Object for "constructor" and
+    // Object.prototype for "__proto__" — both truthy, neither an array. That
+    // survives a `?? null` guard, makes lat/lng NaN, passes the globe's
+    // `!== null` filter, and mapbox then throws on setLngLat([NaN, NaN]),
+    // taking the entire map down. Location strings are LLM-extracted from
+    // user-filed issues, so these are reachable inputs.
+    expect(coordsFor("constructor")).toBeNull();
+    expect(coordsFor("__proto__")).toBeNull();
+    expect(coordsFor("toString")).toBeNull();
+    expect(coordsFor("hasOwnProperty")).toBeNull();
+  });
+
+  it("resolves a city named without its region", () => {
+    // "Toronto, Canada" normalizes to "toronto" once the country is stripped,
+    // which matches no key — the table stores "toronto, on". Resolve the bare
+    // city rather than adding a second Toronto row.
+    expect(coordsFor("Toronto, Canada")).toEqual(coordsFor("Toronto, ON"));
+    expect(coordsFor("Boston")).toEqual(coordsFor("Boston, MA"));
+  });
 });
 
 describe("coordsForListing", () => {

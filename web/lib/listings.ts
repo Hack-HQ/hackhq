@@ -136,14 +136,18 @@ export function loadHackathons(): Hackathon[] {
   // Deterministic jitter so co-located markers don't stack exactly.
   const seen: Record<string, number> = {};
 
-  // Locations we could not place. Collected while mapping and reported once
+  // Locations we could not place, keyed by their normalized form so one city
+  // spelled two ways is reported once. Collected while mapping and reported
   // below — a listing dropping off the globe should never be silent (#111).
-  const unplaceable: string[] = [];
+  const unplaceable = new Map<string, string>();
 
   const hackathons = raw
     .filter((r) => r.is_visible !== false)
     .map((r) => {
-      const location = r.locations?.[0] ?? "TBA";
+      // `||`, not `??`: a listing with locations: [""] has a location that is
+      // present but empty, and an empty string is no more mappable than a
+      // missing one. `??` would let it through and report a blank name.
+      const location = r.locations?.[0]?.trim() || "TBA";
       let daysLeft: number | null = null;
       if (r.deadline) {
         daysLeft = daysUntilDeadline(r.deadline, today);
@@ -168,13 +172,11 @@ export function loadHackathons(): Hackathon[] {
         const angle = n * 2.4;
         lat = geo[0] + (n > 1 ? 0.01 * Math.sin(angle) : 0);
         lng = geo[1] + (n > 1 ? 0.01 * Math.cos(angle) : 0);
-      } else if (
-        !geo &&
-        r.format !== "Virtual" &&
-        !isUnmappable(location) &&
-        !unplaceable.includes(location)
-      ) {
-        unplaceable.push(location);
+      } else if (r.format !== "Virtual" && !isUnmappable(location)) {
+        // Dedupe on the normalized key, not the raw string: otherwise
+        // "Atlantis, XX" and "atlantis, xx" are reported as two missing places.
+        const key = normalizeLocation(location);
+        if (!unplaceable.has(key)) unplaceable.set(key, location);
       }
 
       const format =
@@ -210,10 +212,10 @@ export function loadHackathons(): Hackathon[] {
       return (a.daysLeft ?? 9999) - (b.daysLeft ?? 9999);
     });
 
-  if (unplaceable.length > 0) {
+  if (unplaceable.size > 0) {
     console.warn(
-      `[listings] ${unplaceable.length} location(s) have no coordinates and will ` +
-        `not appear on the globe: ${unplaceable.join(", ")}. ` +
+      `[listings] ${unplaceable.size} location(s) have no coordinates and will ` +
+        `not appear on the globe: ${[...unplaceable.values()].join(", ")}. ` +
         `Add them to GEO in lib/geo.ts.`,
     );
   }
@@ -237,6 +239,14 @@ export function siteStats(list: Hackathon[]): SiteStats {
     open: live.filter((h) => h.state === "open" || h.state === "closing_soon").length,
     closingSoon: list.filter((h) => h.state === "closing_soon").length,
     prizeDisplay,
-    cities: new Set(list.filter((h) => h.lat !== null).map((h) => h.location)).size,
+    // Count distinct *places*, not distinct strings. "Toronto, ON, Canada" and
+    // "Toronto, ON" are both in the data and both land on the same pin, so the
+    // raw-string version of this counted Toronto twice and the site advertised
+    // one more city than it shows.
+    cities: new Set(
+      list
+        .filter((h) => h.lat !== null)
+        .map((h) => normalizeLocation(h.location)),
+    ).size,
   };
 }
