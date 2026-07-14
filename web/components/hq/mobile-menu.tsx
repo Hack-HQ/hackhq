@@ -46,6 +46,7 @@ export function MobileMenu() {
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [open]);
 
+
   return (
     <div ref={rootRef} className="relative sm:hidden">
       <button
@@ -71,6 +72,11 @@ export function MobileMenu() {
               <Link
                 key={label}
                 href={href}
+                // Navigating doesn't unmount the nav, so the panel has to be
+                // dismissed here or it stays open over the new page. Closing on
+                // the press (rather than reacting to the route) also covers a
+                // tap on the section you're already in, which changes nothing.
+                onClick={() => setOpen(false)}
                 aria-current={active ? "page" : undefined}
                 className={`rounded-2xl px-4 py-3 font-mono text-[11px] tracking-[0.18em] transition hover:bg-white/10 hover:text-paper ${
                   active ? "bg-white/10 text-paper" : "text-paper/80"
@@ -85,6 +91,7 @@ export function MobileMenu() {
             href={REPO_URL}
             target="_blank"
             rel="noreferrer"
+            onClick={() => setOpen(false)}
             className="rounded-2xl px-4 py-3 font-mono text-[11px] tracking-[0.18em] text-paper/50 transition hover:bg-white/10 hover:text-paper"
           >
             ★ GITHUB

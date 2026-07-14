@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_LINKS, isActiveRoute } from "@/lib/nav";
+import { MobileMenu } from "./mobile-menu";
 import { REPO_URL } from "@/lib/types-hq";
 
 export function NavPill() {
@@ -46,6 +47,9 @@ export function NavPill() {
             ★ GITHUB
           </a>
         </div>
+
+        {/* Links - below sm, where the row above is hidden */}
+        <MobileMenu />
 
         {/* Submit CTA */}
         <Link
