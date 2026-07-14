@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NAV_LINKS, isActiveRoute } from "@/lib/nav";
 import { REPO_URL } from "@/lib/types-hq";
 
@@ -19,10 +19,25 @@ import { REPO_URL } from "@/lib/types-hq";
 export function MobileMenu() {
   const pathname = usePathname() ?? "/";
   const [open, setOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // Escape closes and hands focus back to the button that opened the panel —
+  // without the restore, a keyboard user is dumped at the top of the document.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      buttonRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
     <div className="relative sm:hidden">
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
