@@ -126,13 +126,13 @@ Keep the featured set small so it stays meaningful.
 ### Hackathons in a new city (maintainers)
 
 The globe places a listing using the coordinate table in
-[`web/lib/geo.ts`](web/lib/geo.ts). When an approved hackathon is the first one
-in a given city, Web CI fails with the location string that has no coordinates —
-add the city to `GEO` (or to `UNMAPPABLE` if the venue genuinely has no place on
-a map, like `TBA`).
+[`.github/scripts/geocodes.json`](.github/scripts/geocodes.json). When an
+approved hackathon is the first one in a given city, the automation adds the
+listing as normal and then **comments on the issue** saying it isn't on the globe
+yet. Add the city to `coordinates` (or to `unmappable` if the venue genuinely has
+no place on a map, like `TBA`) and it appears on the next deploy.
 
-That check exists so a listing can't be live in the README and the deck while
-being silently absent from the globe.
+A missing city never blocks a contribution — it just can't do so quietly.
 
 ---
 
