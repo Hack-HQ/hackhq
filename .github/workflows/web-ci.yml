@@ -6,12 +6,18 @@ on:
     paths:
       - 'web/**'
       - '.github/scripts/**'
-      - '.github/workflows/web-ci.yml'
+      # The scripts job runs test_workflows.py, which asserts how the workflows
+      # gate their commits (#112). Without this path it would not run on the very
+      # PRs that change those workflows - exactly when it needs to.
+      - '.github/workflows/**'
   pull_request:
     paths:
       - 'web/**'
       - '.github/scripts/**'
-      - '.github/workflows/web-ci.yml'
+      # The scripts job runs test_workflows.py, which asserts how the workflows
+      # gate their commits (#112). Without this path it would not run on the very
+      # PRs that change those workflows - exactly when it needs to.
+      - '.github/workflows/**'
 
 permissions:
   contents: read
