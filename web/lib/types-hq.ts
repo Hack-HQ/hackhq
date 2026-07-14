@@ -60,15 +60,27 @@ export function deadlineDisplay(h: Hackathon): string | null {
   });
 }
 
-/** Prefilled GitHub issue for the Submit flow - keeps the engine, new surface. */
+/**
+ * Prefilled GitHub issue for the Submit flow - keeps the engine, new surface.
+ *
+ * Targets the `link_only` issue FORM, not a free-text issue. That is the whole
+ * point: the form applies the `auto_extract` + `community` labels and produces
+ * the structured fields the pipeline reads. A free-text issue has neither, so a
+ * maintainer approving one used to fall through to contribution_approved.py,
+ * which looks for a form field that isn't there and fails with "Missing
+ * required field: URL". Every submission made from the website died that way.
+ *
+ * `url` matches the `id:` of the input in .github/ISSUE_TEMPLATE/link_only.yaml
+ * — GitHub prefills a form field by its id. Renaming that id silently stops the
+ * prefill, so lib/types-hq.test.ts pins the two together.
+ */
 export function submitIssueUrl(name = "", url = ""): string {
-  const title = encodeURIComponent(
-    name ? `[Hackathon] ${name}` : "[Hackathon] Add a new event",
-  );
-  const body = encodeURIComponent(
-    `**Hackathon name:** ${name || "…"}\n**URL:** ${url || "…"}\n**Location (City, ST or Online):** …\n**Deadline:** …\n**Prize pool:** …\n\n_Submitted via hackhq.dev - the pipeline will extract the rest._`,
-  );
-  return `${REPO_URL}/issues/new?title=${title}&body=${body}`;
+  const params = new URLSearchParams({ template: "link_only.yaml" });
+  // The template's own title prefix is "Add: ", so match it rather than
+  // fighting it — a maintainer scanning the issue list sees one consistent shape.
+  if (name.trim()) params.set("title", `Add: ${name.trim()}`);
+  if (url.trim()) params.set("url", url.trim());
+  return `${REPO_URL}/issues/new?${params.toString()}`;
 }
 
 export { REPO_URL };
