@@ -17,26 +17,42 @@ const GLOBE_VIEW = {
 
 const SECONDS_PER_REVOLUTION = 110;
 
-export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
+type GlobeMapProps = {
+  /** Already filtered, and already known to have coordinates. */
+  hackathons: Hackathon[];
+  selected: Hackathon | null;
+  onSelect: (h: Hackathon | null) => void;
+};
+
+export function GlobeMap({ hackathons, selected, onSelect }: GlobeMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const [ready, setReady] = useState(false);
   const [zoomedIn, setZoomedIn] = useState(false);
   const hasToken = Boolean(mapboxgl.accessToken);
 
-  const located = hackathons.filter((h) => h.lat !== null && h.lng !== null);
+  // Auto-rotation is owned by the map effect but has to be switchable from the
+  // marker effect (a click stops the spin), and the two effects have separate
+  // closures — so it lives in refs rather than in either closure.
+  const spinRef = useRef(true);
+  const interactingRef = useRef(false);
+  // The latest onSelect, so the marker effect doesn't have to tear down and
+  // rebuild every marker just because the parent re-rendered a new callback.
+  // Assigned in an effect, not during render — the markers only read it from an
+  // event handler, which always runs after the effect has committed.
+  const onSelectRef = useRef(onSelect);
+  useEffect(() => {
+    onSelectRef.current = onSelect;
+  }, [onSelect]);
 
-  // Non-virtual listings we could not place. A virtual hackathon isn't missing
-  // from the map — it has nowhere to be — so it doesn't count here.
-  const unmapped = hackathons.filter(
-    (h) => h.format !== "Virtual" && (h.lat === null || h.lng === null),
-  ).length;
-
+  /* ---- The map itself: built once ---- */
   useEffect(() => {
     if (!containerRef.current || !hasToken) return;
 
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    spinRef.current = !reducedMotion;
 
     const map = new mapboxgl.Map({
       container: containerRef.current,
@@ -60,12 +76,8 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       });
     });
 
-    // - Auto-rotate (pause while the user is interacting) -
-    let userInteracting = false;
-    let spinEnabled = !reducedMotion;
-
     function spinGlobe() {
-      if (!spinEnabled || userInteracting) return;
+      if (!spinRef.current || interactingRef.current) return;
       const zoom = map.getZoom();
       if (zoom > 4) return;
       let distancePerSecond = 360 / SECONDS_PER_REVOLUTION;
@@ -75,25 +87,54 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       map.easeTo({ center, duration: 1000, easing: (n) => n });
     }
 
-    map.on("mousedown", () => (userInteracting = true));
-    map.on("touchstart", () => (userInteracting = true));
-    map.on("mouseup", () => {
-      userInteracting = false;
+    const hold = () => (interactingRef.current = true);
+    const release = () => {
+      interactingRef.current = false;
       spinGlobe();
-    });
-    map.on("touchend", () => {
-      userInteracting = false;
-      spinGlobe();
-    });
-    map.on("dragend", () => {
-      userInteracting = false;
-      spinGlobe();
-    });
+    };
+
+    map.on("mousedown", hold);
+    map.on("touchstart", hold);
+    map.on("mouseup", release);
+    map.on("touchend", release);
+    map.on("dragend", release);
     map.on("moveend", spinGlobe);
     map.on("zoom", () => setZoomedIn(map.getZoom() > 3.2));
-    map.on("load", spinGlobe);
+    map.on("load", () => {
+      setReady(true);
+      spinGlobe();
+    });
 
-    // - Markers + shared hover popup -
+    // Clicking the globe itself (not a marker) dismisses the detail sheet — the
+    // "click empty background to deselect" half of #17.
+    map.on("click", () => onSelectRef.current(null));
+
+    const globeEl = containerRef.current;
+    const restoreSpin = () => {
+      spinRef.current = !reducedMotion;
+      spinGlobe();
+    };
+    globeEl.addEventListener("hq:backToGlobe", restoreSpin);
+
+    // Keep the canvas in sync with the container (fonts/CSS can settle after
+    // mount, and mapbox only auto-resizes on window resize).
+    const ro = new ResizeObserver(() => map.resize());
+    ro.observe(globeEl);
+
+    return () => {
+      ro.disconnect();
+      globeEl.removeEventListener("hq:backToGlobe", restoreSpin);
+      map.remove();
+      mapRef.current = null;
+      setReady(false);
+    };
+  }, [hasToken]);
+
+  /* ---- Markers: rebuilt whenever the filtered list changes (#18) ---- */
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !ready) return;
+
     const popup = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false,
@@ -102,12 +143,20 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       maxWidth: "280px",
     });
 
-    const markers = located.map((h) => {
-      const el = document.createElement("div");
+    const markers = hackathons.map((h) => {
+      // A button, not a div: markers are the primary way into a hackathon from
+      // this page, so they have to be reachable by keyboard (#17). Mapbox gives
+      // us a bare element; the semantics are ours to add.
+      const el = document.createElement("button");
+      el.type = "button";
       el.className = "hq-marker";
       el.dataset.state = h.state;
+      el.setAttribute(
+        "aria-label",
+        `${h.title}, ${h.host}, ${h.location}. ${STATE_META[h.state].label}.`,
+      );
 
-      el.addEventListener("mouseenter", () => {
+      const showPopup = () => {
         const meta = STATE_META[h.state];
         const cd = countdown(h);
 
@@ -134,112 +183,82 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
         metaRow.textContent = `${h.host} · ${h.location}`;
 
         root.append(statusRow, titleRow, metaRow);
+        popup.setLngLat([h.lng!, h.lat!]).setDOMContent(root).addTo(map);
+      };
 
-        popup
-          .setLngLat([h.lng!, h.lat!])
-          .setDOMContent(root)
-          .addTo(map);
-      });
-      el.addEventListener("mouseleave", () => popup.remove());
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        spinEnabled = false;
+      const select = (e: Event) => {
+        e.stopPropagation(); // don't let the map's background click deselect it
+        spinRef.current = false;
         popup.remove();
-        // Clicking a marker only flies the camera in — it deliberately does NOT
-        // open the detail card, which would cover the very map you just zoomed
-        // into. The hover popup carries the quick facts; full details live in
-        // the Deck / hackathons list.
-        map.flyTo({
-          center: [h.lng!, h.lat!],
-          zoom: 9.5,
-          duration: 2600,
-          essential: true,
-        });
-      });
+        onSelectRef.current(h);
+      };
+
+      el.addEventListener("mouseenter", showPopup);
+      el.addEventListener("focus", showPopup);
+      el.addEventListener("mouseleave", () => popup.remove());
+      el.addEventListener("blur", () => popup.remove());
+      el.addEventListener("click", select);
 
       return new mapboxgl.Marker({ element: el })
         .setLngLat([h.lng!, h.lat!])
         .addTo(map);
     });
 
-    const restoreSpin = () => {
-      spinEnabled = !reducedMotion;
-      spinGlobe();
-    };
-    const globeEl = containerRef.current;
-    globeEl.addEventListener("hq:backToGlobe", restoreSpin);
-
-    // Keep the canvas in sync with the container (fonts/CSS can settle after
-    // mount, and mapbox only auto-resizes on window resize).
-    const ro = new ResizeObserver(() => map.resize());
-    ro.observe(globeEl);
-
     return () => {
-      ro.disconnect();
-      globeEl.removeEventListener("hq:backToGlobe", restoreSpin);
       markers.forEach((m) => m.remove());
       popup.remove();
-      map.remove();
-      mapRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasToken]);
+  }, [hackathons, ready]);
+
+  /* ---- Fly to whatever is selected, from a marker or the off-map list ---- */
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !ready || !selected || selected.lat === null) return;
+    spinRef.current = false;
+    map.flyTo({
+      center: [selected.lng!, selected.lat!],
+      // Stops short of street level: the sheet covers part of the map, and the
+      // point is to see WHERE the hackathon is, not which building.
+      zoom: 8,
+      duration: 2200,
+      essential: true,
+    });
+  }, [selected, ready]);
 
   const backToGlobe = () => {
     setZoomedIn(false);
+    onSelect(null);
     mapRef.current?.flyTo({ ...GLOBE_VIEW, duration: 2400, essential: true });
     containerRef.current?.dispatchEvent(new Event("hq:backToGlobe"));
   };
 
   return (
-    <section id="globe" className="p-2 pt-0">
-      <div className="shell bg-ink h-[min(86vh,1000px)] min-h-[560px]">
-        {/* Map canvas - wrapper owns positioning because mapbox-gl forces
-            `position: relative` on the container element itself */}
-        {hasToken ? (
-          <div className="absolute inset-0">
-            <div ref={containerRef} className="h-full w-full" />
-          </div>
-        ) : (
-          <TokenFallback />
-        )}
-
-        {/* Legibility gradient */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-ink-deep/95 via-ink-deep/40 to-transparent" />
-
-        {/* Back-to-globe (after a marker fly-in) */}
-        {zoomedIn && (
-          <button
-            onClick={backToGlobe}
-            className="glass-dark absolute right-6 top-6 z-10 rounded-full px-5 py-2.5 font-mono text-[11px] tracking-[0.2em] text-paper transition hover:bg-ink/80 sm:right-10 sm:top-9"
-          >
-            ← BACK TO GLOBE
-          </button>
-        )}
-
-        {/* Page title overlay - bottom-left */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 p-6 sm:p-10">
-          <div className="kicker text-coral">Pillar 01 · Explore</div>
-          <h1 className="display mt-3 text-[clamp(1.8rem,4.5vw,3.6rem)] text-paper">
-            The globe
-          </h1>
-          {unmapped > 0 && (
-            // The globe can only show what it has coordinates for. Say so out
-            // loud rather than quietly rendering an incomplete map (#111).
-            //
-            // Deliberately does not state WHY a listing is missing. The cause is
-            // either "no venue announced yet" (TBA) or "we failed to place a real
-            // city" — and this component cannot tell them apart. Naming the first
-            // cause would tell visitors a hackathon has no venue when it may
-            // simply be one we haven't geocoded.
-            <p className="mt-3 font-mono text-[11px] tracking-[0.12em] text-paper/50">
-              {unmapped} {unmapped === 1 ? "hackathon is" : "hackathons are"} not on
-              the map yet. Find {unmapped === 1 ? "it" : "them"} in the deck.
-            </p>
-          )}
+    <>
+      {hasToken ? (
+        <div className="absolute inset-0">
+          <div ref={containerRef} className="h-full w-full" />
         </div>
-      </div>
-    </section>
+      ) : (
+        <TokenFallback />
+      )}
+
+      {/* Legibility gradient */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-ink-deep/95 via-ink-deep/40 to-transparent" />
+
+      {zoomedIn && (
+        <button
+          onClick={backToGlobe}
+          // Hidden on mobile while a sheet is open: there, the controls run the
+          // full width and this button lands on top of them. Closing the sheet
+          // (✕) brings it back. On desktop the sheet starts below it, so both fit.
+          className={`glass-dark absolute right-6 top-6 z-10 rounded-full px-5 py-2.5 font-mono text-[11px] tracking-[0.2em] text-paper transition hover:bg-ink/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral sm:right-10 sm:top-9 ${
+            selected ? "hidden sm:block" : ""
+          }`}
+        >
+          ← BACK TO GLOBE
+        </button>
+      )}
+    </>
   );
 }
 

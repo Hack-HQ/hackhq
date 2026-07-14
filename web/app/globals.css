@@ -68,6 +68,17 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* Same family as .glass-dark, but for a surface carrying real content over a
+   busy map (the globe's detail sheet). At 0.55 alpha the map and the page title
+   read straight through the text; this is opaque enough to be legible and still
+   feel like glass. */
+.glass-sheet {
+  background: rgba(12, 10, 8, 0.93);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
 /* Mono kicker - the "built by devs" label */
 .kicker {
   font-family: var(--font-mono);
