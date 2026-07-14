@@ -4,10 +4,10 @@ import { useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Hackathon, HackState } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
+import type { FormatFilter, StatusFilter } from "@/lib/filters";
+import { applyFilters } from "@/lib/filters";
 import { useSelection, useTracker } from "./store";
 
-type StatusFilter = "all" | HackState;
-type FormatFilter = "all" | "In-Person" | "Virtual";
 type View = "grid" | "list";
 
 export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
@@ -16,18 +16,12 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
   const [format, setFormat] = useState<FormatFilter>("all");
   const [view, setView] = useState<View>("grid");
 
-  const filtered = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-    return hackathons.filter((h) => {
-      if (status !== "all" && h.state !== status) return false;
-      if (format !== "all" && h.format !== format) return false;
-      if (!needle) return true;
-      return [h.title, h.host, h.location, ...h.themes]
-        .join(" ")
-        .toLowerCase()
-        .includes(needle);
-    });
-  }, [hackathons, q, status, format]);
+  // Shared with the globe (lib/filters.ts) so the two surfaces cannot disagree
+  // about what a search or a filter means.
+  const filtered = useMemo(
+    () => applyFilters(hackathons, { q, status, format }),
+    [hackathons, q, status, format],
+  );
 
   return (
     <section id="deck" className="p-2 pt-0">
