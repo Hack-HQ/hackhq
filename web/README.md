@@ -73,9 +73,12 @@ web/
 │   └── repo-assets/[...path]/route.ts # Serves files from ../assets
 ├── components/
 │   ├── hq/                            # Current HackHQ UI (globe, deck, nav, …)
+│   │   ├── nav.tsx                    # Nav pill; inline links at sm and up
+│   │   └── mobile-menu.tsx            # The same sections below 640px
 │   └── legacy/                        # README-driven browser, gallery, cards
 ├── lib/
 │   ├── listings.ts                    # Reads listings.json, enriches for frontend
+│   ├── nav.ts                         # Nav sections + active-route matching
 │   ├── parse-readme.ts                # Parses ../README.md (legacy /hackathons)
 │   ├── types-hq.ts                    # Hackathon types and display helpers
 │   └── types.ts                       # Legacy opportunity types
