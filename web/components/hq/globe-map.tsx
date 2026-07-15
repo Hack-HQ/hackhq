@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import type { Hackathon } from "@/lib/types-hq";
-import { STATE_META, countdown } from "@/lib/types-hq";
+import { STATE_META, countdown, type Hackathon } from "@/lib/types-hq";
+import { GlobeDetailDrawer } from "./globe-detail-drawer";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
@@ -20,7 +20,15 @@ const SECONDS_PER_REVOLUTION = 110;
 export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const markerRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const selectedMarkerIdRef = useRef<string | null>(null);
+  // Latest close handler, so the map-created "click" listener (bound once in
+  // the effect) always calls the current one instead of a stale closure.
+  const closeDrawerRef = useRef<() => void>(() => {});
   const [zoomedIn, setZoomedIn] = useState(false);
+  const [selectedHackathon, setSelectedHackathon] = useState<Hackathon | null>(
+    null,
+  );
   const hasToken = Boolean(mapboxgl.accessToken);
 
   const located = hackathons.filter((h) => h.lat !== null && h.lng !== null);
@@ -101,60 +109,95 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       className: "hq-popup",
       maxWidth: "280px",
     });
+    const markerMap = markerRefs.current;
+
+    function showPopup(h: Hackathon) {
+      const meta = STATE_META[h.state];
+      const cd = countdown(h);
+
+      const root = document.createElement("div");
+
+      const statusRow = document.createElement("div");
+      statusRow.style.fontFamily = "var(--font-mono)";
+      statusRow.style.fontSize = "10px";
+      statusRow.style.letterSpacing = "0.22em";
+      statusRow.style.color = meta.color;
+      statusRow.style.marginBottom = "4px";
+      statusRow.textContent = `● ${meta.label}${cd ? ` · ${cd.toUpperCase()}` : ""}`;
+
+      const titleRow = document.createElement("div");
+      titleRow.style.fontWeight = "600";
+      titleRow.style.fontSize = "14px";
+      titleRow.style.lineHeight = "1.25";
+      titleRow.textContent = h.title;
+
+      const metaRow = document.createElement("div");
+      metaRow.style.fontSize = "12px";
+      metaRow.style.color = "#9ba1a5";
+      metaRow.style.marginTop = "3px";
+      metaRow.textContent = h.location;
+
+      root.append(statusRow, titleRow, metaRow);
+
+      popup
+        .setLngLat([h.lng!, h.lat!])
+        .setDOMContent(root)
+        .addTo(map);
+    }
+
+    function openHackathon(h: Hackathon) {
+      selectedMarkerIdRef.current = h.id;
+      setSelectedHackathon(h);
+      spinEnabled = false;
+      popup.remove();
+      // On small screens the detail card is a bottom sheet, so reserve the
+      // lower ~55% of the map with camera padding. flyTo then centers the pin
+      // in the remaining upper band, keeping it clear of the card. (offset is
+      // unreliable here with the globe projection + large zoom change.)
+      const smallScreen = window.matchMedia("(max-width: 767px)").matches;
+      map.flyTo({
+        center: [h.lng!, h.lat!],
+        zoom: 9.5,
+        // Respect prefers-reduced-motion: jump instead of a 2.6s fly. (The
+        // auto-spin is already disabled for these users; essential:true would
+        // otherwise force this animation to play regardless.)
+        duration: reducedMotion ? 0 : 2600,
+        essential: true,
+        padding: smallScreen
+          ? {
+              top: 0,
+              right: 0,
+              bottom: Math.round(map.getContainer().clientHeight * 0.55),
+              left: 0,
+            }
+          : { top: 0, right: 0, bottom: 0, left: 0 },
+      });
+    }
+
+    map.on("click", () => closeDrawerRef.current());
 
     const markers = located.map((h) => {
       const el = document.createElement("div");
       el.className = "hq-marker";
       el.dataset.state = h.state;
+      el.tabIndex = 0;
+      el.role = "button";
+      el.ariaLabel = `Open details for ${h.title} in ${h.location}`;
+      markerMap.set(h.id, el);
 
-      el.addEventListener("mouseenter", () => {
-        const meta = STATE_META[h.state];
-        const cd = countdown(h);
-
-        const root = document.createElement("div");
-
-        const statusRow = document.createElement("div");
-        statusRow.style.fontFamily = "var(--font-mono)";
-        statusRow.style.fontSize = "10px";
-        statusRow.style.letterSpacing = "0.22em";
-        statusRow.style.color = meta.color;
-        statusRow.style.marginBottom = "4px";
-        statusRow.textContent = `● ${meta.label}${cd ? ` · ${cd.toUpperCase()}` : ""}`;
-
-        const titleRow = document.createElement("div");
-        titleRow.style.fontWeight = "600";
-        titleRow.style.fontSize = "14px";
-        titleRow.style.lineHeight = "1.25";
-        titleRow.textContent = h.title;
-
-        const metaRow = document.createElement("div");
-        metaRow.style.fontSize = "12px";
-        metaRow.style.color = "#9ba1a5";
-        metaRow.style.marginTop = "3px";
-        metaRow.textContent = `${h.host} · ${h.location}`;
-
-        root.append(statusRow, titleRow, metaRow);
-
-        popup
-          .setLngLat([h.lng!, h.lat!])
-          .setDOMContent(root)
-          .addTo(map);
-      });
+      el.addEventListener("mouseenter", () => showPopup(h));
       el.addEventListener("mouseleave", () => popup.remove());
+      el.addEventListener("focus", () => showPopup(h));
+      el.addEventListener("blur", () => popup.remove());
       el.addEventListener("click", (e) => {
         e.stopPropagation();
-        spinEnabled = false;
-        popup.remove();
-        // Clicking a marker only flies the camera in — it deliberately does NOT
-        // open the detail card, which would cover the very map you just zoomed
-        // into. The hover popup carries the quick facts; full details live in
-        // the Deck / hackathons list.
-        map.flyTo({
-          center: [h.lng!, h.lat!],
-          zoom: 9.5,
-          duration: 2600,
-          essential: true,
-        });
+        openHackathon(h);
+      });
+      el.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        e.stopPropagation();
+        openHackathon(h);
       });
 
       return new mapboxgl.Marker({ element: el })
@@ -178,6 +221,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       ro.disconnect();
       globeEl.removeEventListener("hq:backToGlobe", restoreSpin);
       markers.forEach((m) => m.remove());
+      markerMap.clear();
       popup.remove();
       map.remove();
       mapRef.current = null;
@@ -186,10 +230,37 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   }, [hasToken]);
 
   const backToGlobe = () => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setZoomedIn(false);
-    mapRef.current?.flyTo({ ...GLOBE_VIEW, duration: 2400, essential: true });
+    setSelectedHackathon(null);
+    selectedMarkerIdRef.current = null;
+    mapRef.current?.flyTo({
+      ...GLOBE_VIEW,
+      duration: reduced ? 0 : 2400,
+      essential: true,
+      padding: { top: 0, right: 0, bottom: 0, left: 0 },
+    });
     containerRef.current?.dispatchEvent(new Event("hq:backToGlobe"));
   };
+
+  // Every dismiss path (Escape, close button, background click) routes here so
+  // focus always returns to the marker that opened the drawer (WCAG 2.4.3). If
+  // nothing is open the markerId is null and this is a no-op.
+  const closeDrawer = useCallback(() => {
+    const markerId = selectedMarkerIdRef.current;
+    selectedMarkerIdRef.current = null;
+    setSelectedHackathon(null);
+    if (!markerId) return;
+    window.requestAnimationFrame(() => {
+      markerRefs.current.get(markerId)?.focus({ preventScroll: true });
+    });
+  }, []);
+
+  // The map's "click" listener is bound once in the effect; keep the ref it
+  // calls pointed at the latest handler.
+  useEffect(() => {
+    closeDrawerRef.current = closeDrawer;
+  }, [closeDrawer]);
 
   return (
     <section id="globe" className="p-2 pt-0">
@@ -211,11 +282,16 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
         {zoomedIn && (
           <button
             onClick={backToGlobe}
-            className="glass-dark absolute right-6 top-6 z-10 rounded-full px-5 py-2.5 font-mono text-[11px] tracking-[0.2em] text-paper transition hover:bg-ink/80 sm:right-10 sm:top-9"
+            className="glass-dark absolute right-6 top-6 z-20 rounded-full px-5 py-2.5 font-mono text-[11px] tracking-[0.2em] text-paper transition hover:bg-ink/80 sm:right-10 sm:top-9"
           >
             ← BACK TO GLOBE
           </button>
         )}
+
+        <GlobeDetailDrawer
+          hackathon={selectedHackathon}
+          onClose={closeDrawer}
+        />
 
         {/* Page title overlay - bottom-left */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 p-6 sm:p-10">
