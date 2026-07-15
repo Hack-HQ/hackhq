@@ -1,10 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { STATE_META, countdown, type Hackathon } from "@/lib/types-hq";
+import {
+  STATE_META,
+  countdown,
+  type HackState,
+  type Hackathon,
+} from "@/lib/types-hq";
 import { GlobeDetailDrawer } from "./globe-detail-drawer";
+import { GlobeFilterBar } from "./globe-filter-bar";
+import { GlobeVirtualDrawer } from "./globe-virtual-drawer";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
@@ -21,6 +28,8 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markerRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const markerInstances = useRef<Map<string, mapboxgl.Marker>>(new Map());
+  const popupRef = useRef<mapboxgl.Popup | null>(null);
   const selectedMarkerIdRef = useRef<string | null>(null);
   // Latest close handler, so the map-created "click" listener (bound once in
   // the effect) always calls the current one instead of a stale closure.
@@ -29,15 +38,68 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   const [selectedHackathon, setSelectedHackathon] = useState<Hackathon | null>(
     null,
   );
+  const [query, setQuery] = useState("");
+  const [activeStatuses, setActiveStatuses] = useState<Set<HackState>>(
+    new Set(),
+  );
+  const [activeFormats, setActiveFormats] = useState<Set<Hackathon["format"]>>(
+    new Set(),
+  );
+  const [virtualOpen, setVirtualOpen] = useState(false);
   const hasToken = Boolean(mapboxgl.accessToken);
 
-  const located = hackathons.filter((h) => h.lat !== null && h.lng !== null);
+  const located = useMemo(
+    () => hackathons.filter((h) => h.lat !== null && h.lng !== null),
+    [hackathons],
+  );
 
   // Non-virtual listings we could not place. A virtual hackathon isn't missing
   // from the map — it has nowhere to be — so it doesn't count here.
   const unmapped = hackathons.filter(
     (h) => h.format !== "Virtual" && (h.lat === null || h.lng === null),
   ).length;
+
+  // Search + status apply everywhere (map pins and the virtual list). The
+  // format pills (In-Person / Hybrid) only narrow the map pins — "Virtual" is
+  // not a pin filter, it's the control that opens the online-events drawer.
+  const matchesQueryStatus = useCallback(
+    (h: Hackathon) => {
+      const q = query.toLowerCase().trim();
+      const okQuery =
+        !q ||
+        h.host.toLowerCase().includes(q) ||
+        h.title.toLowerCase().includes(q) ||
+        h.location.toLowerCase().includes(q);
+      const okStatus = activeStatuses.size === 0 || activeStatuses.has(h.state);
+      return okQuery && okStatus;
+    },
+    [query, activeStatuses],
+  );
+
+  const visibleIds = useMemo(
+    () =>
+      new Set(
+        located
+          .filter(matchesQueryStatus)
+          .filter(
+            (h) => activeFormats.size === 0 || activeFormats.has(h.format),
+          )
+          .map((h) => h.id),
+      ),
+    [located, matchesQueryStatus, activeFormats],
+  );
+
+  // Virtual events never get a marker (no coordinates), so they live in a
+  // dedicated drawer instead — this is how online-only events stay
+  // discoverable. They ignore the pin-only format filters.
+  const virtualList = useMemo(
+    () => hackathons.filter((h) => h.format === "Virtual" && h.state !== "closed"),
+    [hackathons],
+  );
+  const visibleVirtual = useMemo(
+    () => virtualList.filter(matchesQueryStatus),
+    [virtualList, matchesQueryStatus],
+  );
 
   useEffect(() => {
     if (!containerRef.current || !hasToken) return;
@@ -109,7 +171,9 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       className: "hq-popup",
       maxWidth: "280px",
     });
+    popupRef.current = popup;
     const markerMap = markerRefs.current;
+    const markerInstanceMap = markerInstances.current;
 
     function showPopup(h: Hackathon) {
       const meta = STATE_META[h.state];
@@ -148,6 +212,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     function openHackathon(h: Hackathon) {
       selectedMarkerIdRef.current = h.id;
       setSelectedHackathon(h);
+      setVirtualOpen(false);
       spinEnabled = false;
       popup.remove();
       // On small screens the detail card is a bottom sheet, so reserve the
@@ -200,9 +265,11 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
         openHackathon(h);
       });
 
-      return new mapboxgl.Marker({ element: el })
+      const marker = new mapboxgl.Marker({ element: el })
         .setLngLat([h.lng!, h.lat!])
         .addTo(map);
+      markerInstanceMap.set(h.id, marker);
+      return marker;
     });
 
     const restoreSpin = () => {
@@ -222,7 +289,9 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       globeEl.removeEventListener("hq:backToGlobe", restoreSpin);
       markers.forEach((m) => m.remove());
       markerMap.clear();
+      markerInstanceMap.clear();
       popup.remove();
+      popupRef.current = null;
       map.remove();
       mapRef.current = null;
     };
@@ -250,6 +319,21 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     const markerId = selectedMarkerIdRef.current;
     selectedMarkerIdRef.current = null;
     setSelectedHackathon(null);
+    // On mobile, opening the detail card set a persistent 55% bottom padding
+    // (so the pin cleared the bottom sheet). If we leave it on close, the pin
+    // stays off-center and subsequent manual zoom/pan — especially zooming back
+    // out — is thrown off. Recenter by clearing the padding when the card goes.
+    const map = mapRef.current;
+    if (map) {
+      const reduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      map.easeTo({
+        padding: { top: 0, right: 0, bottom: 0, left: 0 },
+        duration: reduced ? 0 : 300,
+        essential: true,
+      });
+    }
     if (!markerId) return;
     window.requestAnimationFrame(() => {
       markerRefs.current.get(markerId)?.focus({ preventScroll: true });
@@ -261,6 +345,63 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   useEffect(() => {
     closeDrawerRef.current = closeDrawer;
   }, [closeDrawer]);
+
+  // Show/hide markers live as filters change. The creation effect binds markers
+  // once; here we just add/remove each instance from the map by the visible set.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    markerInstances.current.forEach((marker, id) => {
+      if (visibleIds.has(id)) marker.addTo(map);
+      else marker.remove();
+    });
+    // A tooltip could be pinned to a marker we just hid.
+    popupRef.current?.remove();
+    // If the open detail belongs to a marker that no longer passes the filter,
+    // dismiss it so the drawer never describes a hidden pin.
+    const selId = selectedMarkerIdRef.current;
+    if (selId && !visibleIds.has(selId)) closeDrawer();
+  }, [visibleIds, closeDrawer]);
+
+  const toggleStatus = useCallback((s: HackState) => {
+    setActiveStatuses((prev) => {
+      const next = new Set(prev);
+      if (next.has(s)) next.delete(s);
+      else next.add(s);
+      return next;
+    });
+  }, []);
+
+  const toggleFormat = useCallback((f: Hackathon["format"]) => {
+    setActiveFormats((prev) => {
+      const next = new Set(prev);
+      if (next.has(f)) next.delete(f);
+      else next.add(f);
+      return next;
+    });
+  }, []);
+
+  const clearAll = useCallback(() => {
+    setQuery("");
+    setActiveStatuses(new Set());
+    setActiveFormats(new Set());
+  }, []);
+
+  // Opening the virtual list closes any open detail (they share the same slot),
+  // and vice versa, so at most one drawer is ever visible.
+  const openVirtualList = useCallback(() => {
+    selectedMarkerIdRef.current = null;
+    setSelectedHackathon(null);
+    setVirtualOpen(true);
+  }, []);
+
+  // Virtual events have no coordinates, so they must NOT go through the marker
+  // fly-in path (which would fly to [null, null]). Just open the detail drawer.
+  const openVirtual = useCallback((h: Hackathon) => {
+    selectedMarkerIdRef.current = null;
+    setVirtualOpen(false);
+    setSelectedHackathon(h);
+  }, []);
 
   return (
     <section id="globe" className="p-2 pt-0">
@@ -278,6 +419,24 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
         {/* Legibility gradient */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-ink-deep/95 via-ink-deep/40 to-transparent" />
 
+        {/* Browsing tools - search + status/format filters + virtual list.
+            Hidden while a detail drawer is open or the camera is zoomed in, so
+            it never fights the detail card or the Back-to-globe button. */}
+        {hasToken && !selectedHackathon && !zoomedIn && (
+          <GlobeFilterBar
+            located={located}
+            query={query}
+            onQueryChange={setQuery}
+            activeStatuses={activeStatuses}
+            onToggleStatus={toggleStatus}
+            activeFormats={activeFormats}
+            onToggleFormat={toggleFormat}
+            virtualCount={visibleVirtual.length}
+            onOpenVirtual={openVirtualList}
+            onClearAll={clearAll}
+          />
+        )}
+
         {/* Back-to-globe (after a marker fly-in) */}
         {zoomedIn && (
           <button
@@ -291,6 +450,13 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
         <GlobeDetailDrawer
           hackathon={selectedHackathon}
           onClose={closeDrawer}
+        />
+
+        <GlobeVirtualDrawer
+          open={virtualOpen}
+          hackathons={visibleVirtual}
+          onClose={() => setVirtualOpen(false)}
+          onSelect={openVirtual}
         />
 
         {/* Page title overlay - bottom-left */}
