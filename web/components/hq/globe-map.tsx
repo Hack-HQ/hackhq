@@ -258,8 +258,14 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       el.className = "hq-marker";
       el.dataset.state = h.state;
       el.tabIndex = 0;
-      el.role = "button";
-      el.ariaLabel = `Open details for ${h.title} in ${h.location}`;
+      // setAttribute, not the el.role / el.ariaLabel IDL props: those only map to
+      // the underlying attributes on browsers with ARIA reflection (roughly
+      // 2023+), so older engines would announce each pin as an unlabeled generic.
+      el.setAttribute("role", "button");
+      el.setAttribute(
+        "aria-label",
+        `Open details for ${h.title} in ${h.location}`,
+      );
       markerMap.set(h.id, el);
 
       el.addEventListener("mouseenter", () => showPopup(h));
