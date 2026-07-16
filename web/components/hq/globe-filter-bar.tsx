@@ -10,16 +10,16 @@ const STATUS_PILLS: HackState[] = ["open", "opens_soon", "closing_soon"];
 const FORMAT_PILLS: Format[] = ["In-Person", "Hybrid"];
 
 type GlobeFilterBarProps = {
-  // Pin-eligible events (have coordinates). Counts are based on these so the
-  // numbers match what actually appears on the map.
-  located: Hackathon[];
   query: string;
   onQueryChange: (q: string) => void;
   activeStatuses: Set<HackState>;
   onToggleStatus: (s: HackState) => void;
   activeFormats: Set<Format>;
   onToggleFormat: (f: Format) => void;
+  // Online events matching the current search/status filters. Shown on the
+  // VIRTUAL pill so a zero count is visible before the drawer is opened.
   virtualCount: number;
+  virtualButtonRef?: React.Ref<HTMLButtonElement>;
   onOpenVirtual: () => void;
   onClearAll: () => void;
 };
@@ -31,6 +31,8 @@ export function GlobeFilterBar({
   onToggleStatus,
   activeFormats,
   onToggleFormat,
+  virtualCount,
+  virtualButtonRef,
   onOpenVirtual,
   onClearAll,
 }: GlobeFilterBarProps) {
@@ -91,11 +93,12 @@ export function GlobeFilterBar({
 
         {/* Virtual isn't a pin filter - it opens the online-events drawer. */}
         <button
+          ref={virtualButtonRef}
           type="button"
           onClick={onOpenVirtual}
           className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-coral/40 bg-coral/10 px-3 py-1.5 font-mono text-[10px] tracking-[0.12em] text-paper/80 transition hover:bg-coral/20 hover:text-paper focus:outline-none focus:ring-2 focus:ring-coral"
         >
-          🌐 VIRTUAL
+          🌐 VIRTUAL ({virtualCount})
         </button>
       </div>
     </div>
