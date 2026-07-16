@@ -34,6 +34,14 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   // Latest close handler, so the map-created "click" listener (bound once in
   // the effect) always calls the current one instead of a stale closure.
   const closeDrawerRef = useRef<() => void>(() => {});
+  // Freeze/resume the auto-spin from outside the map effect. The effect owns the
+  // wiring; these let the drawer callbacks pause it (marker + virtual paths) and
+  // resume it on close.
+  const spinEnabledRef = useRef(true);
+  const resumeSpinRef = useRef<() => void>(() => {});
+  // The "🌐 VIRTUAL" trigger, so a detail opened from the virtual list can hand
+  // focus back to it on close (WCAG 2.4.3) — the marker path uses markerRefs.
+  const virtualTriggerRef = useRef<HTMLButtonElement>(null);
   const [zoomedIn, setZoomedIn] = useState(false);
   const [selectedHackathon, setSelectedHackathon] = useState<Hackathon | null>(
     null,
@@ -132,10 +140,10 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
 
     // - Auto-rotate (pause while the user is interacting) -
     let userInteracting = false;
-    let spinEnabled = !reducedMotion;
+    spinEnabledRef.current = !reducedMotion;
 
     function spinGlobe() {
-      if (!spinEnabled || userInteracting) return;
+      if (!spinEnabledRef.current || userInteracting) return;
       const zoom = map.getZoom();
       if (zoom > 4) return;
       let distancePerSecond = 360 / SECONDS_PER_REVOLUTION;
@@ -213,8 +221,13 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       selectedMarkerIdRef.current = h.id;
       setSelectedHackathon(h);
       setVirtualOpen(false);
-      spinEnabled = false;
+      spinEnabledRef.current = false;
       popup.remove();
+      // Re-query at click time (not the mount-captured value) so a reduced-motion
+      // preference toggled mid-session is honored, matching backToGlobe/closeDrawer.
+      const reduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
       // On small screens the detail card is a bottom sheet, so reserve the
       // lower ~55% of the map with camera padding. flyTo then centers the pin
       // in the remaining upper band, keeping it clear of the card. (offset is
@@ -223,10 +236,9 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       map.flyTo({
         center: [h.lng!, h.lat!],
         zoom: 9.5,
-        // Respect prefers-reduced-motion: jump instead of a 2.6s fly. (The
-        // auto-spin is already disabled for these users; essential:true would
-        // otherwise force this animation to play regardless.)
-        duration: reducedMotion ? 0 : 2600,
+        // Respect prefers-reduced-motion: jump instead of a 2.6s fly. (essential:
+        // true would otherwise force this animation to play regardless.)
+        duration: reduced ? 0 : 2600,
         essential: true,
         padding: smallScreen
           ? {
@@ -273,9 +285,10 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     });
 
     const restoreSpin = () => {
-      spinEnabled = !reducedMotion;
+      spinEnabledRef.current = !reducedMotion;
       spinGlobe();
     };
+    resumeSpinRef.current = restoreSpin;
     const globeEl = containerRef.current;
     globeEl.addEventListener("hq:backToGlobe", restoreSpin);
 
@@ -292,6 +305,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       markerInstanceMap.clear();
       popup.remove();
       popupRef.current = null;
+      resumeSpinRef.current = () => {};
       map.remove();
       mapRef.current = null;
     };
@@ -300,6 +314,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
 
   const backToGlobe = () => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const markerId = selectedMarkerIdRef.current;
     setZoomedIn(false);
     setSelectedHackathon(null);
     selectedMarkerIdRef.current = null;
@@ -310,41 +325,73 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       padding: { top: 0, right: 0, bottom: 0, left: 0 },
     });
     containerRef.current?.dispatchEvent(new Event("hq:backToGlobe"));
+    // The Back-to-globe button unmounts with zoomedIn, so return focus to the
+    // pin that started the fly-in instead of letting it drop to <body>.
+    if (markerId) {
+      window.requestAnimationFrame(() => {
+        markerRefs.current.get(markerId)?.focus({ preventScroll: true });
+      });
+    }
   };
 
-  // Every dismiss path (Escape, close button, background click) routes here so
-  // focus always returns to the marker that opened the drawer (WCAG 2.4.3). If
-  // nothing is open the markerId is null and this is a no-op.
+  // Close the detail card. Both entry points (marker fly-in and virtual list)
+  // route here, and focus always returns to whatever opened it (WCAG 2.4.3).
   const closeDrawer = useCallback(() => {
     const markerId = selectedMarkerIdRef.current;
     selectedMarkerIdRef.current = null;
     setSelectedHackathon(null);
-    // On mobile, opening the detail card set a persistent 55% bottom padding
-    // (so the pin cleared the bottom sheet). If we leave it on close, the pin
-    // stays off-center and subsequent manual zoom/pan — especially zooming back
-    // out — is thrown off. Recenter by clearing the padding when the card goes.
-    const map = mapRef.current;
-    if (map) {
-      const reduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      map.easeTo({
-        padding: { top: 0, right: 0, bottom: 0, left: 0 },
-        duration: reduced ? 0 : 300,
-        essential: true,
+    if (markerId) {
+      // Marker path: opening flew the camera in and (on mobile) reserved a 55%
+      // bottom padding so the pin cleared the bottom sheet. Clear it on close so
+      // the pin recenters and later manual zoom/pan isn't thrown off, then hand
+      // focus back to the pin that opened the card.
+      const map = mapRef.current;
+      if (map) {
+        const reduced = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        map.easeTo({
+          padding: { top: 0, right: 0, bottom: 0, left: 0 },
+          duration: reduced ? 0 : 300,
+          essential: true,
+        });
+      }
+      window.requestAnimationFrame(() => {
+        markerRefs.current.get(markerId)?.focus({ preventScroll: true });
       });
+      return;
     }
-    if (!markerId) return;
+    // Virtual path: no pin and no camera padding was set. Resume the auto-spin
+    // the virtual flow paused, and return focus to the 🌐 VIRTUAL trigger, which
+    // reappears in the filter bar once the detail closes.
+    resumeSpinRef.current();
     window.requestAnimationFrame(() => {
-      markerRefs.current.get(markerId)?.focus({ preventScroll: true });
+      virtualTriggerRef.current?.focus({ preventScroll: true });
     });
   }, []);
 
+  // The virtual drawer's own onClose. Stable identity (useCallback) so the
+  // drawer's [open, onClose] focus effect doesn't tear down and re-run on every
+  // parent re-render — otherwise typing in the filter search would yank focus
+  // out of the input after every keystroke.
+  const closeVirtual = useCallback(() => {
+    setVirtualOpen(false);
+    resumeSpinRef.current();
+  }, []);
+
+  // Background map click: dismiss whichever drawer is open, and nothing else.
+  // Clicking the bare globe must not start a camera move — that would stutter
+  // the auto-spin.
+  const dismissActive = useCallback(() => {
+    if (selectedHackathon) closeDrawer();
+    else if (virtualOpen) closeVirtual();
+  }, [selectedHackathon, virtualOpen, closeDrawer, closeVirtual]);
+
   // The map's "click" listener is bound once in the effect; keep the ref it
-  // calls pointed at the latest handler.
+  // calls pointed at the latest dismiss handler.
   useEffect(() => {
-    closeDrawerRef.current = closeDrawer;
-  }, [closeDrawer]);
+    closeDrawerRef.current = dismissActive;
+  }, [dismissActive]);
 
   // Show/hide markers live as filters change. The creation effect binds markers
   // once; here we just add/remove each instance from the map by the visible set.
@@ -388,19 +435,23 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   }, []);
 
   // Opening the virtual list closes any open detail (they share the same slot),
-  // and vice versa, so at most one drawer is ever visible.
+  // and vice versa, so at most one drawer is ever visible. Freeze the spin so
+  // the globe holds still behind the reading surface, matching a marker detail.
   const openVirtualList = useCallback(() => {
     selectedMarkerIdRef.current = null;
     setSelectedHackathon(null);
     setVirtualOpen(true);
+    spinEnabledRef.current = false;
   }, []);
 
   // Virtual events have no coordinates, so they must NOT go through the marker
-  // fly-in path (which would fly to [null, null]). Just open the detail drawer.
+  // fly-in path (which would fly to [null, null]). Just open the detail drawer,
+  // keeping the spin frozen behind it (closeDrawer resumes it).
   const openVirtual = useCallback((h: Hackathon) => {
     selectedMarkerIdRef.current = null;
     setVirtualOpen(false);
     setSelectedHackathon(h);
+    spinEnabledRef.current = false;
   }, []);
 
   return (
@@ -424,7 +475,6 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
             it never fights the detail card or the Back-to-globe button. */}
         {hasToken && !selectedHackathon && !zoomedIn && (
           <GlobeFilterBar
-            located={located}
             query={query}
             onQueryChange={setQuery}
             activeStatuses={activeStatuses}
@@ -432,6 +482,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
             activeFormats={activeFormats}
             onToggleFormat={toggleFormat}
             virtualCount={visibleVirtual.length}
+            virtualButtonRef={virtualTriggerRef}
             onOpenVirtual={openVirtualList}
             onClearAll={clearAll}
           />
@@ -455,7 +506,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
         <GlobeVirtualDrawer
           open={virtualOpen}
           hackathons={visibleVirtual}
-          onClose={() => setVirtualOpen(false)}
+          onClose={closeVirtual}
           onSelect={openVirtual}
         />
 
