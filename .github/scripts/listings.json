@@ -9,14 +9,13 @@
     ],
     "format": "In-Person",
     "prize": "$20K+ in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782586800,
-    "date_updated": 1782586800,
+    "date_updated": 1783771200,
     "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-05",
-    "featured": true
+    "deadline": "2026-07-04"
   },
   {
     "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
@@ -32,9 +31,8 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782583200,
-    "date_updated": 1782583200,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-16"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "06f72ca6-9ab3-4d22-aa00-bf5c8b362c33",
@@ -50,9 +48,8 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782579600,
-    "date_updated": 1782579600,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-19"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "c12023ad-aab3-44e5-beb7-d0956ef987c2",
@@ -64,13 +61,12 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782576000,
-    "date_updated": 1782576000,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-19"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "6420c553-d798-4c74-bc81-5e592ecbc22e",
@@ -86,9 +82,8 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782572400,
-    "date_updated": 1782572400,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-26"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "0dd13a0e-b5ce-4dd0-a35c-f435b52ea23f",
@@ -104,9 +99,8 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782568800,
-    "date_updated": 1782568800,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-08-13"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "421c6652-25a9-42c9-9ac9-5396f32396f5",
@@ -122,9 +116,8 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782565200,
-    "date_updated": 1782565200,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-09-17"
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "1b0b2e8f-8920-469e-978a-f34286dfcc56",
@@ -154,8 +147,8 @@
     ],
     "format": "Virtual",
     "prize": "$80,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782558000,
     "date_updated": 1782558000,
@@ -165,7 +158,7 @@
   {
     "id": "f0109d92-c423-43b1-b6b5-fc93219a9bcb",
     "company_name": "Qwen Cloud",
-    "title": "Global AI Hackathon Series with Qwen Cloud \u2014 May 26 \u2013 Jul 9, 2026",
+    "title": "Global AI Hackathon Series with Qwen Cloud \u2014 May 26 \u2013 Jul 20, 2026",
     "url": "https://qwencloud-hackathon.devpost.com/",
     "locations": [
       "Online"
@@ -176,9 +169,9 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782554400,
-    "date_updated": 1782554400,
+    "date_updated": 1783771200,
     "source": "devpost",
-    "deadline": "2026-07-09"
+    "deadline": "2026-07-20"
   },
   {
     "id": "bcea64f3-77d3-4b65-b61e-5f1714b428ac",
@@ -190,8 +183,8 @@
     ],
     "format": "Virtual",
     "prize": "$50,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782550800,
     "date_updated": 1782550800,
@@ -258,17 +251,16 @@
     "title": "Agentic AI Build Week 2026 \u2014 Jun 9 \u2013 Jul 11, 2026",
     "url": "https://agentic-ai-build-week-2026.devpost.com/",
     "locations": [
-      "Galaxy Innovation Park"
+      "Ho Chi Minh City, Vietnam"
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782536400,
-    "date_updated": 1782536400,
-    "source": "devpost",
-    "deadline": "2026-07-11"
+    "date_updated": 1783857600,
+    "source": "devpost"
   },
   {
     "id": "91a0436e-2b6e-4d1b-b659-6786b39e37ca",
@@ -403,11 +395,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782679191,
-    "date_updated": 1782679191,
+    "date_updated": 1783771200,
     "source": "hongchengw"
   },
   {
@@ -454,11 +446,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782748800,
-    "date_updated": 1782748800,
+    "date_updated": 1783771200,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
@@ -471,12 +463,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "deadline": "2026-07-17",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1783014300,
-    "date_updated": 1783014300,
+    "date_updated": 1783771200,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
@@ -507,8 +498,8 @@
     "format": "Virtual",
     "prize": "TBA",
     "deadline": "2026-07-04",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1783014300,
     "date_updated": 1783014300,
@@ -524,13 +515,12 @@
     ],
     "format": "Virtual",
     "prize": "$5,000 in Prizes",
-    "deadline": "2026-08-14",
     "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1783105200,
-    "date_updated": 1783105200,
-    "source": "Allyson-Keightley"
+    "date_updated": 1783771200,
+    "source": "akeight"
   },
   {
     "id": "1e31d21c-0355-494e-a0a2-2431a51301a6",
@@ -547,10 +537,8 @@
     "is_visible": true,
     "date_posted": 1783105200,
     "date_updated": 1783105200,
-    "source": "Allyson-Keightley"
-  }
-
-,
+    "source": "akeight"
+  },
   {
     "id": "b703a6ab-c107-4bab-808f-076e0ec65afa",
     "company_name": "UCLA",
@@ -561,12 +549,531 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "deadline": "2026-08-28",
     "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1783207800,
-    "date_updated": 1783207800,
+    "date_updated": 1783771200,
     "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "6b363f65-cd6a-47e3-8d2d-031776f25933",
+    "company_name": "Virginia Tech",
+    "title": "VTHacks Code for the Cup \u2014 Fall 2026",
+    "url": "https://vthacks.com/",
+    "locations": [
+      "Blacksburg, VA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783666800,
+    "date_updated": 1783666800,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "4dcf8a02-80eb-4943-a22c-5ee51e7660d1",
+    "company_name": "University of Michigan Dearborn",
+    "title": "Hack Dearborn 2026 \u2014 Oct 3\u20134, 2026",
+    "url": "https://hackdearborn.org/",
+    "locations": [
+      "Dearborn, MI"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783666800,
+    "date_updated": 1783666800,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "206fb171-68a4-4c5d-b888-4c9b8545e669",
+    "company_name": "University of Waterloo",
+    "title": "Hack the North \u2014 Sept 18\u201320, 2026",
+    "url": "https://hackthenorth.com",
+    "locations": [
+      "Toronto, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "deadline": "2026-07-27",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783666800,
+    "date_updated": 1783666800,
+    "source": "akeight",
+    "featured": true
+  },
+  {
+    "id": "6e9591fd-add1-4e0f-90ea-5002c3fc6c9b",
+    "company_name": "HackHarvard",
+    "title": "HackHarvard 2026 (Student Hackathon; Applications Coming Soon)",
+    "url": "https://hackharvard.io/",
+    "locations": [
+      "Cambridge, MA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "27b4386f-3867-46e2-a685-b9cf40ad5453",
+    "company_name": "DubHacks",
+    "title": "DubHacks 2026 (Collegiate Hackathon; Applications Coming Soon)",
+    "url": "https://dubhacks.co/",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "format": "In-Person",
+    "prize": "$44,000+ in prizes",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "668030a6-6da3-45b9-afea-9640ce79a34d",
+    "company_name": "Hack the Valley",
+    "title": "Hack the Valley 11 (Pre-Registration Open)",
+    "url": "https://hackthevalley.io/",
+    "locations": [
+      "Toronto, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "50cb89da-27df-43aa-b3ee-2fe2bc0c22dd",
+    "company_name": "HackNC",
+    "title": "HackNC 2026 (Student Hackathon; Interest Form Open)",
+    "url": "https://hacknc.com/",
+    "locations": [
+      "Chapel Hill, NC"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "8dd82be1-13a4-4651-b89d-36ba8ae35d5f",
+    "company_name": "McMaster University",
+    "title": "DeltaHacks 13 (Student Hackathon; Interest Form Open)",
+    "url": "https://www.deltahacks.com/",
+    "locations": [
+      "Hamilton, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "632953bb-00f6-4a0f-aa8f-383ef624a36a",
+    "company_name": "nwPlus",
+    "title": "nwHacks 2027 (Student Hackathon; Applications Coming Soon)",
+    "url": "https://nwhacks.io/",
+    "locations": [
+      "Vancouver, BC"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "5c02aeb4-e812-4535-af24-d11b35f44d40",
+    "company_name": "Hack@Brown",
+    "title": "Hack@Brown 2027 (Student Hackathon; Applications Coming Soon)",
+    "url": "https://hackatbrown.org/",
+    "locations": [
+      "Providence, RI"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "80a97e38-1adf-4fc1-9781-59cfa558f330",
+    "company_name": "University of Toronto",
+    "title": "UofTHacks 14 (Student Hackathon; Next Cycle January 2027)",
+    "url": "https://uofthacks.com/",
+    "locations": [
+      "Toronto, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "7f558665-234c-40ff-8ae4-35f4999123d3",
+    "company_name": "Rensselaer Polytechnic Institute",
+    "title": "HackRPI 2026 (Intercollegiate Hackathon; Registration Open)",
+    "url": "https://hackrpi.com/",
+    "locations": [
+      "Troy, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "7f7e5157-6738-420b-841d-a1b019b14000",
+    "company_name": "Stony Brook University",
+    "title": "SBUHacks (Collegiate Hackathon; Applications Coming Soon)",
+    "url": "https://hack.sbcs.io/",
+    "locations": [
+      "Stony Brook, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "91e1f610-aacd-4c73-9563-09968fd9dc7d",
+    "company_name": "New Jersey Institute of Technology",
+    "title": "GirlHacks 2026 (Women in Computing Hackathon; Registration Open)",
+    "url": "https://www.njitgirlhacks.com/",
+    "locations": [
+      "Newark, NJ"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "0b3da014-fca8-4d8a-990c-dcc4da60363e",
+    "company_name": "Cornell University",
+    "title": "BigRed//Hacks 2026 (Collegiate Hackathon; Applications Coming Soon)",
+    "url": "https://www.bigredhacks.com/",
+    "locations": [
+      "Ithaca, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "e7bd9721-b790-4110-9afd-a42e8aa6dc0a",
+    "company_name": "Columbia University",
+    "title": "DivHacks 2026 (Collegiate Hackathon; Registration Open)",
+    "url": "https://www.columbiadivhacks.org/",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "Hybrid",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "3f098796-acad-4fdf-83a3-c0406f446bcb",
+    "company_name": "Florida International University",
+    "title": "ShellHacks 2026 (Florida's Largest Hackathon; Registration Open)",
+    "url": "https://shellhacks.net/",
+    "locations": [
+      "Miami, FL"
+    ],
+    "format": "In-Person",
+    "prize": "$20,000 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "24255447-911f-4807-886c-605b7fe5072b",
+    "company_name": "University of Pittsburgh",
+    "title": "SteelHacks XIII (Student Hackathon; Applications Coming Soon)",
+    "url": "https://steelhacks.org/",
+    "locations": [
+      "Pittsburgh, PA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "company_name": "OpenAI",
+    "title": "OpenAI Build Week: Join a global week of building with Codex \u2014 Jul 13\u201321, 2026",
+    "url": "https://openai.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$100,000",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-07-21",
+    "id": "04555631-8888-4d5a-b192-384c42fa0577",
+    "date_posted": 1783821900,
+    "date_updated": 1783821900
+  },
+  {
+    "company_name": "DataHub",
+    "title": "Build with DataHub: The Agent Hackathon \u2014 Jul 6\u2013 Aug 10, 2026",
+    "url": "https://datahub.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$20,500",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-08-10",
+    "id": "f9654f6f-b75f-48b0-b14f-c080bbe0e52d",
+    "date_posted": 1783818300,
+    "date_updated": 1783818300
+  },
+  {
+    "company_name": "Cockroach Labs",
+    "title": "CockroachDB \u00d7 AWS Hackathon \u2014 Build with Agentic Memory \u2014 Jun 30\u2013 Aug 18, 2026",
+    "url": "https://cockroachdb-ai.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$8,750",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-08-18",
+    "id": "aa0347df-a7fe-4f3c-818e-7423e8c96f1a",
+    "date_posted": 1783814700,
+    "date_updated": 1783814700
+  },
+  {
+    "company_name": "Rice University",
+    "title": "HackRice 16 (Student Hackathon; Interest Form Open)",
+    "url": "https://hackrice.com/",
+    "locations": [
+      "Houston, TX"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "ChimdumebiNebolisa",
+    "id": "55843864-d4f0-4a6a-b79c-46ff7a5e9a12",
+    "date_posted": 1783811100,
+    "date_updated": 1783811100
+  },
+  {
+    "company_name": "HexLabs",
+    "title": "HackGT 13 \u2014 Sep 25\u201327, 2026",
+    "url": "https://hack.gt/",
+    "locations": [
+      "Atlanta, GA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "ChimdumebiNebolisa",
+    "id": "a1e90390-077a-4bd0-8901-175337e0052c",
+    "date_posted": 1783807500,
+    "date_updated": 1783807500
+  },
+  {
+    "company_name": "Africa Deep Tech Foundation",
+    "title": "Africa Deep Tech Challenge 2026 \u2014 The Laptop LLM Challenge",
+    "url": "https://adtc-2026.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$16,500",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-08-24",
+    "id": "57177cd1-cff8-4e80-b701-6811dbcdb1a4",
+    "date_posted": 1783803900,
+    "date_updated": 1783803900
+  },
+  {
+    "company_name": "DevNetwork",
+    "title": "DevNetwork [API + Cloud + AI] Hackathon 2026 \u2014 Aug 17\u2013 Sep 3, 2026",
+    "url": "https://api-cloud-ai-hackathon-2026.devpost.com/",
+    "locations": [
+      "Santa Clara, CA",
+      "Online"
+    ],
+    "format": "Hybrid",
+    "prize": "$12,500",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-09-03",
+    "id": "6438aace-1294-464a-9150-dc56259b6653",
+    "date_posted": 1783800300,
+    "date_updated": 1783800300
+  },
+  {
+    "company_name": "Lincoln Financial Group",
+    "title": "codeLinc 11 with Lincoln Financial & AWS \u2014 Oct 3\u20134, 2026",
+    "url": "https://codelinc11.devpost.com/",
+    "locations": [
+      "Greensboro, NC"
+    ],
+    "format": "In-Person",
+    "prize": "$10,000",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-10-04",
+    "id": "103a5d7c-312b-4bcf-adef-4ab702c4fc33",
+    "date_posted": 1783796700,
+    "date_updated": 1783796700
+  },
+  {
+    "company_name": "OneAquaHealth",
+    "title": "OneAquaHealth IEEE Global Hackathon \u2014 Sep 16\u201330, 2026",
+    "url": "https://oneaquahealth-ieee-hackathon.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$3,000",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-08-31",
+    "id": "c7d0456c-ba85-4000-b89a-3e4fad723aaa",
+    "date_posted": 1783793100,
+    "date_updated": 1783793100
+  },
+  {
+    "id": "a3b17fc3-cd9e-4be5-ab6d-367bfd6c2d72",
+    "company_name": "OnlyExit Hacker House",
+    "title": "Hack Your Way Into the Hacker House \u2014 Jul 18, 2026",
+    "url": "https://luma.com/hack-to-hacker-house",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "In-Person",
+    "prize": "Fast-track OnlyExit Hacker House interview",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783857600,
+    "date_updated": 1783857600,
+    "source": "hongchengw"
+  },
+  {
+    "id": "76d95c1a-9603-43d7-ab9f-60f92c2ea977",
+    "company_name": "localhost:nyc",
+    "title": "Checkout: The Travel & Hospitality Hackathon \u2014 Aug 8, 2026",
+    "url": "https://luma.com/s7v4kw23",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783857600,
+    "date_updated": 1783857600,
+    "source": "hongchengw"
+  },
+  {
+    "id": "d96f83cf-8a49-4048-84d0-db0a799c9d38",
+    "company_name": "University of Central Florida",
+    "title": "Knight Hacks IX \u2014 Oct 9\u201311, 2026",
+    "url": "https://2026.knighthacks.org/",
+    "locations": [
+      "Orlando, FL"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783857600,
+    "date_updated": 1783857600,
+    "source": "Tenz1ng"
   }
 ]

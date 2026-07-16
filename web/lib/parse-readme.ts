@@ -10,8 +10,21 @@ import {
 } from "./types";
 import { REPO_RAW_BASE } from "./repo";
 
-const README_PATH = path.join(process.cwd(), "..", "README.md");
-const REPO_ROOT = path.join(process.cwd(), "..");
+// The README and listings.json live at the repo root, one level ABOVE this
+// Next.js project (web/). Turbopack's NFT file tracer can't follow reads that
+// climb out of the project via `..`, so a plain `fs` read rooted here makes it
+// give up and trace the ENTIRE repo into the serverless bundle — surfacing the
+// "whole project was traced unintentionally" build warning (#77 item 5) with
+// web/next.config.ts as the canary unexpected file.
+//
+// These two data files are instead bundled deterministically via
+// `outputFileTracingIncludes` in next.config.ts, so the tracer does not need to
+// discover them. We mark `process.cwd()` opaque with `turbopackIgnore` here so
+// every path derived from REPO_ROOT is unknown at trace time and nothing under
+// the repo root gets pulled in. This is trace-time only — at runtime
+// `process.cwd()` still resolves normally and the reads work as before.
+const REPO_ROOT = path.join(/*turbopackIgnore: true*/ process.cwd(), "..");
+const README_PATH = path.join(REPO_ROOT, "README.md");
 const LISTINGS_PATH = path.join(
   REPO_ROOT,
   ".github",
@@ -32,8 +45,17 @@ const DATE_RE =
   /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\s+(\d{1,2}),?\s+(\d{4})\b/g;
 const GALLERY_BLOCK_RE =
   /<!-- GALLERY_START -->([\s\S]*?)<!-- GALLERY_END -->/;
-const IMG_RE =
-  /<img\s+[^>]*src="([^"]+)"[^>]*alt="([^"]*)"[^>]*>/g;
+const IMG_TAG_RE = /<img\s+[^>]*>/gi;
+
+function parseImgAttributes(tag: string): { src: string; alt: string } | null {
+  const srcMatch = tag.match(/(?:^|\s)src="([^"]+)"/i);
+  if (!srcMatch) return null;
+  const altMatch = tag.match(/(?:^|\s)alt="([^"]*)"/i);
+  return {
+    src: srcMatch[1] ?? "",
+    alt: altMatch?.[1] || "Hackathon photo",
+  };
+}
 
 function parseStatus(cell: string): Status {
   if (cell.includes("CLOSING SOON")) return "CLOSING_SOON";
@@ -70,6 +92,14 @@ function cleanTitle(text: string): string {
     .trim();
 }
 
+/** Split a markdown table row on unescaped pipe delimiters. */
+function splitTableCells(line: string): string[] {
+  const inner = line.trim().replace(/^\|/, "").replace(/\|$/, "");
+  return inner
+    .split(/(?<!\\)\|/)
+    .map((s) => s.trim().replace(/\\\|/g, "|"));
+}
+
 /**
  * Featured flags come from the structured source of truth (listings.json),
  * not the README markup. This is the single place to swap to Supabase later:
@@ -77,7 +107,7 @@ function cleanTitle(text: string): string {
  */
 function loadFeaturedUrls(): Set<string> {
   try {
-    const raw = fs.readFileSync(LISTINGS_PATH, "utf-8");
+    const raw = fs.readFileSync(/*turbopackIgnore: true*/ LISTINGS_PATH, "utf-8");
     const listings = JSON.parse(raw) as Array<{
       url?: string;
       featured?: boolean;
@@ -106,8 +136,11 @@ export function resolveAssetSrc(src: string): string {
   if (src.startsWith("http://") || src.startsWith("https://")) return src;
 
   const relative = src.replace(/^\/+/, "");
-  const localPath = path.join(REPO_ROOT, relative);
-  if (fs.existsSync(localPath)) {
+  const localPath = path.join(/*turbopackIgnore: true*/ REPO_ROOT, relative);
+  if (
+    relative.startsWith("assets/") &&
+    fs.existsSync(/*turbopackIgnore: true*/ localPath)
+  ) {
     return `/repo-assets/${relative.replace(/^assets\//, "")}`;
   }
 
@@ -121,17 +154,19 @@ function extractStatsBannerSrc(markdown: string): string | null {
   return src ? resolveAssetSrc(src[1] ?? "") : null;
 }
 
-function extractGallery(markdown: string): GalleryPhoto[] {
+export function extractGallery(markdown: string): GalleryPhoto[] {
   const block = markdown.match(GALLERY_BLOCK_RE);
   if (!block) return [];
 
   const photos: GalleryPhoto[] = [];
   let m: RegExpExecArray | null;
-  const re = new RegExp(IMG_RE.source, "g");
+  const re = new RegExp(IMG_TAG_RE.source, "gi");
   while ((m = re.exec(block[1] ?? "")) !== null) {
+    const parsed = parseImgAttributes(m[0]);
+    if (!parsed) continue;
     photos.push({
-      src: resolveAssetSrc(m[1] ?? ""),
-      alt: m[2] || "Hackathon photo",
+      src: resolveAssetSrc(parsed.src),
+      alt: parsed.alt,
     });
   }
   return photos;
@@ -149,10 +184,7 @@ function parseTableRows(
     .filter((l) => l.startsWith("|"));
   if (lines.length < 3) return [];
 
-  const headers = (lines[0] ?? "")
-    .split("|")
-    .slice(1, -1)
-    .map((s) => s.trim());
+  const headers = splitTableCells(lines[0] ?? "");
 
   const headerIdx = (...names: string[]) => {
     for (const name of names) {
@@ -178,7 +210,7 @@ function parseTableRows(
   const dataLines = lines.slice(1).filter((l) => !/^\|\s*-+/.test(l));
 
   return dataLines.map((line) => {
-    const cells = line.split("|").slice(1, -1).map((s) => s.trim());
+    const cells = splitTableCells(line);
     const get = (i: number) => (i >= 0 ? cells[i] || "" : "");
 
     const status = parseStatus(get(idx.status));
@@ -235,7 +267,7 @@ const SECTION_ALIAS: Record<string, Section> = {
  */
 function readReadme(): string {
   try {
-    return fs.readFileSync(README_PATH, "utf-8");
+    return fs.readFileSync(/*turbopackIgnore: true*/ README_PATH, "utf-8");
   } catch (err) {
     console.error(`[parse-readme] could not read ${README_PATH}:`, err);
     throw err;

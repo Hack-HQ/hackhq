@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { STATE_META, countdown, deadlineDisplay } from "@/lib/types-hq";
 import { lockScroll } from "@/lib/scroll-lock";
 import { useSelection, useTracker } from "./store";
@@ -8,15 +8,27 @@ import { useSelection, useTracker } from "./store";
 export function DetailModal() {
   const { selected, setSelected } = useSelection();
   const { isTracked, save, remove } = useTracker();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!selected) return;
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSelected(null);
     window.addEventListener("keydown", onKey);
     const release = lockScroll();
+    window.requestAnimationFrame(() => {
+      closeButtonRef.current?.focus();
+    });
     return () => {
       window.removeEventListener("keydown", onKey);
       release();
+      const previous = previousFocusRef.current;
+      if (previous && document.contains(previous)) {
+        previous.focus();
+      }
     };
   }, [selected, setSelected]);
 
@@ -25,6 +37,37 @@ export function DetailModal() {
   const meta = STATE_META[h.state];
   const cd = countdown(h);
   const tracked = isTracked(h.id);
+  const titleId = `detail-modal-title-${h.id}`;
+  const onDialogKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== "Tab") return;
+    const panel = panelRef.current;
+    if (!panel) return;
+    const focusable = Array.from(
+      panel.querySelectorAll<HTMLElement>(
+        'a[href], area[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [contenteditable="true"], [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((el) => !el.hasAttribute("disabled") && !el.hidden && el.tabIndex >= 0);
+    if (focusable.length === 0) {
+      e.preventDefault();
+      panel.focus();
+      return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (!first || !last) return;
+    const active = document.activeElement;
+    if (e.shiftKey) {
+      if (active === first || !panel.contains(active)) {
+        e.preventDefault();
+        last.focus();
+      }
+      return;
+    }
+    if (active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
 
   return (
     <div
@@ -32,7 +75,13 @@ export function DetailModal() {
       onClick={() => setSelected(null)}
     >
       <div
+        ref={panelRef}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={onDialogKeyDown}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         className="relative w-full max-w-xl overflow-hidden rounded-[2.2rem] border border-white/12 bg-ink shadow-[0_40px_120px_rgba(0,0,0,0.6)]"
       >
         {/* Header band */}
@@ -49,6 +98,7 @@ export function DetailModal() {
             </span>
           </div>
           <button
+            ref={closeButtonRef}
             onClick={() => setSelected(null)}
             aria-label="Close"
             className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-paper/70 transition hover:bg-white/10"
@@ -60,7 +110,7 @@ export function DetailModal() {
         {/* Body */}
         <div className="px-7 py-6">
           <div className="kicker text-coral">{h.host}</div>
-          <h3 className="display mt-2 text-[clamp(1.8rem,4vw,2.6rem)] text-paper">
+          <h3 id={titleId} className="display mt-2 text-[clamp(1.8rem,4vw,2.6rem)] text-paper">
             {h.title}
           </h3>
           {h.tagline && (

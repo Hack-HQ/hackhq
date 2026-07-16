@@ -6,12 +6,18 @@ on:
     paths:
       - 'web/**'
       - '.github/scripts/**'
-      - '.github/workflows/web-ci.yml'
+      # The scripts job runs test_workflows.py, which asserts how the workflows
+      # gate their commits (#112). Without this path it would not run on the very
+      # PRs that change those workflows - exactly when it needs to.
+      - '.github/workflows/**'
   pull_request:
     paths:
       - 'web/**'
       - '.github/scripts/**'
-      - '.github/workflows/web-ci.yml'
+      # The scripts job runs test_workflows.py, which asserts how the workflows
+      # gate their commits (#112). Without this path it would not run on the very
+      # PRs that change those workflows - exactly when it needs to.
+      - '.github/workflows/**'
 
 permissions:
   contents: read
@@ -19,6 +25,7 @@ permissions:
 jobs:
   web:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: web
@@ -39,6 +46,7 @@ jobs:
 
   scripts:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0

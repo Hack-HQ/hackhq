@@ -16,8 +16,19 @@ def main():
         # Load listings
         listings = util.get_listings_from_json()
 
-        # Validate schema
-        util.check_schema(listings)
+        # Validate schema. Skip only the malformed listings (with a warning
+        # annotation) so a single bad entry can't block regeneration of the
+        # README/banner/gallery for all the good ones.
+        valid, errors = util.partition_valid_listings(listings)
+        for err in errors:
+            util.warn(err)
+        skipped = len(listings) - len(valid)
+        if skipped:
+            util.warn(
+                f"Skipped {skipped} invalid listing(s); regenerating from the "
+                f"remaining {len(valid)}."
+            )
+        listings = valid
 
         # Only visible listings
         hackathons = [l for l in listings if l.get("is_visible", True)]

@@ -9,7 +9,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: add_opportunity
+  group: repo-writes
   cancel-in-progress: false
 
 jobs:
@@ -20,6 +20,7 @@ jobs:
       && contains(github.event.issue.labels.*.name, 'approved')
       && contains(github.event.issue.labels.*.name, 'auto_extract')
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
@@ -45,6 +46,18 @@ jobs:
         run: |
           python .github/scripts/update_readmes.py
 
+      # A listing whose city has no coordinates is live in the README and the
+      # deck but absent from the globe (#111). geo-coverage.test.ts catches that
+      # on pull requests, but this job pushes straight to main with the default
+      # GITHUB_TOKEN, and GitHub starts no workflow runs for such pushes — so Web
+      # CI never sees these commits. Ask the same question here instead.
+      #
+      # Never blocks: the listing still lands, and this only names the city a
+      # maintainer needs to add.
+      - name: Check globe coverage
+        id: geo
+        run: python .github/scripts/check_geo_coverage.py
+
       - name: Commit and push changes
         if: steps.extract.outputs.is_duplicate != 'true' && steps.extract.outputs.commit_message != ''
         env:
@@ -53,13 +66,23 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .github/scripts/listings.json README.md assets/hackathons-banner.svg
-          git commit -m "$COMMIT_MSG" || echo "No changes to commit"
+          # Same stage-then-`--cached` gate as the other banner workflows (#112).
+          # `git commit || echo` used to swallow *any* commit failure as "nothing
+          # to commit", so a real error looked like a quiet no-op run.
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "$COMMIT_MSG"
           # Rebase and retry push up to 3 times
+          ok=false
           for i in 1 2 3; do
-            git fetch origin main && git rebase origin/main && git push origin main && break
-            echo "Push attempt $i failed, retrying..."
+            git fetch origin main || { sleep 2; continue; }
+            if git rebase origin/main && git push origin main; then ok=true; break; fi
+            git rebase --abort 2>/dev/null || true
             sleep 2
           done
+          $ok || { echo "::error::push failed after 3 attempts"; exit 1; }
 
       - name: Handle duplicate detection
         if: steps.extract.outputs.is_duplicate == 'true'
@@ -111,6 +134,15 @@ jobs:
               body += `> Note: ${warning}\n\n`;
             }
 
+            // Named, not silent: this listing is live everywhere except the
+            // globe until someone adds the city (#111).
+            const missingGeo = (process.env.MISSING_GEO || '').trim();
+            if (missingGeo) {
+              body += `> **Not on the globe yet.**\n`;
+              body += `> \`\`\`\n${missingGeo.split('\n').map(l => `> ${l}`).join('\n')}\n> \`\`\`\n`;
+              body += `> The listing is live in the README and the deck. A maintainer can put it on the map by adding the location to \`.github/scripts/geocodes.json\`.\n\n`;
+            }
+
             body += `The opportunity has been added to the README. Thank you for contributing!`;
 
             await github.rest.issues.createComment({
@@ -122,6 +154,7 @@ jobs:
         env:
           EXTRACTED_DATA: ${{ steps.extract.outputs.extracted_data }}
           WARNING_MSG: ${{ steps.extract.outputs.warning }}
+          MISSING_GEO: ${{ steps.geo.outputs.missing }}
 
       - name: Close issue
         if: success() && steps.extract.outputs.is_duplicate != 'true'

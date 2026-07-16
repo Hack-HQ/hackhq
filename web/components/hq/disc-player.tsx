@@ -61,6 +61,7 @@ type SpotifyController = {
   pause: () => void;
   loadUri: (uri: string) => void;
   addListener: (event: string, cb: (e: SpotifyPlaybackEvent) => void) => void;
+  destroy?: () => void;
 };
 
 type SpotifyPlaybackEvent = { data: { isPaused: boolean; isBuffering: boolean } };
@@ -115,11 +116,14 @@ export function DiscPlayer() {
   const discWrapRef = useRef<HTMLDivElement>(null);
   const apiRef = useRef<SpotifyIFrameAPI | null>(null);
   const controllerRef = useRef<SpotifyController | null>(null);
+  const aliveRef = useRef(true);
 
   // Load the Spotify IFrame API once; controllers are created lazily,
   // only when the user loads their own music.
   useEffect(() => {
+    aliveRef.current = true;
     window.onSpotifyIframeApiReady = (api) => {
+      if (!aliveRef.current) return;
       apiRef.current = api;
     };
     const script = document.createElement("script");
@@ -127,8 +131,11 @@ export function DiscPlayer() {
     script.async = true;
     document.body.appendChild(script);
     return () => {
+      aliveRef.current = false;
       script.remove();
       delete window.onSpotifyIframeApiReady;
+      controllerRef.current?.destroy?.();
+      controllerRef.current = null;
     };
   }, []);
 
@@ -148,10 +155,15 @@ export function DiscPlayer() {
     }
     setConnecting(true);
     api.createController(mount, { uri, width: "100%", height: 80 }, (controller) => {
+      if (!aliveRef.current) {
+        controller.destroy?.();
+        return;
+      }
       controllerRef.current = controller;
       setConnecting(false);
       setHasMusic(true);
       controller.addListener("playback_update", (e) => {
+        if (!aliveRef.current) return;
         setPlaying(!e.data.isPaused);
       });
     });

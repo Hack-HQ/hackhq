@@ -7,15 +7,24 @@ const REPO_SLUG =
   process.env.NEXT_PUBLIC_REPO_SLUG ?? "Hack-HQ/hackhq";
 
 const nextConfig: NextConfig = {
-  // The data pages read the repo-root README.md and .github/scripts/listings.json
-  // at request time (hourly ISR revalidation). Those files live outside web/, so
-  // Next's serverless file tracing must be told to bundle them or the runtime
-  // read fails with ENOENT. Set the tracing root to the repo root — there's no
-  // lockfile there, so it would otherwise default to web/ and exclude the parent
-  // files — and explicitly include the two data files for every route.
+  // The data pages read repo-root files at request time (hourly ISR
+  // revalidation). Those files live outside web/, so Next's serverless file
+  // tracing must be told to bundle them or the runtime read fails with ENOENT.
+  // Set the tracing root to the repo root — there's no lockfile there, so it
+  // would otherwise default to web/ and exclude the parent files — and
+  // explicitly include every data file we read, for every route.
+  //
+  // ANY new fs.readFileSync of a repo-root file must be added here. A build
+  // won't catch the omission: the file is on disk at build time, so it only
+  // fails later, on the first ISR regeneration in production.
   outputFileTracingRoot: path.join(process.cwd(), ".."),
   outputFileTracingIncludes: {
-    "/**": ["../README.md", "../.github/scripts/listings.json"],
+    "/**": [
+      "../README.md",
+      "../.github/scripts/listings.json",
+      // Read by lib/geo.ts to place listings on the globe.
+      "../.github/scripts/geocodes.json",
+    ],
   },
   logging: {
     browserToTerminal: false,

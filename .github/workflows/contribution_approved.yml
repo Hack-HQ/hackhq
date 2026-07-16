@@ -5,7 +5,7 @@ on:
     types: [labeled]
 
 concurrency:
-  group: add_opportunity
+  group: repo-writes
   cancel-in-progress: false
 
 permissions:
@@ -17,6 +17,7 @@ jobs:
     # Only run for non-auto_extract issues (manual submissions)
     if: github.event.label.name == 'approved' && !contains(github.event.issue.labels.*.name, 'auto_extract') && contains(github.event.issue.labels.*.name, 'approved')
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
@@ -39,6 +40,13 @@ jobs:
         run: |
           python .github/scripts/update_readmes.py
 
+      # Same reason as auto_extract: this job pushes to main with the default
+      # GITHUB_TOKEN, so no workflow run is created and Web CI's coverage test
+      # never sees the new listing. Ask here instead. Never blocks the add (#111).
+      - name: Check globe coverage
+        id: geo
+        run: python .github/scripts/check_geo_coverage.py
+
       - name: Configure Git
         env:
           CONTRIBUTOR_NAME: ${{ steps.process.outputs.contributor_name }}
@@ -58,22 +66,36 @@ jobs:
             git commit -m "$COMMIT_MSG"
           fi
           # Rebase and retry push up to 3 times
+          ok=false
           for i in 1 2 3; do
-            git fetch origin main && git rebase origin/main && git push origin main && break
-            echo "Push attempt $i failed, retrying..."
+            git fetch origin main || { sleep 2; continue; }
+            if git rebase origin/main && git push origin main; then ok=true; break; fi
+            git rebase --abort 2>/dev/null || true
             sleep 2
           done
+          $ok || { echo "::error::push failed after 3 attempts"; exit 1; }
 
       - name: Close issue with success message
         if: success()
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
           script: |
+            let body = '✅ Your contribution has been added to the repository! Thank you for contributing!\n\nYour changes should now be visible in the README.';
+
+            // Named, not silent: live everywhere except the globe until someone
+            // adds the city (#111).
+            const missingGeo = (process.env.MISSING_GEO || '').trim();
+            if (missingGeo) {
+              body += `\n\n> **Not on the globe yet.**\n`;
+              body += `> \`\`\`\n${missingGeo.split('\n').map(l => `> ${l}`).join('\n')}\n> \`\`\`\n`;
+              body += `> A maintainer can put it on the map by adding the location to \`.github/scripts/geocodes.json\`.`;
+            }
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: '✅ Your contribution has been added to the repository! Thank you for contributing!\n\nYour changes should now be visible in the README.'
+              body: body
             });
             await github.rest.issues.update({
               owner: context.repo.owner,

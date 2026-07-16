@@ -144,10 +144,11 @@ def _build_report(proposals):
         company = util.sanitize_field(p["company"], max_len=120)
         title = util.sanitize_field(p["title"], max_len=160)
         evidence = util.sanitize_field(p["evidence"], max_len=280)
+        url = util.sanitize_field(p["url"], max_len=500)
         lines += [
             f"### {company} — {title}",
             f"- **Proposed deadline:** `{p['deadline']}` ({p['type']})",
-            f"- **Source:** {p['url']}",
+            f"- **Source:** {url}",
             f"- **Evidence:** > {evidence}",
             f"- **Listing id:** `{p['id']}`",
             "",

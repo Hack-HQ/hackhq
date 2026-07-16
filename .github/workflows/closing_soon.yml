@@ -8,9 +8,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: repo-writes
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
@@ -25,23 +30,47 @@ jobs:
       - name: Check for changes
         id: check
         run: |
-          if git diff --quiet README.md; then
+          # Gate on everything we are about to commit, not just the README.
+          # closing_soon.py always regenerates the banner with today's date, so
+          # on a day when no row flips status the SVG is still rewritten. Gating
+          # on README alone threw that away and let the committed "as of" date
+          # go stale (#112). Staging first and asking `--cached` also means a run
+          # that changed nothing at all still commits nothing.
+          git add README.md assets/hackathons-banner.svg
+          if git diff --cached --quiet; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+          # Which of the two actually changed? The banner carries today's date, so
+          # it changes on every run - meaning this job now commits daily. Without
+          # this, a day with no badge flips would land a commit reading "update
+          # closing-soon badges (0 changes)", which describes work it didn't do.
+          if git diff --cached --quiet -- README.md; then
+            echo "readme_changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "readme_changed=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Commit and push
         if: steps.check.outputs.has_changes == 'true'
         env:
           CHANGES: ${{ steps.run.outputs.changes }}
+          README_CHANGED: ${{ steps.check.outputs.readme_changed }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md assets/hackathons-banner.svg
-          git commit -m "chore: update closing-soon badges (${CHANGES:-0} changes)"
+          if [ "$README_CHANGED" = "true" ]; then
+            MSG="chore: update closing-soon badges (${CHANGES:-0} changes)"
+          else
+            MSG="chore: refresh stats banner"
+          fi
+          git commit -m "$MSG"
+          ok=false
           for i in 1 2 3; do
-            git fetch origin main && git rebase origin/main && git push origin main && break
-            echo "Push attempt $i failed, retrying..."
+            git fetch origin main || { sleep 2; continue; }
+            if git rebase origin/main && git push origin main; then ok=true; break; fi
+            git rebase --abort 2>/dev/null || true
             sleep 2
           done
+          $ok || { echo "::error::push failed after 3 attempts"; exit 1; }

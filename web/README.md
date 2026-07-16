@@ -11,7 +11,7 @@ deck, and member tracker, plus a legacy searchable directory at `/hackathons`.
 - **Home (`/`)** — hero, stats, and entry points into the globe and deck.
 - **Globe (`/globe`)** — 3D Mapbox map with status-colored markers.
 - **Deck (`/deck`)** — flip through hackathons as tactile cards or a dense list.
-- **My HackHQ (`/my`)** — personal tracker pipeline (optional Clerk sign-in).
+- **My HackHQ (`/my`)** — protected personal tracker pipeline (optional Clerk sign-in).
 - **All hackathons (`/hackathons`)** — legacy README-driven search and filters.
 
 ## How it works
@@ -30,6 +30,29 @@ disk when pages are generated.
 `parse-readme.ts` still powers the legacy `/hackathons` page, which parses the
 README table between `<!-- HACKATHONS_TABLE_START -->` and
 `<!-- HACKATHONS_TABLE_END -->`.
+
+### Putting a listing on the globe
+
+The globe can only render a listing it has coordinates for. The table lives in
+[`.github/scripts/geocodes.json`](../.github/scripts/geocodes.json) and is read
+by two things that must never disagree: `lib/geo.ts` (the site) and
+`.github/scripts/check_geo_coverage.py` (the listing automation).
+
+Lookups normalize first — case, whitespace, and a trailing country are all
+ignored, so `Toronto, ON`, `Toronto, ON, Canada`, and `Toronto, Canada` all
+resolve to one Toronto rather than needing three entries.
+
+**A listing in a city we can't place is reported, never dropped in silence** (#111):
+
+| Path | What happens |
+| ---- | ------------ |
+| Pull request | `lib/geo-coverage.test.ts` fails CI, naming the location |
+| Automated add (issue → `approved`) | The workflow comments on the issue naming the location. It does **not** block the add — those jobs push to `main` with the default `GITHUB_TOKEN`, so no Web CI run is created for them |
+| Either way | `loadHackathons()` warns, and the globe states how many listings it isn't showing |
+
+To fix a report, add the location to `coordinates` in `geocodes.json` — or to
+`unmappable` if it genuinely has no place on a map (e.g. `TBA`). Virtual
+listings are excluded from the map on purpose and never trip the check.
 
 ### Render model
 
@@ -66,15 +89,19 @@ web/
 │   ├── page.tsx                       # Home; loadHackathons() + HomeClient
 │   ├── globe/page.tsx                 # 3D globe
 │   ├── deck/page.tsx                  # Card deck
-│   ├── my/page.tsx                    # Member tracker hub
+│   ├── my/page.tsx                    # Protected member tracker hub
+│   ├── auth/[[...auth]]/page.tsx      # Clerk sign-in/sign-up
 │   ├── hackathons/page.tsx            # Legacy README browser
 │   ├── layout.tsx                     # Root layout, fonts, optional ClerkProvider
 │   └── repo-assets/[...path]/route.ts # Serves files from ../assets
 ├── components/
 │   ├── hq/                            # Current HackHQ UI (globe, deck, nav, …)
+│   │   ├── nav.tsx                    # Nav pill; inline links at sm and up
+│   │   └── mobile-menu.tsx            # The same sections below 640px
 │   └── legacy/                        # README-driven browser, gallery, cards
 ├── lib/
 │   ├── listings.ts                    # Reads listings.json, enriches for frontend
+│   ├── nav.ts                         # Nav sections + active-route matching
 │   ├── parse-readme.ts                # Parses ../README.md (legacy /hackathons)
 │   ├── types-hq.ts                    # Hackathon types and display helpers
 │   └── types.ts                       # Legacy opportunity types
@@ -104,15 +131,22 @@ Copy `.env.example` to `.env.local` (gitignored) and set the values you need.
 | Variable | Required | Used by | If missing |
 | -------- | -------- | ------- | ---------- |
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | For globe | `components/hq/globe-map.tsx` | Globe shows a placeholder instead of the Mapbox map |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For auth | `app/layout.tsx`, `app/my/page.tsx`, `proxy.ts` | Site runs without Clerk; `/my` shows setup instructions |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For auth | `app/layout.tsx`, `app/my/page.tsx`, `proxy.ts` | Site runs without Clerk; `/my` shows setup instructions and `/auth/*` redirects to `/my` |
 | `CLERK_SECRET_KEY` | For auth | `app/my/page.tsx`, `proxy.ts` | Same as above — both Clerk keys are needed together |
 
-Clerk is **optional**. When both Clerk keys are set, `ClerkProvider` wraps the
-app and `/my` offers sign-in. Without them, the tracker still works locally;
-nothing is persisted server-side.
+The two keys are the only Clerk variables you need. The auth routes
+(`/auth/sign-in`, `/auth/sign-up`) and the post-sign-in landing (`/my`) are
+pinned in `proxy.ts` and `components/hq/auth-screen.tsx` rather than read from
+`NEXT_PUBLIC_CLERK_*_URL` env vars — when those are unset, Clerk redirects to
+its hosted account portal instead of the app's own screens.
 
-> **Note:** The `/my` sign-in gate is currently enforced on the client only
-> (`my-client.tsx`). There is no server-side route protection yet.
+Clerk is **optional**. When both keys are set, `ClerkProvider` wraps the app,
+`/my` is protected in `proxy.ts` (signed-out visitors are redirected to
+`/auth/sign-in`), and users can sign in with Google, GitHub, or email/password.
+Without them, the tracker still works locally; nothing is persisted server-side.
+
+To finish Clerk setup in the dashboard, enable Google and GitHub under social
+connections, and enable email/password under email authentication.
 
 ## Scripts
 

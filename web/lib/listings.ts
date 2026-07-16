@@ -9,6 +9,7 @@ import path from "node:path";
  *  - days-until-deadline, cleaned titles, theme tags, prize parsing
  */
 
+import { coordsForListing, isUnmappable, normalizeLocation } from "./geo";
 import type { HackState, Hackathon, SiteStats } from "./types-hq";
 
 export type { HackState, Hackathon, SiteStats };
@@ -36,33 +37,16 @@ type RawListing = {
   deadline?: string;
 };
 
-/** Static geocode table - one entry per unique location string in listings.json. */
-const GEO: Record<string, [number, number]> = {
-  "Amherst, MA": [42.3732, -72.5199],
-  "Ann Arbor, MI": [42.2808, -83.743],
-  "Austin, TX": [30.2672, -97.7431],
-  "Berkeley / San Francisco, CA": [37.8715, -122.273],
-  "Boston, MA": [42.3601, -71.0589],
-  "Cambridge, MA": [42.3736, -71.1097],
-  "College Park, MD": [38.9897, -76.9378],
-  "Kolkata, India": [22.5726, 88.3639],
-  "Los Angeles, CA": [34.0522, -118.2437],
-  "New York, NY": [40.7128, -74.006],
-  "Philadelphia, PA": [39.9526, -75.1652],
-  "San Francisco, CA": [37.7749, -122.4194],
-  "Toronto, ON, Canada": [43.6532, -79.3832],
-};
-
 const THEME_RULES: [RegExp, string][] = [
   [/\bai\b|artificial intelligence|agent|llm|gpt|gemini|claude/i, "AI"],
-  [/web3|crypto|eth|blockchain|chain/i, "WEB3"],
-  [/health|bio|med/i, "HEALTH"],
+  [/web3|crypto|\beth(ereum)?\b|blockchain|\bchain\b/i, "WEB3"],
+  [/health|\bbio(tech|medical)?\b|\bmed(ical|icine|tech)?\b/i, "HEALTH"],
   [/climate|sustain|energy/i, "CLIMATE"],
-  [/fintech|finance|trading|quant/i, "FINTECH"],
+  [/fintech|finance|trading|\bquant\b/i, "FINTECH"],
   [/game|gaming/i, "GAMING"],
   [/robot|hardware|embedded/i, "HARDWARE"],
   [/security|cyber|ctf/i, "SECURITY"],
-  [/data|analytics/i, "DATA"],
+  [/\bdata\b|analytics/i, "DATA"],
   [/space|aero/i, "SPACE"],
   [/education|edtech|student/i, "EDU"],
   [/high.?school/i, "HIGH SCHOOL"],
@@ -78,9 +62,19 @@ export function parsePrizeValue(prize: string | undefined): number {
   return n * mult;
 }
 
+export function daysUntilDeadline(deadline: string, today: Date): number {
+  const d = new Date(`${deadline}T00:00:00`);
+  return Math.round((d.getTime() - today.getTime()) / 86_400_000);
+}
+
 export function deriveState(raw: RawListing, daysLeft: number | null): HackState {
-  if (raw.state === "opens_soon") return "opens_soon";
+  // Closed wins over every other signal — including opens_soon. A listing that
+  // was explicitly closed (state="closed", or active=false) must never render as
+  // OPENS SOON. This ordering mirrors util.resolve_state, which the README
+  // generator uses; if the two disagree, the same listing shows a different
+  // status on the site than in the README.
   if (raw.state === "closed" || raw.active === false) return "closed";
+  if (raw.state === "opens_soon") return "opens_soon";
   if (daysLeft !== null) {
     if (daysLeft < 0) return "closed";
     if (daysLeft <= 7) return "closing_soon";
@@ -142,26 +136,47 @@ export function loadHackathons(): Hackathon[] {
   // Deterministic jitter so co-located markers don't stack exactly.
   const seen: Record<string, number> = {};
 
-  return raw
+  // Locations we could not place, keyed by their normalized form so one city
+  // spelled two ways is reported once. Collected while mapping and reported
+  // below — a listing dropping off the globe should never be silent (#111).
+  const unplaceable = new Map<string, string>();
+
+  const hackathons = raw
     .filter((r) => r.is_visible !== false)
     .map((r) => {
-      const location = r.locations?.[0] ?? "TBA";
+      // `||`, not `??`: a listing with locations: [""] has a location that is
+      // present but empty, and an empty string is no more mappable than a
+      // missing one. `??` would let it through and report a blank name.
+      const location = r.locations?.[0]?.trim() || "TBA";
       let daysLeft: number | null = null;
       if (r.deadline) {
-        const d = new Date(`${r.deadline}T23:59:59`);
-        daysLeft = Math.ceil((d.getTime() - today.getTime()) / 86_400_000);
+        daysLeft = daysUntilDeadline(r.deadline, today);
       }
       const { title, tagline } = splitTitle(r.title);
 
       let lat: number | null = null;
       let lng: number | null = null;
-      const geo = GEO[location];
-      if (geo && r.format !== "Virtual") {
-        const n = (seen[location] = (seen[location] ?? 0) + 1);
-        // spiral jitter ~0.08° per twin so stacked cities stay clickable
+      const geo = coordsForListing(location, r.format);
+      if (geo) {
+        // Count co-located listings by the *normalized* key. Keying this on the
+        // raw string would restart the count for every spelling ("Toronto, ON"
+        // vs "Toronto, ON, Canada"), so two listings now sharing one set of
+        // coordinates would both take the n=1 zero-offset and stack exactly.
+        const key = normalizeLocation(location);
+        const n = (seen[key] = (seen[key] ?? 0) + 1);
+        // Spiral-offset co-located markers just enough to stay individually
+        // clickable when zoomed into a city. Keep this SMALL: 0.01° is ~1.1km,
+        // which separates pins at city zoom while keeping every marker inside
+        // the right city. (This was 0.08° ≈ 9km, which flung a Cambridge pin
+        // clear across town into Roslindale.)
         const angle = n * 2.4;
-        lat = geo[0] + (n > 1 ? 0.08 * Math.sin(angle) : 0);
-        lng = geo[1] + (n > 1 ? 0.08 * Math.cos(angle) : 0);
+        lat = geo[0] + (n > 1 ? 0.01 * Math.sin(angle) : 0);
+        lng = geo[1] + (n > 1 ? 0.01 * Math.cos(angle) : 0);
+      } else if (r.format !== "Virtual" && !isUnmappable(location)) {
+        // Dedupe on the normalized key, not the raw string: otherwise
+        // "Atlantis, XX" and "atlantis, xx" are reported as two missing places.
+        const key = normalizeLocation(location);
+        if (!unplaceable.has(key)) unplaceable.set(key, location);
       }
 
       const format =
@@ -196,6 +211,16 @@ export function loadHackathons(): Hackathon[] {
       if (order[a.state] !== order[b.state]) return order[a.state] - order[b.state];
       return (a.daysLeft ?? 9999) - (b.daysLeft ?? 9999);
     });
+
+  if (unplaceable.size > 0) {
+    console.warn(
+      `[listings] ${unplaceable.size} location(s) have no coordinates and will ` +
+        `not appear on the globe: ${[...unplaceable.values()].join(", ")}. ` +
+        `Add them to GEO in lib/geo.ts.`,
+    );
+  }
+
+  return hackathons;
 }
 
 export function siteStats(list: Hackathon[]): SiteStats {
@@ -204,12 +229,24 @@ export function siteStats(list: Hackathon[]): SiteStats {
   const prizeDisplay =
     prizeTotal >= 1_000_000
       ? `$${(prizeTotal / 1_000_000).toFixed(1).replace(/\.0$/, "")}M+`
-      : `$${Math.round(prizeTotal / 1000)}K+`;
+      : prizeTotal >= 1_000
+        ? `$${Math.floor(prizeTotal / 1000)}K+`
+        : prizeTotal > 0
+          ? `$${prizeTotal.toLocaleString("en-US")}+`
+          : "$0+";
   return {
     total: list.length,
     open: live.filter((h) => h.state === "open" || h.state === "closing_soon").length,
     closingSoon: list.filter((h) => h.state === "closing_soon").length,
     prizeDisplay,
-    cities: new Set(list.filter((h) => h.lat !== null).map((h) => h.location)).size,
+    // Count distinct *places*, not distinct strings. "Toronto, ON, Canada" and
+    // "Toronto, ON" are both in the data and both land on the same pin, so the
+    // raw-string version of this counted Toronto twice and the site advertised
+    // one more city than it shows.
+    cities: new Set(
+      list
+        .filter((h) => h.lat !== null)
+        .map((h) => normalizeLocation(h.location)),
+    ).size,
   };
 }

@@ -11,9 +11,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: repo-writes
+  cancel-in-progress: false
+
 jobs:
   update-readme:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
@@ -32,7 +37,13 @@ jobs:
       - name: Check for changes
         id: check
         run: |
-          if git diff --quiet README.md; then
+          # Gate on everything we are about to commit, not just the README.
+          # update_readmes.py always regenerates the banner with today's date, so
+          # gating on the README alone discarded a banner-only change and let the
+          # committed "as of" date go stale (#112). Staging first and asking
+          # `--cached` also means a run that changed nothing commits nothing.
+          git add README.md assets/hackathons-banner.svg
+          if git diff --cached --quiet; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
@@ -45,13 +56,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md assets/hackathons-banner.svg
           git commit -m "${COMMIT_MSG:-chore: update README}"
+          ok=false
           for i in 1 2 3; do
-            git fetch origin main && git rebase origin/main && git push origin main && break
-            echo "Push attempt $i failed, retrying..."
+            git fetch origin main || { sleep 2; continue; }
+            if git rebase origin/main && git push origin main; then ok=true; break; fi
+            git rebase --abort 2>/dev/null || true
             sleep 2
           done
+          $ok || { echo "::error::push failed after 3 attempts"; exit 1; }
 
       - name: Report failure
         if: failure()

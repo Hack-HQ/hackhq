@@ -8,12 +8,22 @@ Stats shown:
   - total hackathons tracked
   - open / opens-soon / closing-soon counts
   - in-person / virtual / hybrid format mix (animated stacked bar)
+
+NOTE FOR WORKFLOW AUTHORS: the banner carries an "as of {today}" date, so this
+script rewrites the SVG on *every* run — including days when the README table
+is byte-for-byte unchanged. Any workflow that regenerates the banner must
+therefore gate its commit on what is staged (`git add ...` then
+`git diff --cached --quiet`), never on the README diff alone: a README-only gate
+throws the fresh banner away and lets the committed date go stale (#112).
+test_workflows.py enforces this.
 """
 
 import os
 import re
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
+import util
 
 PST = ZoneInfo("America/Los_Angeles")
 ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
@@ -34,12 +44,12 @@ def parse_rows():
     lines = [l for l in m.group(1).split("\n") if l.strip().startswith("|")]
     if len(lines) < 3:
         return []
-    headers = [h.strip() for h in lines[0].split("|")[1:-1]]
+    headers = util.split_table_cells(lines[0])
     rows = []
     for line in lines[1:]:
         if re.match(r"^\|\s*-+", line.strip()):
             continue
-        cells = [c.strip() for c in line.split("|")[1:-1]]
+        cells = util.split_table_cells(line)
         if len(cells) != len(headers):
             continue
         rows.append(dict(zip(headers, cells)))
@@ -92,8 +102,15 @@ def bar_segments(s, width):
     return segs
 
 
-def svg(s):
-    now = datetime.now(tz=PST).strftime("%B %-d, %Y")
+def format_banner_date(dt: datetime) -> str:
+    """Readable banner date without platform-specific strftime directives."""
+    return f"{dt.strftime('%B')} {dt.day}, {dt.strftime('%Y')}"
+
+
+def svg(s, today=None):
+    if today is None:
+        today = datetime.now(tz=PST)
+    now = format_banner_date(today)
     W, H = 760, 150
     pad = 28
     font = "-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"

@@ -9,9 +9,14 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: weekly-digest
+  cancel-in-progress: false
+
 jobs:
   digest:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
@@ -31,14 +36,27 @@ jobs:
           gh label create "digest" --color "8B5CF6" --description "Weekly digest of new and closing-soon opportunities" \
             --repo "${{ github.repository }}" 2>/dev/null || true
 
-      - name: Create issue
+      - name: Open or refresh digest issue
         if: steps.gen.outputs.has_content == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          CLOSING_COUNT: ${{ steps.gen.outputs.closing_count }}
+          NEW_COUNT: ${{ steps.gen.outputs.new_count }}
         run: |
           DATE=$(date '+%B %d, %Y')
-          gh issue create \
-            --title "📬 Weekly Digest — $DATE" \
-            --body-file digest.md \
-            --label "digest" \
-            --repo "${{ github.repository }}"
+          TITLE="📬 Weekly Digest — $DATE"
+          EXISTING=$(gh issue list --repo "$REPO" --label "digest" \
+            --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue edit "$EXISTING" --repo "$REPO" \
+              --title "$TITLE" --body-file digest.md
+            gh issue comment "$EXISTING" --repo "$REPO" \
+              --body "Refreshed on ${DATE}: ${CLOSING_COUNT} closing soon, ${NEW_COUNT} new this week."
+            echo "Refreshed existing issue #$EXISTING"
+          else
+            gh issue create --repo "$REPO" \
+              --title "$TITLE" \
+              --body-file digest.md \
+              --label "digest"
+          fi

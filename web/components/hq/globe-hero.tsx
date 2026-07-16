@@ -6,9 +6,14 @@ export function GlobeHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      videoRef.current?.pause();
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const video = videoRef.current;
+    if (!video) return;
+    if (reduce) {
+      video.pause();
+      return;
     }
+    video.play().catch(() => {});
   }, []);
 
   return (
@@ -21,7 +26,6 @@ export function GlobeHero() {
             className="h-full w-full object-cover"
             src="/rednote-summit-opening.mp4"
             poster="/rednote-summit-poster.jpg"
-            autoPlay
             muted
             loop
             playsInline

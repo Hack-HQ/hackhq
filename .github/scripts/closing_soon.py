@@ -4,8 +4,9 @@ closing_soon.py — flag opportunities closing within 7 days as 🔥 [CLOSING SO
 
 Scans every <!-- *_TABLE_START --> ... <!-- *_TABLE_END --> region in README.md.
 For each row with status ✅ [OPEN] or 🔥 [CLOSING SOON]:
-  - Prefer structured deadline (YYYY-MM-DD or MM/DD/YYYY) if present
-  - Otherwise find the earliest upcoming date in the row text
+  - Read ONLY the Deadline cell (never other cells, whose dates are event dates)
+  - Prefer a structured deadline (YYYY-MM-DD) in that cell, else its earliest date
+  - A row with no deadline ("—") keeps its current status
   - If 0–7 days away: flip status to 🔥 [CLOSING SOON]
   - If >7 days away: flip status back to ✅ [OPEN]
   - If unparseable / past / Rolling / Check site: leave alone
@@ -71,17 +72,33 @@ def parse_iso_deadline(row: str):
         return None
 
 
+DEADLINE_COL = 6  # 0=Status 1=Host 2=Hackathon 3=Format 4=Location 5=Prize 6=Deadline 7=Application 8=Date Posted
+
+
 def update_row(row: str, today: datetime):
     """Return (new_row, changed)."""
     has_open = OPEN in row
     has_closing = CLOSING in row
     if not (has_open or has_closing):
         return row, False
-    # Skip the trailing "Date Posted" cell: a row posted today would otherwise
-    # parse as a deadline 0 days away and be falsely flagged as closing soon.
-    cells = row.rstrip().rstrip("|").split("|")
-    scan_text = "|".join(cells[:-1]) if len(cells) > 1 else row
-    deadline = parse_iso_deadline(scan_text) or earliest_upcoming(scan_text, today)
+    # Derive the closing-soon decision from the Deadline cell ALONE. Scanning any
+    # other cell harvests the event date out of the Hackathon title (e.g. a row
+    # named "cuHacking 2026 — Jul 10 – Jul 12, 2026" with a "—" Deadline) or the
+    # trailing "Date Posted" cell, and mistakes it for a registration deadline
+    # (issue #70).
+    # Split on unescaped pipes only: sanitize_table_cell escapes a literal "|"
+    # inside a cell as "\|", and splitting on that would shift the Deadline out
+    # of DEADLINE_COL. Separator pipes are always space-padded ("| "), so a "\|"
+    # (backslash immediately before the pipe) is unambiguously an escaped value.
+    cells = [c.strip() for c in re.split(r"(?<!\\)\|", row.strip().strip("|"))]
+    if len(cells) <= DEADLINE_COL:
+        return row, False
+    deadline_cell = cells[DEADLINE_COL]
+    # A row with no real deadline (empty or the "—" placeholder) keeps its
+    # current status — it must never be invented into CLOSING SOON.
+    if deadline_cell in ("", "—", "-"):
+        return row, False
+    deadline = parse_iso_deadline(deadline_cell) or earliest_upcoming(deadline_cell, today)
     if not deadline:
         return row, False
     days_until = (deadline.date() - today.date()).days

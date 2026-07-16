@@ -30,9 +30,16 @@ def handle_new_opportunity(data, username, is_quick_add=False):
     """Handle adding a new hackathon."""
     listings = util.get_listings_from_json()
 
-    # Get URL - handle both full and quick templates
+    # Get URL - handle both full and quick templates. Check the RAW value for
+    # emptiness before normalizing: clean_url("") no longer manufactures a URL,
+    # but validating the raw value keeps the "missing URL" error unambiguous.
     url = get_first(data, "link_to_hackathon_page", "link", "link_to_hackathon")
+    if not url.strip():
+        util.fail("Missing required field: URL")
     url = util.clean_url(url)
+    # Re-check after normalization: a bare/host-less scheme ("https://", "//x")
+    # is truthy above but clean_url reduces it to "", which would otherwise be
+    # written as an empty url and rendered as a broken Register button.
     if not url:
         util.fail("Missing required field: URL")
 
@@ -138,8 +145,9 @@ def handle_close_opportunity(data, username):
     if len(matches) > 1:
         util.fail(f"Found multiple matches for {company_name} - {title}. Please provide the URL to identify the specific listing.")
 
-    # Mark as inactive
+    # Mark as closed in every field renderers consult.
     matches[0]["active"] = False
+    matches[0]["state"] = "closed"
     matches[0]["date_updated"] = util.get_current_timestamp()
 
     util.save_listings_to_json(listings)

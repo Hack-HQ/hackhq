@@ -1,6 +1,7 @@
 "use client";
 
-import { SignIn, UserButton, useAuth, useUser } from "@clerk/nextjs";
+import { UserButton, useAuth, useUser } from "@clerk/nextjs";
+import Link from "next/link";
 import type { Hackathon } from "@/lib/types-hq";
 import { PageShell } from "./page-shell";
 import { Tracker } from "./tracker";
@@ -48,37 +49,33 @@ function GatedHub({ hackathons }: { hackathons: Hackathon[] }) {
   );
 }
 
-/* ----- Signed-out: the members gate ----- */
+/* ----- Signed-out: the members gate -----
+   proxy.ts redirects signed-out visitors to /auth/sign-in before this page
+   renders, so this is only a backstop. It links to that screen rather than
+   embedding <SignIn> again: the form uses path routing bound to /auth/sign-in
+   and misbehaves when mounted on another route. */
 
 function SignInGate() {
   return (
     <section className="p-2 pt-0">
-      <div className="shell flex min-h-[78vh] flex-col items-center justify-center gap-10 bg-ink px-5 py-16 sm:px-10">
-        <div className="text-center">
+      <div className="shell flex min-h-[78vh] flex-col items-center justify-center gap-8 bg-ink px-5 py-16 text-center sm:px-10">
+        <div>
           <div className="kicker text-coral">Members · Pillar 03</div>
           <h1 className="display mt-4 text-[clamp(1.6rem,4vw,2.8rem)] text-paper">
             My HackHQ
           </h1>
           <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-paper/60">
-            Your hackathon pipeline lives here. Sign in with Google or GitHub
-            to open your hub.
+            Your hackathon pipeline lives here. Sign in with Google, GitHub, or
+            email to open your hub.
           </p>
         </div>
 
-        <SignIn
-          routing="hash"
-          appearance={{
-            variables: {
-              colorPrimary: "#ed5b29",
-              colorBackground: "#1b1917",
-              colorForeground: "#f5ede6",
-              colorMutedForeground: "#9ba1a5",
-              colorInput: "#100f0f",
-              colorInputForeground: "#f5ede6",
-              borderRadius: "1.25rem",
-            },
-          }}
-        />
+        <Link
+          href="/auth/sign-in"
+          className="rounded-full bg-coral px-7 py-4 font-mono text-[12px] font-bold tracking-[0.18em] text-paper transition hover:bg-coral-bright"
+        >
+          SIGN IN
+        </Link>
       </div>
     </section>
   );
@@ -111,8 +108,8 @@ function AuthSetupNotice() {
       <div className="shell bg-ink-soft px-6 py-8 sm:px-10">
         <div className="kicker text-coral">Sign-in not configured yet</div>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-paper/60">
-          The hub is running in open mode. To turn on Google + GitHub sign-in:
-          create a free app at{" "}
+          The hub is running in open mode. To turn on Google, GitHub, and
+          email/password sign-in, create a free app at{" "}
           <a
             href="https://dashboard.clerk.com"
             target="_blank"
@@ -121,8 +118,9 @@ function AuthSetupNotice() {
           >
             dashboard.clerk.com
           </a>
-          , enable Google and GitHub under &ldquo;SSO connections&rdquo;, then
-          paste the two keys into{" "}
+          . Enable Google and GitHub under &ldquo;SSO connections&rdquo;, enable
+          email/password under &ldquo;Email, phone, username&rdquo;, then paste the two
+          keys into{" "}
           <code className="font-mono text-paper/80">.env.local</code> and
           restart the dev server.
         </p>
