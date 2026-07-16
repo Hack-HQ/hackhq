@@ -108,13 +108,11 @@ export function GlobeFilterBar({
 function FilterPill({
   children,
   active,
-  dim = false,
   onClick,
   dotColor,
 }: {
   children: React.ReactNode;
   active: boolean;
-  dim?: boolean;
   onClick: () => void;
   dotColor?: string;
 }) {
@@ -126,9 +124,7 @@ function FilterPill({
       className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[10px] tracking-[0.12em] transition focus:outline-none focus:ring-2 focus:ring-coral ${
         active
           ? "bg-paper text-ink"
-          : `glass-dark border border-white/15 text-paper/70 hover:text-paper ${
-              dim ? "opacity-50" : ""
-            }`
+          : "glass-dark border border-white/15 text-paper/70 hover:text-paper"
       }`}
     >
       {dotColor && (
