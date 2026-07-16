@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { STATE_META, countdown, type Hackathon } from "@/lib/types-hq";
+import { useDialogDismiss } from "./use-dialog-dismiss";
 
 type GlobeVirtualDrawerProps = {
   open: boolean;
@@ -17,28 +18,13 @@ export function GlobeVirtualDrawer({
   onSelect,
 }: GlobeVirtualDrawerProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  useEffect(() => {
-    if (!open) return;
-    previousFocusRef.current =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    window.requestAnimationFrame(() => {
-      closeButtonRef.current?.focus();
-    });
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      // Return focus to the trigger (the Virtual button) on close (WCAG 2.4.3).
-      const prev = previousFocusRef.current;
-      if (prev && document.contains(prev)) prev.focus({ preventScroll: true });
-    };
-  }, [open, onClose]);
+  // Escape closes, focus lands on the close button, and on close it returns to
+  // the trigger (the 🌐 VIRTUAL button) that opened the drawer (WCAG 2.4.3).
+  useDialogDismiss(open, onClose, {
+    initialFocusRef: closeButtonRef,
+    restoreFocus: true,
+  });
 
   if (!open) return null;
 
