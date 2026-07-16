@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useRef, type CSSProperties } from "react";
 import {
   STATE_META,
   countdown,
   deadlineDisplay,
   type Hackathon,
 } from "@/lib/types-hq";
+import { useDialogDismiss } from "./use-dialog-dismiss";
 import { useTracker } from "./store";
 
 type GlobeDetailDrawerProps = {
@@ -20,17 +21,12 @@ export function GlobeDetailDrawer({
 }: GlobeDetailDrawerProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    if (!hackathon) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    window.requestAnimationFrame(() => {
-      closeButtonRef.current?.focus();
-    });
-    return () => window.removeEventListener("keydown", onKey);
-  }, [hackathon, onClose]);
+  // Escape closes and focus lands on the close button. Focus *return* on close
+  // is owned by the opener in globe-map (it points focus back at the map pin or
+  // the 🌐 VIRTUAL trigger), so restoreFocus stays off here.
+  useDialogDismiss(Boolean(hackathon), onClose, {
+    initialFocusRef: closeButtonRef,
+  });
 
   if (!hackathon) return null;
 
