@@ -410,8 +410,11 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     });
     // A tooltip could be pinned to a marker we just hid.
     popupRef.current?.remove();
-    // If the open detail belongs to a marker that no longer passes the filter,
-    // dismiss it so the drawer never describes a hidden pin.
+    // If the selected pin is no longer in the visible set, dismiss its detail so
+    // the drawer never describes a hidden pin. Filters can't change while a
+    // detail is open (the bar is hidden then), so this fires only when the
+    // `hackathons` data itself changes underneath an open card — defensive, but
+    // cheap.
     const selId = selectedMarkerIdRef.current;
     if (selId && !visibleIds.has(selId)) closeDrawer();
   }, [visibleIds, closeDrawer]);
