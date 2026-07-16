@@ -207,7 +207,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       metaRow.style.fontSize = "12px";
       metaRow.style.color = "#9ba1a5";
       metaRow.style.marginTop = "3px";
-      metaRow.textContent = h.location;
+      metaRow.textContent = `${h.host} · ${h.location}`;
 
       root.append(statusRow, titleRow, metaRow);
 
