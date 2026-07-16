@@ -87,14 +87,8 @@ export function GlobeDetailDrawer({
           </p>
         )}
 
-        <div className="mt-4 grid grid-cols-2 gap-2 md:hidden">
-          <DetailRow label="City" value={h.location} />
-          <DetailRow label="Format" value={h.format} />
-          <DetailRow label="Prize" value={h.prize ?? "See website"} />
-          {deadline && <DetailRow label="Deadline" value={deadline} />}
-        </div>
-
-        <div className="mt-5 hidden gap-3 md:grid">
+        {/* Two columns on mobile, a single stacked column from md up. */}
+        <div className="mt-4 grid grid-cols-2 gap-2 md:mt-5 md:grid-cols-1 md:gap-3">
           <DetailRow label="City" value={h.location} />
           <DetailRow label="Format" value={h.format} />
           <DetailRow label="Prize" value={h.prize ?? "See website"} />
@@ -123,19 +117,9 @@ export function GlobeDetailDrawer({
   );
 }
 
-function DetailRow({
-  label,
-  value,
-  className = "",
-}: {
-  label: string;
-  value: string;
-  className?: string;
-}) {
+function DetailRow({ label, value }: { label: string; value: string }) {
   return (
-    <div
-      className={`rounded-2xl border border-white/10 bg-white/5 px-4 py-2 ${className}`}
-    >
+    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2">
       <div className="font-mono text-[9px] tracking-[0.2em] text-paper/40">
         {label.toUpperCase()}
       </div>
