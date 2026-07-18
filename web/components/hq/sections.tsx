@@ -76,7 +76,7 @@ export function SubmitSection() {
   const [url, setUrl] = useState("");
 
   return (
-    <section id="submit" className="p-2 pt-0">
+    <section id="submit" className="p-2 pt-20">
       <div className="shell flex min-h-[70vh] items-center justify-center bg-ink px-5 py-16 sm:px-10">
         <div className="glass w-full max-w-2xl rounded-[2.5rem] p-8 sm:p-12">
           <div className="kicker text-center text-coral">
