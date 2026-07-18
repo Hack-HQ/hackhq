@@ -8,6 +8,7 @@ import { DiscPlayer } from "./disc-player";
 import { GlobeHero } from "./globe-hero";
 import { DetailModal } from "./detail-modal";
 import { StatsStrip, ThemeMarquee, SubmitSection, Footer } from "./sections";
+import { ResourcesTeaser } from "./resources-teaser";
 
 export function HomeClient({
   hackathons,
@@ -24,6 +25,7 @@ export function HomeClient({
         <GlobeHero />
         <StatsStrip stats={stats} />
         <ThemeMarquee hackathons={hackathons} />
+        <ResourcesTeaser />
         <SubmitSection />
       </main>
       <Footer />
