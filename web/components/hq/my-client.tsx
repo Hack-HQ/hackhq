@@ -4,6 +4,7 @@ import { UserButton, useAuth, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import type { Hackathon } from "@/lib/types-hq";
 import { PageShell } from "./page-shell";
+import { Passport } from "./passport";
 import { Tracker } from "./tracker";
 
 export function MyClient({
@@ -20,6 +21,7 @@ export function MyClient({
       ) : (
         <>
           <AuthSetupNotice />
+          <Passport />
           <Tracker hackathons={hackathons} />
         </>
       )}
@@ -44,6 +46,7 @@ function GatedHub({ hackathons }: { hackathons: Hackathon[] }) {
   return (
     <>
       <HubGreeting />
+      <Passport />
       <Tracker hackathons={hackathons} />
     </>
   );

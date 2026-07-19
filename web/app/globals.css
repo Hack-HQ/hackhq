@@ -241,3 +241,32 @@ body {
 
 /* Dossier folder card: motion now lives in components/hq/deck.tsx
    (framer-motion springs ported from the Framer "Document Folder"). */
+
+/* My Passport: each visa stamps down with a slight overshoot as the book
+   opens (components/hq/passport.tsx). */
+@keyframes pp-stamp-in {
+  0% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+  55% {
+    opacity: 1;
+  }
+  72% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.pp-stamp {
+  animation: pp-stamp-in 0.5s cubic-bezier(0.2, 0.85, 0.25, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-stamp {
+    animation: none;
+  }
+}
