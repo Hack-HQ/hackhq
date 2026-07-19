@@ -21,7 +21,8 @@ const SECONDS_PER_REVOLUTION = 110;
 export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const { setSelected } = useSelection();
+  const markerEls = useRef<Map<string, HTMLElement>>(new Map());
+  const { selected, setSelected } = useSelection();
   const [zoomedIn, setZoomedIn] = useState(false);
   const hasToken = Boolean(mapboxgl.accessToken);
 
@@ -33,6 +34,9 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+
+    // Local handle so the cleanup closes over a stable value, not the ref.
+    const els = markerEls.current;
 
     const map = new mapboxgl.Map({
       container: containerRef.current,
@@ -88,6 +92,8 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     map.on("moveend", spinGlobe);
     map.on("zoom", () => setZoomedIn(map.getZoom() > 3.2));
     map.on("load", spinGlobe);
+    // Clicking the empty globe (canvas, not a marker) dismisses the cartridge.
+    map.on("click", () => setSelected(null));
 
     // - Markers + shared hover popup -
     const popup = new mapboxgl.Popup({
@@ -102,6 +108,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       const el = document.createElement("div");
       el.className = "hq-marker";
       el.dataset.state = h.state;
+      els.set(h.id, el);
 
       el.addEventListener("mouseenter", () => {
         const meta = STATE_META[h.state];
@@ -141,10 +148,12 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
         e.stopPropagation();
         spinEnabled = false;
         popup.remove();
-        map.flyTo({
+        // Gentle ease (not a deep street-level fly-in) so the marker and the
+        // left-anchored Event Cartridge stay visible together.
+        map.easeTo({
           center: [h.lng!, h.lat!],
-          zoom: 9.5,
-          duration: 2600,
+          zoom: 4,
+          duration: 1600,
           essential: true,
         });
         setSelected(h);
@@ -171,6 +180,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       ro.disconnect();
       globeEl.removeEventListener("hq:backToGlobe", restoreSpin);
       markers.forEach((m) => m.remove());
+      els.clear();
       popup.remove();
       map.remove();
       mapRef.current = null;
@@ -178,8 +188,16 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasToken]);
 
+  // Reflect the shared selection onto the markers (enlarge + selection ring).
+  useEffect(() => {
+    markerEls.current.forEach((el, id) => {
+      el.dataset.selected = selected?.id === id ? "true" : "false";
+    });
+  }, [selected]);
+
   const backToGlobe = () => {
     setZoomedIn(false);
+    setSelected(null);
     mapRef.current?.flyTo({ ...GLOBE_VIEW, duration: 2400, essential: true });
     containerRef.current?.dispatchEvent(new Event("hq:backToGlobe"));
   };
@@ -210,12 +228,15 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
           </button>
         )}
 
-        {/* Page title overlay - bottom-left */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 p-6 sm:p-10">
+        {/* Page title overlay - bottom-right (clears the left-anchored card) */}
+        <div className="pointer-events-none absolute bottom-0 right-0 p-6 text-right sm:p-10">
           <div className="kicker text-coral">Pillar 01 · Explore</div>
           <h1 className="display mt-3 text-[clamp(1.8rem,4.5vw,3.6rem)] text-paper">
-            The globe
+            The Globe
           </h1>
+          <div className="kicker mt-3 text-[10px] text-paper/40">
+            ◉ Select a marker to inspect the event
+          </div>
         </div>
       </div>
     </section>

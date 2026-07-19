@@ -148,6 +148,7 @@ body {
 
 /* Globe marker elements (created imperatively by mapbox) */
 .hq-marker {
+  position: relative;
   width: 14px;
   height: 14px;
   border-radius: 9999px;
@@ -158,6 +159,26 @@ body {
 
 .hq-marker:hover {
   transform: scale(1.45);
+}
+
+/* Selected marker: enlarge + white selection ring (matches Event Cartridge) */
+.hq-marker[data-selected="true"] {
+  transform: scale(1.35);
+  z-index: 20;
+}
+
+.hq-marker[data-selected="true"]::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 22px 2px rgba(255, 255, 255, 0.2);
+  pointer-events: none;
 }
 
 .hq-marker[data-state="open"] {

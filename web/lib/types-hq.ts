@@ -60,6 +60,54 @@ export function deadlineDisplay(h: Hackathon): string | null {
   });
 }
 
+/** Competitiveness rating shown on the globe Event Cartridge. */
+export type Difficulty = 1 | 2 | 3; // 1 EASY, 2 MEDIUM, 3 HARD
+
+export const DIFFICULTY_META: Record<
+  Difficulty,
+  { label: string; color: string }
+> = {
+  1: { label: "EASY", color: "#17b26a" },
+  2: { label: "MEDIUM", color: "#f5a623" },
+  3: { label: "HARD", color: "#ed5b29" },
+};
+
+/**
+ * Curated flagship events - recognizable, highly competitive regardless of the
+ * listed prize (many post "TBA"). Matched case-insensitively against host+title.
+ */
+const FLAGSHIP_EVENTS = [
+  "hack the north",
+  "cal hacks",
+  "calhacks",
+  "pennapps",
+  "hackmit",
+  "treehacks",
+  "la hacks",
+  "lahacks",
+  "mhacks",
+  "hack the 6ix",
+];
+
+/**
+ * Derive a competitiveness / "reputation" rating for an event. There is no
+ * popularity field in the data, so we proxy it: prize scale + in-person format
+ * + a curated flagship floor. Auto-scales as new events are added.
+ */
+export function difficultyOf(h: Hackathon): Difficulty {
+  let score = 0;
+  if (h.prizeValue >= 50_000) score += 2;
+  else if (h.prizeValue >= 10_000) score += 1;
+  if (h.format === "In-Person") score += 1;
+
+  const haystack = `${h.host} ${h.title}`.toLowerCase();
+  if (FLAGSHIP_EVENTS.some((name) => haystack.includes(name))) {
+    score = Math.max(score, 3);
+  }
+
+  return score >= 3 ? 3 : score === 2 ? 2 : 1;
+}
+
 /** Prefilled GitHub issue for the Submit flow - keeps the engine, new surface. */
 export function submitIssueUrl(name = "", url = ""): string {
   const title = encodeURIComponent(
