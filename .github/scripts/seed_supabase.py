@@ -35,8 +35,8 @@ TIMEOUT = 30
 def build_row(listing):
     """Translate one listings.json entry into a `hackathons` table row.
 
-    `company_name` is stored as `host`. Absent `deadline` stays NULL; absent
-    `featured` becomes False so the column is never NULL for the site's filters.
+    `company_name` is stored as `host`. Absent dates stay NULL; absent `featured`
+    becomes False so the column is never NULL for the site's filters.
     """
     return {
         "id": listing["id"],
@@ -53,6 +53,8 @@ def build_row(listing):
         "date_updated": listing.get("date_updated"),
         "source": listing.get("source"),
         "deadline": listing.get("deadline"),
+        "startDate": listing.get("startDate"),
+        "endDate": listing.get("endDate"),
         "featured": bool(listing.get("featured", False)),
     }
 
