@@ -1,0 +1,32 @@
+import {
+  boolean,
+  date,
+  doublePrecision,
+  integer,
+  pgTable,
+  text,
+  uuid,
+} from "drizzle-orm/pg-core";
+
+export const hackathons = pgTable("hackathons", {
+  id: uuid("id").primaryKey(),
+  host: text("host").notNull(),
+  title: text("title").notNull(),
+  url: text("url").notNull(),
+  locations: text("locations").array().notNull(),
+  format: text("format"),
+  prize: text("prize"),
+  state: text("state"),
+  active: boolean("active"),
+  isVisible: boolean("is_visible"),
+  datePosted: integer("date_posted"),
+  dateUpdated: integer("date_updated"),
+  source: text("source"),
+  deadline: date("deadline"),
+  startDate: date("startDate"),
+  endDate: date("endDate"),
+  featured: boolean("featured"),
+  lat: doublePrecision("lat"),
+  lng: doublePrecision("lng"),
+  geoStatus: text("geo_status"),
+});

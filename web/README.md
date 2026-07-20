@@ -16,8 +16,10 @@ deck, and member tracker, plus a legacy searchable directory at `/hackathons`.
 
 ## How it works
 
-This app has **no database**. Listing data lives in the repo and is read from
-disk when pages are generated.
+This app does **not query a database at runtime**. Listing data lives in the repo
+and is read from disk when pages are generated. Supabase is maintained as a
+Postgres mirror for backend/API work; its schema lives in `db/schema.ts` and is
+managed with Drizzle.
 
 ### Data sources
 
@@ -30,6 +32,25 @@ disk when pages are generated.
 `parse-readme.ts` still powers the legacy `/hackathons` page, which parses the
 README table between `<!-- HACKATHONS_TABLE_START -->` and
 `<!-- HACKATHONS_TABLE_END -->`.
+
+### Supabase schema
+
+Drizzle is configured in `drizzle.config.ts` and reads the HackHQ table schema
+from `db/schema.ts`. Use `DATABASE_URL` (or `SUPABASE_DATABASE_URL`) with the
+Supabase Postgres connection string when running database commands:
+
+```bash
+npm run db:generate
+npm run db:migrate
+npm run db:push
+npm run db:studio
+```
+
+The current Supabase mirror is still seeded by
+[`../.github/scripts/seed_supabase.py`](../.github/scripts/seed_supabase.py).
+Run `npm run db:migrate` once before syncing event-date fields into an existing
+Supabase project. The SQL for that first migration lives at
+`drizzle/0000_add_hackathon_event_dates.sql`.
 
 ### Putting a listing on the globe
 
@@ -99,12 +120,17 @@ web/
 │   │   ├── nav.tsx                    # Nav pill; inline links at sm and up
 │   │   └── mobile-menu.tsx            # The same sections below 640px
 │   └── legacy/                        # README-driven browser, gallery, cards
+├── db/
+│   └── schema.ts                      # Drizzle schema for the Supabase mirror
+├── drizzle/
+│   └── *.sql                          # Database migrations
 ├── lib/
 │   ├── listings.ts                    # Reads listings.json, enriches for frontend
 │   ├── nav.ts                         # Nav sections + active-route matching
 │   ├── parse-readme.ts                # Parses ../README.md (legacy /hackathons)
 │   ├── types-hq.ts                    # Hackathon types and display helpers
 │   └── types.ts                       # Legacy opportunity types
+├── drizzle.config.ts                  # Drizzle Kit config
 └── proxy.ts                           # Clerk middleware (when keys are configured)
 ```
 
@@ -133,6 +159,7 @@ Copy `.env.example` to `.env.local` (gitignored) and set the values you need.
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | For globe | `components/hq/globe-map.tsx` | Globe shows a placeholder instead of the Mapbox map |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For auth | `app/layout.tsx`, `app/my/page.tsx`, `proxy.ts` | Site runs without Clerk; `/my` shows setup instructions and `/auth/*` redirects to `/my` |
 | `CLERK_SECRET_KEY` | For auth | `app/my/page.tsx`, `proxy.ts` | Same as above — both Clerk keys are needed together |
+| `DATABASE_URL` | For DB scripts | `drizzle.config.ts` | `npm run db:*` commands fail fast before touching Supabase |
 
 The two keys are the only Clerk variables you need. The auth routes
 (`/auth/sign-in`, `/auth/sign-up`) and the post-sign-in landing (`/my`) are
