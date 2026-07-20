@@ -5,6 +5,7 @@ import {
   STATE_META,
   countdown,
   deadlineDisplay,
+  eventDateDisplay,
   type Hackathon,
 } from "@/lib/types-hq";
 import { useDialogDismiss } from "./use-dialog-dismiss";
@@ -34,6 +35,7 @@ export function GlobeDetailDrawer({
   const meta = STATE_META[h.state];
   const cd = countdown(h);
   const deadline = deadlineDisplay(h);
+  const eventDates = eventDateDisplay(h);
   const detailTitleId = `globe-detail-title-${h.id}`;
 
   return (
@@ -92,6 +94,7 @@ export function GlobeDetailDrawer({
           <DetailRow label="City" value={h.location} />
           <DetailRow label="Format" value={h.format} />
           <DetailRow label="Prize" value={h.prize ?? "See website"} />
+          {eventDates && <DetailRow label="Dates" value={eventDates} />}
           {deadline && <DetailRow label="Deadline" value={deadline} />}
         </div>
 
