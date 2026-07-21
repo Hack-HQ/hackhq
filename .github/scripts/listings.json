@@ -1264,6 +1264,23 @@
     "id": "4aec82ec-35e8-4e91-b62e-6314a4572b16"
   },
   {
+    "company_name": "HopHacks",
+    "title": "HopHacks 2026 (Student Hackathon; Applications Open)",
+    "url": "https://www.hophacks.com",
+    "locations": [
+      "Baltimore, MD"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609226,
+    "date_updated": 1784653465,
+    "id": "a2038df7-2e37-4a8d-b190-9648840b17b3"
+  },
+  {
     "company_name": "CougarCS",
     "title": "CodeRED Orion — Oct 10–11, 2026",
     "url": "https://uhcode.red/",
