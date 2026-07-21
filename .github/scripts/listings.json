@@ -1077,20 +1077,20 @@
     "source": "Tenz1ng"
   },
   {
-    "company_name": "HackHers",
-    "title": "HackHers (Student Hackathon; Next Cycle Not Yet Posted)",
+    "company_name": "Girls Who Code at GSU",
+    "title": "HackHers \u2014 Sep 18\u201319, 2026",
     "url": "https://hackhers.club/",
     "locations": [
       "Atlanta, GA"
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "source": "srirae",
     "date_posted": 1784609254,
-    "date_updated": 1784609254,
+    "date_updated": 1784610425,
     "id": "0ef7e14a-5cc6-40ac-ba08-e0ccee428673"
   }
 ]
