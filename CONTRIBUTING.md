@@ -81,6 +81,11 @@ Every hackathon is tagged with one format:
 3. Provide host/organizer and hackathon name
 4. Submit
 
+Once approved, the listing is marked closed in `listings.json`. It then drops out
+of the [README](README.md) table and is regenerated into
+[ARCHIVE.md](ARCHIVE.md) on the next run — nothing is deleted, so an annual event
+still has a record when its next cycle comes around.
+
 ### Editing (Information Changed)
 
 Editing via issues is not currently supported. To update a listing:

@@ -577,11 +577,73 @@ class UpdateReadmesSkipsBadRows(unittest.TestCase):
                 mock.patch.object(util, "warn") as warn:
             update_readmes.main()
         # Regeneration ran for the good listing despite the bad one (no hard fail).
-        embed.assert_called_once()
-        table = embed.call_args[0][1]
+        # Two tables are written now: README (live) and ARCHIVE (closed).
+        self.assertEqual(embed.call_count, 2)
+        table = embed.call_args_list[0][0][1]
         self.assertIn("Good Hack", table)
         # The malformed listing surfaced as a warning, not an abort.
         self.assertTrue(any("bad" in str(c) for c in warn.call_args_list))
+
+
+class ClosedListingsAreArchived(unittest.TestCase):
+    """Closed hackathons belong in ARCHIVE.md, never the README table."""
+
+    def _valid(self, **over):
+        listing = {field: "x" for field in util.REQUIRED_FIELDS}
+        listing.update(over)
+        return listing
+
+    def _run(self, listings):
+        import update_readmes
+        with mock.patch.object(util, "get_listings_from_json", return_value=listings), \
+                mock.patch.object(util, "embed_table") as embed, \
+                mock.patch.object(util, "set_output"), \
+                mock.patch("generate_banner.main"), \
+                mock.patch("generate_gallery.main"):
+            update_readmes.main()
+        # (readme_call, archive_call) -> the embedded table text of each
+        return embed.call_args_list[0][0][1], embed.call_args_list[1][0][1]
+
+    def test_closed_goes_to_archive_and_live_stays_in_readme(self):
+        live = self._valid(
+            id="a", company_name="Live Co", title="Live Hack",
+            date_posted=1783771200, locations=["Troy, NY"], state="open",
+        )
+        closed = self._valid(
+            id="b", company_name="Done Co", title="Done Hack",
+            date_posted=1783771200, locations=["Boston, MA"], state="closed",
+            active=False,
+        )
+        readme, archive = self._run([live, closed])
+
+        self.assertIn("Live Hack", readme)
+        self.assertNotIn("Done Hack", readme)
+        self.assertIn("Done Hack", archive)
+        self.assertNotIn("Live Hack", archive)
+
+    def test_active_false_is_archived_even_without_closed_state(self):
+        # resolve_state treats active=False as closed; the split must agree.
+        listing = self._valid(
+            id="c", company_name="Done Co", title="Inactive Hack",
+            date_posted=1783771200, locations=["Boston, MA"], state="open",
+            active=False,
+        )
+        readme, archive = self._run([listing])
+
+        self.assertNotIn("Inactive Hack", readme)
+        self.assertIn("Inactive Hack", archive)
+
+    def test_archive_rows_match_the_archive_header_width(self):
+        import update_readmes
+        listing = self._valid(
+            id="d", company_name="Done Co", title="Done Hack",
+            date_posted=1783771200, locations=["Boston, MA"], state="closed",
+            active=False, format="In-Person",
+        )
+        lines = update_readmes.create_archive_table([listing]).split("\n")
+        widths = {len(l.split("|")) for l in lines}
+        self.assertEqual(len(widths), 1, f"ragged archive table: {lines}")
+        self.assertIn(":lock:", lines[-1])
 
 
 class BannerDateFormat(unittest.TestCase):
