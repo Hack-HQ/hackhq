@@ -1075,5 +1075,22 @@
     "date_posted": 1783857600,
     "date_updated": 1783857600,
     "source": "Tenz1ng"
+  },
+  {
+    "company_name": "hackUMBC",
+    "title": "hackUMBC 2026 (Student Hackathon; Interest Form Open)",
+    "url": "https://hackumbc.tech",
+    "locations": [
+      "Catonsville, MD"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609137,
+    "date_updated": 1784609137,
+    "id": "4aec82ec-35e8-4e91-b62e-6314a4572b16"
   }
 ]
