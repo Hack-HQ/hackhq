@@ -27,11 +27,11 @@
     ],
     "format": "Virtual",
     "prize": "Swag + prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782583200,
-    "date_updated": 1783771200,
+    "date_updated": 1784606284,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
@@ -44,11 +44,11 @@
     ],
     "format": "Virtual",
     "prize": "Swag + prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782579600,
-    "date_updated": 1783771200,
+    "date_updated": 1784606284,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
@@ -72,7 +72,7 @@
     "id": "6420c553-d798-4c74-bc81-5e592ecbc22e",
     "company_name": "Hexafalls",
     "title": "Hexafalls 2 \u2014 Jul 24\u201326, 2026",
-    "url": "https://mlh.io/seasons/2026/events",
+    "url": "https://hexafalls.org",
     "locations": [
       "Kolkata, India"
     ],
@@ -82,7 +82,7 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782572400,
-    "date_updated": 1783771200,
+    "date_updated": 1784606326,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
@@ -165,11 +165,11 @@
     ],
     "format": "Virtual",
     "prize": "$70,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782554400,
-    "date_updated": 1783771200,
+    "date_updated": 1784606274,
     "source": "devpost",
     "deadline": "2026-07-20"
   },
@@ -201,11 +201,11 @@
     ],
     "format": "Virtual",
     "prize": "$42,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782547200,
-    "date_updated": 1782547200,
+    "date_updated": 1784606274,
     "source": "devpost",
     "deadline": "2026-07-13"
   },
@@ -219,11 +219,11 @@
     ],
     "format": "Virtual",
     "prize": "$40,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782543600,
-    "date_updated": 1782543600,
+    "date_updated": 1784606274,
     "source": "devpost",
     "deadline": "2026-07-15"
   },
@@ -429,11 +429,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782679191,
-    "date_updated": 1782679191,
+    "date_updated": 1784606296,
     "source": "hongchengw"
   },
   {
@@ -549,11 +549,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1783105200,
-    "date_updated": 1783105200,
+    "date_updated": 1784606296,
     "source": "akeight"
   },
   {
@@ -867,18 +867,18 @@
   {
     "id": "24255447-911f-4807-886c-605b7fe5072b",
     "company_name": "University of Pittsburgh",
-    "title": "SteelHacks XIII (Student Hackathon; Applications Coming Soon)",
+    "title": "SteelHacks XIII (Student Hackathon; Applications Open)",
     "url": "https://steelhacks.org/",
     "locations": [
       "Pittsburgh, PA"
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1783771200,
-    "date_updated": 1783771200,
+    "date_updated": 1784606304,
     "source": "Tenz1ng"
   },
   {
@@ -961,13 +961,13 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
+    "state": "opens_soon",
     "active": true,
     "is_visible": true,
     "source": "ChimdumebiNebolisa",
     "id": "a1e90390-077a-4bd0-8901-175337e0052c",
     "date_posted": 1783807500,
-    "date_updated": 1783807500
+    "date_updated": 1784606318
   },
   {
     "company_name": "Africa Deep Tech Foundation",
@@ -1052,17 +1052,17 @@
     ],
     "format": "In-Person",
     "prize": "Fast-track OnlyExit Hacker House interview",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1783857600,
-    "date_updated": 1783857600,
+    "date_updated": 1784606284,
     "source": "hongchengw"
   },
   {
     "id": "76d95c1a-9603-43d7-ab9f-60f92c2ea977",
     "company_name": "localhost:nyc",
-    "title": "Checkout: The Travel & Hospitality Hackathon \u2014 Aug 8, 2026",
+    "title": "Checkout: The Travel & Hospitality Hackathon \u2014 Aug 9, 2026",
     "url": "https://luma.com/s7v4kw23",
     "locations": [
       "New York, NY"
@@ -1073,7 +1073,7 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1783857600,
-    "date_updated": 1783857600,
+    "date_updated": 1784606318,
     "source": "hongchengw"
   },
   {
