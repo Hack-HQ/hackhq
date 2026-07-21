@@ -1075,5 +1075,22 @@
     "date_posted": 1783857600,
     "date_updated": 1783857600,
     "source": "Tenz1ng"
+  },
+  {
+    "id": "b681dde7-9955-4488-b965-a87d05774284",
+    "company_name": "NC State",
+    "title": "Hack_NCState 2027 \u2014 Feb 6\u20137, 2027",
+    "url": "https://hackncstate.org",
+    "locations": [
+      "Raleigh, NC"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1784607900,
+    "date_updated": 1784607900,
+    "source": "srirae"
   }
 ]
