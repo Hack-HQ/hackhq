@@ -1075,5 +1075,22 @@
     "date_posted": 1783857600,
     "date_updated": 1783857600,
     "source": "Tenz1ng"
+  },
+  {
+    "company_name": "HackUTD",
+    "title": "HackUTD 2026 (Student Hackathon; Prospective Nov 14\u201315, 2026)",
+    "url": "https://hackutd.co",
+    "locations": [
+      "Richardson, TX"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784608827,
+    "date_updated": 1784608827,
+    "id": "9bc9c607-d8d4-422d-b67c-7bd3d0f2c828"
   }
 ]
