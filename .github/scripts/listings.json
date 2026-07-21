@@ -386,6 +386,23 @@
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
+    "id": "efb231e9-7e4f-439c-bf1e-077464fe8be5",
+    "company_name": "Stanford",
+    "title": "TreeHacks 2026 \u2014 Feb 13\u201315, 2026",
+    "url": "https://treehacks.com/",
+    "locations": [
+      "Stanford, CA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "closed",
+    "active": false,
+    "is_visible": true,
+    "date_posted": 1784333282,
+    "date_updated": 1784652408,
+    "source": "akeight"
+  },
+  {
     "id": "17229838-845c-40aa-8776-44d5e27c1e14",
     "company_name": "Arya Health",
     "title": "Healthcare Hack NYC (Powered by Arya Health)",
