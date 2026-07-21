@@ -1128,6 +1128,23 @@
     "source": "srirae"
   },
   {
+    "id": "82a4e957-ddf5-479a-bcda-24c0146a3e21",
+    "company_name": "UGAHacks",
+    "title": "UGAHacks 12 (Student Hackathon; Pre-Registration Open)",
+    "url": "https://ugahacks.com",
+    "locations": [
+      "Athens, GA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1784608395,
+    "date_updated": 1784653455,
+    "source": "srirae"
+  },
+  {
     "company_name": "SwampHacks",
     "title": "SwampHacks XII (Student Hackathon; Coming Soon)",
     "url": "https://swamphacks.com",
