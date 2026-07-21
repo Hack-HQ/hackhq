@@ -20,7 +20,7 @@
   {
     "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
     "company_name": "Major League Hacking",
-    "title": "Global Hack Week: Season Launch \u2014 Jul 10\u201316, 2026",
+    "title": "Global Hack Week: Season Launch — Jul 10–16, 2026",
     "url": "https://ghw.mlh.io/",
     "locations": [
       "Online"
@@ -37,7 +37,7 @@
   {
     "id": "06f72ca6-9ab3-4d22-aa00-bf5c8b362c33",
     "company_name": "Major League Hacking",
-    "title": "Midnight Virtual Hackathon \u2014 Jul 17\u201319, 2026",
+    "title": "Midnight Virtual Hackathon — Jul 17–19, 2026",
     "url": "https://mlh.io/seasons/2026/events",
     "locations": [
       "Online"
@@ -54,7 +54,7 @@
   {
     "id": "c12023ad-aab3-44e5-beb7-d0956ef987c2",
     "company_name": "Hack the 6ix",
-    "title": "Hack the 6ix 2026 \u2014 Jul 17\u201319, 2026",
+    "title": "Hack the 6ix 2026 — Jul 17–19, 2026",
     "url": "https://hackthe6ix.com/",
     "locations": [
       "Toronto, ON, Canada"
@@ -71,7 +71,7 @@
   {
     "id": "6420c553-d798-4c74-bc81-5e592ecbc22e",
     "company_name": "Hexafalls",
-    "title": "Hexafalls 2 \u2014 Jul 24\u201326, 2026",
+    "title": "Hexafalls 2 — Jul 24–26, 2026",
     "url": "https://hexafalls.org",
     "locations": [
       "Kolkata, India"
@@ -88,7 +88,7 @@
   {
     "id": "0dd13a0e-b5ce-4dd0-a35c-f435b52ea23f",
     "company_name": "Major League Hacking",
-    "title": "Global Hack Week: Agents \u2014 Aug 7\u201313, 2026",
+    "title": "Global Hack Week: Agents — Aug 7–13, 2026",
     "url": "https://ghw.mlh.io/",
     "locations": [
       "Online"
@@ -105,7 +105,7 @@
   {
     "id": "421c6652-25a9-42c9-9ac9-5396f32396f5",
     "company_name": "Major League Hacking",
-    "title": "Global Hack Week: Data \u2014 Sep 11\u201317, 2026",
+    "title": "Global Hack Week: Data — Sep 11–17, 2026",
     "url": "https://ghw.mlh.io/",
     "locations": [
       "Online"
@@ -122,7 +122,7 @@
   {
     "id": "1b0b2e8f-8920-469e-978a-f34286dfcc56",
     "company_name": "XPRIZE",
-    "title": "Build with Gemini XPRIZE \u2014 May 19 \u2013 Aug 17, 2026",
+    "title": "Build with Gemini XPRIZE — May 19 – Aug 17, 2026",
     "url": "https://xprize.devpost.com/",
     "locations": [
       "Online"
@@ -140,7 +140,7 @@
   {
     "id": "2d9875e7-9574-4fcd-9fcb-138ce6ee81fd",
     "company_name": "Devpost",
-    "title": "H0: Hack the Zero Stack with Vercel v0 and AWS Databases \u2014 May 27 \u2013 Jun 29, 2026",
+    "title": "H0: Hack the Zero Stack with Vercel v0 and AWS Databases — May 27 – Jun 29, 2026",
     "url": "https://h01.devpost.com/",
     "locations": [
       "Online"
@@ -158,7 +158,7 @@
   {
     "id": "f0109d92-c423-43b1-b6b5-fc93219a9bcb",
     "company_name": "Qwen Cloud",
-    "title": "Global AI Hackathon Series with Qwen Cloud \u2014 May 26 \u2013 Jul 20, 2026",
+    "title": "Global AI Hackathon Series with Qwen Cloud — May 26 – Jul 20, 2026",
     "url": "https://qwencloud-hackathon.devpost.com/",
     "locations": [
       "Online"
@@ -176,7 +176,7 @@
   {
     "id": "bcea64f3-77d3-4b65-b61e-5f1714b428ac",
     "company_name": "UiPath",
-    "title": "UiPath AgentHack \u2014 May 15 \u2013 Jun 29, 2026",
+    "title": "UiPath AgentHack — May 15 – Jun 29, 2026",
     "url": "https://uipath-agenthack.devpost.com/",
     "locations": [
       "Online"
@@ -194,7 +194,7 @@
   {
     "id": "8a6a6656-8eff-40ea-9688-6bb50b18d290",
     "company_name": "Slack",
-    "title": "Slack Agent Builder Challenge \u2014 May 20 \u2013 Jul 13, 2026",
+    "title": "Slack Agent Builder Challenge — May 20 – Jul 13, 2026",
     "url": "https://slackhack.devpost.com/",
     "locations": [
       "Online"
@@ -212,7 +212,7 @@
   {
     "id": "a30d17a5-32e2-4c5e-8c08-3ac5c42e48b9",
     "company_name": "Reddit",
-    "title": "Reddit's Games with a Hook Hackathon \u2014 Jun 17 \u2013 Jul 15, 2026",
+    "title": "Reddit's Games with a Hook Hackathon — Jun 17 – Jul 15, 2026",
     "url": "https://redditgameswithahook.devpost.com/",
     "locations": [
       "Online"
@@ -230,7 +230,7 @@
   {
     "id": "a29c2b18-ef1b-432c-8a41-44b7ffab0af0",
     "company_name": "Arm",
-    "title": "Arm Create: AI Optimization Challenge \u2014 Jun 4 \u2013 Aug 14, 2026",
+    "title": "Arm Create: AI Optimization Challenge — Jun 4 – Aug 14, 2026",
     "url": "https://arm-ai-optimization-challenge.devpost.com/",
     "locations": [
       "Online"
@@ -248,7 +248,7 @@
   {
     "id": "4c7865aa-543e-4ac8-9f47-808da1bffddc",
     "company_name": "Agentic AI Build Week",
-    "title": "Agentic AI Build Week 2026 \u2014 Jun 9 \u2013 Jul 11, 2026",
+    "title": "Agentic AI Build Week 2026 — Jun 9 – Jul 11, 2026",
     "url": "https://agentic-ai-build-week-2026.devpost.com/",
     "locations": [
       "Ho Chi Minh City, Vietnam"
@@ -265,7 +265,7 @@
   {
     "id": "91a0436e-2b6e-4d1b-b659-6786b39e37ca",
     "company_name": "Backblaze",
-    "title": "Backblaze Generative Media Hackathon: Build with Genblaze on B2 \u2014 Jun 22 \u2013 Aug 3, 2026",
+    "title": "Backblaze Generative Media Hackathon: Build with Genblaze on B2 — Jun 22 – Aug 3, 2026",
     "url": "https://backblaze-generative-media.devpost.com/",
     "locations": [
       "Online"
@@ -386,6 +386,23 @@
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
+    "id": "efb231e9-7e4f-439c-bf1e-077464fe8be5",
+    "company_name": "Stanford",
+    "title": "TreeHacks 2026 — Feb 13–15, 2026",
+    "url": "https://treehacks.com/",
+    "locations": [
+      "Stanford, CA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "closed",
+    "active": false,
+    "is_visible": true,
+    "date_posted": 1784333282,
+    "date_updated": 1784652408,
+    "source": "akeight"
+  },
+  {
     "id": "17229838-845c-40aa-8776-44d5e27c1e14",
     "company_name": "Arya Health",
     "title": "Healthcare Hack NYC (Powered by Arya Health)",
@@ -405,7 +422,7 @@
   {
     "id": "93da9a19-c60a-4811-a728-0e9c2f5a16bd",
     "company_name": "Cerebral Valley",
-    "title": "The Future of Agentic AI in Healthcare (Abridge \u00d7 Anthropic \u00d7 Lightspeed)",
+    "title": "The Future of Agentic AI in Healthcare (Abridge × Anthropic × Lightspeed)",
     "url": "https://cerebralvalley.ai/e/abridge-hackathon",
     "locations": [
       "San Francisco, CA"
@@ -489,8 +506,8 @@
   },
   {
     "id": "c1840896-a8ba-4821-ad8a-20e89d05deae",
-    "company_name": "AITHORS \u00d7 Okareo",
-    "title": "First Ever Agent Evalathon \u2014 Jul 6\u201313, 2026",
+    "company_name": "AITHORS × Okareo",
+    "title": "First Ever Agent Evalathon — Jul 6–13, 2026",
     "url": "https://aithors.ai/hackathon",
     "locations": [
       "Online"
@@ -508,7 +525,7 @@
   {
     "id": "74830296-690a-4566-9022-00e552a0907f",
     "company_name": "CS Girlies",
-    "title": "CS Girlies Annual Hackathon - Technology For Wellness \u2014 Aug 14 \u2013 Aug 16, 2026",
+    "title": "CS Girlies Annual Hackathon - Technology For Wellness — Aug 14 – Aug 16, 2026",
     "url": "https://cs-girlies-wellness-hackathon.devpost.com",
     "locations": [
       "Online"
@@ -525,7 +542,7 @@
   {
     "id": "1e31d21c-0355-494e-a0a2-2431a51301a6",
     "company_name": "Carleton University",
-    "title": "cuHacking 2026 \u2014 Jul 10 \u2013 Jul 12, 2026",
+    "title": "cuHacking 2026 — Jul 10 – Jul 12, 2026",
     "url": "https://cuhacking.ca",
     "locations": [
       "Ottawa, ON"
@@ -542,7 +559,7 @@
   {
     "id": "b703a6ab-c107-4bab-808f-076e0ec65afa",
     "company_name": "UCLA",
-    "title": "LA Hacks AI Hackathon 2026 \u2014 Oct 17\u201318, 2026",
+    "title": "LA Hacks AI Hackathon 2026 — Oct 17–18, 2026",
     "url": "https://ai.lahacks.com/",
     "locations": [
       "Los Angeles, CA"
@@ -559,7 +576,7 @@
   {
     "id": "6b363f65-cd6a-47e3-8d2d-031776f25933",
     "company_name": "Virginia Tech",
-    "title": "VTHacks Code for the Cup \u2014 Fall 2026",
+    "title": "VTHacks Code for the Cup — Fall 2026",
     "url": "https://vthacks.com/",
     "locations": [
       "Blacksburg, VA"
@@ -576,7 +593,7 @@
   {
     "id": "4dcf8a02-80eb-4943-a22c-5ee51e7660d1",
     "company_name": "University of Michigan Dearborn",
-    "title": "Hack Dearborn 2026 \u2014 Oct 3\u20134, 2026",
+    "title": "Hack Dearborn 2026 — Oct 3–4, 2026",
     "url": "https://hackdearborn.org/",
     "locations": [
       "Dearborn, MI"
@@ -593,7 +610,7 @@
   {
     "id": "206fb171-68a4-4c5d-b888-4c9b8545e669",
     "company_name": "University of Waterloo",
-    "title": "Hack the North \u2014 Sept 18\u201320, 2026",
+    "title": "Hack the North — Sept 18–20, 2026",
     "url": "https://hackthenorth.com",
     "locations": [
       "Toronto, ON"
@@ -866,7 +883,7 @@
   },
   {
     "company_name": "OpenAI",
-    "title": "OpenAI Build Week: Join a global week of building with Codex \u2014 Jul 13\u201321, 2026",
+    "title": "OpenAI Build Week: Join a global week of building with Codex — Jul 13–21, 2026",
     "url": "https://openai.devpost.com/",
     "locations": [
       "Online"
@@ -884,7 +901,7 @@
   },
   {
     "company_name": "DataHub",
-    "title": "Build with DataHub: The Agent Hackathon \u2014 Jul 6\u2013 Aug 10, 2026",
+    "title": "Build with DataHub: The Agent Hackathon — Jul 6– Aug 10, 2026",
     "url": "https://datahub.devpost.com/",
     "locations": [
       "Online"
@@ -902,7 +919,7 @@
   },
   {
     "company_name": "Cockroach Labs",
-    "title": "CockroachDB \u00d7 AWS Hackathon \u2014 Build with Agentic Memory \u2014 Jun 30\u2013 Aug 18, 2026",
+    "title": "CockroachDB × AWS Hackathon — Build with Agentic Memory — Jun 30– Aug 18, 2026",
     "url": "https://cockroachdb-ai.devpost.com/",
     "locations": [
       "Online"
@@ -937,7 +954,7 @@
   },
   {
     "company_name": "HexLabs",
-    "title": "HackGT 13 \u2014 Sep 25\u201327, 2026",
+    "title": "HackGT 13 — Sep 25–27, 2026",
     "url": "https://hack.gt/",
     "locations": [
       "Atlanta, GA"
@@ -954,7 +971,7 @@
   },
   {
     "company_name": "Africa Deep Tech Foundation",
-    "title": "Africa Deep Tech Challenge 2026 \u2014 The Laptop LLM Challenge",
+    "title": "Africa Deep Tech Challenge 2026 — The Laptop LLM Challenge",
     "url": "https://adtc-2026.devpost.com/",
     "locations": [
       "Online"
@@ -972,7 +989,7 @@
   },
   {
     "company_name": "DevNetwork",
-    "title": "DevNetwork [API + Cloud + AI] Hackathon 2026 \u2014 Aug 17\u2013 Sep 3, 2026",
+    "title": "DevNetwork [API + Cloud + AI] Hackathon 2026 — Aug 17– Sep 3, 2026",
     "url": "https://api-cloud-ai-hackathon-2026.devpost.com/",
     "locations": [
       "Santa Clara, CA",
@@ -991,7 +1008,7 @@
   },
   {
     "company_name": "Lincoln Financial Group",
-    "title": "codeLinc 11 with Lincoln Financial & AWS \u2014 Oct 3\u20134, 2026",
+    "title": "codeLinc 11 with Lincoln Financial & AWS — Oct 3–4, 2026",
     "url": "https://codelinc11.devpost.com/",
     "locations": [
       "Greensboro, NC"
@@ -1009,7 +1026,7 @@
   },
   {
     "company_name": "OneAquaHealth",
-    "title": "OneAquaHealth IEEE Global Hackathon \u2014 Sep 16\u201330, 2026",
+    "title": "OneAquaHealth IEEE Global Hackathon — Sep 16–30, 2026",
     "url": "https://oneaquahealth-ieee-hackathon.devpost.com/",
     "locations": [
       "Online"
@@ -1028,7 +1045,7 @@
   {
     "id": "a3b17fc3-cd9e-4be5-ab6d-367bfd6c2d72",
     "company_name": "OnlyExit Hacker House",
-    "title": "Hack Your Way Into the Hacker House \u2014 Jul 18, 2026",
+    "title": "Hack Your Way Into the Hacker House — Jul 18, 2026",
     "url": "https://luma.com/hack-to-hacker-house",
     "locations": [
       "New York, NY"
@@ -1045,7 +1062,7 @@
   {
     "id": "76d95c1a-9603-43d7-ab9f-60f92c2ea977",
     "company_name": "localhost:nyc",
-    "title": "Checkout: The Travel & Hospitality Hackathon \u2014 Aug 9, 2026",
+    "title": "Checkout: The Travel & Hospitality Hackathon — Aug 9, 2026",
     "url": "https://luma.com/s7v4kw23",
     "locations": [
       "New York, NY"
@@ -1062,7 +1079,7 @@
   {
     "id": "d96f83cf-8a49-4048-84d0-db0a799c9d38",
     "company_name": "University of Central Florida",
-    "title": "Knight Hacks IX \u2014 Oct 9\u201311, 2026",
+    "title": "Knight Hacks IX — Oct 9–11, 2026",
     "url": "https://2026.knighthacks.org/",
     "locations": [
       "Orlando, FL"
@@ -1075,6 +1092,23 @@
     "date_posted": 1783857600,
     "date_updated": 1783857600,
     "source": "Tenz1ng"
+  },
+  {
+    "id": "b681dde7-9955-4488-b965-a87d05774284",
+    "company_name": "NC State",
+    "title": "Hack_NCState 2027 — Feb 6–7, 2027",
+    "url": "https://hackncstate.org",
+    "locations": [
+      "Raleigh, NC"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1784607900,
+    "date_updated": 1784653424,
+    "source": "srirae"
   },
   {
     "id": "82a4e957-ddf5-479a-bcda-24c0146a3e21",
