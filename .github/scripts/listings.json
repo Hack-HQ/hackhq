@@ -1179,6 +1179,23 @@
     "id": "8925b6ed-6e1b-4a4b-8997-42c025bf5078"
   },
   {
+    "company_name": "Hackville",
+    "title": "Hackville (College Hackathon; Interest Form Open for 2027)",
+    "url": "https://hackville.io/",
+    "locations": [
+      "Mississauga, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784608764,
+    "date_updated": 1784608764,
+    "id": "17b7421b-8007-46ef-833d-22e18d86ee93"
+  },
+  {
     "company_name": "hackUMBC",
     "title": "hackUMBC 2026 (Student Hackathon; Interest Form Open)",
     "url": "https://hackumbc.tech",
