@@ -1075,5 +1075,22 @@
     "date_posted": 1783857600,
     "date_updated": 1783857600,
     "source": "Tenz1ng"
+  },
+  {
+    "company_name": "SwampHacks",
+    "title": "SwampHacks XII (Student Hackathon; Coming Soon)",
+    "url": "https://swamphacks.com",
+    "locations": [
+      "Gainesville, FL"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609102,
+    "date_updated": 1784609102,
+    "id": "fc62ebae-d166-4a4b-9749-41264f0676d0"
   }
 ]
