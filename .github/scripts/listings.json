@@ -1315,6 +1315,23 @@
     "id": "3ba46880-510b-424f-8d97-c441cd6c28b9"
   },
   {
+    "company_name": "Tec ACM",
+    "title": "HackMTY 2026 — Sep 11–13, 2026 (Registration Opening Soon)",
+    "url": "https://hackmty.com/",
+    "locations": [
+      "Monterrey, Mexico"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609478,
+    "date_updated": 1784660311,
+    "id": "a4c22279-6d0d-44ff-822f-a472e02e52fc"
+  },
+  {
     "company_name": "HoyaHacks",
     "title": "HoyaHacks 2027 (Student Hackathon; Registration Open)",
     "url": "https://www.hoyahacks.com",
