@@ -1162,6 +1162,23 @@
     "id": "fea0021e-f90f-4a44-a627-1052625cd81e"
   },
   {
+    "company_name": "Purdue",
+    "title": "InnovateHer (Student Hackathon; Next Event Feb 6–7, 2027)",
+    "url": "https://innovateherhacks.org",
+    "locations": [
+      "West Lafayette, IN"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784608731,
+    "date_updated": 1784610192,
+    "id": "8925b6ed-6e1b-4a4b-8997-42c025bf5078"
+  },
+  {
     "company_name": "HoyaHacks",
     "title": "HoyaHacks 2027 (Student Hackathon; Registration Open)",
     "url": "https://www.hoyahacks.com",
