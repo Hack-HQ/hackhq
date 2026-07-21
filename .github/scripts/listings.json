@@ -1196,6 +1196,23 @@
     "id": "17b7421b-8007-46ef-833d-22e18d86ee93"
   },
   {
+    "company_name": "DurHack",
+    "title": "DurHack 2026 (Student Hackathon; Interest Form Open)",
+    "url": "https://durhack.com",
+    "locations": [
+      "Durham, UK"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784608783,
+    "date_updated": 1784660311,
+    "id": "5e7c75bd-1959-4895-b342-19b2e64c3f74"
+  },
+  {
     "company_name": "CougarCS",
     "title": "CodeRED Orion — Oct 10–11, 2026",
     "url": "https://uhcode.red/",
