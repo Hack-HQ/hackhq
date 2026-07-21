@@ -412,11 +412,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782679191,
-    "date_updated": 1782679191,
+    "date_updated": 1784606296,
     "source": "hongchengw"
   },
   {
