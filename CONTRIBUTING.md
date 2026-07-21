@@ -128,6 +128,31 @@ Keep the featured set small so it stays meaningful.
 4. **Automation adds** the hackathon to the table
 5. **Issue is closed** with a summary of what was added
 
+### Opening a PR that adds listings (maintainers)
+
+**Change `listings.json` and `geocodes.json` only.** `README.md`, `ARCHIVE.md`
+and `assets/hackathons-banner.svg` are generated — the *Update READMEs* workflow
+rebuilds them on every push to `main` that touches `listings.json`. Committing
+them in a PR adds nothing and guarantees a conflict with every other listing PR,
+because all of them rewrite the same generated lines.
+
+`listings.json` is stored sorted by host, so a new hackathon is inserted next to
+its alphabetical neighbours rather than appended to the end. That is what keeps
+two listing PRs from colliding — don't reorder the file by hand.
+
+**If you do hit a conflict in `listings.json` or `geocodes.json`, never resolve
+it by picking a side.** Both files are append-only: each side is adding a
+hackathon or a city, so choosing "ours" or "theirs" silently deletes one. From
+inside the conflicted merge, run:
+
+```bash
+python .github/scripts/resolve_data_merge.py     # union both sides
+git add .github/scripts/listings.json .github/scripts/geocodes.json
+python .github/scripts/update_readmes.py         # rebuild the tables
+```
+
+Use `--check` first if you want to see what it would do without writing.
+
 ### Hackathons in a new city (maintainers)
 
 The globe places a listing using the coordinate table in

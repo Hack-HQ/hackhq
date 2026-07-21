@@ -646,6 +646,107 @@ class ClosedListingsAreArchived(unittest.TestCase):
         self.assertIn(":lock:", lines[-1])
 
 
+class ListingsFileOrder(unittest.TestCase):
+    """listings.json is stored sorted so concurrent additions don't collide."""
+
+    def _l(self, **over):
+        listing = {field: "x" for field in util.REQUIRED_FIELDS}
+        listing.update(over)
+        return listing
+
+    def test_order_is_by_host_then_title_then_id(self):
+        a = self._l(id="3", company_name="Zeta U", title="A Hack")
+        b = self._l(id="1", company_name="Alpha U", title="B Hack")
+        c = self._l(id="2", company_name="Alpha U", title="A Hack")
+        out = util.listings_file_order([a, b, c])
+        self.assertEqual([l["id"] for l in out], ["2", "1", "3"])
+
+    def test_order_is_stable_and_idempotent(self):
+        ls = [self._l(id=str(i), company_name=f"U{i%3}", title=f"T{i}") for i in range(10)]
+        once = util.listings_file_order(ls)
+        twice = util.listings_file_order(once)
+        self.assertEqual([l["id"] for l in once], [l["id"] for l in twice])
+
+    def test_case_insensitive_host_ordering(self):
+        a = self._l(id="1", company_name="beta U", title="T")
+        b = self._l(id="2", company_name="Alpha U", title="T")
+        self.assertEqual([l["id"] for l in util.listings_file_order([a, b])], ["2", "1"])
+
+    def test_new_listing_is_not_appended_to_the_end(self):
+        # The regression this guards: every new listing landing on the final
+        # lines is what made concurrent listing PRs conflict by construction.
+        existing = [self._l(id=str(i), company_name=f"U{i}", title="T") for i in range(1, 5)]
+        newcomer = self._l(id="9", company_name="Aaa U", title="T")
+        out = util.listings_file_order(existing + [newcomer])
+        self.assertEqual(out[0]["id"], "9")
+        self.assertNotEqual(out[-1]["id"], "9")
+
+    def test_save_writes_canonical_order(self):
+        ls = [
+            self._l(id="2", company_name="Zeta U", title="T"),
+            self._l(id="1", company_name="Alpha U", title="T"),
+        ]
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "listings.json")
+            with mock.patch.object(util, "LISTINGS_FILE", path):
+                util.save_listings_to_json(ls)
+                written = json.load(open(path))
+        self.assertEqual([l["id"] for l in written], ["1", "2"])
+
+
+class ResolveDataMerge(unittest.TestCase):
+    """Conflicted data files resolve by union — a merge never drops a listing."""
+
+    def _l(self, **over):
+        listing = {field: "x" for field in util.REQUIRED_FIELDS}
+        listing.update(over)
+        return listing
+
+    def test_union_keeps_both_sides_new_listings(self):
+        import resolve_data_merge as r
+        base = [self._l(id="a"), self._l(id="b")]
+        ours = base + [self._l(id="mine", title="My Hack")]
+        theirs = base + [self._l(id="theirs", title="Their Hack")]
+        merged, added = r.merge_listings(ours, theirs)
+        self.assertEqual({l["id"] for l in merged}, {"a", "b", "mine", "theirs"})
+        self.assertEqual([l["id"] for l in added], ["mine"])
+
+    def test_shared_records_take_the_incoming_version(self):
+        # main is authoritative for listings it already has, so a stale copy on
+        # the PR branch must not revert it (e.g. a close applied on main).
+        import resolve_data_merge as r
+        ours = [self._l(id="a", state="open", active=True)]
+        theirs = [self._l(id="a", state="closed", active=False)]
+        merged, added = r.merge_listings(ours, theirs)
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(merged[0]["state"], "closed")
+        self.assertEqual(added, [])
+
+    def test_union_never_shrinks(self):
+        import resolve_data_merge as r
+        ours = [self._l(id=str(i)) for i in range(5)]
+        theirs = [self._l(id=str(i)) for i in range(3, 9)]
+        merged, _ = r.merge_listings(ours, theirs)
+        self.assertGreaterEqual(len(merged), max(len(ours), len(theirs)))
+        self.assertEqual(len(merged), 9)
+
+    def test_geocodes_union_keeps_both_cities_and_sorts(self):
+        import resolve_data_merge as r
+        ours = {"coordinates": {"zed, tx": [1, 2], "shared, ca": [9, 9]}, "unmappable": ["tba"]}
+        theirs = {"coordinates": {"alpha, ny": [3, 4], "shared, ca": [5, 5]}, "unmappable": ["tba"]}
+        merged, added = r.merge_geocodes(ours, theirs)
+        self.assertEqual(list(merged["coordinates"]), ["alpha, ny", "shared, ca", "zed, tx"])
+        self.assertEqual(merged["coordinates"]["shared, ca"], [5, 5])  # theirs wins
+        self.assertEqual(added, ["zed, tx"])
+
+    def test_geocodes_union_merges_unmappable(self):
+        import resolve_data_merge as r
+        ours = {"coordinates": {}, "unmappable": ["tba", "mine"]}
+        theirs = {"coordinates": {}, "unmappable": ["tba"]}
+        merged, _ = r.merge_geocodes(ours, theirs)
+        self.assertEqual(sorted(merged["unmappable"]), ["mine", "tba"])
+
+
 class BannerDateFormat(unittest.TestCase):
     def test_format_banner_date_avoids_platform_strftime_directive(self):
         import generate_banner as gb
