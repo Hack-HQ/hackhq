@@ -1279,5 +1279,22 @@
     "date_posted": 1784609226,
     "date_updated": 1784653465,
     "id": "a2038df7-2e37-4a8d-b190-9648840b17b3"
+  },
+  {
+    "company_name": "Girls Who Code at GSU",
+    "title": "HackHers — Sep 18–19, 2026 (Registration Opening Soon)",
+    "url": "https://hackhers.club/",
+    "locations": [
+      "Atlanta, GA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609254,
+    "date_updated": 1784653476,
+    "id": "0ef7e14a-5cc6-40ac-ba08-e0ccee428673"
   }
 ]
