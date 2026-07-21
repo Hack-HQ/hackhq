@@ -1145,6 +1145,23 @@
     "source": "srirae"
   },
   {
+    "company_name": "uOttaHack",
+    "title": "uOttaHack 9 (Student Hackathon; Premiering January 2027)",
+    "url": "https://2027.uottahack.ca",
+    "locations": [
+      "Ottawa, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784608462,
+    "date_updated": 1784608462,
+    "id": "fea0021e-f90f-4a44-a627-1052625cd81e"
+  },
+  {
     "company_name": "HopHacks",
     "title": "HopHacks 2026 (Student Hackathon; Applications Open)",
     "url": "https://www.hophacks.com",
