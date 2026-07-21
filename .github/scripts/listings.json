@@ -1075,5 +1075,22 @@
     "date_posted": 1783857600,
     "date_updated": 1783857600,
     "source": "Tenz1ng"
+  },
+  {
+    "id": "90d2f3ed-88f9-4d89-bfc9-213cf4f5a6d0",
+    "company_name": "UTSA ACM",
+    "title": "RowdyHacks (Student Hackathon; Registration Open)",
+    "url": "https://rowdyhacks.org",
+    "locations": [
+      "San Antonio, TX"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1784608191,
+    "date_updated": 1784608191,
+    "source": "srirae"
   }
 ]
