@@ -1075,5 +1075,22 @@
     "date_posted": 1783857600,
     "date_updated": 1783857600,
     "source": "Tenz1ng"
+  },
+  {
+    "company_name": "DurHack",
+    "title": "DurHack (Student Hackathon; Interest Form Open)",
+    "url": "https://durhack.com",
+    "locations": [
+      "Durham, UK"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784608783,
+    "date_updated": 1784608783,
+    "id": "5e7c75bd-1959-4895-b342-19b2e64c3f74"
   }
 ]
