@@ -132,6 +132,10 @@
     "vancouver, bc": [
       49.2827,
       -123.1207
+    ],
+    "washington, dc": [
+      38.9072,
+      -77.0369
     ]
   },
   "unmappable": [
