@@ -1,55 +1,403 @@
 [
   {
-    "id": "c0182709-2212-41a1-94ef-47689f05192f",
-    "company_name": "MIT",
-    "title": "HackMIT 2026 (Weekend Hackathon; Open to Undergrads Worldwide)",
-    "url": "https://hackmit.org/",
+    "company_name": "Africa Deep Tech Foundation",
+    "title": "Africa Deep Tech Challenge 2026 \u2014 The Laptop LLM Challenge",
+    "url": "https://adtc-2026.devpost.com/",
     "locations": [
-      "Cambridge, MA"
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$16,500",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-08-24",
+    "id": "57177cd1-cff8-4e80-b701-6811dbcdb1a4",
+    "date_posted": 1783803900,
+    "date_updated": 1783803900
+  },
+  {
+    "id": "4c7865aa-543e-4ac8-9f47-808da1bffddc",
+    "company_name": "Agentic AI Build Week",
+    "title": "Agentic AI Build Week 2026 \u2014 Jun 9 \u2013 Jul 11, 2026",
+    "url": "https://agentic-ai-build-week-2026.devpost.com/",
+    "locations": [
+      "Ho Chi Minh City, Vietnam"
     ],
     "format": "In-Person",
-    "prize": "$20K+ in prizes",
+    "prize": "TBA",
     "state": "closed",
     "active": false,
     "is_visible": true,
-    "date_posted": 1782586800,
+    "date_posted": 1782536400,
+    "date_updated": 1783857600,
+    "source": "devpost"
+  },
+  {
+    "id": "c1840896-a8ba-4821-ad8a-20e89d05deae",
+    "company_name": "AITHORS \u00d7 Okareo",
+    "title": "First Ever Agent Evalathon \u2014 Jul 6\u201313, 2026",
+    "url": "https://aithors.ai/hackathon",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "TBA",
+    "deadline": "2026-07-04",
+    "state": "closed",
+    "active": false,
+    "is_visible": true,
+    "date_posted": 1783014300,
+    "date_updated": 1783014300,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "af1e3755-6040-4c3b-adac-b27c948a692f",
+    "company_name": "Arcangel",
+    "title": "Arcangel AI: $1,000,000 IP-A-THON (Early Access; Approval Required)",
+    "url": "https://luma.com/98z2mych",
+    "locations": [
+      "TBA"
+    ],
+    "format": "In-Person",
+    "prize": "$1,000,000",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782749100,
+    "date_updated": 1782749100,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "a29c2b18-ef1b-432c-8a41-44b7ffab0af0",
+    "company_name": "Arm",
+    "title": "Arm Create: AI Optimization Challenge \u2014 Jun 4 \u2013 Aug 14, 2026",
+    "url": "https://arm-ai-optimization-challenge.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$8,000",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782540000,
+    "date_updated": 1782540000,
+    "source": "devpost",
+    "deadline": "2026-08-14"
+  },
+  {
+    "id": "17229838-845c-40aa-8776-44d5e27c1e14",
+    "company_name": "Arya Health",
+    "title": "Healthcare Hack NYC (Powered by Arya Health)",
+    "url": "https://luma.com/arya-health-hack",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "closed",
+    "active": false,
+    "is_visible": true,
+    "date_posted": 1782679191,
     "date_updated": 1783771200,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-07-04"
+    "source": "hongchengw"
   },
   {
-    "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
-    "company_name": "Major League Hacking",
-    "title": "Global Hack Week: Season Launch \u2014 Jul 10\u201316, 2026",
-    "url": "https://ghw.mlh.io/",
+    "id": "91a0436e-2b6e-4d1b-b659-6786b39e37ca",
+    "company_name": "Backblaze",
+    "title": "Backblaze Generative Media Hackathon: Build with Genblaze on B2 \u2014 Jun 22 \u2013 Aug 3, 2026",
+    "url": "https://backblaze-generative-media.devpost.com/",
     "locations": [
       "Online"
     ],
     "format": "Virtual",
-    "prize": "Swag + prizes",
+    "prize": "$10,000",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782532800,
+    "date_updated": 1782532800,
+    "source": "devpost",
+    "deadline": "2026-08-03"
+  },
+  {
+    "id": "1e31d21c-0355-494e-a0a2-2431a51301a6",
+    "company_name": "Carleton University",
+    "title": "cuHacking 2026 \u2014 Jul 10 \u2013 Jul 12, 2026",
+    "url": "https://cuhacking.ca",
+    "locations": [
+      "Ottawa, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
     "state": "closed",
     "active": false,
     "is_visible": true,
-    "date_posted": 1782583200,
-    "date_updated": 1784606284,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "date_posted": 1783105200,
+    "date_updated": 1784606296,
+    "source": "akeight"
   },
   {
-    "id": "06f72ca6-9ab3-4d22-aa00-bf5c8b362c33",
-    "company_name": "Major League Hacking",
-    "title": "Midnight Virtual Hackathon \u2014 Jul 17\u201319, 2026",
-    "url": "https://mlh.io/seasons/2026/events",
+    "id": "93da9a19-c60a-4811-a728-0e9c2f5a16bd",
+    "company_name": "Cerebral Valley",
+    "title": "The Future of Agentic AI in Healthcare (Abridge \u00d7 Anthropic \u00d7 Lightspeed)",
+    "url": "https://cerebralvalley.ai/e/abridge-hackathon",
+    "locations": [
+      "San Francisco, CA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "closed",
+    "active": false,
+    "is_visible": true,
+    "date_posted": 1782679191,
+    "date_updated": 1784606296,
+    "source": "hongchengw"
+  },
+  {
+    "company_name": "Cockroach Labs",
+    "title": "CockroachDB \u00d7 AWS Hackathon \u2014 Build with Agentic Memory \u2014 Jun 30\u2013 Aug 18, 2026",
+    "url": "https://cockroachdb-ai.devpost.com/",
     "locations": [
       "Online"
     ],
     "format": "Virtual",
-    "prize": "Swag + prizes",
+    "prize": "$8,750",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-08-18",
+    "id": "aa0347df-a7fe-4f3c-818e-7423e8c96f1a",
+    "date_posted": 1783814700,
+    "date_updated": 1783814700
+  },
+  {
+    "id": "e7bd9721-b790-4110-9afd-a42e8aa6dc0a",
+    "company_name": "Columbia University",
+    "title": "DivHacks 2026 (Collegiate Hackathon; Registration Open)",
+    "url": "https://www.columbiadivhacks.org/",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "Hybrid",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "0b3da014-fca8-4d8a-990c-dcc4da60363e",
+    "company_name": "Cornell University",
+    "title": "BigRed//Hacks 2026 (Collegiate Hackathon; Applications Coming Soon)",
+    "url": "https://www.bigredhacks.com/",
+    "locations": [
+      "Ithaca, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "company_name": "CougarCS",
+    "title": "CodeRED Orion \u2014 Oct 10\u201311, 2026",
+    "url": "https://uhcode.red/",
+    "locations": [
+      "Houston, TX"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609453,
+    "date_updated": 1784611268,
+    "id": "e29fc4f1-cc6a-4c3e-bc6c-139ef3a28691"
+  },
+  {
+    "id": "74830296-690a-4566-9022-00e552a0907f",
+    "company_name": "CS Girlies",
+    "title": "CS Girlies Annual Hackathon - Technology For Wellness \u2014 Aug 14 \u2013 Aug 16, 2026",
+    "url": "https://cs-girlies-wellness-hackathon.devpost.com",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$5,000 in Prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783105200,
+    "date_updated": 1783771200,
+    "source": "akeight"
+  },
+  {
+    "company_name": "DataHub",
+    "title": "Build with DataHub: The Agent Hackathon \u2014 Jul 6\u2013 Aug 10, 2026",
+    "url": "https://datahub.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$20,500",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-08-10",
+    "id": "f9654f6f-b75f-48b0-b14f-c080bbe0e52d",
+    "date_posted": 1783818300,
+    "date_updated": 1783818300
+  },
+  {
+    "company_name": "DevNetwork",
+    "title": "DevNetwork [API + Cloud + AI] Hackathon 2026 \u2014 Aug 17\u2013 Sep 3, 2026",
+    "url": "https://api-cloud-ai-hackathon-2026.devpost.com/",
+    "locations": [
+      "Santa Clara, CA",
+      "Online"
+    ],
+    "format": "Hybrid",
+    "prize": "$12,500",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-09-03",
+    "id": "6438aace-1294-464a-9150-dc56259b6653",
+    "date_posted": 1783800300,
+    "date_updated": 1783800300
+  },
+  {
+    "id": "2d9875e7-9574-4fcd-9fcb-138ce6ee81fd",
+    "company_name": "Devpost",
+    "title": "H0: Hack the Zero Stack with Vercel v0 and AWS Databases \u2014 May 27 \u2013 Jun 29, 2026",
+    "url": "https://h01.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$80,000",
     "state": "closed",
     "active": false,
     "is_visible": true,
-    "date_posted": 1782579600,
-    "date_updated": 1784606284,
+    "date_posted": 1782558000,
+    "date_updated": 1782558000,
+    "source": "devpost",
+    "deadline": "2026-06-29"
+  },
+  {
+    "id": "27b4386f-3867-46e2-a685-b9cf40ad5453",
+    "company_name": "DubHacks",
+    "title": "DubHacks 2026 (Collegiate Hackathon; Applications Coming Soon)",
+    "url": "https://dubhacks.co/",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "format": "In-Person",
+    "prize": "$44,000+ in prizes",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "company_name": "DurHack",
+    "title": "DurHack 2026 (Student Hackathon; Interest Form Open)",
+    "url": "https://durhack.com",
+    "locations": [
+      "Durham, UK"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784608783,
+    "date_updated": 1784660311,
+    "id": "5e7c75bd-1959-4895-b342-19b2e64c3f74"
+  },
+  {
+    "company_name": "ElleHacks",
+    "title": "ElleHacks 2027 (Student Hackathon; Date TBA; Applications Not Yet Open)",
+    "url": "https://ellehacks.com",
+    "locations": [
+      "Toronto, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609190,
+    "date_updated": 1784660238,
+    "id": "3ba46880-510b-424f-8d97-c441cd6c28b9"
+  },
+  {
+    "id": "3f098796-acad-4fdf-83a3-c0406f446bcb",
+    "company_name": "Florida International University",
+    "title": "ShellHacks 2026 (Florida's Largest Hackathon; Registration Open)",
+    "url": "https://shellhacks.net/",
+    "locations": [
+      "Miami, FL"
+    ],
+    "format": "In-Person",
+    "prize": "$20,000 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "d0050dec-4255-4140-ac37-c133d4d77c2e",
+    "company_name": "Freetail Hackers",
+    "title": "HackTX 26 (Student Hackathon; Applications Coming Soon)",
+    "url": "https://hacktx.com/",
+    "locations": [
+      "Austin, TX"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782525600,
+    "date_updated": 1782525600,
     "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "company_name": "Girls Who Code at GSU",
+    "title": "HackHers \u2014 Sep 18\u201319, 2026 (Registration Opening Soon)",
+    "url": "https://hackhers.club/",
+    "locations": [
+      "Atlanta, GA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609254,
+    "date_updated": 1784653476,
+    "id": "0ef7e14a-5cc6-40ac-ba08-e0ccee428673"
   },
   {
     "id": "c12023ad-aab3-44e5-beb7-d0956ef987c2",
@@ -69,6 +417,160 @@
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
+    "id": "668030a6-6da3-45b9-afea-9640ce79a34d",
+    "company_name": "Hack the Valley",
+    "title": "Hack the Valley 11 (Pre-Registration Open)",
+    "url": "https://hackthevalley.io/",
+    "locations": [
+      "Toronto, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "5c02aeb4-e812-4535-af24-d11b35f44d40",
+    "company_name": "Hack@Brown",
+    "title": "Hack@Brown 2027 (Student Hackathon; Applications Coming Soon)",
+    "url": "https://hackatbrown.org/",
+    "locations": [
+      "Providence, RI"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "17a26842-4cff-47dc-83a7-311e3ec7397f",
+    "company_name": "Hackathons @ Berkeley",
+    "title": "Cal Hacks (Collegiate Hackathon; 2026 Cycle Not Yet Posted)",
+    "url": "https://calhacks.io/",
+    "locations": [
+      "Berkeley / San Francisco, CA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782522000,
+    "date_updated": 1782522000,
+    "source": "Jose-Gael-Cruz-Lopez",
+    "featured": true
+  },
+  {
+    "id": "e87fb32d-3bb3-44d2-9472-17845bcfe034",
+    "company_name": "HackBeanpot",
+    "title": "HackBeanpot (Student Hackathon; Next Cycle Not Yet Posted)",
+    "url": "https://www.hackbeanpot.com/",
+    "locations": [
+      "Boston, MA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "closed",
+    "active": false,
+    "is_visible": true,
+    "date_posted": 1782748800,
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "6e9591fd-add1-4e0f-90ea-5002c3fc6c9b",
+    "company_name": "HackHarvard",
+    "title": "HackHarvard 2026 (Student Hackathon; Applications Open)",
+    "url": "https://hackharvard.io/",
+    "locations": [
+      "Cambridge, MA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1784662544,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "50cb89da-27df-43aa-b3ee-2fe2bc0c22dd",
+    "company_name": "HackNC",
+    "title": "HackNC 2026 (Student Hackathon; Interest Form Open)",
+    "url": "https://hacknc.com/",
+    "locations": [
+      "Chapel Hill, NC"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "company_name": "hackUMBC",
+    "title": "hackUMBC 2026 (Student Hackathon; Interest Form Open)",
+    "url": "https://hackumbc.tech",
+    "locations": [
+      "Catonsville, MD"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609137,
+    "date_updated": 1784609137,
+    "id": "4aec82ec-35e8-4e91-b62e-6314a4572b16"
+  },
+  {
+    "company_name": "HackUTD",
+    "title": "HackUTD 2026 (Student Hackathon; Prospective Nov 14\u201315, 2026)",
+    "url": "https://hackutd.co",
+    "locations": [
+      "Richardson, TX"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784608827,
+    "date_updated": 1784608827,
+    "id": "9bc9c607-d8d4-422d-b67c-7bd3d0f2c828"
+  },
+  {
+    "company_name": "Hackville",
+    "title": "Hackville (College Hackathon; Interest Form Open for 2027)",
+    "url": "https://hackville.io/",
+    "locations": [
+      "Mississauga, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784608764,
+    "date_updated": 1784608764,
+    "id": "17b7421b-8007-46ef-833d-22e18d86ee93"
+  },
+  {
     "id": "6420c553-d798-4c74-bc81-5e592ecbc22e",
     "company_name": "Hexafalls",
     "title": "Hexafalls 2 \u2014 Jul 24\u201326, 2026",
@@ -84,6 +586,92 @@
     "date_posted": 1782572400,
     "date_updated": 1784606326,
     "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "company_name": "HexLabs",
+    "title": "HackGT 13 \u2014 Sep 25\u201327, 2026",
+    "url": "https://hack.gt/",
+    "locations": [
+      "Atlanta, GA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "ChimdumebiNebolisa",
+    "id": "a1e90390-077a-4bd0-8901-175337e0052c",
+    "date_posted": 1783807500,
+    "date_updated": 1784606318
+  },
+  {
+    "company_name": "HopHacks",
+    "title": "HopHacks 2026 (Student Hackathon; Applications Open)",
+    "url": "https://www.hophacks.com",
+    "locations": [
+      "Baltimore, MD"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609226,
+    "date_updated": 1784653465,
+    "id": "a2038df7-2e37-4a8d-b190-9648840b17b3"
+  },
+  {
+    "company_name": "HoyaHacks",
+    "title": "HoyaHacks 2027 (Student Hackathon; Registration Open)",
+    "url": "https://www.hoyahacks.com",
+    "locations": [
+      "Washington, DC"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609171,
+    "date_updated": 1784610267,
+    "id": "00892477-a0ca-418b-acd8-af3bf285d35a"
+  },
+  {
+    "company_name": "Lincoln Financial Group",
+    "title": "codeLinc 11 with Lincoln Financial & AWS \u2014 Oct 3\u20134, 2026",
+    "url": "https://codelinc11.devpost.com/",
+    "locations": [
+      "Greensboro, NC"
+    ],
+    "format": "In-Person",
+    "prize": "$10,000",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "devpost",
+    "deadline": "2026-10-04",
+    "id": "103a5d7c-312b-4bcf-adef-4ab702c4fc33",
+    "date_posted": 1783796700,
+    "date_updated": 1783796700
+  },
+  {
+    "id": "76d95c1a-9603-43d7-ab9f-60f92c2ea977",
+    "company_name": "localhost:nyc",
+    "title": "Checkout: The Travel & Hospitality Hackathon \u2014 Aug 9, 2026",
+    "url": "https://luma.com/s7v4kw23",
+    "locations": [
+      "New York, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783857600,
+    "date_updated": 1784606318,
+    "source": "hongchengw"
   },
   {
     "id": "0dd13a0e-b5ce-4dd0-a35c-f435b52ea23f",
@@ -120,579 +708,38 @@
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
-    "id": "1b0b2e8f-8920-469e-978a-f34286dfcc56",
-    "company_name": "XPRIZE",
-    "title": "Build with Gemini XPRIZE \u2014 May 19 \u2013 Aug 17, 2026",
-    "url": "https://xprize.devpost.com/",
+    "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
+    "company_name": "Major League Hacking",
+    "title": "Global Hack Week: Season Launch \u2014 Jul 10\u201316, 2026",
+    "url": "https://ghw.mlh.io/",
     "locations": [
       "Online"
     ],
     "format": "Virtual",
-    "prize": "$2,000,000",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1782561600,
-    "date_updated": 1782561600,
-    "source": "devpost",
-    "deadline": "2026-08-17"
-  },
-  {
-    "id": "2d9875e7-9574-4fcd-9fcb-138ce6ee81fd",
-    "company_name": "Devpost",
-    "title": "H0: Hack the Zero Stack with Vercel v0 and AWS Databases \u2014 May 27 \u2013 Jun 29, 2026",
-    "url": "https://h01.devpost.com/",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$80,000",
+    "prize": "Swag + prizes",
     "state": "closed",
     "active": false,
     "is_visible": true,
-    "date_posted": 1782558000,
-    "date_updated": 1782558000,
-    "source": "devpost",
-    "deadline": "2026-06-29"
-  },
-  {
-    "id": "f0109d92-c423-43b1-b6b5-fc93219a9bcb",
-    "company_name": "Qwen Cloud",
-    "title": "Global AI Hackathon Series with Qwen Cloud \u2014 May 26 \u2013 Jul 20, 2026",
-    "url": "https://qwencloud-hackathon.devpost.com/",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$70,000",
-    "state": "closed",
-    "active": false,
-    "is_visible": true,
-    "date_posted": 1782554400,
-    "date_updated": 1784606274,
-    "source": "devpost",
-    "deadline": "2026-07-20"
-  },
-  {
-    "id": "bcea64f3-77d3-4b65-b61e-5f1714b428ac",
-    "company_name": "UiPath",
-    "title": "UiPath AgentHack \u2014 May 15 \u2013 Jun 29, 2026",
-    "url": "https://uipath-agenthack.devpost.com/",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$50,000",
-    "state": "closed",
-    "active": false,
-    "is_visible": true,
-    "date_posted": 1782550800,
-    "date_updated": 1782550800,
-    "source": "devpost",
-    "deadline": "2026-06-29"
-  },
-  {
-    "id": "8a6a6656-8eff-40ea-9688-6bb50b18d290",
-    "company_name": "Slack",
-    "title": "Slack Agent Builder Challenge \u2014 May 20 \u2013 Jul 13, 2026",
-    "url": "https://slackhack.devpost.com/",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$42,000",
-    "state": "closed",
-    "active": false,
-    "is_visible": true,
-    "date_posted": 1782547200,
-    "date_updated": 1784606274,
-    "source": "devpost",
-    "deadline": "2026-07-13"
-  },
-  {
-    "id": "a30d17a5-32e2-4c5e-8c08-3ac5c42e48b9",
-    "company_name": "Reddit",
-    "title": "Reddit's Games with a Hook Hackathon \u2014 Jun 17 \u2013 Jul 15, 2026",
-    "url": "https://redditgameswithahook.devpost.com/",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$40,000",
-    "state": "closed",
-    "active": false,
-    "is_visible": true,
-    "date_posted": 1782543600,
-    "date_updated": 1784606274,
-    "source": "devpost",
-    "deadline": "2026-07-15"
-  },
-  {
-    "id": "a29c2b18-ef1b-432c-8a41-44b7ffab0af0",
-    "company_name": "Arm",
-    "title": "Arm Create: AI Optimization Challenge \u2014 Jun 4 \u2013 Aug 14, 2026",
-    "url": "https://arm-ai-optimization-challenge.devpost.com/",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$8,000",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1782540000,
-    "date_updated": 1782540000,
-    "source": "devpost",
-    "deadline": "2026-08-14"
-  },
-  {
-    "id": "4c7865aa-543e-4ac8-9f47-808da1bffddc",
-    "company_name": "Agentic AI Build Week",
-    "title": "Agentic AI Build Week 2026 \u2014 Jun 9 \u2013 Jul 11, 2026",
-    "url": "https://agentic-ai-build-week-2026.devpost.com/",
-    "locations": [
-      "Ho Chi Minh City, Vietnam"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "closed",
-    "active": false,
-    "is_visible": true,
-    "date_posted": 1782536400,
-    "date_updated": 1783857600,
-    "source": "devpost"
-  },
-  {
-    "id": "91a0436e-2b6e-4d1b-b659-6786b39e37ca",
-    "company_name": "Backblaze",
-    "title": "Backblaze Generative Media Hackathon: Build with Genblaze on B2 \u2014 Jun 22 \u2013 Aug 3, 2026",
-    "url": "https://backblaze-generative-media.devpost.com/",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$10,000",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1782532800,
-    "date_updated": 1782532800,
-    "source": "devpost",
-    "deadline": "2026-08-03"
-  },
-  {
-    "id": "651caba5-0669-4d1d-843b-e7892d0d4207",
-    "company_name": "University of Michigan",
-    "title": "MHacks 2026 (Student Hackathon; Applications Open)",
-    "url": "https://mhacks.org/",
-    "locations": [
-      "Ann Arbor, MI"
-    ],
-    "format": "In-Person",
-    "prize": "$40K+ in prizes",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1782529200,
-    "date_updated": 1783004757,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-09-12"
-  },
-  {
-    "id": "d0050dec-4255-4140-ac37-c133d4d77c2e",
-    "company_name": "Freetail Hackers",
-    "title": "HackTX 26 (Student Hackathon; Applications Coming Soon)",
-    "url": "https://hacktx.com/",
-    "locations": [
-      "Austin, TX"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1782525600,
-    "date_updated": 1782525600,
+    "date_posted": 1782583200,
+    "date_updated": 1784606284,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
-    "id": "17a26842-4cff-47dc-83a7-311e3ec7397f",
-    "company_name": "Hackathons @ Berkeley",
-    "title": "Cal Hacks (Collegiate Hackathon; 2026 Cycle Not Yet Posted)",
-    "url": "https://calhacks.io/",
-    "locations": [
-      "Berkeley / San Francisco, CA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1782522000,
-    "date_updated": 1782522000,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "featured": true
-  },
-  {
-    "id": "f24a6927-f19d-462f-b78f-add1f892010f",
-    "company_name": "UCLA",
-    "title": "LA Hacks (Student Hackathon; Next Event Mid-April 2027)",
-    "url": "https://lahacks.com/",
-    "locations": [
-      "Los Angeles, CA"
-    ],
-    "format": "In-Person",
-    "prize": "$60K in prizes",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1782518400,
-    "date_updated": 1782518400,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "featured": true
-  },
-  {
-    "id": "d8eada21-a462-4b59-8fbf-6391e778cb42",
-    "company_name": "University of Pennsylvania",
-    "title": "PennApps (Student Hackathon; Next Cycle Not Yet Posted)",
-    "url": "https://pennapps.com/",
-    "locations": [
-      "Philadelphia, PA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1782514800,
-    "date_updated": 1782514800,
-    "source": "Jose-Gael-Cruz-Lopez"
-  },
-  {
-    "id": "24efdceb-cb4a-47e9-bda9-58328e7a743c",
-    "company_name": "University of Maryland",
-    "title": "Bitcamp (Student Hackathon; Next Cycle Not Yet Posted)",
-    "url": "https://bit.camp/",
-    "locations": [
-      "College Park, MD"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1782511200,
-    "date_updated": 1782511200,
-    "source": "Jose-Gael-Cruz-Lopez"
-  },
-  {
-    "id": "efb231e9-7e4f-439c-bf1e-077464fe8be5",
-    "company_name": "Stanford",
-    "title": "TreeHacks 2026 \u2014 Feb 13\u201315, 2026",
-    "url": "https://treehacks.com/",
-    "locations": [
-      "Stanford, CA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "closed",
-    "active": false,
-    "is_visible": true,
-    "date_posted": 1784333282,
-    "date_updated": 1784652408,
-    "source": "akeight"
-  },
-  {
-    "id": "17229838-845c-40aa-8776-44d5e27c1e14",
-    "company_name": "Arya Health",
-    "title": "Healthcare Hack NYC (Powered by Arya Health)",
-    "url": "https://luma.com/arya-health-hack",
-    "locations": [
-      "New York, NY"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "closed",
-    "active": false,
-    "is_visible": true,
-    "date_posted": 1782679191,
-    "date_updated": 1783771200,
-    "source": "hongchengw"
-  },
-  {
-    "id": "93da9a19-c60a-4811-a728-0e9c2f5a16bd",
-    "company_name": "Cerebral Valley",
-    "title": "The Future of Agentic AI in Healthcare (Abridge \u00d7 Anthropic \u00d7 Lightspeed)",
-    "url": "https://cerebralvalley.ai/e/abridge-hackathon",
-    "locations": [
-      "San Francisco, CA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "closed",
-    "active": false,
-    "is_visible": true,
-    "date_posted": 1782679191,
-    "date_updated": 1784606296,
-    "source": "hongchengw"
-  },
-  {
-    "id": "af1e3755-6040-4c3b-adac-b27c948a692f",
-    "company_name": "Arcangel",
-    "title": "Arcangel AI: $1,000,000 IP-A-THON (Early Access; Approval Required)",
-    "url": "https://luma.com/98z2mych",
-    "locations": [
-      "TBA"
-    ],
-    "format": "In-Person",
-    "prize": "$1,000,000",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1782749100,
-    "date_updated": 1782749100,
-    "source": "Jose-Gael-Cruz-Lopez"
-  },
-  {
-    "id": "e87fb32d-3bb3-44d2-9472-17845bcfe034",
-    "company_name": "HackBeanpot",
-    "title": "HackBeanpot (Student Hackathon; Next Cycle Not Yet Posted)",
-    "url": "https://www.hackbeanpot.com/",
-    "locations": [
-      "Boston, MA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "closed",
-    "active": false,
-    "is_visible": true,
-    "date_posted": 1782748800,
-    "date_updated": 1783771200,
-    "source": "Jose-Gael-Cruz-Lopez"
-  },
-  {
-    "id": "130e9d0c-5b3d-46da-808c-9c2df26b88d2",
-    "company_name": "Ramp",
-    "title": "Builders Cup 2026 (One-Day Hackathon for Students Graduating 2027+)",
-    "url": "https://luma.com/nrletiv9",
-    "locations": [
-      "New York, NY"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "closed",
-    "active": false,
-    "is_visible": true,
-    "date_posted": 1783014300,
-    "date_updated": 1783771200,
-    "source": "Jose-Gael-Cruz-Lopez"
-  },
-  {
-    "id": "b2c0f34a-5642-4b46-80dd-d68d63ac3fed",
-    "company_name": "UMass Amherst",
-    "title": "HackUMass XIV (36-Hour Student Hackathon; Pre-Registration Open)",
-    "url": "https://www.hackumass.com/",
-    "locations": [
-      "Amherst, MA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783014300,
-    "date_updated": 1783014300,
-    "source": "Jose-Gael-Cruz-Lopez"
-  },
-  {
-    "id": "c1840896-a8ba-4821-ad8a-20e89d05deae",
-    "company_name": "AITHORS \u00d7 Okareo",
-    "title": "First Ever Agent Evalathon \u2014 Jul 6\u201313, 2026",
-    "url": "https://aithors.ai/hackathon",
+    "id": "06f72ca6-9ab3-4d22-aa00-bf5c8b362c33",
+    "company_name": "Major League Hacking",
+    "title": "Midnight Virtual Hackathon \u2014 Jul 17\u201319, 2026",
+    "url": "https://mlh.io/seasons/2026/events",
     "locations": [
       "Online"
     ],
     "format": "Virtual",
-    "prize": "TBA",
-    "deadline": "2026-07-04",
+    "prize": "Swag + prizes",
     "state": "closed",
     "active": false,
     "is_visible": true,
-    "date_posted": 1783014300,
-    "date_updated": 1783014300,
+    "date_posted": 1782579600,
+    "date_updated": 1784606284,
     "source": "Jose-Gael-Cruz-Lopez"
-  },
-  {
-    "id": "74830296-690a-4566-9022-00e552a0907f",
-    "company_name": "CS Girlies",
-    "title": "CS Girlies Annual Hackathon - Technology For Wellness \u2014 Aug 14 \u2013 Aug 16, 2026",
-    "url": "https://cs-girlies-wellness-hackathon.devpost.com",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$5,000 in Prizes",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783105200,
-    "date_updated": 1783771200,
-    "source": "akeight"
-  },
-  {
-    "id": "1e31d21c-0355-494e-a0a2-2431a51301a6",
-    "company_name": "Carleton University",
-    "title": "cuHacking 2026 \u2014 Jul 10 \u2013 Jul 12, 2026",
-    "url": "https://cuhacking.ca",
-    "locations": [
-      "Ottawa, ON"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "closed",
-    "active": false,
-    "is_visible": true,
-    "date_posted": 1783105200,
-    "date_updated": 1784606296,
-    "source": "akeight"
-  },
-  {
-    "id": "b703a6ab-c107-4bab-808f-076e0ec65afa",
-    "company_name": "UCLA",
-    "title": "LA Hacks AI Hackathon 2026 \u2014 Oct 17\u201318, 2026",
-    "url": "https://ai.lahacks.com/",
-    "locations": [
-      "Los Angeles, CA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783207800,
-    "date_updated": 1783771200,
-    "source": "ChimdumebiNebolisa"
-  },
-  {
-    "id": "6b363f65-cd6a-47e3-8d2d-031776f25933",
-    "company_name": "Virginia Tech",
-    "title": "VTHacks Code for the Cup \u2014 Fall 2026",
-    "url": "https://vthacks.com/",
-    "locations": [
-      "Blacksburg, VA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783666800,
-    "date_updated": 1783666800,
-    "source": "Tenz1ng"
-  },
-  {
-    "id": "4dcf8a02-80eb-4943-a22c-5ee51e7660d1",
-    "company_name": "University of Michigan Dearborn",
-    "title": "Hack Dearborn 2026 \u2014 Oct 3\u20134, 2026",
-    "url": "https://hackdearborn.org/",
-    "locations": [
-      "Dearborn, MI"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783666800,
-    "date_updated": 1783666800,
-    "source": "Tenz1ng"
-  },
-  {
-    "id": "206fb171-68a4-4c5d-b888-4c9b8545e669",
-    "company_name": "University of Waterloo",
-    "title": "Hack the North \u2014 Sept 18\u201320, 2026",
-    "url": "https://hackthenorth.com",
-    "locations": [
-      "Toronto, ON"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "open",
-    "deadline": "2026-07-27",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783666800,
-    "date_updated": 1783666800,
-    "source": "akeight",
-    "featured": true
-  },
-  {
-    "id": "6e9591fd-add1-4e0f-90ea-5002c3fc6c9b",
-    "company_name": "HackHarvard",
-    "title": "HackHarvard 2026 (Student Hackathon; Applications Open)",
-    "url": "https://hackharvard.io/",
-    "locations": [
-      "Cambridge, MA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783726800,
-    "date_updated": 1784662544,
-    "source": "ChimdumebiNebolisa"
-  },
-  {
-    "id": "27b4386f-3867-46e2-a685-b9cf40ad5453",
-    "company_name": "DubHacks",
-    "title": "DubHacks 2026 (Collegiate Hackathon; Applications Coming Soon)",
-    "url": "https://dubhacks.co/",
-    "locations": [
-      "Seattle, WA"
-    ],
-    "format": "In-Person",
-    "prize": "$44,000+ in prizes",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783726800,
-    "date_updated": 1783726800,
-    "source": "ChimdumebiNebolisa"
-  },
-  {
-    "id": "668030a6-6da3-45b9-afea-9640ce79a34d",
-    "company_name": "Hack the Valley",
-    "title": "Hack the Valley 11 (Pre-Registration Open)",
-    "url": "https://hackthevalley.io/",
-    "locations": [
-      "Toronto, ON"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783726800,
-    "date_updated": 1783726800,
-    "source": "ChimdumebiNebolisa"
-  },
-  {
-    "id": "50cb89da-27df-43aa-b3ee-2fe2bc0c22dd",
-    "company_name": "HackNC",
-    "title": "HackNC 2026 (Student Hackathon; Interest Form Open)",
-    "url": "https://hacknc.com/",
-    "locations": [
-      "Chapel Hill, NC"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783726800,
-    "date_updated": 1783726800,
-    "source": "ChimdumebiNebolisa"
   },
   {
     "id": "8dd82be1-13a4-4651-b89d-36ba8ae35d5f",
@@ -712,89 +759,39 @@
     "source": "ChimdumebiNebolisa"
   },
   {
-    "id": "632953bb-00f6-4a0f-aa8f-383ef624a36a",
-    "company_name": "nwPlus",
-    "title": "nwHacks 2027 (Student Hackathon; Applications Coming Soon)",
-    "url": "https://nwhacks.io/",
+    "id": "c0182709-2212-41a1-94ef-47689f05192f",
+    "company_name": "MIT",
+    "title": "HackMIT 2026 (Weekend Hackathon; Open to Undergrads Worldwide)",
+    "url": "https://hackmit.org/",
     "locations": [
-      "Vancouver, BC"
+      "Cambridge, MA"
     ],
     "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
+    "prize": "$20K+ in prizes",
+    "state": "closed",
+    "active": false,
     "is_visible": true,
-    "date_posted": 1783726800,
-    "date_updated": 1783726800,
-    "source": "ChimdumebiNebolisa"
-  },
-  {
-    "id": "5c02aeb4-e812-4535-af24-d11b35f44d40",
-    "company_name": "Hack@Brown",
-    "title": "Hack@Brown 2027 (Student Hackathon; Applications Coming Soon)",
-    "url": "https://hackatbrown.org/",
-    "locations": [
-      "Providence, RI"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783726800,
-    "date_updated": 1783726800,
-    "source": "ChimdumebiNebolisa"
-  },
-  {
-    "id": "80a97e38-1adf-4fc1-9781-59cfa558f330",
-    "company_name": "University of Toronto",
-    "title": "UofTHacks 14 (Student Hackathon; Next Cycle January 2027)",
-    "url": "https://uofthacks.com/",
-    "locations": [
-      "Toronto, ON"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783726800,
-    "date_updated": 1783726800,
-    "source": "ChimdumebiNebolisa"
-  },
-  {
-    "id": "7f558665-234c-40ff-8ae4-35f4999123d3",
-    "company_name": "Rensselaer Polytechnic Institute",
-    "title": "HackRPI 2026 (Intercollegiate Hackathon; Registration Open)",
-    "url": "https://hackrpi.com/",
-    "locations": [
-      "Troy, NY"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783771200,
+    "date_posted": 1782586800,
     "date_updated": 1783771200,
-    "source": "Tenz1ng"
+    "source": "Jose-Gael-Cruz-Lopez",
+    "deadline": "2026-07-04"
   },
   {
-    "id": "7f7e5157-6738-420b-841d-a1b019b14000",
-    "company_name": "Stony Brook University",
-    "title": "SBUHacks (Collegiate Hackathon; Applications Coming Soon)",
-    "url": "https://hack.sbcs.io/",
+    "id": "b681dde7-9955-4488-b965-a87d05774284",
+    "company_name": "NC State",
+    "title": "Hack_NCState 2027 \u2014 Feb 6\u20137, 2027",
+    "url": "https://hackncstate.org",
     "locations": [
-      "Stony Brook, NY"
+      "Raleigh, NC"
     ],
     "format": "In-Person",
     "prize": "TBA",
     "state": "opens_soon",
     "active": true,
     "is_visible": true,
-    "date_posted": 1783771200,
-    "date_updated": 1783771200,
-    "source": "Tenz1ng"
+    "date_posted": 1784607900,
+    "date_updated": 1784653424,
+    "source": "srirae"
   },
   {
     "id": "91e1f610-aacd-4c73-9563-09968fd9dc7d",
@@ -814,215 +811,21 @@
     "source": "Tenz1ng"
   },
   {
-    "id": "0b3da014-fca8-4d8a-990c-dcc4da60363e",
-    "company_name": "Cornell University",
-    "title": "BigRed//Hacks 2026 (Collegiate Hackathon; Applications Coming Soon)",
-    "url": "https://www.bigredhacks.com/",
+    "id": "632953bb-00f6-4a0f-aa8f-383ef624a36a",
+    "company_name": "nwPlus",
+    "title": "nwHacks 2027 (Student Hackathon; Applications Coming Soon)",
+    "url": "https://nwhacks.io/",
     "locations": [
-      "Ithaca, NY"
+      "Vancouver, BC"
     ],
     "format": "In-Person",
     "prize": "TBA",
     "state": "opens_soon",
     "active": true,
     "is_visible": true,
-    "date_posted": 1783771200,
-    "date_updated": 1783771200,
-    "source": "Tenz1ng"
-  },
-  {
-    "id": "e7bd9721-b790-4110-9afd-a42e8aa6dc0a",
-    "company_name": "Columbia University",
-    "title": "DivHacks 2026 (Collegiate Hackathon; Registration Open)",
-    "url": "https://www.columbiadivhacks.org/",
-    "locations": [
-      "New York, NY"
-    ],
-    "format": "Hybrid",
-    "prize": "TBA",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783771200,
-    "date_updated": 1783771200,
-    "source": "Tenz1ng"
-  },
-  {
-    "id": "3f098796-acad-4fdf-83a3-c0406f446bcb",
-    "company_name": "Florida International University",
-    "title": "ShellHacks 2026 (Florida's Largest Hackathon; Registration Open)",
-    "url": "https://shellhacks.net/",
-    "locations": [
-      "Miami, FL"
-    ],
-    "format": "In-Person",
-    "prize": "$20,000 in prizes",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783771200,
-    "date_updated": 1783771200,
-    "source": "Tenz1ng"
-  },
-  {
-    "id": "24255447-911f-4807-886c-605b7fe5072b",
-    "company_name": "University of Pittsburgh",
-    "title": "SteelHacks XIII (Student Hackathon; Applications Open)",
-    "url": "https://steelhacks.org/",
-    "locations": [
-      "Pittsburgh, PA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783771200,
-    "date_updated": 1784606304,
-    "source": "Tenz1ng"
-  },
-  {
-    "company_name": "OpenAI",
-    "title": "OpenAI Build Week: Join a global week of building with Codex \u2014 Jul 13\u201321, 2026",
-    "url": "https://openai.devpost.com/",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$100,000",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "source": "devpost",
-    "deadline": "2026-07-21",
-    "id": "04555631-8888-4d5a-b192-384c42fa0577",
-    "date_posted": 1783821900,
-    "date_updated": 1783821900
-  },
-  {
-    "company_name": "DataHub",
-    "title": "Build with DataHub: The Agent Hackathon \u2014 Jul 6\u2013 Aug 10, 2026",
-    "url": "https://datahub.devpost.com/",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$20,500",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "source": "devpost",
-    "deadline": "2026-08-10",
-    "id": "f9654f6f-b75f-48b0-b14f-c080bbe0e52d",
-    "date_posted": 1783818300,
-    "date_updated": 1783818300
-  },
-  {
-    "company_name": "Cockroach Labs",
-    "title": "CockroachDB \u00d7 AWS Hackathon \u2014 Build with Agentic Memory \u2014 Jun 30\u2013 Aug 18, 2026",
-    "url": "https://cockroachdb-ai.devpost.com/",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$8,750",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "source": "devpost",
-    "deadline": "2026-08-18",
-    "id": "aa0347df-a7fe-4f3c-818e-7423e8c96f1a",
-    "date_posted": 1783814700,
-    "date_updated": 1783814700
-  },
-  {
-    "company_name": "Rice University",
-    "title": "HackRice 16 (Student Hackathon; Interest Form Open)",
-    "url": "https://hackrice.com/",
-    "locations": [
-      "Houston, TX"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "source": "ChimdumebiNebolisa",
-    "id": "55843864-d4f0-4a6a-b79c-46ff7a5e9a12",
-    "date_posted": 1783811100,
-    "date_updated": 1783811100
-  },
-  {
-    "company_name": "HexLabs",
-    "title": "HackGT 13 \u2014 Sep 25\u201327, 2026",
-    "url": "https://hack.gt/",
-    "locations": [
-      "Atlanta, GA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "source": "ChimdumebiNebolisa",
-    "id": "a1e90390-077a-4bd0-8901-175337e0052c",
-    "date_posted": 1783807500,
-    "date_updated": 1784606318
-  },
-  {
-    "company_name": "Africa Deep Tech Foundation",
-    "title": "Africa Deep Tech Challenge 2026 \u2014 The Laptop LLM Challenge",
-    "url": "https://adtc-2026.devpost.com/",
-    "locations": [
-      "Online"
-    ],
-    "format": "Virtual",
-    "prize": "$16,500",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "source": "devpost",
-    "deadline": "2026-08-24",
-    "id": "57177cd1-cff8-4e80-b701-6811dbcdb1a4",
-    "date_posted": 1783803900,
-    "date_updated": 1783803900
-  },
-  {
-    "company_name": "DevNetwork",
-    "title": "DevNetwork [API + Cloud + AI] Hackathon 2026 \u2014 Aug 17\u2013 Sep 3, 2026",
-    "url": "https://api-cloud-ai-hackathon-2026.devpost.com/",
-    "locations": [
-      "Santa Clara, CA",
-      "Online"
-    ],
-    "format": "Hybrid",
-    "prize": "$12,500",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "source": "devpost",
-    "deadline": "2026-09-03",
-    "id": "6438aace-1294-464a-9150-dc56259b6653",
-    "date_posted": 1783800300,
-    "date_updated": 1783800300
-  },
-  {
-    "company_name": "Lincoln Financial Group",
-    "title": "codeLinc 11 with Lincoln Financial & AWS \u2014 Oct 3\u20134, 2026",
-    "url": "https://codelinc11.devpost.com/",
-    "locations": [
-      "Greensboro, NC"
-    ],
-    "format": "In-Person",
-    "prize": "$10,000",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "source": "devpost",
-    "deadline": "2026-10-04",
-    "id": "103a5d7c-312b-4bcf-adef-4ab702c4fc33",
-    "date_posted": 1783796700,
-    "date_updated": 1783796700
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
   },
   {
     "company_name": "OneAquaHealth",
@@ -1060,106 +863,22 @@
     "source": "hongchengw"
   },
   {
-    "id": "76d95c1a-9603-43d7-ab9f-60f92c2ea977",
-    "company_name": "localhost:nyc",
-    "title": "Checkout: The Travel & Hospitality Hackathon \u2014 Aug 9, 2026",
-    "url": "https://luma.com/s7v4kw23",
+    "company_name": "OpenAI",
+    "title": "OpenAI Build Week: Join a global week of building with Codex \u2014 Jul 13\u201321, 2026",
+    "url": "https://openai.devpost.com/",
     "locations": [
-      "New York, NY"
+      "Online"
     ],
-    "format": "In-Person",
-    "prize": "TBA",
+    "format": "Virtual",
+    "prize": "$100,000",
     "state": "open",
     "active": true,
     "is_visible": true,
-    "date_posted": 1783857600,
-    "date_updated": 1784606318,
-    "source": "hongchengw"
-  },
-  {
-    "id": "d96f83cf-8a49-4048-84d0-db0a799c9d38",
-    "company_name": "University of Central Florida",
-    "title": "Knight Hacks IX \u2014 Oct 9\u201311, 2026",
-    "url": "https://2026.knighthacks.org/",
-    "locations": [
-      "Orlando, FL"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1783857600,
-    "date_updated": 1783857600,
-    "source": "Tenz1ng"
-  },
-  {
-    "id": "b681dde7-9955-4488-b965-a87d05774284",
-    "company_name": "NC State",
-    "title": "Hack_NCState 2027 \u2014 Feb 6\u20137, 2027",
-    "url": "https://hackncstate.org",
-    "locations": [
-      "Raleigh, NC"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1784607900,
-    "date_updated": 1784653424,
-    "source": "srirae"
-  },
-  {
-    "id": "90d2f3ed-88f9-4d89-bfc9-213cf4f5a6d0",
-    "company_name": "UTSA ACM",
-    "title": "RowdyHacks XII (Student Hackathon; Applications Not Yet Open)",
-    "url": "https://rowdyhacks.org",
-    "locations": [
-      "San Antonio, TX"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1784608191,
-    "date_updated": 1784653444,
-    "source": "srirae"
-  },
-  {
-    "id": "82a4e957-ddf5-479a-bcda-24c0146a3e21",
-    "company_name": "UGAHacks",
-    "title": "UGAHacks 12 (Student Hackathon; Pre-Registration Open)",
-    "url": "https://ugahacks.com",
-    "locations": [
-      "Athens, GA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "date_posted": 1784608395,
-    "date_updated": 1784653455,
-    "source": "srirae"
-  },
-  {
-    "company_name": "uOttaHack",
-    "title": "uOttaHack 9 (Student Hackathon; Premiering January 2027)",
-    "url": "https://2027.uottahack.ca",
-    "locations": [
-      "Ottawa, ON"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "source": "srirae",
-    "date_posted": 1784608462,
-    "date_updated": 1784608462,
-    "id": "fea0021e-f90f-4a44-a627-1052625cd81e"
+    "source": "devpost",
+    "deadline": "2026-07-21",
+    "id": "04555631-8888-4d5a-b192-384c42fa0577",
+    "date_posted": 1783821900,
+    "date_updated": 1783821900
   },
   {
     "company_name": "Purdue",
@@ -1179,55 +898,143 @@
     "id": "8925b6ed-6e1b-4a4b-8997-42c025bf5078"
   },
   {
-    "company_name": "Hackville",
-    "title": "Hackville (College Hackathon; Interest Form Open for 2027)",
-    "url": "https://hackville.io/",
+    "id": "f0109d92-c423-43b1-b6b5-fc93219a9bcb",
+    "company_name": "Qwen Cloud",
+    "title": "Global AI Hackathon Series with Qwen Cloud \u2014 May 26 \u2013 Jul 20, 2026",
+    "url": "https://qwencloud-hackathon.devpost.com/",
     "locations": [
-      "Mississauga, ON"
+      "Online"
     ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
+    "format": "Virtual",
+    "prize": "$70,000",
+    "state": "closed",
+    "active": false,
     "is_visible": true,
-    "source": "srirae",
-    "date_posted": 1784608764,
-    "date_updated": 1784608764,
-    "id": "17b7421b-8007-46ef-833d-22e18d86ee93"
+    "date_posted": 1782554400,
+    "date_updated": 1784606274,
+    "source": "devpost",
+    "deadline": "2026-07-20"
   },
   {
-    "company_name": "DurHack",
-    "title": "DurHack 2026 (Student Hackathon; Interest Form Open)",
-    "url": "https://durhack.com",
+    "id": "130e9d0c-5b3d-46da-808c-9c2df26b88d2",
+    "company_name": "Ramp",
+    "title": "Builders Cup 2026 (One-Day Hackathon for Students Graduating 2027+)",
+    "url": "https://luma.com/nrletiv9",
     "locations": [
-      "Durham, UK"
+      "New York, NY"
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
-    "source": "srirae",
-    "date_posted": 1784608783,
-    "date_updated": 1784660311,
-    "id": "5e7c75bd-1959-4895-b342-19b2e64c3f74"
+    "date_posted": 1783014300,
+    "date_updated": 1783771200,
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
-    "company_name": "HackUTD",
-    "title": "HackUTD 2026 (Student Hackathon; Prospective Nov 14\u201315, 2026)",
-    "url": "https://hackutd.co",
+    "id": "a30d17a5-32e2-4c5e-8c08-3ac5c42e48b9",
+    "company_name": "Reddit",
+    "title": "Reddit's Games with a Hook Hackathon \u2014 Jun 17 \u2013 Jul 15, 2026",
+    "url": "https://redditgameswithahook.devpost.com/",
     "locations": [
-      "Richardson, TX"
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$40,000",
+    "state": "closed",
+    "active": false,
+    "is_visible": true,
+    "date_posted": 1782543600,
+    "date_updated": 1784606274,
+    "source": "devpost",
+    "deadline": "2026-07-15"
+  },
+  {
+    "id": "7f558665-234c-40ff-8ae4-35f4999123d3",
+    "company_name": "Rensselaer Polytechnic Institute",
+    "title": "HackRPI 2026 (Intercollegiate Hackathon; Registration Open)",
+    "url": "https://hackrpi.com/",
+    "locations": [
+      "Troy, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
+  },
+  {
+    "company_name": "Rice University",
+    "title": "HackRice 16 (Student Hackathon; Interest Form Open)",
+    "url": "https://hackrice.com/",
+    "locations": [
+      "Houston, TX"
     ],
     "format": "In-Person",
     "prize": "TBA",
     "state": "opens_soon",
     "active": true,
     "is_visible": true,
-    "source": "srirae",
-    "date_posted": 1784608827,
-    "date_updated": 1784608827,
-    "id": "9bc9c607-d8d4-422d-b67c-7bd3d0f2c828"
+    "source": "ChimdumebiNebolisa",
+    "id": "55843864-d4f0-4a6a-b79c-46ff7a5e9a12",
+    "date_posted": 1783811100,
+    "date_updated": 1783811100
+  },
+  {
+    "id": "8a6a6656-8eff-40ea-9688-6bb50b18d290",
+    "company_name": "Slack",
+    "title": "Slack Agent Builder Challenge \u2014 May 20 \u2013 Jul 13, 2026",
+    "url": "https://slackhack.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$42,000",
+    "state": "closed",
+    "active": false,
+    "is_visible": true,
+    "date_posted": 1782547200,
+    "date_updated": 1784606274,
+    "source": "devpost",
+    "deadline": "2026-07-13"
+  },
+  {
+    "id": "efb231e9-7e4f-439c-bf1e-077464fe8be5",
+    "company_name": "Stanford",
+    "title": "TreeHacks 2026 \u2014 Feb 13\u201315, 2026",
+    "url": "https://treehacks.com/",
+    "locations": [
+      "Stanford, CA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "closed",
+    "active": false,
+    "is_visible": true,
+    "date_posted": 1784333282,
+    "date_updated": 1784652408,
+    "source": "akeight"
+  },
+  {
+    "id": "7f7e5157-6738-420b-841d-a1b019b14000",
+    "company_name": "Stony Brook University",
+    "title": "SBUHacks (Collegiate Hackathon; Applications Coming Soon)",
+    "url": "https://hack.sbcs.io/",
+    "locations": [
+      "Stony Brook, NY"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1783771200,
+    "source": "Tenz1ng"
   },
   {
     "company_name": "SwampHacks",
@@ -1247,74 +1054,6 @@
     "id": "fc62ebae-d166-4a4b-9749-41264f0676d0"
   },
   {
-    "company_name": "hackUMBC",
-    "title": "hackUMBC 2026 (Student Hackathon; Interest Form Open)",
-    "url": "https://hackumbc.tech",
-    "locations": [
-      "Catonsville, MD"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "source": "srirae",
-    "date_posted": 1784609137,
-    "date_updated": 1784609137,
-    "id": "4aec82ec-35e8-4e91-b62e-6314a4572b16"
-  },
-  {
-    "company_name": "HopHacks",
-    "title": "HopHacks 2026 (Student Hackathon; Applications Open)",
-    "url": "https://www.hophacks.com",
-    "locations": [
-      "Baltimore, MD"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "open",
-    "active": true,
-    "is_visible": true,
-    "source": "srirae",
-    "date_posted": 1784609226,
-    "date_updated": 1784653465,
-    "id": "a2038df7-2e37-4a8d-b190-9648840b17b3"
-  },
-  {
-    "company_name": "Girls Who Code at GSU",
-    "title": "HackHers \u2014 Sep 18\u201319, 2026 (Registration Opening Soon)",
-    "url": "https://hackhers.club/",
-    "locations": [
-      "Atlanta, GA"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "source": "srirae",
-    "date_posted": 1784609254,
-    "date_updated": 1784653476,
-    "id": "0ef7e14a-5cc6-40ac-ba08-e0ccee428673"
-  },
-  {
-    "company_name": "ElleHacks",
-    "title": "ElleHacks 2027 (Student Hackathon; Date TBA; Applications Not Yet Open)",
-    "url": "https://ellehacks.com",
-    "locations": [
-      "Toronto, ON"
-    ],
-    "format": "In-Person",
-    "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
-    "is_visible": true,
-    "source": "srirae",
-    "date_posted": 1784609190,
-    "date_updated": 1784660238,
-    "id": "3ba46880-510b-424f-8d97-c441cd6c28b9"
-  },
-  {
     "company_name": "Tec ACM",
     "title": "HackMTY 2026 \u2014 Sep 11\u201313, 2026 (Registration Opening Soon)",
     "url": "https://hackmty.com/",
@@ -1332,37 +1071,298 @@
     "id": "a4c22279-6d0d-44ff-822f-a472e02e52fc"
   },
   {
-    "company_name": "CougarCS",
-    "title": "CodeRED Orion \u2014 Oct 10\u201311, 2026",
-    "url": "https://uhcode.red/",
+    "id": "f24a6927-f19d-462f-b78f-add1f892010f",
+    "company_name": "UCLA",
+    "title": "LA Hacks (Student Hackathon; Next Event Mid-April 2027)",
+    "url": "https://lahacks.com/",
     "locations": [
-      "Houston, TX"
+      "Los Angeles, CA"
     ],
     "format": "In-Person",
-    "prize": "TBA",
-    "state": "open",
+    "prize": "$60K in prizes",
+    "state": "opens_soon",
     "active": true,
     "is_visible": true,
-    "source": "srirae",
-    "date_posted": 1784609453,
-    "date_updated": 1784611268,
-    "id": "e29fc4f1-cc6a-4c3e-bc6c-139ef3a28691"
+    "date_posted": 1782518400,
+    "date_updated": 1782518400,
+    "source": "Jose-Gael-Cruz-Lopez",
+    "featured": true
   },
   {
-    "company_name": "HoyaHacks",
-    "title": "HoyaHacks 2027 (Student Hackathon; Registration Open)",
-    "url": "https://www.hoyahacks.com",
+    "id": "b703a6ab-c107-4bab-808f-076e0ec65afa",
+    "company_name": "UCLA",
+    "title": "LA Hacks AI Hackathon 2026 \u2014 Oct 17\u201318, 2026",
+    "url": "https://ai.lahacks.com/",
     "locations": [
-      "Washington, DC"
+      "Los Angeles, CA"
     ],
     "format": "In-Person",
     "prize": "TBA",
     "state": "open",
     "active": true,
     "is_visible": true,
+    "date_posted": 1783207800,
+    "date_updated": 1783771200,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "82a4e957-ddf5-479a-bcda-24c0146a3e21",
+    "company_name": "UGAHacks",
+    "title": "UGAHacks 12 (Student Hackathon; Pre-Registration Open)",
+    "url": "https://ugahacks.com",
+    "locations": [
+      "Athens, GA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1784608395,
+    "date_updated": 1784653455,
+    "source": "srirae"
+  },
+  {
+    "id": "bcea64f3-77d3-4b65-b61e-5f1714b428ac",
+    "company_name": "UiPath",
+    "title": "UiPath AgentHack \u2014 May 15 \u2013 Jun 29, 2026",
+    "url": "https://uipath-agenthack.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$50,000",
+    "state": "closed",
+    "active": false,
+    "is_visible": true,
+    "date_posted": 1782550800,
+    "date_updated": 1782550800,
+    "source": "devpost",
+    "deadline": "2026-06-29"
+  },
+  {
+    "id": "b2c0f34a-5642-4b46-80dd-d68d63ac3fed",
+    "company_name": "UMass Amherst",
+    "title": "HackUMass XIV (36-Hour Student Hackathon; Pre-Registration Open)",
+    "url": "https://www.hackumass.com/",
+    "locations": [
+      "Amherst, MA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783014300,
+    "date_updated": 1783014300,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "d96f83cf-8a49-4048-84d0-db0a799c9d38",
+    "company_name": "University of Central Florida",
+    "title": "Knight Hacks IX \u2014 Oct 9\u201311, 2026",
+    "url": "https://2026.knighthacks.org/",
+    "locations": [
+      "Orlando, FL"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783857600,
+    "date_updated": 1783857600,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "24efdceb-cb4a-47e9-bda9-58328e7a743c",
+    "company_name": "University of Maryland",
+    "title": "Bitcamp (Student Hackathon; Next Cycle Not Yet Posted)",
+    "url": "https://bit.camp/",
+    "locations": [
+      "College Park, MD"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782511200,
+    "date_updated": 1782511200,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "651caba5-0669-4d1d-843b-e7892d0d4207",
+    "company_name": "University of Michigan",
+    "title": "MHacks 2026 (Student Hackathon; Applications Open)",
+    "url": "https://mhacks.org/",
+    "locations": [
+      "Ann Arbor, MI"
+    ],
+    "format": "In-Person",
+    "prize": "$40K+ in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782529200,
+    "date_updated": 1783004757,
+    "source": "Jose-Gael-Cruz-Lopez",
+    "deadline": "2026-09-12"
+  },
+  {
+    "id": "4dcf8a02-80eb-4943-a22c-5ee51e7660d1",
+    "company_name": "University of Michigan Dearborn",
+    "title": "Hack Dearborn 2026 \u2014 Oct 3\u20134, 2026",
+    "url": "https://hackdearborn.org/",
+    "locations": [
+      "Dearborn, MI"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783666800,
+    "date_updated": 1783666800,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "d8eada21-a462-4b59-8fbf-6391e778cb42",
+    "company_name": "University of Pennsylvania",
+    "title": "PennApps (Student Hackathon; Next Cycle Not Yet Posted)",
+    "url": "https://pennapps.com/",
+    "locations": [
+      "Philadelphia, PA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782514800,
+    "date_updated": 1782514800,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "24255447-911f-4807-886c-605b7fe5072b",
+    "company_name": "University of Pittsburgh",
+    "title": "SteelHacks XIII (Student Hackathon; Applications Open)",
+    "url": "https://steelhacks.org/",
+    "locations": [
+      "Pittsburgh, PA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783771200,
+    "date_updated": 1784606304,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "80a97e38-1adf-4fc1-9781-59cfa558f330",
+    "company_name": "University of Toronto",
+    "title": "UofTHacks 14 (Student Hackathon; Next Cycle January 2027)",
+    "url": "https://uofthacks.com/",
+    "locations": [
+      "Toronto, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783726800,
+    "date_updated": 1783726800,
+    "source": "ChimdumebiNebolisa"
+  },
+  {
+    "id": "206fb171-68a4-4c5d-b888-4c9b8545e669",
+    "company_name": "University of Waterloo",
+    "title": "Hack the North \u2014 Sept 18\u201320, 2026",
+    "url": "https://hackthenorth.com",
+    "locations": [
+      "Toronto, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "deadline": "2026-07-27",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783666800,
+    "date_updated": 1783666800,
+    "source": "akeight",
+    "featured": true
+  },
+  {
+    "company_name": "uOttaHack",
+    "title": "uOttaHack 9 (Student Hackathon; Premiering January 2027)",
+    "url": "https://2027.uottahack.ca",
+    "locations": [
+      "Ottawa, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
     "source": "srirae",
-    "date_posted": 1784609171,
-    "date_updated": 1784610267,
-    "id": "00892477-a0ca-418b-acd8-af3bf285d35a"
+    "date_posted": 1784608462,
+    "date_updated": 1784608462,
+    "id": "fea0021e-f90f-4a44-a627-1052625cd81e"
+  },
+  {
+    "id": "90d2f3ed-88f9-4d89-bfc9-213cf4f5a6d0",
+    "company_name": "UTSA ACM",
+    "title": "RowdyHacks XII (Student Hackathon; Applications Not Yet Open)",
+    "url": "https://rowdyhacks.org",
+    "locations": [
+      "San Antonio, TX"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1784608191,
+    "date_updated": 1784653444,
+    "source": "srirae"
+  },
+  {
+    "id": "6b363f65-cd6a-47e3-8d2d-031776f25933",
+    "company_name": "Virginia Tech",
+    "title": "VTHacks Code for the Cup \u2014 Fall 2026",
+    "url": "https://vthacks.com/",
+    "locations": [
+      "Blacksburg, VA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1783666800,
+    "date_updated": 1783666800,
+    "source": "Tenz1ng"
+  },
+  {
+    "id": "1b0b2e8f-8920-469e-978a-f34286dfcc56",
+    "company_name": "XPRIZE",
+    "title": "Build with Gemini XPRIZE \u2014 May 19 \u2013 Aug 17, 2026",
+    "url": "https://xprize.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$2,000,000",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1782561600,
+    "date_updated": 1782561600,
+    "source": "devpost",
+    "deadline": "2026-08-17"
   }
 ]

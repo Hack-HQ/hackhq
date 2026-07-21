@@ -55,8 +55,34 @@ def get_listings_from_json():
             ) from e
 
 
+def listings_file_order(listings):
+    """Return ``listings`` in the canonical on-disk order.
+
+    Sorted by host, then title, then id. This is purely a storage concern —
+    every renderer calls sort_listings() for display — but the order matters a
+    lot for merges.
+
+    Appending each new listing to the end of the array meant every listing PR
+    edited the same final lines, so any two of them conflicted by construction:
+    17 such PRs took 23 merge rounds because each merge invalidated the rest.
+    Keeping the file sorted scatters new entries across it by host name, so two
+    PRs adding different hackathons almost never touch the same hunk.
+
+    The id tiebreaker keeps the order total and stable, so a save that changes
+    nothing rewrites nothing.
+    """
+    return sorted(
+        listings,
+        key=lambda l: (
+            str(l.get("company_name", "")).lower(),
+            str(l.get("title", "")).lower(),
+            str(l.get("id", "")),
+        ),
+    )
+
+
 def save_listings_to_json(listings):
-    """Save listings to the JSON file atomically.
+    """Save listings to the JSON file atomically, in canonical order.
 
     Serialize to a temp file in the same directory as listings.json, flush and
     fsync it, then os.replace() it over the target. The replace is atomic on
@@ -64,6 +90,7 @@ def save_listings_to_json(listings):
     readers always see either the old file or the fully written new one. The
     temp file is cleaned up if anything goes wrong.
     """
+    listings = listings_file_order(listings)
     directory = os.path.dirname(LISTINGS_FILE) or "."
     tmp = tempfile.NamedTemporaryFile(
         mode="w",
