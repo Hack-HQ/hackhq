@@ -1298,6 +1298,23 @@
     "id": "0ef7e14a-5cc6-40ac-ba08-e0ccee428673"
   },
   {
+    "company_name": "ElleHacks",
+    "title": "ElleHacks 2027 (Student Hackathon; Date TBA; Applications Not Yet Open)",
+    "url": "https://ellehacks.com",
+    "locations": [
+      "Toronto, ON"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609190,
+    "date_updated": 1784660238,
+    "id": "3ba46880-510b-424f-8d97-c441cd6c28b9"
+  },
+  {
     "company_name": "HoyaHacks",
     "title": "HoyaHacks 2027 (Student Hackathon; Registration Open)",
     "url": "https://www.hoyahacks.com",
