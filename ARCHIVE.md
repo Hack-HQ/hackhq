@@ -14,8 +14,10 @@ This page is a permanent record of every hackathon that has closed. These are ke
 
 ## Hackathons
 
+<!-- ARCHIVE_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----------- | ----------- |
+<!-- ARCHIVE_TABLE_END -->
 
 ---
 
