@@ -1075,5 +1075,22 @@
     "date_posted": 1783857600,
     "date_updated": 1783857600,
     "source": "Tenz1ng"
+  },
+  {
+    "company_name": "HackMTY",
+    "title": "HackMTY 2026 (Student Hackathon; Registration Opening Soon)",
+    "url": "https://hackmty.com/",
+    "locations": [
+      "Monterrey, Mexico"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609478,
+    "date_updated": 1784609478,
+    "id": "a4c22279-6d0d-44ff-822f-a472e02e52fc"
   }
 ]
