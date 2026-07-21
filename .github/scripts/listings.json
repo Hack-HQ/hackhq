@@ -1075,5 +1075,22 @@
     "date_posted": 1783857600,
     "date_updated": 1783857600,
     "source": "Tenz1ng"
+  },
+  {
+    "company_name": "HackHers",
+    "title": "HackHers (Student Hackathon; Next Cycle Not Yet Posted)",
+    "url": "https://hackhers.club/",
+    "locations": [
+      "Atlanta, GA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609254,
+    "date_updated": 1784609254,
+    "id": "0ef7e14a-5cc6-40ac-ba08-e0ccee428673"
   }
 ]
