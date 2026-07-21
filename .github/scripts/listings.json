@@ -1332,6 +1332,23 @@
     "id": "a4c22279-6d0d-44ff-822f-a472e02e52fc"
   },
   {
+    "company_name": "CougarCS",
+    "title": "CodeRED Orion — Oct 10–11, 2026",
+    "url": "https://uhcode.red/",
+    "locations": [
+      "Houston, TX"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609453,
+    "date_updated": 1784611268,
+    "id": "e29fc4f1-cc6a-4c3e-bc6c-139ef3a28691"
+  },
+  {
     "company_name": "HoyaHacks",
     "title": "HoyaHacks 2027 (Student Hackathon; Registration Open)",
     "url": "https://www.hoyahacks.com",
