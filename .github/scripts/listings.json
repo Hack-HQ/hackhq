@@ -44,11 +44,11 @@
     ],
     "format": "Virtual",
     "prize": "Swag + prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782579600,
-    "date_updated": 1783771200,
+    "date_updated": 1784606284,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
