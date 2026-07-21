@@ -1347,5 +1347,22 @@
     "date_posted": 1784609453,
     "date_updated": 1784611268,
     "id": "e29fc4f1-cc6a-4c3e-bc6c-139ef3a28691"
+  },
+  {
+    "company_name": "HoyaHacks",
+    "title": "HoyaHacks 2027 (Student Hackathon; Registration Open)",
+    "url": "https://www.hoyahacks.com",
+    "locations": [
+      "Washington, DC"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "source": "srirae",
+    "date_posted": 1784609171,
+    "date_updated": 1784610267,
+    "id": "00892477-a0ca-418b-acd8-af3bf285d35a"
   }
 ]
