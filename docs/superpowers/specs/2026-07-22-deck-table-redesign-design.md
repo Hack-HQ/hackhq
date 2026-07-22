@@ -103,11 +103,18 @@ Columns this design adds:
 
 | Column | Type | Null | Purpose |
 |--------|------|------|---------|
-| `origin` | enum `listings_json \| user` | no | The conflict rule above |
+| `origin` | text + check `listings_json \| user` | no | The conflict rule above |
 | `description` | text | yes | Collected by the modal; no listing has one today |
 | `logo_url` | text | yes | Override when the derived favicon is poor |
-| `host_type` | enum `university \| community \| company` | yes | Drives the university/community tag |
+| `host_type` | text + check `university \| community \| company` | yes | Drives the university/community tag |
 | `submitted_by` | text | yes | Clerk user id; drives the Posted By avatar |
+
+`origin` and `host_type` are constrained sets, not Postgres enums. Adding a value
+to an enum needs `alter type`, which is awkward inside a migration, so both ship
+as `text` with a `check` constraint — `hackathons_origin_check` and
+`hackathons_host_type_check`, as applied in
+`supabase/migrations/20260722144205_add_deck_columns.sql`. `origin` also carries
+a `not null` and a default of `'listings_json'`.
 
 `startDate`/`endDate` already exist in the table, so #147 needs no schema work —
 only population, which no row has yet.
