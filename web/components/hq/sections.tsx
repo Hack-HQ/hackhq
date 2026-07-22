@@ -166,6 +166,7 @@ export function Footer() {
               links={[
                 ["The globe", "/globe"],
                 ["The deck", "/deck"],
+                ["Resources", "/resources"],
                 ["My HackHQ", "/my"],
                 ["Submit", "/#submit"],
               ]}
