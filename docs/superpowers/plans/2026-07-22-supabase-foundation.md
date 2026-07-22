@@ -124,7 +124,8 @@ git commit -m "feat(db): capture the hand-created hackathons schema as a baselin
 `public.rls_auto_enable()` is an event trigger that auto-enables RLS on new `public` tables — worth keeping. But it is `SECURITY DEFINER` and `EXECUTE` is granted to `anon` and `authenticated`, which Supabase's linter flags.
 
 **Files:**
-- Create: `supabase/migrations/20260722000100_revoke_rls_auto_enable_execute.sql`
+- Create: `supabase/migrations/20260722000100_revoke_rls_auto_enable_execute.sql` — the no-op, committed because it is already in the database's history
+- Create: `supabase/migrations/20260722000110_revoke_rls_auto_enable_from_public.sql` — the actual fix
 
 **Interfaces:**
 - Consumes: Task 1's baseline.
@@ -134,41 +135,101 @@ git commit -m "feat(db): capture the hand-created hackathons schema as a baselin
 
 Call `get_advisors` with `type: security`. Expected: two WARN lints naming `rls_auto_enable`.
 
-- [ ] **Step 2: Write the migration**
+- [ ] **Step 2: Confirm who actually holds the grant**
 
 ```sql
--- supabase/migrations/20260722000100_revoke_rls_auto_enable_execute.sql
--- rls_auto_enable() is an event trigger. Event-trigger functions cannot be
--- meaningfully invoked over RPC, so exposure is low — but it is SECURITY
--- DEFINER and needs no caller, so revoke it rather than leave it reachable.
-
-revoke execute on function public.rls_auto_enable() from anon, authenticated;
+select proacl::text as acl,
+       has_function_privilege('anon','public.rls_auto_enable()','EXECUTE') as anon_can
+from pg_proc
+where proname = 'rls_auto_enable' and pronamespace = 'public'::regnamespace;
 ```
 
-- [ ] **Step 3: Apply it**
+Expected: `acl` contains an `=X/postgres` entry — an empty grantee, which means
+`PUBLIC`. `anon_can` is `true`.
 
-`apply_migration`, `name: revoke_rls_auto_enable_execute`.
+This is why the obvious fix does not work. Postgres grants `EXECUTE` on a new
+function to `PUBLIC` by default, and `anon`/`authenticated` inherit from it
+rather than holding a grant of their own. `revoke ... from anon, authenticated`
+therefore revokes a grant that was never made and silently changes nothing —
+verified against this database on 2026-07-22.
 
-- [ ] **Step 4: Verify the advisory clears**
+- [ ] **Step 3: Write the migration**
+
+```sql
+-- supabase/migrations/20260722000110_revoke_rls_auto_enable_from_public.sql
+-- rls_auto_enable() is an event trigger. Event-trigger functions are invoked by
+-- the system, not by a caller's EXECUTE privilege, so nothing needs this grant.
+--
+-- Revoke from PUBLIC, not from anon/authenticated: those roles hold no grant of
+-- their own, they inherit PUBLIC's. Revoking from them is a no-op — an earlier
+-- migration (20260722142728) tried exactly that and changed nothing.
+--
+-- service_role keeps its explicit grant, so server-side callers are unaffected,
+-- and the function's owner (postgres) retains rights implicitly.
+
+revoke execute on function public.rls_auto_enable() from public;
+```
+
+Note the version prefix supersedes the earlier no-op rather than replacing it.
+The no-op is already recorded in the database's migration history and cannot be
+rewritten, so its file is committed alongside this one to keep the repo and the
+database's history in step.
+
+- [ ] **Step 4: Apply it**
+
+`apply_migration`, `name: revoke_rls_auto_enable_from_public`.
+
+- [ ] **Step 5: Verify the grant is actually gone**
+
+```sql
+select proacl::text as acl,
+       has_function_privilege('anon','public.rls_auto_enable()','EXECUTE') as anon_can,
+       has_function_privilege('authenticated','public.rls_auto_enable()','EXECUTE') as auth_can,
+       has_function_privilege('service_role','public.rls_auto_enable()','EXECUTE') as service_can
+from pg_proc
+where proname = 'rls_auto_enable' and pronamespace = 'public'::regnamespace;
+```
+
+Expected: `anon_can` and `auth_can` are now `false`; `service_can` stays `true`.
+If `service_can` flipped to false, the revoke was too wide — stop and report.
+
+- [ ] **Step 6: Verify the advisory clears**
 
 Call `get_advisors` with `type: security`.
 Expected: the two `rls_auto_enable` lints are gone.
 
-- [ ] **Step 5: Verify the trigger still works**
+- [ ] **Step 7: Verify the trigger still fires**
+
+The revoke must not break the safety net. Run each statement, then confirm the
+probe table is gone.
 
 ```sql
 create table public.rls_probe (id int);
 select relrowsecurity from pg_class where oid = 'public.rls_probe'::regclass;
 drop table public.rls_probe;
+select to_regclass('public.rls_probe') as should_be_null;
 ```
 
-Expected: `relrowsecurity` is `true` — the event trigger still fires despite the revoke.
+Expected: `relrowsecurity` is `true`, and `should_be_null` is `null`. If the
+probe table survives, drop it before finishing — leaving it behind pollutes the
+schema.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 8: Commit both files**
+
+The no-op is already in the database's migration history, so its file is
+committed too — the repo must mirror what was applied, not what we wish had been.
 
 ```bash
-git add supabase/migrations/20260722000100_revoke_rls_auto_enable_execute.sql
-git commit -m "fix(db): revoke public EXECUTE on the rls_auto_enable event trigger"
+git add supabase/migrations/20260722000100_revoke_rls_auto_enable_execute.sql \
+        supabase/migrations/20260722000110_revoke_rls_auto_enable_from_public.sql
+git commit -m "fix(db): revoke rls_auto_enable EXECUTE from PUBLIC, not from anon
+
+anon and authenticated hold no grant of their own on this function - they
+inherit PUBLIC's, which Postgres grants by default at creation. Revoking from
+them changed nothing, and the security lint stayed put.
+
+The no-op migration is committed alongside the fix because it is already
+recorded in the database's migration history and cannot be rewritten."
 ```
 
 ---
@@ -492,30 +553,50 @@ git commit -m "feat(ci): sync listings.json into Supabase hourly and on change"
 git push
 ```
 
-- [ ] **Step 5: Run it once and confirm the row count closes**
+- [ ] **Step 5: Record that the run itself is deferred, and why**
+
+**Do not try to dispatch the workflow from this branch.** GitHub only exposes a
+`workflow_dispatch` workflow once its file exists on the repository's *default*
+branch, so `gh workflow run sync_supabase.yml` will fail with "workflow not
+found" until this branch merges. That is a platform constraint, not a mistake to
+work around — do not push the workflow straight to `main` to get around it, and
+do not attempt to run `seed_supabase.py` locally, which would require handling
+the service key.
+
+Confirm the pre-merge state instead, so the post-merge delta is unambiguous:
+
+```sql
+select origin, count(*) from public.hackathons group by origin;
+```
+
+Expected right now: `listings_json | 32`. Record it.
+
+- [ ] **Step 6: Confirm the deferred verification is written down**
+
+The row count closing from 32 to 79 is this plan's headline outcome, and it
+cannot happen until merge. Make sure it does not get lost: state plainly in your
+report that after this branch merges to `main`, someone must run
 
 ```bash
 gh workflow run sync_supabase.yml --repo Hack-HQ/hackhq
 gh run watch --repo Hack-HQ/hackhq
 ```
 
-Then `execute_sql`:
+and then confirm:
 
 ```sql
 select origin, count(*) from public.hackathons group by origin;
-```
-
-Expected: `listings_json | 79`. If it is still 32, the workflow did not run or the secrets are wrong — read the run log before changing anything.
-
-- [ ] **Step 6: Confirm nothing lost its visibility**
-
-```sql
 select count(*) filter (where is_visible) as visible,
        count(*) filter (where lat is not null) as geocoded
 from public.hackathons;
 ```
 
-Expected: `visible = 79`. `geocoded` will be `0` — the geocoder has never run, and Plan 2 must not switch `/globe` to this source until it has.
+Expected after that run: `listings_json | 79`, `visible = 79`. `geocoded` will
+still be `0` — the geocoder has never run, and Plan 2 must not switch `/globe`
+to this source until it has.
+
+If the hourly cron fires first, it does the same job; the manual dispatch just
+avoids waiting up to an hour.
 
 ---
 
