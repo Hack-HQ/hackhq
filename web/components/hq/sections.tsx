@@ -86,9 +86,11 @@ export function SubmitSection() {
       tabIndex={-1}
       // Spacing sits in the margin, not the padding: padding is inside the
       // border box the browser scrolls to, so the 5rem of it was silently
-      // doubling as the anchor offset. It cleared the pill by 1.9px — inflate
-      // the pill's text and the shell landed *under* it. The gap above is
-      // unchanged (4.5rem margin + 0.5rem padding); the offset is now explicit.
+      // doubling as the anchor offset. 5rem cleared the pill's bottom edge by
+      // about 2px (nav.tsx derives that edge), so inflating the pill's text
+      // landed the shell *under* it. The gap above is unchanged (4.5rem margin
+      // + 0.5rem padding); the offset is now explicit and measured.
+      // The fallback only covers the render before nav.tsx publishes.
       style={{ scrollMarginTop: "var(--nav-pill-bottom, 4.875rem)" }}
       className="mt-18 p-2 focus:outline-none"
     >

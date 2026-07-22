@@ -16,6 +16,14 @@ export function NavPill() {
   // than letting each scroll target guess: the pill is sized by px-based text,
   // so a browser minimum-font-size setting grows it past any literal — the
   // same thing that broke the mobile menu's offset in #113.
+  //
+  // At default text size that edge lands at 78px, i.e. 4.875rem: 16px from the
+  // nav's `top-4`, then the pill's own 1px border + 8px `p-2`, its tallest
+  // child (the 44px logo chip — a 16px monogram in 14px of `py-3.5`), and 8px
+  // + 1px again. That is the one place this figure is derived; consumers of
+  // --nav-pill-bottom carry 4.875rem only as a pre-hydration fallback and
+  // should point back here rather than restate it. Recompute it if the pill's
+  // padding, border, or tallest child changes.
   useEffect(() => {
     const pill = pillRef.current;
     if (!pill) return;

@@ -47,9 +47,11 @@ export function StageJumpNav() {
     <section
       ref={railRef}
       // Pins below the pill's measured bottom edge, not below a literal.
-      // `top-20` was 5rem — 3px of clearance over a pill that measures 77px, so
-      // inflating the pill's text pinned the rail *underneath* it. The 0.25rem
-      // keeps the small gap `top-20` happened to give, now by intent.
+      // `top-20` was 5rem, a couple of px past where the pill ends (nav.tsx
+      // derives that edge), so inflating the pill's text pinned the rail
+      // *underneath* it. The 0.25rem is the breathing gap the old literal only
+      // had by accident, now stated on purpose. The fallback matches nav.tsx
+      // and only covers the render before it publishes.
       style={{ top: "calc(var(--nav-pill-bottom, 4.875rem) + 0.25rem)" }}
       className="sticky z-40 p-2 pt-0"
     >
