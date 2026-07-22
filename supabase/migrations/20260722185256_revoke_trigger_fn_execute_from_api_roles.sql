@@ -1,0 +1,17 @@
+-- supabase/migrations/20260722185256_revoke_trigger_fn_execute_from_api_roles.sql
+-- The previous migration revoked EXECUTE on this function from PUBLIC, copying
+-- what worked for rls_auto_enable(). It was a no-op here, and the reason is the
+-- exact inverse of that earlier case.
+--
+--   rls_auto_enable          acl {postgres=X, service_role=X}   - anon inherited via PUBLIC
+--   skip_sync_over_user_rows acl {postgres=X, anon=X, authenticated=X, service_role=X}
+--
+-- Supabase's ALTER DEFAULT PRIVILEGES grants EXECUTE explicitly to anon and
+-- authenticated on every function created in this schema. So the older function
+-- needed `from public` and this one needs the roles named. Revoking the form
+-- that does not apply silently changes nothing either way - which is the third
+-- time that shape of mistake has appeared on this branch.
+--
+-- A trigger function needs no caller: it is invoked by the trigger, not through
+-- EXECUTE.
+revoke execute on function public.skip_sync_over_user_rows() from anon, authenticated;
