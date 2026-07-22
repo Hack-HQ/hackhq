@@ -184,8 +184,10 @@ npm run build
 npm run start
 ```
 
-After changing `listings.json` or `README.md`, run a new build (or redeploy)
-for production to pick up the updates.
+After changing `listings.json` or `README.md`, deploy the changed file. A
+rebuild is not required for the data-backed pages — they revalidate within the
+hour (see [Render model](#render-model)). Rebuild when you want the change live
+immediately, or when you have changed `/resources`, which does not revalidate.
 
 ## Tech stack
 
