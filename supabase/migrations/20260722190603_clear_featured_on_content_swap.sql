@@ -63,8 +63,12 @@ create trigger hackathons_clear_featured_on_content_swap
   for each row
   execute function public.clear_featured_on_content_swap();
 
--- Same treatment as skip_sync_over_user_rows(): a trigger function needs no
--- caller, and Supabase's ALTER DEFAULT PRIVILEGES grants EXECUTE to anon and
--- authenticated explicitly, so the roles must be named (revoking from PUBLIC
--- here would be a no-op - see 20260722185256).
+-- A trigger function needs no caller, so EXECUTE is revoked from the API roles.
+--
+-- NOTE: the parenthetical below is wrong, and the recorded statement is
+-- incomplete. A new function receives EXECUTE from TWO sources - PUBLIC by
+-- Postgres default, and anon/authenticated explicitly via Supabase's ALTER
+-- DEFAULT PRIVILEGES - so revoking from PUBLIC here is not a no-op, and naming
+-- only the roles left PUBLIC's grant in place. Migration 20260722192614 issues
+-- both forms and brings this function level with the other two.
 revoke execute on function public.clear_featured_on_content_swap() from anon, authenticated;
