@@ -36,7 +36,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
     links: [
       {
         title: "Major League Hacking",
-        href: "https://mlh.io/",
+        href: "https://www.mlh.com/",
         blurb: "The student hackathon circuit—events, community, and how seasons work.",
       },
       {
@@ -126,7 +126,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
     links: [
       {
         title: "MLH Event Calendar",
-        href: "https://mlh.io/events",
+        href: "https://www.mlh.com/events",
         blurb: "Plan a season instead of scrambling week to week.",
       },
       {
@@ -156,7 +156,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
     links: [
       {
         title: "MLH Coach & Mentor",
-        href: "https://mlh.io/coaches",
+        href: "https://www.mlh.com/coaches",
         blurb: "Paths into mentoring and coaching once you have a few weekends behind you.",
       },
       {
