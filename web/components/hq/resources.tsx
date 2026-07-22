@@ -6,16 +6,29 @@ import {
   type ResourceLink,
   type ResourceStage,
 } from "@/lib/resources";
+import { StageJumpNav } from "./stage-jump-nav";
+
+/**
+ * Sections offset their jump landing by the pinned rail's measured height.
+ * The 9rem fallback is what the rail actually measures at default text size,
+ * so the server render and a JS-off visit behave the same as a live one.
+ */
+const CLEARS_RAIL = { scrollMarginTop: "var(--stage-scroll-offset, 9rem)" };
 
 export function Resources() {
   return (
     <>
       <Hero />
-      <StageJumpNav />
-      {RESOURCE_STAGES.map((stage, i) => (
-        <StageSection key={stage.id} stage={stage} index={i} />
-      ))}
-      <ToolsStrip />
+      {/* The rail pins within this wrapper, not the whole page: it is only
+          useful while a section it links to is still in play, so it releases
+          after the toolkit rather than hovering over the closing CTA. */}
+      <div>
+        <StageJumpNav />
+        {RESOURCE_STAGES.map((stage, i) => (
+          <StageSection key={stage.id} stage={stage} index={i} />
+        ))}
+        <ToolsStrip />
+      </div>
       <NextStepCta />
     </>
   );
@@ -40,30 +53,6 @@ function Hero() {
   );
 }
 
-function StageJumpNav() {
-  return (
-    <section className="sticky top-20 z-40 p-2 pt-0">
-      <div className="glass-dark flex gap-1 overflow-x-auto rounded-2xl p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {RESOURCE_STAGES.map((stage) => (
-          <a
-            key={stage.id}
-            href={`#${stage.id}`}
-            className="shrink-0 rounded-full px-4 py-2.5 font-mono text-[10px] tracking-[0.18em] text-paper/70 transition hover:bg-white/10 hover:text-paper sm:text-[11px]"
-          >
-            {stage.title.toUpperCase()}
-          </a>
-        ))}
-        <a
-          href="#tools"
-          className="shrink-0 rounded-full px-4 py-2.5 font-mono text-[10px] tracking-[0.18em] text-paper/70 transition hover:bg-white/10 hover:text-paper sm:text-[11px]"
-        >
-          TOOLS
-        </a>
-      </div>
-    </section>
-  );
-}
-
 function StageSection({
   stage,
   index,
@@ -73,7 +62,7 @@ function StageSection({
 }) {
   const soft = index % 2 === 0;
   return (
-    <section id={stage.id} className="scroll-mt-36 p-2 pt-0">
+    <section id={stage.id} style={CLEARS_RAIL} className="p-2 pt-0">
       <div
         className={`shell px-6 py-14 sm:px-12 sm:py-20 ${
           soft ? "bg-ink-soft" : "bg-ink"
@@ -139,7 +128,7 @@ function LinkRow({ link }: { link: ResourceLink }) {
 
 function ToolsStrip() {
   return (
-    <section id="tools" className="scroll-mt-36 p-2 pt-0">
+    <section id="tools" style={CLEARS_RAIL} className="p-2 pt-0">
       <div className="shell bg-ink-soft px-6 py-14 sm:px-12 sm:py-20">
         <div className="kicker text-coral">Toolkit · Always useful</div>
         <h2 className="display mt-3 text-[clamp(1.5rem,3.5vw,2.6rem)] text-paper">
