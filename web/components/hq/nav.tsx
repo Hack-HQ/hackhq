@@ -2,16 +2,42 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { NAV_LINKS, isActiveRoute } from "@/lib/nav";
 import { MobileMenu } from "./mobile-menu";
 import { REPO_URL } from "@/lib/types-hq";
 
 export function NavPill() {
   const pathname = usePathname();
+  const pillRef = useRef<HTMLDivElement>(null);
+
+  // The pill floats over the page, so anything an anchor jumps to has to be
+  // pushed clear of it. Publish where its bottom edge actually falls rather
+  // than letting each scroll target guess: the pill is sized by px-based text,
+  // so a browser minimum-font-size setting grows it past any literal — the
+  // same thing that broke the mobile menu's offset in #113.
+  useEffect(() => {
+    const pill = pillRef.current;
+    if (!pill) return;
+    const publish = () => {
+      const { bottom } = pill.getBoundingClientRect();
+      document.documentElement.style.setProperty(
+        "--nav-pill-bottom",
+        `${Math.round(bottom)}px`,
+      );
+    };
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(pill);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <nav className="fixed inset-x-0 top-4 z-50 flex justify-center px-3">
-      <div className="glass-dark flex items-center gap-1 rounded-3xl p-2 pl-2.5 shadow-[0_16px_48px_rgba(0,0,0,0.45)]">
+      <div
+        ref={pillRef}
+        className="glass-dark flex items-center gap-1 rounded-3xl p-2 pl-2.5 shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
+      >
         {/* Logo chip - HQ monogram */}
         <Link
           href="/"
