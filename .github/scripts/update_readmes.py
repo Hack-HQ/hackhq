@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """
-Update README.md with the latest hackathons from listings.json.
+Update README.md and ARCHIVE.md with the latest hackathons from listings.json.
 
-This script reads the listings data, generates the markdown table,
-and embeds it in the README file between the marker comments.
+This script reads the listings data, generates the markdown tables, and embeds
+them between the marker comments: live hackathons go to README.md, closed ones
+to ARCHIVE.md. listings.json stays the single source of truth — a listing is
+archived purely by being marked closed (state="closed" / active=False), which is
+what the close_opportunity issue flow already does.
 """
 
 import os
@@ -36,22 +39,30 @@ def main():
         # Sort listings
         hackathons = util.sort_listings(hackathons)
 
-        # Generate table
-        hackathons_table = create_hackathons_table(hackathons)
+        # Split live from closed. A closed hackathon belongs in ARCHIVE.md, not
+        # the README — otherwise every past event accumulates in the main table
+        # and the archive stays empty (which is what happened before this split).
+        live = [l for l in hackathons if util.resolve_state(l) != "closed"]
+        closed = [l for l in hackathons if util.resolve_state(l) == "closed"]
 
-        # Get README path
-        readme_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "..", "..",
-            "README.md"
+        repo_root = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "..", ".."
         )
 
-        # Embed table in README
+        # Embed the live table in README
         util.embed_table(
-            readme_path,
-            hackathons_table,
+            os.path.join(repo_root, "README.md"),
+            create_hackathons_table(live),
             "<!-- HACKATHONS_TABLE_START -->",
             "<!-- HACKATHONS_TABLE_END -->"
+        )
+
+        # Embed the closed table in ARCHIVE
+        util.embed_table(
+            os.path.join(repo_root, "ARCHIVE.md"),
+            create_archive_table(closed),
+            "<!-- ARCHIVE_TABLE_START -->",
+            "<!-- ARCHIVE_TABLE_END -->"
         )
 
         # Regenerate the live stats banner from the freshly written table.
@@ -73,10 +84,11 @@ def main():
         # Set commit message
         now = datetime.now(util.PST)
         timestamp = now.strftime("%Y-%m-%d %H:%M PST")
-        util.set_output("commit_message", f"Update README ({timestamp})")
+        util.set_output("commit_message", f"Update README + ARCHIVE ({timestamp})")
 
-        print(f"Successfully updated README:")
-        print(f"  - {len(hackathons)} hackathons")
+        print(f"Successfully updated README and ARCHIVE:")
+        print(f"  - {len(live)} live hackathons (README.md)")
+        print(f"  - {len(closed)} archived hackathons (ARCHIVE.md)")
 
     except Exception as e:
         util.fail(str(e))
@@ -113,6 +125,34 @@ def create_hackathons_table(listings):
             link = util.format_link(listing["url"])
 
         row = f"| {status} | {host} | {title} | {fmt} | {location} | {prize} | {deadline} | {link} | {date} |"
+        rows.append(row)
+
+    return "\n".join(rows)
+
+
+def create_archive_table(listings):
+    """Create the ARCHIVE.md table for closed hackathons.
+
+    Narrower than the README table: a closed listing has no live application
+    link (always :lock:) so Prize/Deadline are dropped and the columns match the
+    header ARCHIVE.md already declares.
+    """
+    rows = []
+    header = "| Status | Host | Hackathon | Format | Location | Application | Date Posted |"
+    separator = "| ------ | ---- | --------- | ------ | -------- | ----------- | ----------- |"
+    rows.append(header)
+    rows.append(separator)
+
+    for listing in listings:
+        host = util.sanitize_table_cell(listing["company_name"])
+        title = util.sanitize_table_cell(listing["title"])
+        if util.is_featured(listing):
+            title = f"⭐ {title}"
+        fmt = util.sanitize_table_cell(listing.get("format", ""))
+        location = util.format_locations(listing.get("locations", []))
+        date = util.format_date(listing["date_posted"])
+
+        row = f"| 🔒 **[CLOSED]** | {host} | {title} | {fmt} | {location} | :lock: | {date} |"
         rows.append(row)
 
     return "\n".join(rows)

@@ -42,7 +42,7 @@ jobs:
           # gating on the README alone discarded a banner-only change and let the
           # committed "as of" date go stale (#112). Staging first and asking
           # `--cached` also means a run that changed nothing commits nothing.
-          git add README.md assets/hackathons-banner.svg
+          git add README.md ARCHIVE.md assets/hackathons-banner.svg
           if git diff --cached --quiet; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
