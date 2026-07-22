@@ -6,7 +6,8 @@ export type ResourceLink = {
 
 export type ResourceStage = {
   id: string;
-  kicker: string;
+  /** The descriptor after the stage number — "First steps", "Crew", … */
+  label: string;
   title: string;
   summary: string;
   tips: string[];
@@ -22,7 +23,7 @@ export type ResourceTool = {
 export const RESOURCE_STAGES: ResourceStage[] = [
   {
     id: "getting-started",
-    kicker: "Stage 01 · First steps",
+    label: "First steps",
     title: "Getting started",
     summary:
       "A hackathon is a build sprint with a demo at the end—not a coding exam. Show up curious; leave with a story.",
@@ -52,7 +53,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
   },
   {
     id: "finding-people",
-    kicker: "Stage 02 · Crew",
+    label: "Crew",
     title: "Finding your people",
     summary:
       "Solo is fine. A balanced team is often better. The goal is people who finish together—not a stacked résumé.",
@@ -82,7 +83,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
   },
   {
     id: "first-weekend",
-    kicker: "Stage 03 · The sprint",
+    label: "The sprint",
     title: "Your first weekend",
     summary:
       "Treat the clock as a design constraint. Ideate fast, cut scope early, and protect time for the pitch.",
@@ -100,7 +101,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
       },
       {
         title: "MLH Hackathon Organizer Guide",
-        href: "https://guide.mlh.io/",
+        href: "https://guide.mlh.com/",
         blurb: "Useful even as a participant—see how weekends are structured from the inside.",
       },
       {
@@ -112,7 +113,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
   },
   {
     id: "leveling-up",
-    kicker: "Stage 04 · Season play",
+    label: "Season play",
     title: "Leveling up",
     summary:
       "After a few events, stop treating every weekend the same. Choose on purpose and reuse what works.",
@@ -142,7 +143,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
   },
   {
     id: "advanced",
-    kicker: "Stage 05 · Power user",
+    label: "Power user",
     title: "Advanced play",
     summary:
       "The next level is not more caffeine. It is better selection, sharper demos, and giving back.",
@@ -159,16 +160,67 @@ export const RESOURCE_STAGES: ResourceStage[] = [
         blurb: "Paths into mentoring and coaching once you have a few weekends behind you.",
       },
       {
-        title: "Hackathon Organizer Guide",
-        href: "https://guide.mlh.io/",
-        blurb: "If you are ready to run one—or help someone who is.",
-      },
-      {
         title: "Judging plan (MLH)",
         href: "https://guide.mlh.com/general-information/judging-and-submissions/judging-plan",
         blurb: "See how organizers brief judges so you can design for the score sheet.",
       },
     ],
+  },
+];
+
+/** Two-digit stage number, derived from position — the first stage is "01". */
+function stageNumber(index: number): string {
+  return String(index + 1).padStart(2, "0");
+}
+
+/** "Stage 04 · Season play" — the number is never written down by hand. */
+export function stageKicker(stage: ResourceStage, index: number): string {
+  return `Stage ${stageNumber(index)} · ${stage.label}`;
+}
+
+/** The stages the home-page teaser surfaces, in grid order. */
+const TEASER_STAGE_IDS = [
+  "getting-started",
+  "finding-people",
+  "leveling-up",
+] as const;
+
+export type ResourceTeaserId = (typeof TEASER_STAGE_IDS)[number] | "tools";
+
+export type ResourceTeaserTile = {
+  id: ResourceTeaserId;
+  kicker: string;
+  title: string;
+  href: string;
+};
+
+/**
+ * Home-page teaser copy, derived from RESOURCE_STAGES.
+ *
+ * The tiles used to carry hand-written stage numbers, and they drifted: the tile
+ * reading "Stage 03 · Leveling up" linked to the section the guide numbers 04.
+ * Taking the number from the stage's position means the two cannot disagree.
+ */
+export const RESOURCE_TEASER: ResourceTeaserTile[] = [
+  ...TEASER_STAGE_IDS.map((id) => {
+    const index = RESOURCE_STAGES.findIndex((stage) => stage.id === id);
+    const stage = RESOURCE_STAGES[index];
+    // Unreachable unless a stage is renamed out from under the teaser, in which
+    // case failing the build beats shipping a tile that links to nothing.
+    if (!stage) throw new Error(`Teaser references unknown stage "${id}"`);
+    return {
+      id,
+      kicker: `Stage ${stageNumber(index)}`,
+      title: stage.title,
+      href: `/resources#${id}`,
+    };
+  }),
+  {
+    id: "tools",
+    // Not a stage: the page presents the toolkit as a strip after the last one.
+    kicker: "Toolkit",
+    title: "Tools and templates",
+    href: "/resources#tools",
   },
 ];
 

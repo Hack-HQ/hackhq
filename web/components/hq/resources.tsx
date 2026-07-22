@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   RESOURCE_STAGES,
   RESOURCE_TOOLS,
+  stageKicker,
   type ResourceLink,
   type ResourceStage,
 } from "@/lib/resources";
@@ -78,7 +79,7 @@ function StageSection({
           soft ? "bg-ink-soft" : "bg-ink"
         }`}
       >
-        <div className="kicker text-coral">{stage.kicker}</div>
+        <div className="kicker text-coral">{stageKicker(stage, index)}</div>
         <h2 className="display mt-3 text-[clamp(1.5rem,3.5vw,2.6rem)] text-paper">
           {stage.title}
         </h2>

@@ -2,27 +2,20 @@
 
 import Link from "next/link";
 import { motion, type MotionValue } from "framer-motion";
-
-export type ResourceTile = {
-  id: string;
-  kicker: string;
-  title: string;
-  href: string;
-  /** Drop a file in /public and set this path later, e.g. "/resources/getting-started.jpg" */
-  image?: string;
-  fallbackClass: string;
-};
+import type { ResourceTeaserTile } from "@/lib/resources";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function ResourceTileCard({
   tile,
+  fallbackClass,
   parallaxY,
   reduceMotion,
   index,
 }: {
-  tile: ResourceTile;
-  parallaxY: MotionValue<number>;
+  tile: ResourceTeaserTile;
+  fallbackClass: string;
+  parallaxY: MotionValue<string>;
   reduceMotion: boolean;
   index: number;
 }) {
@@ -45,7 +38,8 @@ export function ResourceTileCard({
         aria-label={`${tile.title} — open resources`}
       />
 
-      {/* Background plane — set `image` on the tile config when assets are ready */}
+      {/* Background plane. It overhangs the tile by 18% on every side so the
+          parallax travel below never exposes an edge — see TRAVEL in the teaser. */}
       <motion.div
         className="absolute inset-[-18%] will-change-transform"
         style={{ y: parallaxY }}
@@ -53,17 +47,9 @@ export function ResourceTileCard({
         <div
           className={`absolute inset-0 origin-center transition-transform duration-700 ease-out ${
             reduceMotion ? "" : "group-hover:scale-[1.08]"
-          } ${tile.fallbackClass}`}
+          } ${fallbackClass}`}
         >
-          {tile.image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={tile.image}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          ) : null}
-          {/* Soft brand wash so parallax reads before photo assets land */}
+          {/* Soft brand wash so the parallax reads on a flat gradient */}
           <div
             aria-hidden
             className="absolute inset-0 opacity-50 mix-blend-soft-light"
