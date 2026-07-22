@@ -54,8 +54,10 @@ def build_row(listing):
         "source": listing.get("source"),
         "deadline": listing.get("deadline"),
         "featured": bool(listing.get("featured", False)),
-        # Declares which write path produced this row. The upsert below filters
-        # on it so user submissions are never overwritten by the sync.
+        # Declares which write path produced this row. Rows a user submits
+        # through the site carry origin='user' instead. The upsert below does
+        # not yet filter on it — until it does, user rows are protected only by
+        # uuid ids never colliding with a listings.json entry's.
         "origin": "listings_json",
     }
 
