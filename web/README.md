@@ -76,10 +76,15 @@ files require a new deploy/build to appear on the site.
 Images referenced in the README (e.g. `assets/hackathons-banner.svg`) are
 resolved by `resolveAssetSrc()` in `lib/parse-readme.ts`:
 
-1. **Local first** — if the file exists under `../assets/`, it's served by the
-   route handler at `app/repo-assets/[...path]/route.ts`.
+1. **Local first** — if the file exists under `../assets/`, it's served as a
+   static file from `public/repo-assets/`.
 2. **Remote fallback** — otherwise it falls back to the file on `main` via
    `raw.githubusercontent.com`.
+
+`public/repo-assets/` is generated, not committed. `scripts/copy-repo-assets.mjs`
+copies `../assets/` into it, and both `npm run dev` (via `predev`) and
+`npm run build` run that script first — so the files are in place before Next.js
+starts. Run it on its own with `npm run copy-assets`.
 
 ## Project structure
 
@@ -92,8 +97,7 @@ web/
 │   ├── my/page.tsx                    # Protected member tracker hub
 │   ├── auth/[[...auth]]/page.tsx      # Clerk sign-in/sign-up
 │   ├── hackathons/page.tsx            # Legacy README browser
-│   ├── layout.tsx                     # Root layout, fonts, optional ClerkProvider
-│   └── repo-assets/[...path]/route.ts # Serves files from ../assets
+│   └── layout.tsx                     # Root layout, fonts, optional ClerkProvider
 ├── components/
 │   ├── hq/                            # Current HackHQ UI (globe, deck, nav, …)
 │   │   ├── nav.tsx                    # Nav pill; inline links at sm and up
