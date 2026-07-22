@@ -56,20 +56,29 @@ listings are excluded from the map on purpose and never trip the check.
 
 ### Render model
 
-Production pages are **statically generated at build time** (`next build`).
-Both loaders use `fs.readFileSync` during that build step, so listing data,
-deadline-derived status, and counts are baked into the HTML/JSON payload when
-the site is built — not on each visitor request.
+Pages are prerendered, then **revalidated hourly** (ISR). Both loaders use
+`fs.readFileSync` at build time, so listing data and counts are baked into the
+payload — but every data-backed page exports `revalidate = 3600`, so the server
+re-runs the loader in the background at most once an hour and serves the fresh
+result from then on. **A data change does not need a rebuild to appear**; it
+needs a deploy of the changed file plus up to an hour.
+
+That hour is deliberate: deadline-derived state ("closing soon", day counts)
+depends on the current date, so a page built last week would otherwise keep
+serving last week's countdown (#47).
 
 | Route | Production render mode |
 | ----- | ---------------------- |
-| `/`, `/deck`, `/globe`, `/my`, `/hackathons` | Static (prerendered) |
-| `/repo-assets/[...path]` | Dynamic (serves files from `../assets/` on demand) |
+| `/`, `/deck`, `/globe`, `/my`, `/hackathons` | Prerendered, ISR — `revalidate = 3600` |
+| `/resources` | Prerendered, no revalidation — content is compiled-in constants, not repo data |
+| `/auth/[[...auth]]` | Dynamic — rendered per request |
 
-**Development (`npm run dev`)** differs: Next.js re-executes server components
-when you refresh or when files change, so edits to `listings.json` or
-`README.md` show up without a full rebuild. In production, changes to those
-files require a new deploy/build to appear on the site.
+`next build` prints this: the ISR routes carry a `Revalidate` value of `1h`,
+`/resources` carries none, and `/auth/[[...auth]]` is marked `ƒ (Dynamic)`.
+
+**Development (`npm run dev`)** is more immediate: Next.js re-executes server
+components when you refresh or when files change, so edits to `listings.json`
+or `README.md` show up right away rather than on the next revalidation.
 
 ### Assets
 
