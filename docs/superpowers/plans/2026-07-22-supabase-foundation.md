@@ -51,7 +51,7 @@ literals.
 
 ### Task 1: Track the existing schema before changing it
 
-The table was created by hand and Supabase's migration history is empty. Capture it first, so later migrations apply to a known baseline.
+The table was created by hand, and Supabase's migration history was empty when this plan was written. Capture the schema first, so later migrations apply to a known baseline.
 
 **Files:**
 - Create: `supabase/migrations/20260722141955_baseline_hackathons.sql`
@@ -65,10 +65,24 @@ The table was created by hand and Supabase's migration history is empty. Capture
 Call `list_projects`. Expected: exactly one project named `HackHQ`, id `gvdhwygerbsuojwpnsgq`.
 If it returns anything other than exactly that one project, stop — the connector is pointed at the wrong account, and nothing here should be applied to it.
 
-- [ ] **Step 2: Confirm the migration history is still empty**
+- [ ] **Step 2: Check the migration history**
 
 Call `list_migrations` with `project_id: gvdhwygerbsuojwpnsgq`.
-Expected: `{"migrations":[]}`. If it is non-empty, someone has started this already — stop and re-read.
+
+Against a project this plan has never run on, expect `{"migrations":[]}` — the
+schema was applied by hand and nothing was tracked.
+
+Against the HackHQ project it will **not** be empty, because this plan has
+already been executed there. Its history starts at `20260722141955
+baseline_hackathons` and continues through the versions the tasks below name.
+That is the finished state, not a warning sign. Re-run each task's *post-apply*
+verification rather than re-applying anything; the *pre-condition* checks — an
+empty history here, the two `rls_auto_enable` lints in Task 2 Step 1 — describe
+the database as it stood before this plan ran and will not reproduce. The
+migrations are idempotent, so a re-apply is survivable, but it buys nothing.
+
+Stop and re-read only if the history contains something this plan does not
+account for — that means someone else has started work here.
 
 - [ ] **Step 3: Write the baseline migration file**
 
@@ -110,7 +124,7 @@ Use `apply_migration` with `project_id: gvdhwygerbsuojwpnsgq`, `name: baseline_h
 
 - [ ] **Step 5: Verify it recorded and changed nothing**
 
-Call `list_migrations`. Expected: one entry named `baseline_hackathons`.
+Call `list_migrations`. Expected: an entry named `baseline_hackathons`, and on a project this plan has not run against before, the only one.
 
 Then `execute_sql`:
 
