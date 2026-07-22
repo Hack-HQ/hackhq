@@ -30,6 +30,7 @@ describe("NAV_LINKS", () => {
     expect(NAV_LINKS.map(([, href]) => href)).toEqual([
       "/globe",
       "/deck",
+      "/resources",
       "/my",
     ]);
   });
