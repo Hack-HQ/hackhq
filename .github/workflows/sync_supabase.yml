@@ -1,0 +1,32 @@
+# .github/workflows/sync_supabase.yml
+name: Sync Supabase
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/listings.json'
+      - '.github/scripts/seed_supabase.py'
+  schedule:
+    # Hourly. The site's ISR window is an hour, so syncing faster buys nothing.
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: sync-supabase
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r .github/scripts/requirements.txt
+      - name: Push listings.json into Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python .github/scripts/seed_supabase.py
