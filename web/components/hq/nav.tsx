@@ -80,9 +80,27 @@ export function NavPill() {
         {/* Links - below sm, where the row above is hidden */}
         <MobileMenu />
 
-        {/* Submit CTA */}
+        {/* Submit CTA.
+            On the home page this has to scroll itself. <Link>'s documented
+            default is to *maintain* scroll position and only jump when the
+            target Page is outside the viewport — on "/" the Page is already
+            visible, so the router kept the position and the button appeared
+            dead. The footer's plain <a> never had the problem because it
+            bypasses the router and the browser handles the fragment.
+            Off the home page there is a real route change, so the router
+            still does the work and we leave it alone. */}
         <Link
           href="/#submit"
+          onClick={(e) => {
+            if (pathname !== "/") return;
+            const target = document.getElementById("submit");
+            if (!target) return;
+            e.preventDefault();
+            // Honours the section's scroll-margin-top, so it lands clear of
+            // this pill rather than behind it.
+            target.scrollIntoView();
+            window.history.pushState(null, "", "/#submit");
+          }}
           className="ml-1 flex items-center gap-2 rounded-2xl bg-paper px-5 py-3 font-mono text-[11px] font-bold tracking-[0.18em] text-ink transition hover:bg-white"
         >
           + SUBMIT
