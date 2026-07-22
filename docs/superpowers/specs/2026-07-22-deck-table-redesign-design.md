@@ -51,8 +51,20 @@ merge logic beyond this.
 
 ## Current state of the database
 
-Verified against project `gvdhwygerbsuojwpnsgq` (org `atvjoxcqenrldzrzodsu`) on
-2026-07-22. More exists than the plan assumed, and some of it is broken.
+> **Point-in-time snapshot — superseded.** Taken against project
+> `gvdhwygerbsuojwpnsgq` (org `atvjoxcqenrldzrzodsu`) on 2026-07-22, *before any
+> migration ran*. It is kept because it is what motivated the phases below, not
+> because it is current. `supabase/migrations/` is the authority on the schema as
+> it stands; `list_migrations` is the authority on what has been applied.
+>
+> Phase 0 and the schema-and-RLS half of phase 2 have since shipped, so parts of
+> what follows are already stale: the migration history is no longer empty (it
+> starts at `20260722141955_baseline_hackathons`), the columns in **Schema**
+> exist, and the single `public read` policy described below has been replaced by
+> four — read for `anon` and `authenticated`, plus insert/update/delete scoped to
+> the submitter. Clerk JWT wiring, the rest of phase 2, is still outstanding, so
+> those write policies match nothing yet. Still true as of 2026-07-22: 32 rows
+> against 79 in `listings.json`, and 0 of them geocoded.
 
 | Item | State |
 |------|-------|
@@ -61,7 +73,7 @@ Verified against project `gvdhwygerbsuojwpnsgq` (org `atvjoxcqenrldzrzodsu`) on
 | `startDate` / `endDate` | **Already present** — #147's schema half is done. Note camelCase, not snake_case |
 | `lat` / `lng` / `geo_status` | Present, but **0 of 32 rows geocoded** |
 | Row count | **32, against 79 in `listings.json`** — last sync 2026-07-14, data as of 2026-07-04 |
-| Migration history | **Empty** — schema was applied by hand |
+| Migration history | **Empty** — schema was applied by hand. *Stale: phase 0 shipped, see the note above* |
 
 Consequences for this design:
 
@@ -76,9 +88,9 @@ Consequences for this design:
   `startDate`/`endDate`. Keep the existing camelCase rather than renaming; a
   rename would break `seed_supabase.py` for no benefit.
 
-### RLS as it stands
+### RLS as it stood on 2026-07-22, before phase 2
 
-One policy exists: `public read` — `SELECT` for `anon` where `is_visible = true`.
+One policy existed: `public read` — `SELECT` for `anon` where `is_visible = true`.
 Two gaps follow from that, and both block this design:
 
 1. **No policy covers the `authenticated` role.** Once Clerk sign-in is wired,
