@@ -602,12 +602,32 @@ avoids waiting up to an hour.
 
 ## Definition of done
 
-- `list_migrations` shows four migrations, and `supabase/migrations/` holds the same four files.
-- `get_advisors(type: security)` returns no `rls_auto_enable` lints.
-- `select count(*) from public.hackathons` returns 79, all `origin = 'listings_json'`.
-- Four RLS policies exist; `anon` reads 32+ rows; `anon` cannot insert.
+Do not count migrations. Execution added more than the tasks below prescribe —
+a no-op that could not be rewritten, and several fixes found in review — so any
+fixed number goes stale the moment something is corrected. Assert the property
+instead.
+
+**In-branch, checkable before merge:**
+
+- Every version `list_migrations` reports has a file of the same name in
+  `supabase/migrations/`, and vice versa, in the same order.
+- Replaying `supabase/migrations/` in filename order against an empty database
+  would succeed: no migration references an object no earlier migration creates,
+  and each is safe to re-run.
+- `get_advisors` returns no `security` lints, and no `performance` lint other
+  than `unused_index`.
+- `select count(*) from public.hackathons` returns 32, all `origin = 'listings_json'`.
+- `anon` reads the board and can neither insert nor read `submitted_by`.
+- An owner can still reach their own row when `is_visible` is false.
 - `python -m unittest discover -s .github/scripts -p 'test_*.py'` passes.
 - The web app is untouched — `git diff main --stat -- web/` is empty.
+
+**Post-merge, and only then:**
+
+- The sync has run and `select count(*)` returns 79. This cannot happen before
+  merge: `workflow_dispatch` and `schedule` only fire from the default branch.
+  Listing it as an in-branch criterion made the plan unsatisfiable by its own
+  tasks.
 
 ## Known gaps carried forward
 
