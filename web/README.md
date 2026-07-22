@@ -170,12 +170,17 @@ connections, and enable email/password under email authentication.
 
 ## Scripts
 
-| Script          | Description                          |
-| --------------- | ------------------------------------ |
-| `npm run dev`   | Start the development server         |
-| `npm run build` | Create a production build            |
-| `npm run start` | Serve the production build           |
-| `npm run lint`  | Run ESLint                           |
+| Script                 | Description                                          |
+| ---------------------- | ---------------------------------------------------- |
+| `npm run dev`          | Start the development server                         |
+| `npm run build`        | Create a production build                            |
+| `npm run start`        | Serve the production build                           |
+| `npm run lint`         | Run ESLint                                           |
+| `npm test`             | Run the Vitest suite (what CI runs)                  |
+| `npm run copy-assets`  | Refresh `public/repo-assets/` from `../assets/`      |
+
+`dev` and `build` run `copy-assets` for you; you only need it directly after
+changing something under `../assets/` while a dev server is already running.
 
 ## Production build
 
