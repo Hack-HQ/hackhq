@@ -12,6 +12,7 @@ deck, and member tracker, plus a legacy searchable directory at `/hackathons`.
 - **Globe (`/globe`)** — 3D Mapbox map with status-colored markers.
 - **Deck (`/deck`)** — flip through hackathons as tactile cards or a dense list.
 - **My HackHQ (`/my`)** — protected personal tracker pipeline (optional Clerk sign-in).
+- **Resources (`/resources`)** — a stage-by-stage field guide with curated links.
 - **All hackathons (`/hackathons`)** — legacy README-driven search and filters.
 
 ## How it works
@@ -25,6 +26,7 @@ disk when pages are generated.
 | -------- | ------ | ----------- |
 | `/`, `/deck`, `/globe`, `/my` | `loadHackathons()` in `lib/listings.ts` | `../.github/scripts/listings.json` |
 | `/hackathons` | `loadSiteData()` in `lib/parse-readme.ts` | `../README.md` (table + stats banner) |
+| `/resources` | none — imported directly | `lib/resources.ts` (stages, links, teaser copy) |
 
 `listings.json` is the source of truth for the main HackHQ experience.
 `parse-readme.ts` still powers the legacy `/hackathons` page, which parses the
@@ -56,30 +58,50 @@ listings are excluded from the map on purpose and never trip the check.
 
 ### Render model
 
-Production pages are **statically generated at build time** (`next build`).
-Both loaders use `fs.readFileSync` during that build step, so listing data,
-deadline-derived status, and counts are baked into the HTML/JSON payload when
-the site is built — not on each visitor request.
+Pages are prerendered, then **revalidated hourly** (ISR): every data-backed page
+exports `revalidate = 3600`, so the server re-runs its loader in the background
+at most once an hour.
+
+Be precise about what that refreshes. The loaders `fs.readFileSync` the repo
+files, and those files are **bundled into the deployment** by
+`outputFileTracingIncludes` in `next.config.ts` — so a revalidation re-reads the
+*deployed* copy, not whatever is on `main` now.
+
+| Changes without a rebuild | Needs a new build + deploy |
+| ------------------------- | -------------------------- |
+| Deadline-derived state — "closing soon" flags, day counts, anything computed from the current date | The listings themselves — editing `listings.json`, `README.md`, or `geocodes.json` |
+
+That is exactly what the hour is for (#47): those flags are derived from *today*,
+so a page prerendered last week would otherwise keep serving last week's
+countdown until someone redeployed.
 
 | Route | Production render mode |
 | ----- | ---------------------- |
-| `/`, `/deck`, `/globe`, `/my`, `/hackathons` | Static (prerendered) |
-| `/repo-assets/[...path]` | Dynamic (serves files from `../assets/` on demand) |
+| `/`, `/deck`, `/globe`, `/my`, `/hackathons` | Prerendered, ISR — `revalidate = 3600` |
+| `/resources` | Prerendered, no revalidation — content is compiled-in constants, not repo data |
+| `/auth/[[...auth]]` | Dynamic — rendered per request |
 
-**Development (`npm run dev`)** differs: Next.js re-executes server components
-when you refresh or when files change, so edits to `listings.json` or
-`README.md` show up without a full rebuild. In production, changes to those
-files require a new deploy/build to appear on the site.
+`next build` prints this: the ISR routes carry a `Revalidate` value of `1h`,
+`/resources` carries none, and `/auth/[[...auth]]` is marked `ƒ (Dynamic)`.
+
+**Development (`npm run dev`)** is more immediate: Next.js re-executes server
+components when you refresh or when files change, so edits to `listings.json`
+or `README.md` show up right away rather than on the next revalidation.
 
 ### Assets
 
 Images referenced in the README (e.g. `assets/hackathons-banner.svg`) are
 resolved by `resolveAssetSrc()` in `lib/parse-readme.ts`:
 
-1. **Local first** — if the file exists under `../assets/`, it's served by the
-   route handler at `app/repo-assets/[...path]/route.ts`.
+1. **Local first** — if the file exists under `../assets/`, it's served as a
+   static file from `public/repo-assets/`.
 2. **Remote fallback** — otherwise it falls back to the file on `main` via
    `raw.githubusercontent.com`.
+
+`public/repo-assets/` is generated, not committed. `scripts/copy-repo-assets.mjs`
+copies `../assets/` into it, and both `npm run dev` (via `predev`) and
+`npm run build` run that script first — so the files are in place before Next.js
+starts. Run it on its own with `npm run copy-assets`.
 
 ## Project structure
 
@@ -90,19 +112,23 @@ web/
 │   ├── globe/page.tsx                 # 3D globe
 │   ├── deck/page.tsx                  # Card deck
 │   ├── my/page.tsx                    # Protected member tracker hub
+│   ├── resources/page.tsx             # Hackathon field guide
 │   ├── auth/[[...auth]]/page.tsx      # Clerk sign-in/sign-up
 │   ├── hackathons/page.tsx            # Legacy README browser
-│   ├── layout.tsx                     # Root layout, fonts, optional ClerkProvider
-│   └── repo-assets/[...path]/route.ts # Serves files from ../assets
+│   └── layout.tsx                     # Root layout, fonts, optional ClerkProvider
 ├── components/
 │   ├── hq/                            # Current HackHQ UI (globe, deck, nav, …)
-│   │   ├── nav.tsx                    # Nav pill; inline links at sm and up
-│   │   └── mobile-menu.tsx            # The same sections below 640px
+│   │   ├── nav.tsx                    # Nav pill; inline links at md and up
+│   │   ├── mobile-menu.tsx            # The same sections below 768px
+│   │   ├── resources.tsx              # /resources page sections
+│   │   ├── stage-jump-nav.tsx         # Sticky stage rail; publishes its clearance
+│   │   └── resources-teaser.tsx       # Home-page 2×2 teaser + resource-tile-card
 │   └── legacy/                        # README-driven browser, gallery, cards
 ├── lib/
 │   ├── listings.ts                    # Reads listings.json, enriches for frontend
 │   ├── nav.ts                         # Nav sections + active-route matching
 │   ├── parse-readme.ts                # Parses ../README.md (legacy /hackathons)
+│   ├── resources.ts                   # Field-guide stages, links, teaser tiles
 │   ├── types-hq.ts                    # Hackathon types and display helpers
 │   └── types.ts                       # Legacy opportunity types
 └── proxy.ts                           # Clerk middleware (when keys are configured)
@@ -150,12 +176,17 @@ connections, and enable email/password under email authentication.
 
 ## Scripts
 
-| Script          | Description                          |
-| --------------- | ------------------------------------ |
-| `npm run dev`   | Start the development server         |
-| `npm run build` | Create a production build            |
-| `npm run start` | Serve the production build           |
-| `npm run lint`  | Run ESLint                           |
+| Script                 | Description                                          |
+| ---------------------- | ---------------------------------------------------- |
+| `npm run dev`          | Start the development server                         |
+| `npm run build`        | Create a production build                            |
+| `npm run start`        | Serve the production build                           |
+| `npm run lint`         | Run ESLint                                           |
+| `npm test`             | Run the Vitest suite (what CI runs)                  |
+| `npm run copy-assets`  | Refresh `public/repo-assets/` from `../assets/`      |
+
+`dev` and `build` run `copy-assets` for you; you only need it directly after
+changing something under `../assets/` while a dev server is already running.
 
 ## Production build
 
@@ -164,8 +195,10 @@ npm run build
 npm run start
 ```
 
-After changing `listings.json` or `README.md`, run a new build (or redeploy)
-for production to pick up the updates.
+After changing `listings.json` or `README.md`, run a new build and deploy — the
+data files are bundled into the deployment, so hourly revalidation alone will
+not pick up an edit. Revalidation keeps *date-derived* state fresh between
+deploys; it does not fetch new content. See [Render model](#render-model).
 
 ## Tech stack
 
