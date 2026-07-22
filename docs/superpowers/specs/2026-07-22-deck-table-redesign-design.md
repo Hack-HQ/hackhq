@@ -235,7 +235,7 @@ fail to appear on the globe — the exact failure #111 was filed to prevent.
 | 0 | Baseline migration capturing the existing schema; revoke `EXECUTE` on `rls_auto_enable` | no |
 | 1 | Restore the sync so all 79 listings reach Supabase, on a schedule | no |
 | 2 | New columns; RLS read policy extended to `authenticated`; write policies; Clerk JWT wiring | no |
-| 3 | `HackathonSource` interface + `listings.json` fallback | no |
+| 3 | `HackathonSource` interface + `listings.json` fallback, and the `web/README.md` rewrite that must land with it | no |
 | 4 | **Table UI on `/deck`** | **yes** |
 | 5 | Add Opportunity modal + extraction route | yes |
 | 6 | Retire `deck.tsx` and the card UI | yes |

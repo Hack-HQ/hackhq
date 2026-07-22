@@ -613,3 +613,10 @@ avoids waiting up to an hour.
 
 - **Geocoding has never run.** All rows have null `lat`/`lng`. *(Plan 2)* `/globe` must keep reading `listings.json` until that is fixed; only `/deck` can move first.
 - **Clerk third-party auth is not configured** in Supabase, so the write policies added in Task 5 match nothing yet. Reads are unaffected, which is the safe failure direction. *(Plan 3)* configures it before the Add Opportunity route needs it. The spec lists this under phase 2; it is deferred because nothing reads or writes as an authenticated user until Plan 3, and configuring it earlier could only rot.
+- **`web/README.md` says the app has no database.** *(Plan 2, first task.)* That claim is true today and must stay untouched until it is not: this plan changes nothing under `web/`, so the app really is still filesystem-backed. The sentence under **How it works** —
+
+  > This app has **no database**. Listing data lives in the repo and is read from disk when pages are generated.
+
+  becomes false the moment the `HackathonSource` interface starts reading Supabase. Rewriting it is the first task of Plan 2, not a later tidy-up: a README that describes the wrong data source is exactly the defect #50 was filed for, and the cheapest moment to avoid re-filing it is while the change is being made.
+
+  Do not fix it earlier. Doing so in the docs PR would have described a sync that only exists here, which is the same ordering mistake in the opposite direction.
