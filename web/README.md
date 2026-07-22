@@ -58,16 +58,22 @@ listings are excluded from the map on purpose and never trip the check.
 
 ### Render model
 
-Pages are prerendered, then **revalidated hourly** (ISR). Both loaders use
-`fs.readFileSync` at build time, so listing data and counts are baked into the
-payload — but every data-backed page exports `revalidate = 3600`, so the server
-re-runs the loader in the background at most once an hour and serves the fresh
-result from then on. **A data change does not need a rebuild to appear**; it
-needs a deploy of the changed file plus up to an hour.
+Pages are prerendered, then **revalidated hourly** (ISR): every data-backed page
+exports `revalidate = 3600`, so the server re-runs its loader in the background
+at most once an hour.
 
-That hour is deliberate: deadline-derived state ("closing soon", day counts)
-depends on the current date, so a page built last week would otherwise keep
-serving last week's countdown (#47).
+Be precise about what that refreshes. The loaders `fs.readFileSync` the repo
+files, and those files are **bundled into the deployment** by
+`outputFileTracingIncludes` in `next.config.ts` — so a revalidation re-reads the
+*deployed* copy, not whatever is on `main` now.
+
+| Changes without a rebuild | Needs a new build + deploy |
+| ------------------------- | -------------------------- |
+| Deadline-derived state — "closing soon" flags, day counts, anything computed from the current date | The listings themselves — editing `listings.json`, `README.md`, or `geocodes.json` |
+
+That is exactly what the hour is for (#47): those flags are derived from *today*,
+so a page prerendered last week would otherwise keep serving last week's
+countdown until someone redeployed.
 
 | Route | Production render mode |
 | ----- | ---------------------- |
@@ -189,10 +195,10 @@ npm run build
 npm run start
 ```
 
-After changing `listings.json` or `README.md`, deploy the changed file. A
-rebuild is not required for the data-backed pages — they revalidate within the
-hour (see [Render model](#render-model)). Rebuild when you want the change live
-immediately, or when you have changed `/resources`, which does not revalidate.
+After changing `listings.json` or `README.md`, run a new build and deploy — the
+data files are bundled into the deployment, so hourly revalidation alone will
+not pick up an edit. Revalidation keeps *date-derived* state fresh between
+deploys; it does not fetch new content. See [Render model](#render-model).
 
 ## Tech stack
 
