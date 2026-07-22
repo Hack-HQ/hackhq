@@ -37,6 +37,16 @@ This is **plan 1 of 4** for `docs/superpowers/specs/2026-07-22-deck-table-redesi
 | `.github/scripts/test_scripts.py` | **Modify.** Tests for the above. |
 | `.github/workflows/sync_supabase.yml` | **Create.** Scheduled + on-change sync. |
 
+Migration filenames must match the versions Supabase records, because that
+correspondence is the only thing that makes the committed copies checkable
+against the database's history. `apply_migration` assigns the version from the
+moment it runs, not from anything this plan can pick in advance, so the order is:
+apply, call `list_migrations`, then name the file `<version>_<name>.sql`. The
+version prefixes written into the tasks below are the ones Supabase recorded when
+this plan was executed on 2026-07-22. A replay against a fresh project will
+produce different ones — follow whatever `list_migrations` reports, not these
+literals.
+
 ---
 
 ### Task 1: Track the existing schema before changing it
@@ -44,7 +54,7 @@ This is **plan 1 of 4** for `docs/superpowers/specs/2026-07-22-deck-table-redesi
 The table was created by hand and Supabase's migration history is empty. Capture it first, so later migrations apply to a known baseline.
 
 **Files:**
-- Create: `supabase/migrations/20260722000000_baseline_hackathons.sql`
+- Create: `supabase/migrations/20260722141955_baseline_hackathons.sql`
 
 **Interfaces:**
 - Consumes: nothing.
@@ -63,7 +73,7 @@ Expected: `{"migrations":[]}`. If it is non-empty, someone has started this alre
 - [ ] **Step 3: Write the baseline migration file**
 
 ```sql
--- supabase/migrations/20260722000000_baseline_hackathons.sql
+-- supabase/migrations/20260722141955_baseline_hackathons.sql
 -- Captures the hand-created schema as it stood on 2026-07-22 so later
 -- migrations have a known starting point. Idempotent: safe to re-run.
 
@@ -113,7 +123,7 @@ Expected: `32`. The migration is `create table if not exists` — if this return
 - [ ] **Step 6: Commit**
 
 ```bash
-git add supabase/migrations/20260722000000_baseline_hackathons.sql
+git add supabase/migrations/20260722141955_baseline_hackathons.sql
 git commit -m "feat(db): capture the hand-created hackathons schema as a baseline migration"
 ```
 
@@ -124,8 +134,8 @@ git commit -m "feat(db): capture the hand-created hackathons schema as a baselin
 `public.rls_auto_enable()` is an event trigger that auto-enables RLS on new `public` tables — worth keeping. But it is `SECURITY DEFINER` and `EXECUTE` is granted to `anon` and `authenticated`, which Supabase's linter flags.
 
 **Files:**
-- Create: `supabase/migrations/20260722000100_revoke_rls_auto_enable_execute.sql` — the no-op, committed because it is already in the database's history
-- Create: `supabase/migrations/20260722000110_revoke_rls_auto_enable_from_public.sql` — the actual fix
+- Create: `supabase/migrations/20260722142728_revoke_rls_auto_enable_execute.sql` — the no-op, committed because it is already in the database's history
+- Create: `supabase/migrations/20260722143346_revoke_rls_auto_enable_from_public.sql` — the actual fix
 
 **Interfaces:**
 - Consumes: Task 1's baseline.
@@ -156,7 +166,7 @@ verified against this database on 2026-07-22.
 - [ ] **Step 3: Write the migration**
 
 ```sql
--- supabase/migrations/20260722000110_revoke_rls_auto_enable_from_public.sql
+-- supabase/migrations/20260722143346_revoke_rls_auto_enable_from_public.sql
 -- rls_auto_enable() is an event trigger. Event-trigger functions are invoked by
 -- the system, not by a caller's EXECUTE privilege, so nothing needs this grant.
 --
@@ -170,9 +180,9 @@ verified against this database on 2026-07-22.
 revoke execute on function public.rls_auto_enable() from public;
 ```
 
-Note the version prefix supersedes the earlier no-op rather than replacing it.
-The no-op is already recorded in the database's migration history and cannot be
-rewritten, so its file is committed alongside this one to keep the repo and the
+This migration does not replace the earlier no-op — nothing can. Once
+`20260722142728` is recorded, it stays recorded, so this one is applied on top of
+it and its file is committed alongside this one to keep the repo and the
 database's history in step.
 
 - [ ] **Step 4: Apply it**
@@ -220,8 +230,8 @@ The no-op is already in the database's migration history, so its file is
 committed too — the repo must mirror what was applied, not what we wish had been.
 
 ```bash
-git add supabase/migrations/20260722000100_revoke_rls_auto_enable_execute.sql \
-        supabase/migrations/20260722000110_revoke_rls_auto_enable_from_public.sql
+git add supabase/migrations/20260722142728_revoke_rls_auto_enable_execute.sql \
+        supabase/migrations/20260722143346_revoke_rls_auto_enable_from_public.sql
 git commit -m "fix(db): revoke rls_auto_enable EXECUTE from PUBLIC, not from anon
 
 anon and authenticated hold no grant of their own on this function - they
@@ -237,7 +247,7 @@ recorded in the database's migration history and cannot be rewritten."
 ### Task 3: Add the columns the redesign needs
 
 **Files:**
-- Create: `supabase/migrations/20260722000200_add_deck_columns.sql`
+- Create: `supabase/migrations/20260722144205_add_deck_columns.sql`
 
 **Interfaces:**
 - Consumes: Task 1's baseline.
@@ -248,7 +258,7 @@ Uses `text` + `check` rather than Postgres enums: adding a value to an enum requ
 - [ ] **Step 1: Write the migration**
 
 ```sql
--- supabase/migrations/20260722000200_add_deck_columns.sql
+-- supabase/migrations/20260722144205_add_deck_columns.sql
 -- Columns for the deck redesign. `origin` is the conflict rule between the two
 -- write paths: the listings.json sync only ever touches its own rows, so a
 -- user submission can never be clobbered by the next automation run.
@@ -302,7 +312,7 @@ Expected: **fails** with a check-constraint violation. If it succeeds, delete th
 - [ ] **Step 4: Commit**
 
 ```bash
-git add supabase/migrations/20260722000200_add_deck_columns.sql
+git add supabase/migrations/20260722144205_add_deck_columns.sql
 git commit -m "feat(db): add origin, description, logo_url, host_type, submitted_by"
 ```
 
@@ -390,7 +400,7 @@ git commit -m "feat(scripts): stamp synced rows with origin=listings_json"
 Today there is one policy: `SELECT` for `anon` where `is_visible`. Two consequences — signed-in users would see an empty board, and nobody but `service_role` can write.
 
 **Files:**
-- Create: `supabase/migrations/20260722000300_rls_policies.sql`
+- Create: `supabase/migrations/20260722145817_rls_policies.sql`
 
 **Interfaces:**
 - Consumes: Task 3's `submitted_by` and `origin`.
@@ -401,7 +411,7 @@ Today there is one policy: `SELECT` for `anon` where `is_visible`. Two consequen
 - [ ] **Step 1: Write the migration**
 
 ```sql
--- supabase/migrations/20260722000300_rls_policies.sql
+-- supabase/migrations/20260722145817_rls_policies.sql
 -- Read: both roles. The old policy named only `anon`, so a signed-in visitor
 -- would have seen an empty board the moment Clerk auth landed.
 -- Write: authenticated users, only their own rows, and never a synced row.
@@ -472,7 +482,7 @@ Expected: **fails** with a row-level-security violation.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add supabase/migrations/20260722000300_rls_policies.sql
+git add supabase/migrations/20260722145817_rls_policies.sql
 git commit -m "fix(db): let signed-in users read, and write only their own rows"
 ```
 
