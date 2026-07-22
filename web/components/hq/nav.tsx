@@ -21,8 +21,11 @@ export function NavPill() {
           <img src="/hackhq-monogram.svg" alt="HackHQ" className="h-4 w-auto" />
         </Link>
 
-        {/* Links - desktop (sm and up). Below that they live in the menu. */}
-        <div className="hidden items-center sm:flex">
+        {/* Links - desktop (md and up). Below that they live in the menu.
+            Not `sm`: with RESOURCES the inline row needs 674px of viewport, so
+            between 640 and 673 the pill was squeezed narrower than its content
+            and wrapped to a second line. */}
+        <div className="hidden items-center md:flex">
           {NAV_LINKS.map(([label, href]) => {
             const active = isActiveRoute(pathname, href);
             return (
