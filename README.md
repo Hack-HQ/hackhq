@@ -140,7 +140,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 
 ## Resources
 
-- [MLH Official Event Calendar](https://mlh.io/seasons/2027/events) — Major League Hacking's full season schedule
+- [MLH Official Event Calendar](https://www.mlh.com/events) — Major League Hacking's full season schedule
 - [Devpost Hackathons](https://devpost.com/hackathons) — online & in-person hackathons with submissions
 - [hackathon.com](https://www.hackathon.com/) — global hackathon directory
 - [Hackathon Survival Guide](https://github.com/Devang-25/Hackathon-Survival-Guide) — tips for first-timers
