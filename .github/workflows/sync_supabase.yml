@@ -1,0 +1,56 @@
+# .github/workflows/sync_supabase.yml
+name: Sync Supabase
+
+on:
+  # The cron is the real sync path. Read the push trigger below as a bonus that
+  # fires for human commits only, never as the guarantee that a listing change
+  # reaches Supabase.
+  #
+  # Every automated edit to listings.json comes from auto_extract.yml or
+  # contribution_approved.yml, and both push to main with the default
+  # GITHUB_TOKEN. GitHub deliberately starts no workflow run for a push made
+  # with that token, so those commits never reach the trigger below - the same
+  # gap both of those workflows already call out for Web CI, which is why they
+  # run check_geo_coverage.py inline instead of relying on it.
+  #
+  # It is kept rather than deleted because it is not inert: a maintainer pushing
+  # or merging a PR that touches listings.json acts under their own identity, and
+  # that push does start a run. Those changes sync within seconds instead of
+  # waiting out the hour. Removing it would cost that and buy nothing.
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/listings.json'
+      - '.github/scripts/seed_supabase.py'
+  schedule:
+    # Hourly, and in practice the only trigger the bot-written listings ever hit.
+    # The site's ISR window is an hour, so syncing faster buys nothing - which is
+    # also the ceiling on how stale the table gets when the push path is skipped.
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Queue, never cancel. A sync writes rows; cancelling one mid-upsert would
+  # leave listings.json and the table disagreeing until the next run. The job
+  # is capped at 10 minutes below, so a queue cannot build up indefinitely.
+  group: sync-supabase
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+      - run: pip install -r .github/scripts/requirements.txt
+      - name: Push listings.json into Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python .github/scripts/seed_supabase.py
