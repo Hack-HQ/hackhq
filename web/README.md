@@ -12,6 +12,7 @@ deck, and member tracker, plus a legacy searchable directory at `/hackathons`.
 - **Globe (`/globe`)** — 3D Mapbox map with status-colored markers.
 - **Deck (`/deck`)** — flip through hackathons as tactile cards or a dense list.
 - **My HackHQ (`/my`)** — protected personal tracker pipeline (optional Clerk sign-in).
+- **Resources (`/resources`)** — a stage-by-stage field guide with curated links.
 - **All hackathons (`/hackathons`)** — legacy README-driven search and filters.
 
 ## How it works
@@ -25,6 +26,7 @@ disk when pages are generated.
 | -------- | ------ | ----------- |
 | `/`, `/deck`, `/globe`, `/my` | `loadHackathons()` in `lib/listings.ts` | `../.github/scripts/listings.json` |
 | `/hackathons` | `loadSiteData()` in `lib/parse-readme.ts` | `../README.md` (table + stats banner) |
+| `/resources` | none — imported directly | `lib/resources.ts` (stages, links, teaser copy) |
 
 `listings.json` is the source of truth for the main HackHQ experience.
 `parse-readme.ts` still powers the legacy `/hackathons` page, which parses the
@@ -104,18 +106,23 @@ web/
 │   ├── globe/page.tsx                 # 3D globe
 │   ├── deck/page.tsx                  # Card deck
 │   ├── my/page.tsx                    # Protected member tracker hub
+│   ├── resources/page.tsx             # Hackathon field guide
 │   ├── auth/[[...auth]]/page.tsx      # Clerk sign-in/sign-up
 │   ├── hackathons/page.tsx            # Legacy README browser
 │   └── layout.tsx                     # Root layout, fonts, optional ClerkProvider
 ├── components/
 │   ├── hq/                            # Current HackHQ UI (globe, deck, nav, …)
-│   │   ├── nav.tsx                    # Nav pill; inline links at sm and up
-│   │   └── mobile-menu.tsx            # The same sections below 640px
+│   │   ├── nav.tsx                    # Nav pill; inline links at md and up
+│   │   ├── mobile-menu.tsx            # The same sections below 768px
+│   │   ├── resources.tsx              # /resources page sections
+│   │   ├── stage-jump-nav.tsx         # Sticky stage rail; publishes its clearance
+│   │   └── resources-teaser.tsx       # Home-page 2×2 teaser + resource-tile-card
 │   └── legacy/                        # README-driven browser, gallery, cards
 ├── lib/
 │   ├── listings.ts                    # Reads listings.json, enriches for frontend
 │   ├── nav.ts                         # Nav sections + active-route matching
 │   ├── parse-readme.ts                # Parses ../README.md (legacy /hackathons)
+│   ├── resources.ts                   # Field-guide stages, links, teaser tiles
 │   ├── types-hq.ts                    # Hackathon types and display helpers
 │   └── types.ts                       # Legacy opportunity types
 └── proxy.ts                           # Clerk middleware (when keys are configured)
