@@ -5,6 +5,8 @@
 
 drop policy if exists "public read" on public.hackathons;
 
+drop policy if exists "read visible hackathons" on public.hackathons;
+
 create policy "read visible hackathons"
   on public.hackathons for select
   to anon, authenticated
