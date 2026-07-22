@@ -16,9 +16,30 @@ remote versions, and a mismatch would make it replay migrations that are already
 applied. If you add one, name the file after the version `apply_migration`
 reports back — not the time you started writing it.
 
-Applied statements are immutable. Where a committed file's comments have since
-been corrected, the text recorded in `schema_migrations.statements` is the
-original — `20260722144205_add_deck_columns.sql` carries a note saying so.
+Applied statements are immutable: `schema_migrations.statements` keeps whatever
+was sent to `apply_migration`, and no later edit here reaches it. Four committed
+files have since diverged from what is recorded, and each carries a `NOTE` at the
+top saying so and saying how:
+
+| file | how it differs |
+| --- | --- |
+| `20260722142728_revoke_rls_auto_enable_execute.sql` | executable SQL — bare `revoke` wrapped in an `if exists` guard |
+| `20260722143346_revoke_rls_auto_enable_from_public.sql` | executable SQL — same guard, same reason |
+| `20260722145817_rls_policies.sql` | executable SQL — gained four `drop policy if exists` lines |
+| `20260722144205_add_deck_columns.sql` | comments only — a stale claim about enforcement, corrected |
+
+The three SQL divergences all exist so the chain replays cleanly onto a fresh
+database. That makes the files the runnable artefact and the recorded statements
+the historical record; they are not interchangeable, and where they disagree the
+file is the one to run. Every other file matches its recorded statement exactly
+once comments are stripped — verifiable by hashing both:
+
+```sql
+select version, md5(btrim(regexp_replace(
+         regexp_replace(array_to_string(statements, E'\n'), '--[^\n]*', '', 'g'),
+         '\s+', ' ', 'g')))
+from supabase_migrations.schema_migrations order by version;
+```
 
 ## Why the schema looks the way it does
 

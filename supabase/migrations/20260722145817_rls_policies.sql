@@ -1,4 +1,12 @@
 -- supabase/migrations/20260722145817_rls_policies.sql
+-- NOTE: this file's executable SQL differs from the statement recorded in
+-- supabase_migrations.schema_migrations. What ran carried a single
+-- `drop policy if exists "public read"`; the four `drop policy if exists` lines
+-- below covering the policies this migration itself creates were added
+-- afterwards, so a replay onto a database that already has them recreates
+-- rather than erroring on a duplicate name. Applied statements are immutable,
+-- so the recorded text keeps the original form. No policy definition changed.
+--
 -- Read: both roles. The old policy named only `anon`, so a signed-in visitor
 -- would have seen an empty board the moment Clerk auth landed.
 -- Write: authenticated users, only their own rows, and never a synced row.
