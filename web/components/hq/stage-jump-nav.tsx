@@ -25,8 +25,10 @@ export function StageJumpNav() {
     if (!rail) return;
 
     const publish = () => {
-      // `top` is the sticky offset (the pill's footprint); the rail's own box
-      // carries an 8px bottom pad, so the two together already leave air.
+      // Read the resolved `top` rather than the literal: it now comes from
+      // --nav-pill-bottom, so it tracks the pill instead of guessing at it.
+      // The rail's own box carries an 8px bottom pad, so the two together
+      // already leave air.
       const stickyTop = parseFloat(getComputedStyle(rail).top) || 0;
       const height = rail.getBoundingClientRect().height;
       document.documentElement.style.setProperty(
@@ -42,7 +44,15 @@ export function StageJumpNav() {
   }, []);
 
   return (
-    <section ref={railRef} className="sticky top-20 z-40 p-2 pt-0">
+    <section
+      ref={railRef}
+      // Pins below the pill's measured bottom edge, not below a literal.
+      // `top-20` was 5rem — 3px of clearance over a pill that measures 77px, so
+      // inflating the pill's text pinned the rail *underneath* it. The 0.25rem
+      // keeps the small gap `top-20` happened to give, now by intent.
+      style={{ top: "calc(var(--nav-pill-bottom, 4.875rem) + 0.25rem)" }}
+      className="sticky z-40 p-2 pt-0"
+    >
       <div className="glass-dark flex gap-1 overflow-x-auto rounded-2xl p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {RESOURCE_STAGES.map((stage) => (
           <a key={stage.id} href={`#${stage.id}`} className={LINK}>
