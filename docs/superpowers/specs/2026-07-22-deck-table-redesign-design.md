@@ -90,7 +90,14 @@ Two gaps follow from that, and both block this design:
 Separately, `public.rls_auto_enable()` — an event trigger that auto-enables RLS
 on new `public` tables — is `SECURITY DEFINER` and executable by `anon` and
 `authenticated`. Practical risk is low, since event-trigger functions error when
-invoked directly over RPC, but `EXECUTE` should be revoked from both roles.
+invoked directly over RPC, but the `EXECUTE` grant should go.
+
+Revoke it **from `PUBLIC`**, not from `anon`/`authenticated`. Neither role holds
+a grant of its own: Postgres grants `EXECUTE` to `PUBLIC` at function creation
+and both roles inherit it, so `revoke ... from anon, authenticated` revokes
+nothing and leaves the lint in place. The plan's Task 2 proves this against the
+database and ships both migrations — the no-op that was tried first, and the
+revoke from `PUBLIC` that actually cleared it.
 
 ## Schema
 
