@@ -893,8 +893,10 @@ class BuildRowOrigin(unittest.TestCase):
 
     def test_rows_declare_they_came_from_listings_json(self):
         # build_row must stamp the origin that identifies the sync's own rows.
-        # Note this test covers the stamping only - nothing yet enforces that
-        # the sync leaves origin='user' rows alone.
+        # This test covers the stamping only. Enforcement that the sync leaves
+        # origin='user' rows alone lives in the database, in the
+        # hackathons_skip_sync_over_user_rows trigger
+        # (supabase/migrations/20260722154046_enforce_conflict_rule.sql).
         self.assertEqual(seed.build_row(self.LISTING)["origin"], "listings_json")
 
     def test_company_name_is_still_stored_as_host(self):

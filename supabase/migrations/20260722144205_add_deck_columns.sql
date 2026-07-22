@@ -1,10 +1,21 @@
 -- supabase/migrations/20260722144205_add_deck_columns.sql
--- Columns for the deck redesign. `origin` is the conflict rule between the two
--- write paths:
--- NOTE: as written, nothing enforces this. upsert() does not filter on origin
--- and service_role bypasses RLS. Today a user row is protected only by uuid ids
--- not colliding. The statement text recorded in schema_migrations is the
--- original and cannot be rewritten there.
+-- Columns for the deck redesign. `origin` records which of the two write paths
+-- produced a row - 'listings_json' for the hourly sync, 'user' for a site
+-- submission - and exists to express one rule: the sync never re-owns a row a
+-- user submitted.
+--
+-- NOTE: when this migration was written, nothing enforced that rule. upsert()
+-- does not filter on origin and service_role bypasses RLS, so a user row was
+-- protected only by uuid ids never colliding. That is no longer true. The
+-- hackathons_skip_sync_over_user_rows BEFORE UPDATE trigger, added in
+-- 20260722154046_enforce_conflict_rule.sql, discards any update that would flip
+-- an origin='user' row to anything else, and no role bypasses a trigger -
+-- including service_role, which is exactly why it is a trigger and not a policy.
+--
+-- That correction lives only in this file. The statement text recorded in
+-- supabase_migrations.schema_migrations is the original and cannot be rewritten
+-- there; the difference is confined to these comments, the SQL below is
+-- unchanged.
 
 alter table public.hackathons
   add column if not exists origin       text,

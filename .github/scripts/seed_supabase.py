@@ -71,8 +71,12 @@ def build_row(listing, synced_at=None):
         "synced_at": synced_at or utc_now_iso(),
         # Declares which write path produced this row. Rows a user submits
         # through the site carry origin='user' instead. The upsert below does
-        # not yet filter on it — until it does, user rows are protected only by
-        # uuid ids never colliding with a listings.json entry's.
+        # not filter on it and does not need to: the
+        # hackathons_skip_sync_over_user_rows BEFORE UPDATE trigger, added in
+        # supabase/migrations/20260722154046_enforce_conflict_rule.sql, discards
+        # any update that would flip an origin='user' row to 'listings_json'.
+        # Triggers are not bypassed by service_role the way RLS is, so that
+        # holds for this script too.
         "origin": "listings_json",
     }
 
