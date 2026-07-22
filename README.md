@@ -73,7 +73,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 <!-- HACKATHONS_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |
-| ✅ **[OPEN]** | University of Waterloo | ⭐ Hack the North — Sept 18–20, 2026 | In-Person | Toronto, ON | TBA | Jul 27, 2026 | <a href="https://hackthenorth.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 10, 2026 |
+| 🔥 **[CLOSING SOON]** | University of Waterloo | ⭐ Hack the North — Sept 18–20, 2026 | In-Person | Toronto, ON | TBA | Jul 27, 2026 | <a href="https://hackthenorth.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 10, 2026 |
 | ⏳ **[OPENS SOON]** | Hackathons @ Berkeley | ⭐ Cal Hacks (Collegiate Hackathon; 2026 Cycle Not Yet Posted) | In-Person | Berkeley / San Francisco, CA | TBA | — | <a href="https://calhacks.io/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jun 26, 2026 |
 | ⏳ **[OPENS SOON]** | UCLA | ⭐ LA Hacks (Student Hackathon; Next Event Mid-April 2027) | In-Person | Los Angeles, CA | $60K in prizes | — | <a href="https://lahacks.com/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jun 26, 2026 |
 | ⏳ **[OPENS SOON]** | Tec ACM | HackMTY 2026 — Sep 11–13, 2026 (Registration Opening Soon) | In-Person | Monterrey, Mexico | TBA | — | <a href="https://hackmty.com/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 20, 2026 |
