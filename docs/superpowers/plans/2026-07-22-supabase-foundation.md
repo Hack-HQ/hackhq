@@ -19,7 +19,7 @@ This is **plan 1 of 4** for `docs/superpowers/specs/2026-07-22-deck-table-redesi
 
 ## Global Constraints
 
-- Supabase project id: `gvdhwygerbsuojwpnsgq` (org `atvjoxcqenrldzrzodsu`). Verify with `list_projects` before any write — a previous session was connected to a different account.
+- Supabase project id: `gvdhwygerbsuojwpnsgq` (org `atvjoxcqenrldzrzodsu`). Verify with `list_projects` before any write — the connector is account-scoped, so confirm it is pointed here before applying anything.
 - Table: `public.hackathons`, primary key `id` (uuid). 32 rows at time of writing; `listings.json` holds 79.
 - `host` is `company_name` renamed. Do not rename it.
 - `startDate` / `endDate` already exist and are **camelCase**. Do not rename them; `seed_supabase.py` would break.
@@ -53,7 +53,7 @@ The table was created by hand and Supabase's migration history is empty. Capture
 - [ ] **Step 1: Confirm you are on the right Supabase account**
 
 Call `list_projects`. Expected: exactly one project named `HackHQ`, id `gvdhwygerbsuojwpnsgq`.
-If you see `sapling` / `overvalued` instead, stop — the connector is on the wrong account.
+If it returns anything other than exactly that one project, stop — the connector is pointed at the wrong account, and nothing here should be applied to it.
 
 - [ ] **Step 2: Confirm the migration history is still empty**
 
