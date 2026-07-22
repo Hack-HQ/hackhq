@@ -854,5 +854,22 @@ class WeeklyDigestWorkflow(unittest.TestCase):
         self.assertIn('gh issue list --repo "$REPO" --label "digest"', content)
 
 
+class BuildRowOrigin(unittest.TestCase):
+    LISTING = {
+        "id": "06f72ca6-9ab3-4d22-aa00-bf5c8b362c33",
+        "company_name": "Major League Hacking",
+        "title": "Some Hackathon",
+        "url": "https://example.com/",
+    }
+
+    def test_rows_declare_they_came_from_listings_json(self):
+        # The conflict rule: the sync must never be able to overwrite a row a
+        # user submitted through the site.
+        self.assertEqual(seed.build_row(self.LISTING)["origin"], "listings_json")
+
+    def test_company_name_is_still_stored_as_host(self):
+        self.assertEqual(seed.build_row(self.LISTING)["host"], "Major League Hacking")
+
+
 if __name__ == "__main__":
     unittest.main()

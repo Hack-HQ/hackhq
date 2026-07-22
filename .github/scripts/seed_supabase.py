@@ -54,6 +54,9 @@ def build_row(listing):
         "source": listing.get("source"),
         "deadline": listing.get("deadline"),
         "featured": bool(listing.get("featured", False)),
+        # Declares which write path produced this row. The upsert below filters
+        # on it so user submissions are never overwritten by the sync.
+        "origin": "listings_json",
     }
 
 
