@@ -1,4 +1,4 @@
--- supabase/migrations/20260722161339_replace_origin_index_with_partial.sql
+-- supabase/migrations/20260722154352_replace_origin_index_with_partial.sql
 -- hackathons_origin_idx indexed a two-valued column on a 32-row table. The
 -- planner will always prefer a sequential scan, and Supabase's linter already
 -- reports it as never used.

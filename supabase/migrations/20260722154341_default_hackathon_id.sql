@@ -1,4 +1,4 @@
--- supabase/migrations/20260722161104_default_hackathon_id.sql
+-- supabase/migrations/20260722154341_default_hackathon_id.sql
 -- id had no default, so every insert had to supply its own uuid. That is a
 -- footgun for the submission flow: a client-chosen id is the only way a user
 -- row's id can be made to collide with a listings.json entry's on purpose,

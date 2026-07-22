@@ -1,4 +1,4 @@
--- supabase/migrations/20260722160341_enforce_conflict_rule.sql
+-- supabase/migrations/20260722154046_enforce_conflict_rule.sql
 -- The sync must never re-own a row a user submitted through the site.
 --
 -- A trigger, not a policy: service_role bypasses RLS, so policies cannot

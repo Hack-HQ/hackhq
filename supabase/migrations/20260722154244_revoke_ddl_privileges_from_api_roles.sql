@@ -1,4 +1,4 @@
--- supabase/migrations/20260722160812_revoke_ddl_privileges_from_api_roles.sql
+-- supabase/migrations/20260722154244_revoke_ddl_privileges_from_api_roles.sql
 -- anon and authenticated hold TRUNCATE, REFERENCES and TRIGGER on this table,
 -- inherited from Supabase's stock `grant all on all tables in schema public`
 -- bootstrap. None of the three is needed by an API role, and critically:
