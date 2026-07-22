@@ -93,13 +93,22 @@ export function NavPill() {
           href="/#submit"
           onClick={(e) => {
             if (pathname !== "/") return;
+            // Leave modified and non-primary clicks to the browser, or
+            // cmd/ctrl-click stops opening the submit form in a new tab.
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            if (e.button !== 0) return;
             const target = document.getElementById("submit");
             if (!target) return;
             e.preventDefault();
             // Honours the section's scroll-margin-top, so it lands clear of
             // this pill rather than behind it.
             target.scrollIntoView();
-            window.history.pushState(null, "", "/#submit");
+            // Fragment-relative, so a query string on the home page survives,
+            // and only when it would actually change - repeat clicks should
+            // not stack identical history entries.
+            if (window.location.hash !== "#submit") {
+              window.history.pushState(null, "", "#submit");
+            }
           }}
           className="ml-1 flex items-center gap-2 rounded-2xl bg-paper px-5 py-3 font-mono text-[11px] font-bold tracking-[0.18em] text-ink transition hover:bg-white"
         >
