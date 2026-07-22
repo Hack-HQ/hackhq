@@ -16,6 +16,9 @@ permissions:
   contents: read
 
 concurrency:
+  # Queue, never cancel. A sync writes rows; cancelling one mid-upsert would
+  # leave listings.json and the table disagreeing until the next run. The job
+  # is capped at 10 minutes below, so a queue cannot build up indefinitely.
   group: sync-supabase
   cancel-in-progress: false
 
