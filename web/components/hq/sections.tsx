@@ -76,7 +76,16 @@ export function SubmitSection() {
   const [url, setUrl] = useState("");
 
   return (
-    <section id="submit" className="p-2 pt-20">
+    <section
+      id="submit"
+      // Spacing sits in the margin, not the padding: padding is inside the
+      // border box the browser scrolls to, so the 5rem of it was silently
+      // doubling as the anchor offset. It cleared the pill by 1.9px — inflate
+      // the pill's text and the shell landed *under* it. The gap above is
+      // unchanged (4.5rem margin + 0.5rem padding); the offset is now explicit.
+      style={{ scrollMarginTop: "var(--nav-pill-bottom, 4.875rem)" }}
+      className="mt-18 p-2"
+    >
       <div className="shell flex min-h-[70vh] items-center justify-center bg-ink px-5 py-16 sm:px-10">
         <div className="glass w-full max-w-2xl rounded-[2.5rem] p-8 sm:p-12">
           <div className="kicker text-center text-coral">
