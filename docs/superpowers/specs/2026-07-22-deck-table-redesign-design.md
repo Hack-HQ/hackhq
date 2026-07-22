@@ -49,6 +49,49 @@ An `origin` column (`'listings_json' | 'user'`) governs the dual-source period.
 user-submitted row is never clobbered by the next automation run. There is no
 merge logic beyond this.
 
+## Current state of the database
+
+Verified against project `gvdhwygerbsuojwpnsgq` (org `atvjoxcqenrldzrzodsu`) on
+2026-07-22. More exists than the plan assumed, and some of it is broken.
+
+| Item | State |
+|------|-------|
+| `hackathons` table | Exists, RLS enabled, 32 rows |
+| Base columns | Match `build_row` exactly |
+| `startDate` / `endDate` | **Already present** — #147's schema half is done. Note camelCase, not snake_case |
+| `lat` / `lng` / `geo_status` | Present, but **0 of 32 rows geocoded** |
+| Row count | **32, against 79 in `listings.json`** — last sync 2026-07-14, data as of 2026-07-04 |
+| Migration history | **Empty** — schema was applied by hand |
+
+Consequences for this design:
+
+- **The sync is the gating item.** Supabase cannot become authoritative while it
+  holds 32 of 79 listings; the board would silently lose more than half its
+  content. Getting `seed_supabase.py` running on a schedule is a prerequisite for
+  phase 2, not a nice-to-have.
+- **Migrations start here.** Every schema change below ships as a migration, and
+  the existing hand-made schema is captured as a baseline migration first, so the
+  table stops being untracked.
+- `start_date`/`end_date` in the table below are **already built** as
+  `startDate`/`endDate`. Keep the existing camelCase rather than renaming; a
+  rename would break `seed_supabase.py` for no benefit.
+
+### RLS as it stands
+
+One policy exists: `public read` — `SELECT` for `anon` where `is_visible = true`.
+Two gaps follow from that, and both block this design:
+
+1. **No policy covers the `authenticated` role.** Once Clerk sign-in is wired,
+   signed-in users would receive an empty board while logged-out visitors see
+   everything. The read policy must cover both roles.
+2. **No `INSERT`/`UPDATE`/`DELETE` policies exist.** Only `service_role` can
+   write, so the Add Opportunity flow cannot work until they are added.
+
+Separately, `public.rls_auto_enable()` — an event trigger that auto-enables RLS
+on new `public` tables — is `SECURITY DEFINER` and executable by `anon` and
+`authenticated`. Practical risk is low, since event-trigger functions error when
+invoked directly over RPC, but `EXECUTE` should be revoked from both roles.
+
 ## Schema
 
 `seed_supabase.py::build_row` already defines the base mapping and is the
@@ -65,11 +108,9 @@ Columns this design adds:
 | `logo_url` | text | yes | Override when the derived favicon is poor |
 | `host_type` | enum `university \| community \| company` | yes | Drives the university/community tag |
 | `submitted_by` | text | yes | Clerk user id; drives the Posted By avatar |
-| `start_date` | date | yes | Event start — closes #147 |
-| `end_date` | date | yes | Event end — closes #147 |
 
-`start_date`/`end_date` are included because #147 asks for them and the migration
-is the cheapest moment to add them.
+`startDate`/`endDate` already exist in the table, so #147 needs no schema work —
+only population, which no row has yet.
 
 User submissions are written with `is_visible = true` and `active = true` — the
 board publishes them immediately, per the moderation decision above. `is_visible`
@@ -191,14 +232,20 @@ fail to appear on the globe — the exact failure #111 was filed to prevent.
 
 | Phase | Scope | User-visible |
 |-------|-------|--------------|
-| 1 | Supabase project, schema, RLS, Clerk JWT wiring, sync | no |
-| 2 | `HackathonSource` interface + `listings.json` fallback | no |
-| 3 | **Table UI on `/deck`** | **yes** |
-| 4 | Add Opportunity modal + extraction route | yes |
-| 5 | Retire `deck.tsx` and the card UI | yes |
+| 0 | Baseline migration capturing the existing schema; revoke `EXECUTE` on `rls_auto_enable` | no |
+| 1 | Restore the sync so all 79 listings reach Supabase, on a schedule | no |
+| 2 | New columns; RLS read policy extended to `authenticated`; write policies; Clerk JWT wiring | no |
+| 3 | `HackathonSource` interface + `listings.json` fallback | no |
+| 4 | **Table UI on `/deck`** | **yes** |
+| 5 | Add Opportunity modal + extraction route | yes |
+| 6 | Retire `deck.tsx` and the card UI | yes |
 
-Phases 1–2 are plumbing; the table lands at phase 3. Each phase is independently
-shippable and leaves the site working.
+Phase 0 exists because the schema is currently untracked — capture it before
+changing it. Phase 1 is the gating item: until the row count matches, switching
+reads to Supabase silently drops more than half the board.
+
+Phases 0–3 are invisible plumbing; the table lands at phase 4. Each phase is
+independently shippable and leaves the site working.
 
 ## Risks
 
@@ -210,6 +257,12 @@ shippable and leaves the site working.
 - **Cost.** Every extraction is a paid LLM call on a public endpoint.
 - **Favicon quality** varies by host. `logo_url` is the escape hatch, and some
   rows will need it.
+- **The sync has already gone stale once** — it last ran 2026-07-14 against data
+  from 2026-07-04 and is 47 listings behind. Whatever restores it in phase 1 needs
+  monitoring, or the board silently drifts from `listings.json` again.
+- **Geocoding never ran.** All 32 rows have null `lat`/`lng`, so a Supabase-backed
+  globe would render empty. `/globe` must not switch to the Supabase source until
+  the geocoder has populated those columns.
 
 ## Out of scope
 
