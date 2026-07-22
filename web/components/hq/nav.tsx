@@ -103,6 +103,14 @@ export function NavPill() {
             // Honours the section's scroll-margin-top, so it lands clear of
             // this pill rather than behind it.
             target.scrollIntoView();
+            // A fragment navigation moves the sequential focus navigation
+            // starting point as well as the viewport; scrollIntoView only
+            // moves the viewport. Without this the form is on screen but the
+            // next Tab resumes from this pill, walking a keyboard user back
+            // through the nav to reach what they just jumped to. The section
+            // carries tabIndex={-1} for exactly this, and preventScroll keeps
+            // the landing scrollIntoView just made.
+            target.focus({ preventScroll: true });
             // Fragment-relative, so a query string on the home page survives,
             // and only when it would actually change - repeat clicks should
             // not stack identical history entries.
