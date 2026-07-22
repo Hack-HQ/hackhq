@@ -9,7 +9,7 @@ import os
 import socket
 import tempfile
 import unittest
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from unittest import mock
 from urllib.parse import urlparse
 
@@ -446,6 +446,35 @@ class BuildRow(unittest.TestCase):
         row = seed.build_row(self._listing())
         for column in ("lat", "lng", "geo_status"):
             self.assertNotIn(column, row)
+
+    def test_sends_synced_at_so_the_upsert_refreshes_it(self):
+        # Without this key the column keeps the DEFAULT now() from the row's
+        # first insert forever - the upsert's UPDATE path never writes it.
+        row = seed.build_row(self._listing(), synced_at="2026-07-22T19:07:41+00:00")
+        self.assertEqual(row["synced_at"], "2026-07-22T19:07:41+00:00")
+
+    def test_synced_at_defaults_to_now(self):
+        before = datetime.now(timezone.utc)
+        stamped = datetime.fromisoformat(seed.build_row(self._listing())["synced_at"])
+        after = datetime.now(timezone.utc)
+        self.assertIsNotNone(stamped.tzinfo)
+        self.assertLessEqual(before, stamped)
+        self.assertLessEqual(stamped, after)
+
+    def test_one_run_stamps_every_row_with_the_same_instant(self):
+        listings = [self._listing(), self._listing(title="Other")]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "listings.json")
+            with open(path, "w", encoding="utf-8") as handle:
+                json.dump(listings, handle)
+            captured = []
+            env = {"SUPABASE_URL": "https://x.supabase.co", "SUPABASE_SERVICE_KEY": "k"}
+            with mock.patch.dict(os.environ, env, clear=False), mock.patch.object(
+                seed, "LISTINGS_FILE", path
+            ), mock.patch.object(seed, "upsert", lambda rows, *a: captured.extend(rows)):
+                seed.main()
+        self.assertEqual(len(captured), 2)
+        self.assertEqual(captured[0]["synced_at"], captured[1]["synced_at"])
 class DeadlineWatcherReport(unittest.TestCase):
     def test_build_report_sanitizes_url(self):
         report = dw._build_report(
