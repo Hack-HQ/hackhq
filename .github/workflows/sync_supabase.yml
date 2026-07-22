@@ -2,13 +2,30 @@
 name: Sync Supabase
 
 on:
+  # The cron is the real sync path. Read the push trigger below as a bonus that
+  # fires for human commits only, never as the guarantee that a listing change
+  # reaches Supabase.
+  #
+  # Every automated edit to listings.json comes from auto_extract.yml or
+  # contribution_approved.yml, and both push to main with the default
+  # GITHUB_TOKEN. GitHub deliberately starts no workflow run for a push made
+  # with that token, so those commits never reach the trigger below - the same
+  # gap both of those workflows already call out for Web CI, which is why they
+  # run check_geo_coverage.py inline instead of relying on it.
+  #
+  # It is kept rather than deleted because it is not inert: a maintainer pushing
+  # or merging a PR that touches listings.json acts under their own identity, and
+  # that push does start a run. Those changes sync within seconds instead of
+  # waiting out the hour. Removing it would cost that and buy nothing.
   push:
     branches: [main]
     paths:
       - '.github/scripts/listings.json'
       - '.github/scripts/seed_supabase.py'
   schedule:
-    # Hourly. The site's ISR window is an hour, so syncing faster buys nothing.
+    # Hourly, and in practice the only trigger the bot-written listings ever hit.
+    # The site's ISR window is an hour, so syncing faster buys nothing - which is
+    # also the ceiling on how stale the table gets when the push path is skipped.
     - cron: '17 * * * *'
   workflow_dispatch:
 
