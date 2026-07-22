@@ -1,6 +1,8 @@
--- supabase/migrations/20260722000000_baseline_hackathons.sql
+-- supabase/migrations/20260722141955_baseline_hackathons.sql
 -- Captures the hand-created schema as it stood on 2026-07-22 so later
 -- migrations have a known starting point. Idempotent: safe to re-run.
+-- Note: rls_auto_enable() and the ensure_rls event trigger are inherited
+-- objects from the hosting project; this baseline does not create them.
 
 create table if not exists public.hackathons (
   id            uuid primary key,

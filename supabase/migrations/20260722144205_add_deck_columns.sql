@@ -1,7 +1,10 @@
--- supabase/migrations/20260722000200_add_deck_columns.sql
+-- supabase/migrations/20260722144205_add_deck_columns.sql
 -- Columns for the deck redesign. `origin` is the conflict rule between the two
--- write paths: the listings.json sync only ever touches its own rows, so a
--- user submission can never be clobbered by the next automation run.
+-- write paths:
+-- NOTE: as written, nothing enforces this. upsert() does not filter on origin
+-- and service_role bypasses RLS. Today a user row is protected only by uuid ids
+-- not colliding. The statement text recorded in schema_migrations is the
+-- original and cannot be rewritten there.
 
 alter table public.hackathons
   add column if not exists origin       text,

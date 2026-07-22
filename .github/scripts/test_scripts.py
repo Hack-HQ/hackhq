@@ -863,8 +863,9 @@ class BuildRowOrigin(unittest.TestCase):
     }
 
     def test_rows_declare_they_came_from_listings_json(self):
-        # The conflict rule: the sync must never be able to overwrite a row a
-        # user submitted through the site.
+        # build_row must stamp the origin that identifies the sync's own rows.
+        # Note this test covers the stamping only - nothing yet enforces that
+        # the sync leaves origin='user' rows alone.
         self.assertEqual(seed.build_row(self.LISTING)["origin"], "listings_json")
 
     def test_company_name_is_still_stored_as_host(self):
