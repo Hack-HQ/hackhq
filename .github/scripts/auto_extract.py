@@ -50,9 +50,15 @@ def _resolve_and_validate(host):
             ip = ipaddress.ip_address(ip_str)
         except ValueError:
             return False, f"Unresolvable address for host: {host}", frozenset(), None
-        if (ip.is_private or ip.is_loopback or ip.is_link_local
-                or ip.is_reserved or ip.is_multicast or ip.is_unspecified):
-            return False, f"Refusing to fetch internal address {ip} (host {host})", frozenset(), None
+        # Allowlist: only fetch globally-routable public addresses. `is_global`
+        # is False for the private/loopback/link-local/reserved/multicast ranges
+        # AND for CGNAT (100.64.0.0/10) and benchmark (198.18.0.0/15) space that
+        # a bare denylist misses. The explicit predicates are kept as belt-and-
+        # suspenders defense in case of a future is_global edge case.
+        if (not ip.is_global or ip.is_private or ip.is_loopback
+                or ip.is_link_local or ip.is_reserved or ip.is_multicast
+                or ip.is_unspecified):
+            return False, f"Refusing to fetch non-global address {ip} (host {host})", frozenset(), None
         ips.append(ip_str)
     if not ips:
         return False, f"Could not resolve host: {host}", frozenset(), None

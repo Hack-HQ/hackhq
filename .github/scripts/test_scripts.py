@@ -286,6 +286,13 @@ class SsrfGuard(unittest.TestCase):
             ok, _ = ax._resolved_ips_are_public(host)
             self.assertFalse(ok, f"{host} should be blocked")
 
+    def test_blocks_cgnat_and_benchmark_ranges(self):
+        # A bare private/loopback/... denylist misses CGNAT (100.64.0.0/10) and
+        # benchmark (198.18.0.0/15); the is_global allowlist catches them.
+        for host in ("100.64.0.1", "198.18.0.5"):
+            ok, _ = ax._resolved_ips_are_public(host)
+            self.assertFalse(ok, f"{host} should be blocked")
+
     def test_rejects_non_http_scheme(self):
         ok, _ = ax._validate_fetch_url("file:///etc/passwd")
         self.assertFalse(ok)
