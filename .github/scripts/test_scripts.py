@@ -298,6 +298,44 @@ class SsrfGuard(unittest.TestCase):
         self.assertFalse(ok)
 
 
+class ResponseSizeCap(unittest.TestCase):
+    """Fetch caps the body to defeat multi-GB responses / compression bombs."""
+
+    class _FakeResp:
+        def __init__(self, chunks, headers=None):
+            self._chunks = chunks
+            self.headers = headers or {}
+            self.closed = False
+            self._content = None
+            self._content_consumed = False
+
+        def iter_content(self, chunk_size=65536):
+            yield from self._chunks
+
+        def close(self):
+            self.closed = True
+
+    def test_reads_body_under_cap(self):
+        resp = self._FakeResp([b"a" * 100, b"b" * 100])
+        out = ax._read_capped(resp, max_bytes=1000)
+        self.assertEqual(out._content, b"a" * 100 + b"b" * 100)
+        self.assertTrue(out._content_consumed)
+
+    def test_rejects_body_over_cap(self):
+        # Simulates a decompression bomb: chunks (already decompressed by
+        # requests) accumulate past the cap.
+        resp = self._FakeResp([b"x" * 600, b"x" * 600])
+        with self.assertRaises(ValueError):
+            ax._read_capped(resp, max_bytes=1000)
+        self.assertTrue(resp.closed)
+
+    def test_rejects_declared_content_length_over_cap(self):
+        resp = self._FakeResp([b"x"], headers={"Content-Length": str(10_000)})
+        with self.assertRaises(ValueError):
+            ax._read_capped(resp, max_bytes=1000)
+        self.assertTrue(resp.closed)
+
+
 class SsrfDnsRebinding(unittest.TestCase):
     """Regression tests for the check-then-connect (TOCTOU) SSRF gap, issue #74."""
 
