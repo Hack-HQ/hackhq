@@ -21,6 +21,7 @@ Run with:  python .github/scripts/seed_supabase.py
 import json
 import os
 import sys
+from datetime import datetime, timezone
 
 import requests
 
@@ -32,11 +33,20 @@ CHUNK_SIZE = 100
 TIMEOUT = 30
 
 
-def build_row(listing):
+def utc_now_iso():
+    """Current UTC instant as an ISO-8601 string Postgres reads as timestamptz."""
+    return datetime.now(timezone.utc).isoformat()
+
+
+def build_row(listing, synced_at=None):
     """Translate one listings.json entry into a `hackathons` table row.
 
-    `company_name` is stored as `host`. Absent dates stay NULL; absent `featured`
-    becomes False so the column is never NULL for the site's filters.
+    `company_name` is stored as `host`. Absent `deadline` stays NULL; absent
+    `featured` becomes False so the column is never NULL for the site's filters.
+
+    `synced_at` defaults to now. Pass one stamp for a whole run so every row
+    written by the same sync carries the same instant, which is what makes
+    "which rows did the last run touch" answerable.
     """
     return {
         "id": listing["id"],
@@ -56,6 +66,20 @@ def build_row(listing):
         "startDate": listing.get("startDate"),
         "endDate": listing.get("endDate"),
         "featured": bool(listing.get("featured", False)),
+        # The column defaults to now() on INSERT, but the upsert's UPDATE path
+        # never touched it, so a re-synced row kept the timestamp of the very
+        # first insert forever. Sending it on every write makes the name true:
+        # the last time the sync wrote this row, not the first.
+        "synced_at": synced_at or utc_now_iso(),
+        # Declares which write path produced this row. Rows a user submits
+        # through the site carry origin='user' instead. The upsert below does
+        # not filter on it and does not need to: the
+        # hackathons_skip_sync_over_user_rows BEFORE UPDATE trigger, added in
+        # supabase/migrations/20260722154046_enforce_conflict_rule.sql, discards
+        # any update that would flip an origin='user' row to 'listings_json'.
+        # Triggers are not bypassed by service_role the way RLS is, so that
+        # holds for this script too.
+        "origin": "listings_json",
     }
 
 
@@ -88,7 +112,8 @@ def main():
     with open(LISTINGS_FILE, encoding="utf-8") as handle:
         listings = json.load(handle)
 
-    rows = [build_row(listing) for listing in listings]
+    stamp = utc_now_iso()
+    rows = [build_row(listing, synced_at=stamp) for listing in listings]
     upsert(rows, base_url, service_key)
     print(f"seeded {len(rows)} listings into {TABLE}")
 

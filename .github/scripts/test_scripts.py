@@ -9,7 +9,7 @@ import os
 import socket
 import tempfile
 import unittest
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from unittest import mock
 from urllib.parse import urlparse
 
@@ -507,6 +507,35 @@ class BuildRow(unittest.TestCase):
         row = seed.build_row(self._listing())
         for column in ("lat", "lng", "geo_status"):
             self.assertNotIn(column, row)
+
+    def test_sends_synced_at_so_the_upsert_refreshes_it(self):
+        # Without this key the column keeps the DEFAULT now() from the row's
+        # first insert forever - the upsert's UPDATE path never writes it.
+        row = seed.build_row(self._listing(), synced_at="2026-07-22T19:07:41+00:00")
+        self.assertEqual(row["synced_at"], "2026-07-22T19:07:41+00:00")
+
+    def test_synced_at_defaults_to_now(self):
+        before = datetime.now(timezone.utc)
+        stamped = datetime.fromisoformat(seed.build_row(self._listing())["synced_at"])
+        after = datetime.now(timezone.utc)
+        self.assertIsNotNone(stamped.tzinfo)
+        self.assertLessEqual(before, stamped)
+        self.assertLessEqual(stamped, after)
+
+    def test_one_run_stamps_every_row_with_the_same_instant(self):
+        listings = [self._listing(), self._listing(title="Other")]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "listings.json")
+            with open(path, "w", encoding="utf-8") as handle:
+                json.dump(listings, handle)
+            captured = []
+            env = {"SUPABASE_URL": "https://x.supabase.co", "SUPABASE_SERVICE_KEY": "k"}
+            with mock.patch.dict(os.environ, env, clear=False), mock.patch.object(
+                seed, "LISTINGS_FILE", path
+            ), mock.patch.object(seed, "upsert", lambda rows, *a: captured.extend(rows)):
+                seed.main()
+        self.assertEqual(len(captured), 2)
+        self.assertEqual(captured[0]["synced_at"], captured[1]["synced_at"])
 class DeadlineWatcherReport(unittest.TestCase):
     def test_build_report_sanitizes_url(self):
         report = dw._build_report(
@@ -640,11 +669,174 @@ class UpdateReadmesSkipsBadRows(unittest.TestCase):
                 mock.patch.object(util, "warn") as warn:
             update_readmes.main()
         # Regeneration ran for the good listing despite the bad one (no hard fail).
-        embed.assert_called_once()
-        table = embed.call_args[0][1]
+        # Two tables are written now: README (live) and ARCHIVE (closed).
+        self.assertEqual(embed.call_count, 2)
+        table = embed.call_args_list[0][0][1]
         self.assertIn("Good Hack", table)
         # The malformed listing surfaced as a warning, not an abort.
         self.assertTrue(any("bad" in str(c) for c in warn.call_args_list))
+
+
+class ClosedListingsAreArchived(unittest.TestCase):
+    """Closed hackathons belong in ARCHIVE.md, never the README table."""
+
+    def _valid(self, **over):
+        listing = {field: "x" for field in util.REQUIRED_FIELDS}
+        listing.update(over)
+        return listing
+
+    def _run(self, listings):
+        import update_readmes
+        with mock.patch.object(util, "get_listings_from_json", return_value=listings), \
+                mock.patch.object(util, "embed_table") as embed, \
+                mock.patch.object(util, "set_output"), \
+                mock.patch("generate_banner.main"), \
+                mock.patch("generate_gallery.main"):
+            update_readmes.main()
+        # (readme_call, archive_call) -> the embedded table text of each
+        return embed.call_args_list[0][0][1], embed.call_args_list[1][0][1]
+
+    def test_closed_goes_to_archive_and_live_stays_in_readme(self):
+        live = self._valid(
+            id="a", company_name="Live Co", title="Live Hack",
+            date_posted=1783771200, locations=["Troy, NY"], state="open",
+        )
+        closed = self._valid(
+            id="b", company_name="Done Co", title="Done Hack",
+            date_posted=1783771200, locations=["Boston, MA"], state="closed",
+            active=False,
+        )
+        readme, archive = self._run([live, closed])
+
+        self.assertIn("Live Hack", readme)
+        self.assertNotIn("Done Hack", readme)
+        self.assertIn("Done Hack", archive)
+        self.assertNotIn("Live Hack", archive)
+
+    def test_active_false_is_archived_even_without_closed_state(self):
+        # resolve_state treats active=False as closed; the split must agree.
+        listing = self._valid(
+            id="c", company_name="Done Co", title="Inactive Hack",
+            date_posted=1783771200, locations=["Boston, MA"], state="open",
+            active=False,
+        )
+        readme, archive = self._run([listing])
+
+        self.assertNotIn("Inactive Hack", readme)
+        self.assertIn("Inactive Hack", archive)
+
+    def test_archive_rows_match_the_archive_header_width(self):
+        import update_readmes
+        listing = self._valid(
+            id="d", company_name="Done Co", title="Done Hack",
+            date_posted=1783771200, locations=["Boston, MA"], state="closed",
+            active=False, format="In-Person",
+        )
+        lines = update_readmes.create_archive_table([listing]).split("\n")
+        widths = {len(l.split("|")) for l in lines}
+        self.assertEqual(len(widths), 1, f"ragged archive table: {lines}")
+        self.assertIn(":lock:", lines[-1])
+
+
+class ListingsFileOrder(unittest.TestCase):
+    """listings.json is stored sorted so concurrent additions don't collide."""
+
+    def _l(self, **over):
+        listing = {field: "x" for field in util.REQUIRED_FIELDS}
+        listing.update(over)
+        return listing
+
+    def test_order_is_by_host_then_title_then_id(self):
+        a = self._l(id="3", company_name="Zeta U", title="A Hack")
+        b = self._l(id="1", company_name="Alpha U", title="B Hack")
+        c = self._l(id="2", company_name="Alpha U", title="A Hack")
+        out = util.listings_file_order([a, b, c])
+        self.assertEqual([l["id"] for l in out], ["2", "1", "3"])
+
+    def test_order_is_stable_and_idempotent(self):
+        ls = [self._l(id=str(i), company_name=f"U{i%3}", title=f"T{i}") for i in range(10)]
+        once = util.listings_file_order(ls)
+        twice = util.listings_file_order(once)
+        self.assertEqual([l["id"] for l in once], [l["id"] for l in twice])
+
+    def test_case_insensitive_host_ordering(self):
+        a = self._l(id="1", company_name="beta U", title="T")
+        b = self._l(id="2", company_name="Alpha U", title="T")
+        self.assertEqual([l["id"] for l in util.listings_file_order([a, b])], ["2", "1"])
+
+    def test_new_listing_is_not_appended_to_the_end(self):
+        # The regression this guards: every new listing landing on the final
+        # lines is what made concurrent listing PRs conflict by construction.
+        existing = [self._l(id=str(i), company_name=f"U{i}", title="T") for i in range(1, 5)]
+        newcomer = self._l(id="9", company_name="Aaa U", title="T")
+        out = util.listings_file_order(existing + [newcomer])
+        self.assertEqual(out[0]["id"], "9")
+        self.assertNotEqual(out[-1]["id"], "9")
+
+    def test_save_writes_canonical_order(self):
+        ls = [
+            self._l(id="2", company_name="Zeta U", title="T"),
+            self._l(id="1", company_name="Alpha U", title="T"),
+        ]
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "listings.json")
+            with mock.patch.object(util, "LISTINGS_FILE", path):
+                util.save_listings_to_json(ls)
+                written = json.load(open(path))
+        self.assertEqual([l["id"] for l in written], ["1", "2"])
+
+
+class ResolveDataMerge(unittest.TestCase):
+    """Conflicted data files resolve by union — a merge never drops a listing."""
+
+    def _l(self, **over):
+        listing = {field: "x" for field in util.REQUIRED_FIELDS}
+        listing.update(over)
+        return listing
+
+    def test_union_keeps_both_sides_new_listings(self):
+        import resolve_data_merge as r
+        base = [self._l(id="a"), self._l(id="b")]
+        ours = base + [self._l(id="mine", title="My Hack")]
+        theirs = base + [self._l(id="theirs", title="Their Hack")]
+        merged, added = r.merge_listings(ours, theirs)
+        self.assertEqual({l["id"] for l in merged}, {"a", "b", "mine", "theirs"})
+        self.assertEqual([l["id"] for l in added], ["mine"])
+
+    def test_shared_records_take_the_incoming_version(self):
+        # main is authoritative for listings it already has, so a stale copy on
+        # the PR branch must not revert it (e.g. a close applied on main).
+        import resolve_data_merge as r
+        ours = [self._l(id="a", state="open", active=True)]
+        theirs = [self._l(id="a", state="closed", active=False)]
+        merged, added = r.merge_listings(ours, theirs)
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(merged[0]["state"], "closed")
+        self.assertEqual(added, [])
+
+    def test_union_never_shrinks(self):
+        import resolve_data_merge as r
+        ours = [self._l(id=str(i)) for i in range(5)]
+        theirs = [self._l(id=str(i)) for i in range(3, 9)]
+        merged, _ = r.merge_listings(ours, theirs)
+        self.assertGreaterEqual(len(merged), max(len(ours), len(theirs)))
+        self.assertEqual(len(merged), 9)
+
+    def test_geocodes_union_keeps_both_cities_and_sorts(self):
+        import resolve_data_merge as r
+        ours = {"coordinates": {"zed, tx": [1, 2], "shared, ca": [9, 9]}, "unmappable": ["tba"]}
+        theirs = {"coordinates": {"alpha, ny": [3, 4], "shared, ca": [5, 5]}, "unmappable": ["tba"]}
+        merged, added = r.merge_geocodes(ours, theirs)
+        self.assertEqual(list(merged["coordinates"]), ["alpha, ny", "shared, ca", "zed, tx"])
+        self.assertEqual(merged["coordinates"]["shared, ca"], [5, 5])  # theirs wins
+        self.assertEqual(added, ["zed, tx"])
+
+    def test_geocodes_union_merges_unmappable(self):
+        import resolve_data_merge as r
+        ours = {"coordinates": {}, "unmappable": ["tba", "mine"]}
+        theirs = {"coordinates": {}, "unmappable": ["tba"]}
+        merged, _ = r.merge_geocodes(ours, theirs)
+        self.assertEqual(sorted(merged["unmappable"]), ["mine", "tba"])
 
 
 class BannerDateFormat(unittest.TestCase):
@@ -752,6 +944,26 @@ class WeeklyDigestWorkflow(unittest.TestCase):
         self.assertIn("cancel-in-progress: false", content)
         self.assertIn("Open or refresh digest issue", content)
         self.assertIn('gh issue list --repo "$REPO" --label "digest"', content)
+
+
+class BuildRowOrigin(unittest.TestCase):
+    LISTING = {
+        "id": "06f72ca6-9ab3-4d22-aa00-bf5c8b362c33",
+        "company_name": "Major League Hacking",
+        "title": "Some Hackathon",
+        "url": "https://example.com/",
+    }
+
+    def test_rows_declare_they_came_from_listings_json(self):
+        # build_row must stamp the origin that identifies the sync's own rows.
+        # This test covers the stamping only. Enforcement that the sync leaves
+        # origin='user' rows alone lives in the database, in the
+        # hackathons_skip_sync_over_user_rows trigger
+        # (supabase/migrations/20260722154046_enforce_conflict_rule.sql).
+        self.assertEqual(seed.build_row(self.LISTING)["origin"], "listings_json")
+
+    def test_company_name_is_still_stored_as_host(self):
+        self.assertEqual(seed.build_row(self.LISTING)["host"], "Major League Hacking")
 
 
 if __name__ == "__main__":

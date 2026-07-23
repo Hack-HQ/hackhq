@@ -2,16 +2,50 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { NAV_LINKS, isActiveRoute } from "@/lib/nav";
 import { MobileMenu } from "./mobile-menu";
 import { REPO_URL } from "@/lib/types-hq";
 
 export function NavPill() {
   const pathname = usePathname();
+  const pillRef = useRef<HTMLDivElement>(null);
+
+  // The pill floats over the page, so anything an anchor jumps to has to be
+  // pushed clear of it. Publish where its bottom edge actually falls rather
+  // than letting each scroll target guess: the pill is sized by px-based text,
+  // so a browser minimum-font-size setting grows it past any literal — the
+  // same thing that broke the mobile menu's offset in #113.
+  //
+  // At default text size that edge lands at 78px, i.e. 4.875rem: 16px from the
+  // nav's `top-4`, then the pill's own 1px border + 8px `p-2`, its tallest
+  // child (the 44px logo chip — a 16px monogram in 14px of `py-3.5`), and 8px
+  // + 1px again. That is the one place this figure is derived; consumers of
+  // --nav-pill-bottom carry 4.875rem only as a pre-hydration fallback and
+  // should point back here rather than restate it. Recompute it if the pill's
+  // padding, border, or tallest child changes.
+  useEffect(() => {
+    const pill = pillRef.current;
+    if (!pill) return;
+    const publish = () => {
+      const { bottom } = pill.getBoundingClientRect();
+      document.documentElement.style.setProperty(
+        "--nav-pill-bottom",
+        `${Math.round(bottom)}px`,
+      );
+    };
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(pill);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <nav className="fixed inset-x-0 top-4 z-50 flex justify-center px-3">
-      <div className="glass-dark flex items-center gap-1 rounded-3xl p-2 pl-2.5 shadow-[0_16px_48px_rgba(0,0,0,0.45)]">
+      <div
+        ref={pillRef}
+        className="glass-dark flex items-center gap-1 rounded-3xl p-2 pl-2.5 shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
+      >
         {/* Logo chip - HQ monogram */}
         <Link
           href="/"
@@ -21,8 +55,11 @@ export function NavPill() {
           <img src="/hackhq-monogram.svg" alt="HackHQ" className="h-4 w-auto" />
         </Link>
 
-        {/* Links - desktop (sm and up). Below that they live in the menu. */}
-        <div className="hidden items-center sm:flex">
+        {/* Links - desktop (md and up). Below that they live in the menu.
+            Not `sm`: with RESOURCES the inline row needs 674px of viewport, so
+            between 640 and 673 the pill was squeezed narrower than its content
+            and wrapped to a second line. */}
+        <div className="hidden items-center md:flex">
           {NAV_LINKS.map(([label, href]) => {
             const active = isActiveRoute(pathname, href);
             return (
@@ -51,9 +88,44 @@ export function NavPill() {
         {/* Links - below sm, where the row above is hidden */}
         <MobileMenu />
 
-        {/* Submit CTA */}
+        {/* Submit CTA.
+            On the home page this has to scroll itself. <Link>'s documented
+            default is to *maintain* scroll position and only jump when the
+            target Page is outside the viewport — on "/" the Page is already
+            visible, so the router kept the position and the button appeared
+            dead. The footer's plain <a> never had the problem because it
+            bypasses the router and the browser handles the fragment.
+            Off the home page there is a real route change, so the router
+            still does the work and we leave it alone. */}
         <Link
           href="/#submit"
+          onClick={(e) => {
+            if (pathname !== "/") return;
+            // Leave modified and non-primary clicks to the browser, or
+            // cmd/ctrl-click stops opening the submit form in a new tab.
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            if (e.button !== 0) return;
+            const target = document.getElementById("submit");
+            if (!target) return;
+            e.preventDefault();
+            // Honours the section's scroll-margin-top, so it lands clear of
+            // this pill rather than behind it.
+            target.scrollIntoView();
+            // A fragment navigation moves the sequential focus navigation
+            // starting point as well as the viewport; scrollIntoView only
+            // moves the viewport. Without this the form is on screen but the
+            // next Tab resumes from this pill, walking a keyboard user back
+            // through the nav to reach what they just jumped to. The section
+            // carries tabIndex={-1} for exactly this, and preventScroll keeps
+            // the landing scrollIntoView just made.
+            target.focus({ preventScroll: true });
+            // Fragment-relative, so a query string on the home page survives,
+            // and only when it would actually change - repeat clicks should
+            // not stack identical history entries.
+            if (window.location.hash !== "#submit") {
+              window.history.pushState(null, "", "#submit");
+            }
+          }}
           className="ml-1 flex items-center gap-2 rounded-2xl bg-paper px-5 py-3 font-mono text-[11px] font-bold tracking-[0.18em] text-ink transition hover:bg-white"
         >
           + SUBMIT

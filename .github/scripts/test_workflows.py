@@ -152,5 +152,37 @@ class CommitGating(unittest.TestCase):
                 )
 
 
+class SupabaseSyncTriggers(unittest.TestCase):
+    """The Supabase sync's push trigger cannot be relied on, so the cron must stay.
+
+    Every automated edit to listings.json is pushed to main with the default
+    GITHUB_TOKEN, and GitHub starts no workflow run for such a push. So the
+    `on: push` path filter in sync_supabase.yml fires for human commits only,
+    and deleting the schedule would leave the table updating on nothing but a
+    manual dispatch.
+    """
+
+    def test_bot_pushes_cannot_trigger_a_run(self):
+        # The premise of the above: no workflow checks out with a PAT, so every
+        # push these workflows make carries the default token.
+        for name in ("auto_extract.yml", "contribution_approved.yml"):
+            with self.subTest(workflow=name):
+                text = read(name)
+                self.assertIn("git push origin main", text)
+                self.assertNotIn(
+                    "token:",
+                    text,
+                    f"{name} now checks out with an explicit token. If that is a "
+                    f"PAT, its pushes do start workflow runs and the note in "
+                    f"sync_supabase.yml about the push trigger is out of date.",
+                )
+
+    def test_sync_keeps_the_schedule_that_actually_runs_it(self):
+        text = read("sync_supabase.yml")
+        self.assertIn("schedule:", text)
+        self.assertIn("cron:", text)
+        self.assertIn("workflow_dispatch:", text)
+
+
 if __name__ == "__main__":
     unittest.main()

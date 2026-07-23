@@ -7,13 +7,13 @@ import { NAV_LINKS, isActiveRoute } from "@/lib/nav";
 import { REPO_URL } from "@/lib/types-hq";
 
 /**
- * The primary sections below 640px.
+ * The primary sections below 768px.
  *
- * The desktop links are `hidden sm:flex`, which left mobile visitors on /globe,
+ * The desktop links are `hidden md:flex`, which left mobile visitors on /globe,
  * /deck, or /my with no way to reach the other sections at all (#113). This is
  * a disclosure button plus a panel carrying the same links.
  *
- * Rendered inside the nav pill and hidden at `sm` and up, where the inline
+ * Rendered inside the nav pill and hidden at `md` and up, where the inline
  * links take over.
  */
 export function MobileMenu() {
@@ -46,14 +46,14 @@ export function MobileMenu() {
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [open]);
 
-  // The panel stops existing at `sm` and up, but `sm:hidden` is CSS — the state
+  // The panel stops existing at `md` and up, but `md:hidden` is CSS — the state
   // stays true. Rotating a phone to landscape therefore hid the panel with focus
   // still inside it (focus fell to <body>), left this component's document-level
   // key handler live on desktop, and popped the panel back open on rotating
   // back. Close it when the breakpoint is crossed so the state matches reality.
   useEffect(() => {
     if (!open) return;
-    const desktop = window.matchMedia("(min-width: 640px)");
+    const desktop = window.matchMedia("(min-width: 768px)");
     const onChange = () => {
       if (desktop.matches) setOpen(false);
     };
@@ -80,7 +80,7 @@ export function MobileMenu() {
     <div
       ref={rootRef}
       onBlur={onBlur}
-      className="sm:hidden"
+      className="md:hidden"
     >
       <button
         ref={buttonRef}

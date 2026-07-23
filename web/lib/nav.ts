@@ -2,6 +2,7 @@
 export const NAV_LINKS: [string, string][] = [
   ["GLOBE", "/globe"],
   ["DECK", "/deck"],
+  ["RESOURCES", "/resources"],
   ["MY HQ", "/my"],
 ];
 
