@@ -14,7 +14,7 @@ import {
   SubmitSection,
   Footer,
 } from "./sections";
-import { ResourcesTeaser } from "./resources-teaser";
+import { ResourcesShowcase } from "./resources-showcase";
 
 export function HomeClient({
   hackathons,
@@ -31,7 +31,7 @@ export function HomeClient({
         <GlobeHero />
         <StatsStrip stats={stats} />
         <ThemeMarquee hackathons={hackathons} />
-        <ResourcesTeaser />
+        <ResourcesShowcase />
         <Developers />
         <SubmitSection />
       </main>
