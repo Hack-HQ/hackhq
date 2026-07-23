@@ -199,12 +199,12 @@ export function DiscPlayer() {
   return (
     <div
       ref={rootRef}
-      className="fixed right-2 top-2 z-[80] hidden flex-col items-end gap-1 sm:flex"
+      className="fixed right-2 top-2 z-[80] hidden flex-col items-end gap-1 lg:flex"
     >
       {/* The exact Framer DiscPlayer - naked disc, no card. Plays only the
           music the user loads. Negative margins offset the component's
           internal 24px padding so the record sits snug in the corner. */}
-      <div ref={discWrapRef} onClickCapture={onDiscClickCapture} className="-mr-4 -mt-4">
+      <div ref={discWrapRef} onClickCapture={onDiscClickCapture} className="-mr-4 mt-10">
         <FramerDiscPlayer
           style={{ width: 190, height: 190 }}
           backgroundColor="rgba(0, 0, 0, 0)"
@@ -216,7 +216,7 @@ export function DiscPlayer() {
       {/* Music panel toggle */}
       <button
         onClick={() => setPanelOpen((v) => !v)}
-        className="glass-dark flex items-center gap-2 rounded-full px-4 py-2 font-mono text-[9px] font-bold tracking-[0.18em] text-paper transition hover:bg-white/10"
+        className="mobile-nav-lens flex items-center gap-2 rounded-full px-4 py-2 font-mono text-[11px] font-bold tracking-[0.18em] text-paper transition hover:bg-white/10"
       >
         <span
           className={`h-1.5 w-1.5 rounded-full bg-coral ${playing ? "" : "opacity-60"}`}
@@ -229,12 +229,12 @@ export function DiscPlayer() {
       <div
         className={
           panelOpen
-            ? "glass-dark w-[19rem] rounded-3xl p-4 shadow-[0_24px_64px_rgba(0,0,0,0.55)]"
+            ? "mobile-nav-lens w-[24rem] rounded-3xl p-4"
             : "pointer-events-none invisible h-0 w-[19rem] overflow-hidden opacity-0"
         }
       >
         {!hasMusic && !connecting && (
-          <div className="mb-3 font-mono text-[10px] leading-relaxed tracking-[0.12em] text-paper/60">
+          <div className="mb-2 font-mono text-[12px] leading-relaxed tracking-[0.12em] text-paper-dim">
             PASTE A SPOTIFY LINK. THE DISC PLAYS YOUR MUSIC - NOTHING ELSE.
           </div>
         )}
@@ -242,7 +242,7 @@ export function DiscPlayer() {
           <div data-spotify-mount />
         </div>
         {connecting && (
-          <div className="mt-2 text-center font-mono text-[9px] tracking-[0.2em] text-paper/40">
+          <div className="mt-2 text-center font-mono text-[11px] tracking-[0.2em] text-paper-dim">
             LOADING YOUR MUSIC…
           </div>
         )}
@@ -254,18 +254,18 @@ export function DiscPlayer() {
               setLinkError(false);
             }}
             placeholder="Paste your Spotify link…"
-            className={`min-w-0 flex-1 rounded-lg border bg-ink-deep/50 px-3 py-2 font-mono text-[10px] text-paper outline-none transition placeholder:text-paper/30 ${
+            className={`min-w-0 flex-1 rounded-lg border bg-ink-deep/70 px-3 py-2 font-mono text-[12px] text-paper outline-none transition placeholder:text-paper/50 ${
               linkError ? "border-coral" : "border-white/15 focus:border-coral"
             }`}
           />
           <button
             type="submit"
-            className="rounded-lg bg-paper px-3 py-2 font-mono text-[9px] font-bold tracking-[0.12em] text-ink transition hover:bg-white"
+            className="rounded-lg bg-paper px-3 py-2 font-mono text-[11px] font-bold tracking-[0.12em] text-ink transition hover:bg-white"
           >
             LOAD
           </button>
         </form>
-        <div className="kicker mt-2 text-[8px] text-paper/30">
+        <div className="kicker mt-5 text-[10px] text-paper-dim">
           Then tap the record to play. Signed into Spotify? Full tracks.
         </div>
       </div>
