@@ -332,7 +332,7 @@ function HackCard({ h }: { h: Hackathon }) {
             <div className="flex shrink-0 items-center gap-2">
               <SaveHeart h={h} dark />
               <a
-                href={safeHttpUrl(h.url)}
+                href={h.url}
                 target="_blank"
                 rel="noreferrer"
                 onClick={(e) => e.stopPropagation()}
