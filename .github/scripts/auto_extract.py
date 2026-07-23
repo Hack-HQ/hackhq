@@ -29,6 +29,10 @@ except ImportError:
 
 
 MAX_REDIRECTS = 5
+# Hard ceiling on a fetched page body. A submitted URL is attacker-influenced,
+# so cap how much we download to stop a multi-GB body or a compression bomb from
+# OOM-ing the runner (this path also runs unattended via deadline_watcher.py).
+MAX_RESPONSE_BYTES = 5 * 1024 * 1024  # 5 MB
 
 
 def _resolve_and_validate(host):
@@ -50,9 +54,15 @@ def _resolve_and_validate(host):
             ip = ipaddress.ip_address(ip_str)
         except ValueError:
             return False, f"Unresolvable address for host: {host}", frozenset(), None
-        if (ip.is_private or ip.is_loopback or ip.is_link_local
-                or ip.is_reserved or ip.is_multicast or ip.is_unspecified):
-            return False, f"Refusing to fetch internal address {ip} (host {host})", frozenset(), None
+        # Allowlist: only fetch globally-routable public addresses. `is_global`
+        # is False for the private/loopback/link-local/reserved/multicast ranges
+        # AND for CGNAT (100.64.0.0/10) and benchmark (198.18.0.0/15) space that
+        # a bare denylist misses. The explicit predicates are kept as belt-and-
+        # suspenders defense in case of a future is_global edge case.
+        if (not ip.is_global or ip.is_private or ip.is_loopback
+                or ip.is_link_local or ip.is_reserved or ip.is_multicast
+                or ip.is_unspecified):
+            return False, f"Refusing to fetch non-global address {ip} (host {host})", frozenset(), None
         ips.append(ip_str)
     if not ips:
         return False, f"Could not resolve host: {host}", frozenset(), None
@@ -175,14 +185,58 @@ def _build_pinned_session(host, pinned_ip):
     return session
 
 
+def _read_capped(response, max_bytes=MAX_RESPONSE_BYTES):
+    """Read a streamed response body into memory, bounded by ``max_bytes``.
+
+    ``requests`` decompresses gzip/deflate/br while iterating, so the cap applies
+    to the *decompressed* size — this defeats a small compression bomb as well as
+    a plain multi-GB body. Populates ``response._content`` so downstream
+    ``response.text`` / ``.content`` keep working. Fails closed past the cap.
+    """
+    declared = response.headers.get("Content-Length")
+    if declared is not None:
+        try:
+            declared_int = int(declared)
+        except (TypeError, ValueError):
+            declared_int = None
+        if declared_int is not None and declared_int > max_bytes:
+            response.close()
+            raise ValueError(
+                f"Response Content-Length {declared} exceeds {max_bytes}-byte cap; refusing to fetch"
+            )
+    total = 0
+    chunks = []
+    for chunk in response.iter_content(chunk_size=65536):
+        if not chunk:
+            continue
+        total += len(chunk)
+        if total > max_bytes:
+            response.close()
+            raise ValueError(
+                f"Response body exceeds {max_bytes}-byte cap; refusing to fetch"
+            )
+        chunks.append(chunk)
+    # Inject the fully-read body so response.text/.content work without a second
+    # (already-consumed) network read.
+    response._content = b"".join(chunks)
+    response._content_consumed = True
+    return response
+
+
 def _get_with_retries(session, url, headers, timeout, retries=2, backoff=1.5):
-    """GET a single URL, retrying only transient network errors with backoff."""
+    """GET a single URL, retrying only transient network errors with backoff.
+
+    Streams the body and reads it under a size cap (:func:`_read_capped`) so an
+    oversized or compression-bomb response is rejected instead of buffered whole.
+    """
     last_exc = None
     for attempt in range(retries + 1):
         try:
-            return session.get(
-                url, headers=headers, timeout=timeout, allow_redirects=False
+            response = session.get(
+                url, headers=headers, timeout=timeout, allow_redirects=False,
+                stream=True,
             )
+            return _read_capped(response)
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
             last_exc = e
             if attempt < retries:
@@ -532,10 +586,11 @@ def main():
     if fmt not in util.VALID_FORMATS:
         fmt = "In-Person"
 
-    # Sanitize locations — remove any that look like URLs or HTML
+    # Sanitize locations — strip control chars / collapse whitespace / truncate
+    # (sanitize_field), then drop any that look like URLs or HTML.
     clean_locations = []
     for loc in locations:
-        loc = loc.strip()
+        loc = util.sanitize_field(loc)
         if loc and not loc.startswith("http") and "<" not in loc:
             clean_locations.append(loc)
     if not clean_locations:
@@ -576,7 +631,7 @@ def main():
         "url": url,
         "locations": locations,
         "format": fmt,
-        "prize": extracted.get("prize", "—") or "—",
+        "prize": util.sanitize_field(extracted.get("prize")) or "—",
         "state": state,
         "active": state != "closed",
         "is_visible": True,

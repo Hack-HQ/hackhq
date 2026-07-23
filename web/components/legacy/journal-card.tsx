@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { GalleryPhoto, Opportunity } from "@/lib/types";
 import { STATUS_LABELS } from "@/lib/types";
+import { safeHttpUrl } from "@/lib/url";
 import { Reveal } from "./reveal";
 
 // Fallback scenes when there aren't enough gallery photos.
@@ -46,7 +47,7 @@ export function JournalCard({
             return (
               <Reveal key={opp.id}>
                 <a
-                  href={opp.url}
+                  href={safeHttpUrl(opp.url)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group block"

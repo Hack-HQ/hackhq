@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Hackathon, HackState } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
+import { safeHttpUrl } from "@/lib/url";
 import { useSelection, useTracker } from "./store";
 
 type StatusFilter = "all" | HackState;
@@ -397,7 +398,7 @@ function HackRow({ h }: { h: Hackathon }) {
       </div>
       <SaveHeart h={h} />
       <a
-        href={h.url}
+        href={safeHttpUrl(h.url)}
         target="_blank"
         rel="noreferrer"
         onClick={(e) => e.stopPropagation()}

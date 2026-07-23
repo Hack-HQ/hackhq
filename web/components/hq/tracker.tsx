@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { Hackathon } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
 import { countKnownTracked } from "@/lib/tracker-utils";
+import { safeHttpUrl } from "@/lib/url";
 import { STAGES, useSelection, useTracker, type Stage } from "./store";
 
 export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
@@ -145,7 +146,7 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
           </div>
           {urgent && (
             <a
-              href={urgent.url}
+              href={safeHttpUrl(urgent.url)}
               target="_blank"
               rel="noreferrer"
               className="shrink-0 rounded-full bg-coral px-6 py-3 text-center font-mono text-[11px] font-bold tracking-[0.15em] text-paper transition hover:bg-coral-bright"

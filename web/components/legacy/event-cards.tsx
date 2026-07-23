@@ -1,4 +1,5 @@
 import type { Opportunity } from "@/lib/types";
+import { safeHttpUrl } from "@/lib/url";
 
 // Three distinct cinematic moods, one per card (ember / emerald / gold),
 // mirroring the template's restaurant / cocktail / car project scenes.
@@ -47,7 +48,7 @@ export function EventCards({ events }: { events: Opportunity[] }) {
               </h2>
 
               <a
-                href={opp.url}
+                href={safeHttpUrl(opp.url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 rounded-full bg-black/25 px-7 py-3.5 text-sm text-white backdrop-blur-md transition-colors hover:bg-black/40"

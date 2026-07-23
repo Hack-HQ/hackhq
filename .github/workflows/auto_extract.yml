@@ -121,14 +121,25 @@ jobs:
 
             const warning = process.env.WARNING_MSG || '';
 
+            // Escape model-derived values before dropping them into the markdown
+            // table: strip newlines and escape pipes so an attacker-influenced
+            // extracted field can't break the table or inject markdown (#211).
+            const cell = (v) => {
+              const s = String(v ?? '').replace(/\r?\n/g, ' ').replace(/\|/g, '\\|').trim();
+              return s || 'Unknown';
+            };
+            const locations = Array.isArray(extractedData.locations)
+              ? extractedData.locations
+              : ['Unknown'];
+
             let body = `## Opportunity Added Successfully!\n\n`;
             body += `| Field | Value |\n`;
             body += `|-------|-------|\n`;
-            body += `| **Company** | ${extractedData.company_name || 'Unknown'} |\n`;
-            body += `| **Role** | ${extractedData.title || 'Unknown'} |\n`;
-            body += `| **Category** | ${extractedData.category || 'Unknown'} |\n`;
-            body += `| **Location** | ${(extractedData.locations || ['Unknown']).join(', ')} |\n`;
-            body += `| **Season** | ${extractedData.season || 'Unknown'} |\n\n`;
+            body += `| **Company** | ${cell(extractedData.company_name)} |\n`;
+            body += `| **Role** | ${cell(extractedData.title)} |\n`;
+            body += `| **Category** | ${cell(extractedData.category)} |\n`;
+            body += `| **Location** | ${cell(locations.join(', '))} |\n`;
+            body += `| **Season** | ${cell(extractedData.season)} |\n\n`;
 
             if (warning) {
               body += `> Note: ${warning}\n\n`;
