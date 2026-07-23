@@ -105,10 +105,22 @@ const DEVELOPERS: Dev[] = [
     bio: "Placeholder note — a line or two on Cai's part in HackHQ and what they focus on. Real bio coming soon.",
   },
   {
-    name: "Vick",
+    name: "Vick Mahindru",
     role: "Founding contributor",
     org: "HackHQ",
     bio: "Placeholder note — a line or two on Vick's part in HackHQ and what they focus on. Real bio coming soon.",
+  },
+  {
+    name: "Gnan Sruthi R",
+    role: "Founding contributor",
+    org: "HackHQ",
+    bio: "Placeholder note — a line or two on Gnan Sruthi's part in HackHQ and what they focus on. Real bio coming soon.",
+  },
+  {
+    name: "Jack He",
+    role: "Founding contributor",
+    org: "HackHQ",
+    bio: "Placeholder note — a line or two on Jack's part in HackHQ and what they focus on. Real bio coming soon.",
   },
 ];
 
@@ -261,7 +273,7 @@ export function Developers() {
         </div>
 
         {/* filmstrip — active person's slot points up at the card */}
-        <div className="mt-4 grid grid-cols-4 gap-2 sm:gap-3">
+        <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6 sm:gap-3">
           {DEVELOPERS.map((d, i) =>
             i === active ? (
               <div
