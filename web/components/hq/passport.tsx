@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import posthog from "posthog-js";
 
 /* ---------------------------------------------------------------------------
    My Passport — Members · Pillar 03
@@ -419,6 +420,7 @@ export function Passport({
   const open = () => {
     if (phase !== "closed") return;
     clearTimers();
+    posthog.capture("passport_opened");
     if (reduced) {
       setPhase("open");
       setOpened(true);

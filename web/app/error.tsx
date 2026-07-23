@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import posthog from "posthog-js";
 
 // Route-level error boundary: catches thrown errors from the page/segment and
 // offers a recovery action instead of falling through to Next's default screen.
@@ -14,6 +15,7 @@ export default function Error({
 }) {
   useEffect(() => {
     console.error(error);
+    posthog.captureException(error);
   }, [error]);
 
   return (

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Syncopate, Inter, Space_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { validateEnv } from "@/lib/env";
+import { PostHogIdentify } from "@/components/hq/posthog-identify";
 import "./globals.css";
 
 // Validate/log environment configuration once when the server boots.
@@ -47,6 +48,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full" suppressHydrationWarning>
+        {process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && <PostHogIdentify />}
         {children}
       </body>
     </html>

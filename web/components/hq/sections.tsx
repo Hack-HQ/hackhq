@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import posthog from "posthog-js";
 import type { Hackathon, SiteStats } from "@/lib/types-hq";
 import { REPO_URL, submitIssueUrl } from "@/lib/types-hq";
 
@@ -114,6 +115,7 @@ export function SubmitSection() {
             className="mt-8 flex flex-col gap-4"
             onSubmit={(e) => {
               e.preventDefault();
+              posthog.capture("hackathon_submitted", { name_provided: name.trim().length > 0, url_provided: url.trim().length > 0 });
               window.open(submitIssueUrl(name, url), "_blank");
             }}
           >

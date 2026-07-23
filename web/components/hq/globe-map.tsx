@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import posthog from "posthog-js";
 import {
   STATE_META,
   countdown,
@@ -222,6 +223,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       setSelectedHackathon(h);
       setVirtualOpen(false);
       spinEnabledRef.current = false;
+      posthog.capture("hackathon_detail_opened", { hackathon_id: h.id, hackathon_title: h.title, hackathon_state: h.state, hackathon_format: h.format, source: "globe" });
       popup.remove();
       // Re-query at click time (not the mount-captured value) so a reduced-motion
       // preference toggled mid-session is honored, matching backToGlobe/closeDrawer.
@@ -451,7 +453,8 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     setSelectedHackathon(null);
     setVirtualOpen(true);
     spinEnabledRef.current = false;
-  }, []);
+    posthog.capture("globe_virtual_list_opened", { virtual_count: visibleVirtual.length });
+  }, [visibleVirtual.length]);
 
   // Virtual events have no coordinates, so they must NOT go through the marker
   // fly-in path (which would fly to [null, null]). Just open the detail drawer,
@@ -461,6 +464,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     setVirtualOpen(false);
     setSelectedHackathon(h);
     spinEnabledRef.current = false;
+    posthog.capture("hackathon_detail_opened", { hackathon_id: h.id, hackathon_title: h.title, hackathon_state: h.state, hackathon_format: h.format, source: "globe_virtual" });
   }, []);
 
   return (

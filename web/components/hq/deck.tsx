@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import posthog from "posthog-js";
 import type { Hackathon, HackState } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
 import { useSelection, useTracker } from "./store";
@@ -67,7 +68,10 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
               <FilterPill
                 key={id}
                 active={status === id}
-                onClick={() => setStatus(id)}
+                onClick={() => {
+                  setStatus(id);
+                  posthog.capture("deck_filter_changed", { filter_type: "status", filter_value: id });
+                }}
                 dotColor={id !== "all" ? STATE_META[id as HackState].color : undefined}
               >
                 {label}
@@ -84,7 +88,10 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
               <FilterPill
                 key={id}
                 active={format === id}
-                onClick={() => setFormat(id)}
+                onClick={() => {
+                  setFormat(id);
+                  posthog.capture("deck_filter_changed", { filter_type: "format", filter_value: id });
+                }}
               >
                 {label}
               </FilterPill>
@@ -94,7 +101,10 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
               {(["grid", "list"] as View[]).map((v) => (
                 <button
                   key={v}
-                  onClick={() => setView(v)}
+                  onClick={() => {
+                    setView(v);
+                    if (v !== view) posthog.capture("deck_view_changed", { view: v });
+                  }}
                   className={`px-4 py-2 font-mono text-[10px] tracking-[0.2em] transition ${
                     view === v ? "bg-ink text-paper" : "text-ink/60 hover:bg-ink/5"
                   }`}
@@ -175,8 +185,13 @@ function SaveHeart({ h, dark }: { h: Hackathon; dark?: boolean }) {
     <button
       onClick={(e) => {
         e.stopPropagation();
-        if (tracked) remove(h.id);
-        else save(h.id);
+        if (tracked) {
+          remove(h.id);
+          posthog.capture("hackathon_unsaved", { hackathon_id: h.id, hackathon_title: h.title, hackathon_state: h.state, hackathon_format: h.format, source: "deck" });
+        } else {
+          save(h.id);
+          posthog.capture("hackathon_saved", { hackathon_id: h.id, hackathon_title: h.title, hackathon_state: h.state, hackathon_format: h.format, source: "deck" });
+        }
       }}
       aria-label={tracked ? "Remove from tracker" : "Save to tracker"}
       title={tracked ? "Remove from My HackHQ" : "Save to My HackHQ"}
@@ -230,7 +245,10 @@ function HackCard({ h }: { h: Hackathon }) {
   const meta = STATE_META[h.state];
   const cd = countdown(h);
   const dim = h.state === "closed";
-  const openDetails = () => setSelected(h);
+  const openDetails = () => {
+    setSelected(h);
+    posthog.capture("hackathon_detail_opened", { hackathon_id: h.id, hackathon_title: h.title, hackathon_state: h.state, hackathon_format: h.format, source: "deck" });
+  };
   const onOpenKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     if (e.target !== e.currentTarget) return;
     if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
@@ -334,7 +352,10 @@ function HackCard({ h }: { h: Hackathon }) {
                 href={h.url}
                 target="_blank"
                 rel="noreferrer"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  posthog.capture("hackathon_registered", { hackathon_id: h.id, hackathon_title: h.title, hackathon_state: h.state, hackathon_format: h.format, source: "deck" });
+                }}
                 className={`rounded-full px-4 py-2 font-mono text-[9px] font-bold tracking-[0.14em] text-white transition ${
                   h.state === "opens_soon"
                     ? "bg-white/15 hover:bg-white/25"
@@ -355,7 +376,10 @@ function HackRow({ h }: { h: Hackathon }) {
   const { setSelected } = useSelection();
   const meta = STATE_META[h.state];
   const cd = countdown(h);
-  const openDetails = () => setSelected(h);
+  const openDetails = () => {
+    setSelected(h);
+    posthog.capture("hackathon_detail_opened", { hackathon_id: h.id, hackathon_title: h.title, hackathon_state: h.state, hackathon_format: h.format, source: "deck" });
+  };
   const onOpenKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.target !== e.currentTarget) return;
     if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
@@ -400,7 +424,10 @@ function HackRow({ h }: { h: Hackathon }) {
         href={h.url}
         target="_blank"
         rel="noreferrer"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          posthog.capture("hackathon_registered", { hackathon_id: h.id, hackathon_title: h.title, hackathon_state: h.state, hackathon_format: h.format, source: "deck" });
+        }}
         className="hidden rounded-full bg-register px-4 py-2 font-mono text-[9px] font-bold tracking-[0.15em] text-white transition hover:brightness-110 sm:block"
       >
         {h.state === "opens_soon" ? "SITE" : "GO"}

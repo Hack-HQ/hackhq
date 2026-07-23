@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import posthog from "posthog-js";
 import {
   STATE_META,
   countdown,
@@ -166,12 +167,21 @@ export function DetailModal() {
               href={h.url}
               target="_blank"
               rel="noreferrer"
+              onClick={() => posthog.capture("hackathon_registered", { hackathon_id: h.id, hackathon_title: h.title, hackathon_state: h.state, hackathon_format: h.format, source: "modal" })}
               className="flex-1 rounded-full bg-coral px-7 py-4 text-center font-mono text-[12px] font-bold tracking-[0.18em] text-paper transition hover:bg-coral-bright"
             >
               {h.state === "opens_soon" ? "VISIT WEBSITE ↗" : "REGISTER ↗"}
             </a>
             <button
-              onClick={() => (tracked ? remove(h.id) : save(h.id))}
+              onClick={() => {
+                if (tracked) {
+                  remove(h.id);
+                  posthog.capture("hackathon_unsaved", { hackathon_id: h.id, hackathon_title: h.title, hackathon_state: h.state, hackathon_format: h.format, source: "modal" });
+                } else {
+                  save(h.id);
+                  posthog.capture("hackathon_saved", { hackathon_id: h.id, hackathon_title: h.title, hackathon_state: h.state, hackathon_format: h.format, source: "modal" });
+                }
+              }}
               className={`rounded-full border px-7 py-4 font-mono text-[12px] tracking-[0.18em] transition ${
                 tracked
                   ? "border-coral bg-coral/15 text-coral"

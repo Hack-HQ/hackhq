@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import posthog from "posthog-js";
 import type { Hackathon } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
 import { countKnownTracked } from "@/lib/tracker-utils";
@@ -73,7 +74,14 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
               }}
               onDragLeave={() => setOverStage(null)}
               onDrop={() => {
-                if (dragId) move(dragId, col.id);
+                if (dragId) {
+                  const fromStage = tracked[dragId];
+                  move(dragId, col.id);
+                  if (fromStage && fromStage !== col.id) {
+                    const h = byId[dragId];
+                    posthog.capture("tracker_stage_moved", { hackathon_id: dragId, hackathon_title: h?.title, from_stage: fromStage, to_stage: col.id });
+                  }
+                }
                 setDragId(null);
                 setOverStage(null);
               }}
@@ -225,6 +233,7 @@ function TrackerCard({
           onClick={(e) => {
             e.stopPropagation();
             onRemove();
+            posthog.capture("tracker_card_removed", { hackathon_id: h.id, hackathon_title: h.title, from_stage: stageId });
           }}
           aria-label="Remove"
           className="text-paper/25 opacity-0 transition group-hover:opacity-100 hover:text-coral"
@@ -247,6 +256,7 @@ function TrackerCard({
             onClick={(e) => {
               e.stopPropagation();
               onMoveStage(prevStage.id);
+              posthog.capture("tracker_stage_moved", { hackathon_id: h.id, hackathon_title: h.title, from_stage: stageId, to_stage: prevStage.id });
             }}
             aria-label={`Move ${h.title} to ${prevStage.label}`}
             className="rounded-full border border-white/20 px-3 py-1 font-mono text-[9px] tracking-[0.14em] text-paper/80 transition hover:border-white/35 hover:bg-white/10"
@@ -260,6 +270,7 @@ function TrackerCard({
             onClick={(e) => {
               e.stopPropagation();
               onMoveStage(nextStage.id);
+              posthog.capture("tracker_stage_moved", { hackathon_id: h.id, hackathon_title: h.title, from_stage: stageId, to_stage: nextStage.id });
             }}
             aria-label={`Move ${h.title} to ${nextStage.label}`}
             className="rounded-full border border-coral/40 px-3 py-1 font-mono text-[9px] tracking-[0.14em] text-coral transition hover:border-coral hover:bg-coral/12"
