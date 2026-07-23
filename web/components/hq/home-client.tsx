@@ -15,6 +15,7 @@ import {
   Footer,
 } from "./sections";
 import { ResourcesShowcase } from "./resources-showcase";
+import { GalleryCanvas } from "./gallery-canvas";
 
 export function HomeClient({
   hackathons,
@@ -32,6 +33,7 @@ export function HomeClient({
         <StatsStrip stats={stats} />
         <ThemeMarquee hackathons={hackathons} />
         <ResourcesShowcase />
+        <GalleryCanvas />
         <Developers />
         <SubmitSection />
       </main>
