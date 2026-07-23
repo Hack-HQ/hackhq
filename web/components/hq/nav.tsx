@@ -2,14 +2,30 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { NAV_LINKS, isActiveRoute } from "@/lib/nav";
 import { MobileMenu } from "./mobile-menu";
 import { REPO_URL } from "@/lib/types-hq";
 
+// The floating pill's single sliding highlight. Ported from the Framer
+// "Floating Pill Navigation": one motion element with a shared `layoutId`
+// glides between links on a spring (stiffness 800, damping 60) instead of a
+// static per-link background. It follows the cursor on hover and rests on the
+// active route otherwise.
+const PILL_SPRING = { type: "spring", stiffness: 800, damping: 60, mass: 1 } as const;
+
 export function NavPill() {
   const pathname = usePathname();
   const pillRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
+  // Which link the highlight sits on while hovering; null → rest on the route.
+  const [hovered, setHovered] = useState<string | null>(null);
+
+  const links: { label: string; href: string; external?: boolean }[] = [
+    ...NAV_LINKS.map(([label, href]) => ({ label, href })),
+    { label: "★ GITHUB", href: REPO_URL, external: true },
+  ];
 
   // The pill floats over the page, so anything an anchor jumps to has to be
   // pushed clear of it. Publish where its bottom edge actually falls rather
@@ -58,31 +74,60 @@ export function NavPill() {
         {/* Links - desktop (md and up). Below that they live in the menu.
             Not `sm`: with RESOURCES the inline row needs 674px of viewport, so
             between 640 and 673 the pill was squeezed narrower than its content
-            and wrapped to a second line. */}
-        <div className="hidden items-center md:flex">
-          {NAV_LINKS.map(([label, href]) => {
-            const active = isActiveRoute(pathname, href);
-            return (
+            and wrapped to a second line.
+
+            A single sliding highlight (the `nav-pill` layoutId) glides between
+            links on hover and rests on the active route on mouse-out. */}
+        <div
+          className="hidden items-center md:flex"
+          onMouseLeave={() => setHovered(null)}
+        >
+          {links.map(({ label, href, external }) => {
+            const active = !external && isActiveRoute(pathname, href);
+            // The highlight sits on the hovered link, or the active route when
+            // nothing is hovered. Exactly one link renders it, so the shared
+            // layoutId animates it from its old spot to the new one.
+            const lit = hovered ? hovered === label : active;
+            const inner = (
+              <>
+                {lit && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    transition={reduceMotion ? { duration: 0 } : PILL_SPRING}
+                    className="absolute inset-0 rounded-full bg-white/10 ring-1 ring-white/5"
+                  />
+                )}
+                <span className="relative z-10">{label}</span>
+              </>
+            );
+            const className = `relative rounded-full px-4 py-2.5 font-mono text-[11px] tracking-[0.18em] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/60 ${
+              lit ? "text-paper" : external ? "text-paper/50" : "text-paper/80"
+            }`;
+            return external ? (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                onMouseEnter={() => setHovered(label)}
+                onFocus={() => setHovered(label)}
+                className={className}
+              >
+                {inner}
+              </a>
+            ) : (
               <Link
                 key={label}
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`rounded-full px-4 py-2.5 font-mono text-[11px] tracking-[0.18em] transition hover:bg-white/10 hover:text-paper ${
-                  active ? "bg-white/10 text-paper" : "text-paper/80"
-                }`}
+                onMouseEnter={() => setHovered(label)}
+                onFocus={() => setHovered(label)}
+                className={className}
               >
-                {label}
+                {inner}
               </Link>
             );
           })}
-          <a
-            href={REPO_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-full px-4 py-2.5 font-mono text-[11px] tracking-[0.18em] text-paper/50 transition hover:bg-white/10 hover:text-paper"
-          >
-            ★ GITHUB
-          </a>
         </div>
 
         {/* Links - below sm, where the row above is hidden */}
