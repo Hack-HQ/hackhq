@@ -1,6 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { Hackathon } from "@/lib/types-hq";
+import { buildPassport, type PassportStamp } from "@/lib/passport-stamps";
+import { useTracker } from "./store";
 
 /* ---------------------------------------------------------------------------
    My Passport — Members · Pillar 03
@@ -20,148 +23,22 @@ import { useEffect, useRef, useState } from "react";
 const BOOK_W = 680;
 const BOOK_H = 470;
 
-type Stamp = {
-  id: string;
-  top: string; // arc text along the top
-  sub: string; // arc text along the bottom
-  year: string;
-  mono: string; // big monogram in the middle
-  label: string; // HACKED / VISA / ADMITTED
-  color: string;
-  pos: { left: number; top: number; size: number };
-  rotate: number;
-  delay: number; // stamp-in animation delay, ms
+// Stamps come from the generator (lib/passport-stamps.ts), which fills every
+// data-driven field. The renderer still supports these hand-authored styling
+// knobs as optional overrides; the generator simply omits them and the defaults
+// in <StampMark> apply.
+type Stamp = PassportStamp & {
   ringOpacity?: number;
   inkOpacity?: number;
-  topSize?: number;
   topLS?: number;
-  subSize?: number;
   subLS?: number;
-  monoSize?: number;
 };
-
-// Inside-left page (revealed under the opening cover).
-const STAMPS_LEFT: Stamp[] = [
-  {
-    id: "htn",
-    top: "HACK THE NORTH",
-    sub: "TORONTO · ON",
-    year: "2024",
-    mono: "HTN",
-    label: "HACKED",
-    color: "#ed5b29",
-    pos: { left: -6, top: 8, size: 196 },
-    rotate: -8,
-    delay: 0,
-    topSize: 13,
-    topLS: 1.2,
-  },
-  {
-    id: "pennapps",
-    top: "PENNAPPS",
-    sub: "PHILADELPHIA · PA",
-    year: "2024",
-    mono: "PA",
-    label: "VISA",
-    color: "#7a4bd0",
-    pos: { left: 150, top: 30, size: 190 },
-    rotate: 9,
-    delay: 160,
-    ringOpacity: 0.9,
-    inkOpacity: 0.88,
-    subSize: 10,
-    subLS: 1.8,
-  },
-  {
-    id: "mhacks",
-    top: "MHACKS",
-    sub: "ANN ARBOR · MI",
-    year: "2024",
-    mono: "MH",
-    label: "ADMITTED",
-    color: "#17b26a",
-    pos: { left: 22, top: 205, size: 190 },
-    rotate: 6,
-    delay: 320,
-  },
-  {
-    id: "h6ix",
-    top: "HACK THE 6IX",
-    sub: "TORONTO · ON",
-    year: "2025",
-    mono: "H6",
-    label: "HACKED",
-    color: "#ff7a45",
-    pos: { left: 140, top: 238, size: 190 },
-    rotate: -13,
-    delay: 480,
-    ringOpacity: 0.9,
-    topSize: 14,
-    topLS: 1.4,
-  },
-];
-
-// Right page (the base spread).
-const STAMPS_RIGHT: Stamp[] = [
-  {
-    id: "lahacks",
-    top: "LA HACKS",
-    sub: "LOS ANGELES · CA",
-    year: "2025",
-    mono: "LA",
-    label: "HACKED",
-    color: "#3b6bf0",
-    pos: { left: 12, top: 14, size: 196 },
-    rotate: -10,
-    delay: 80,
-  },
-  {
-    id: "bitcamp",
-    top: "BITCAMP",
-    sub: "COLLEGE PARK · MD",
-    year: "2025",
-    mono: "BC",
-    label: "VISA",
-    color: "#c98a2b",
-    pos: { left: 150, top: 44, size: 190 },
-    rotate: 8,
-    delay: 240,
-  },
-  {
-    id: "cuhacking",
-    top: "CUHACKING",
-    sub: "OTTAWA · ON",
-    year: "2025",
-    mono: "cuH",
-    label: "ADMITTED",
-    color: "#17b26a",
-    pos: { left: -4, top: 232, size: 190 },
-    rotate: 12,
-    delay: 400,
-    topSize: 14,
-    topLS: 1.6,
-    monoSize: 30,
-  },
-  {
-    id: "hackumass",
-    top: "HACKUMASS",
-    sub: "AMHERST · MA",
-    year: "2023",
-    mono: "UM",
-    label: "HACKED",
-    color: "#b0552f",
-    pos: { left: 150, top: 250, size: 190 },
-    rotate: -6,
-    delay: 560,
-    ringOpacity: 0.85,
-    inkOpacity: 0.82,
-    topSize: 14,
-    topLS: 1.6,
-  },
-];
 
 const MONO = "var(--font-mono)";
 const DISPLAY = "var(--font-display)";
+
+// Header counts read as passport-plate figures ("08 stamps · 07 cities").
+const pad2 = (n: number) => String(n).padStart(2, "0");
 
 /* Shared turbulence filters that give every stamp its rough, hand-inked edge.
    Rendered once, referenced by url(#…) from all stamp SVGs. */
@@ -310,6 +187,68 @@ function StampLayer({
   );
 }
 
+/* Shown on the open spread when nothing has earned a stamp yet — a fresh
+   passport rather than a blank page. Engraved into the paper to match the
+   guilloché plate. */
+function EmptyStampNote() {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 10,
+        padding: 28,
+        textAlign: "center",
+        pointerEvents: "none",
+      }}
+    >
+      <div
+        style={{
+          width: 46,
+          height: 46,
+          borderRadius: "50%",
+          border: "1.5px dashed rgba(90,66,40,0.45)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: DISPLAY,
+          fontSize: 22,
+          color: "rgba(90,66,40,0.5)",
+        }}
+      >
+        +
+      </div>
+      <div
+        style={{
+          fontFamily: MONO,
+          fontSize: 10,
+          letterSpacing: "0.28em",
+          textTransform: "uppercase",
+          color: "rgba(90,66,40,0.7)",
+        }}
+      >
+        No stamps yet
+      </div>
+      <div
+        style={{
+          fontFamily: MONO,
+          fontSize: 9,
+          lineHeight: 1.6,
+          letterSpacing: "0.08em",
+          maxWidth: 210,
+          color: "rgba(90,66,40,0.5)",
+        }}
+      >
+        Track a hackathon and move it to Applied to earn your first visa.
+      </div>
+    </div>
+  );
+}
+
 /* The foil crest on the cover: a trench-coated "incognito hacker" seal. */
 function CoverCrest() {
   return (
@@ -376,13 +315,14 @@ function CoverCrest() {
 
 type Phase = "closed" | "flash" | "open";
 
-export function Passport({
-  stampCount = "08",
-  cities = "07",
-}: {
-  stampCount?: string;
-  cities?: string;
-}) {
+export function Passport({ hackathons }: { hackathons: Hackathon[] }) {
+  const { tracked } = useTracker();
+  const { left, right, stampCount, cityCount } = useMemo(
+    () => buildPassport(tracked, hackathons),
+    [tracked, hackathons],
+  );
+  const isEmpty = stampCount === 0;
+
   const [phase, setPhase] = useState<Phase>("closed");
   const [opened, setOpened] = useState(false);
   const [scale, setScale] = useState(1);
@@ -468,7 +408,7 @@ export function Passport({
             My Passport
           </h2>
           <div className="mt-3 font-mono text-[10px] uppercase tracking-[0.16em] text-paper/40">
-            {stampCount} stamps · {cities} cities
+            {pad2(stampCount)} stamps · {pad2(cityCount)} cities
           </div>
         </div>
 
@@ -582,7 +522,10 @@ export function Passport({
                     P. 04
                   </div>
 
-                  <StampLayer stamps={STAMPS_RIGHT} indexOffset={10} visible={opened} />
+                  {/* Offset by the left page's count so every stamp's SVG arc
+                      ids stay globally unique for any number of stamps. */}
+                  <StampLayer stamps={right} indexOffset={left.length} visible={opened} />
+                  {opened && isEmpty && <EmptyStampNote />}
                 </div>
 
                 {/* COVER (rotates open) */}
@@ -786,7 +729,7 @@ export function Passport({
                       P. 03
                     </div>
 
-                    <StampLayer stamps={STAMPS_LEFT} indexOffset={0} visible={opened} />
+                    <StampLayer stamps={left} indexOffset={0} visible={opened} />
                   </div>
                 </div>
 

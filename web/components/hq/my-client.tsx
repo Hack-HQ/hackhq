@@ -21,7 +21,7 @@ export function MyClient({
       ) : (
         <>
           <AuthSetupNotice />
-          <Passport />
+          <Passport hackathons={hackathons} />
           <Tracker hackathons={hackathons} />
         </>
       )}
@@ -46,7 +46,7 @@ function GatedHub({ hackathons }: { hackathons: Hackathon[] }) {
   return (
     <>
       <HubGreeting />
-      <Passport />
+      <Passport hackathons={hackathons} />
       <Tracker hackathons={hackathons} />
     </>
   );
