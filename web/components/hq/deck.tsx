@@ -1,20 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 import type { Hackathon, HackState } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
 import { useSelection, useTracker } from "./store";
 
 type StatusFilter = "all" | HackState;
 type FormatFilter = "all" | "In-Person" | "Virtual";
-type View = "grid" | "list";
 
 export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<StatusFilter>("all");
   const [format, setFormat] = useState<FormatFilter>("all");
-  const [view, setView] = useState<View>("grid");
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -41,9 +38,8 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-ink/60">
-            Not everyone wants a globe. Flip through every event as a bold,
-            tactile card - or switch to the dense list when you&apos;re on a
-            mission.
+            Not everyone wants a globe. Scan every event in one dense,
+            searchable list when you&apos;re on a mission.
           </p>
         </div>
 
@@ -89,20 +85,6 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
                 {label}
               </FilterPill>
             ))}
-            <span className="mx-1 hidden h-6 w-px bg-ink/15 sm:block" />
-            <div className="flex overflow-hidden rounded-full border-2 border-ink/15">
-              {(["grid", "list"] as View[]).map((v) => (
-                <button
-                  key={v}
-                  onClick={() => setView(v)}
-                  className={`px-4 py-2 font-mono text-[10px] tracking-[0.2em] transition ${
-                    view === v ? "bg-ink text-paper" : "text-ink/60 hover:bg-ink/5"
-                  }`}
-                >
-                  {v.toUpperCase()}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
 
@@ -111,20 +93,12 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
           {filtered.length} event{filtered.length === 1 ? "" : "s"}
         </div>
 
-        {/* Cards */}
-        {view === "grid" ? (
-          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {filtered.map((h) => (
-              <HackCard key={h.id} h={h} />
-            ))}
-          </div>
-        ) : (
-          <div className="mt-6 flex flex-col divide-y-2 divide-ink/8 overflow-hidden rounded-[var(--card-radius)] border-2 border-ink/10 bg-white/60">
-            {filtered.map((h) => (
-              <HackRow key={h.id} h={h} />
-            ))}
-          </div>
-        )}
+        {/* List */}
+        <div className="mt-6 flex flex-col divide-y-2 divide-ink/8 overflow-hidden rounded-[var(--card-radius)] border-2 border-ink/10 bg-white/60">
+          {filtered.map((h) => (
+            <HackRow key={h.id} h={h} />
+          ))}
+        </div>
 
         {filtered.length === 0 && (
           <div className="mt-10 rounded-[var(--card-radius)] border-2 border-dashed border-ink/15 p-16 text-center">
@@ -190,164 +164,6 @@ function SaveHeart({ h, dark }: { h: Hackathon; dark?: boolean }) {
     >
       {tracked ? "♥" : "♡"}
     </button>
-  );
-}
-
-function Paperclip() {
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-    </svg>
-  );
-}
-
-/* Exact motion values lifted from the Framer "Document Folder" module
-   (framer.com/m/Document-card-U9IiCH.js): #141414 folder, white paper
-   that lifts with a +6° tilt under a 5-layer shadow, spring bounce .2. */
-const PAPER_LIFT_SHADOW =
-  "0px -0.77px 0.46px -0.75px rgba(0,0,0,0.18), 0px -2.1px 1.26px -1.5px rgba(0,0,0,0.18), 0px -4.61px 2.76px -2.25px rgba(0,0,0,0.17), 0px -10.23px 6.14px -3px rgba(0,0,0,0.14), 0px -26px 15.6px -3.75px rgba(0,0,0,0.06)";
-const SPRING = { type: "spring", bounce: 0.2, duration: 1 } as const;
-const SPRING_SLOW = { type: "spring", bounce: 0.2, duration: 1.5 } as const;
-
-/**
- * Hackathon as a classified dossier - faithful port of the Framer
- * "Document Folder" card, driven by real hackathon data: the paper
- * lifts and tilts out of the folder on hover while the flap swings open.
- */
-function HackCard({ h }: { h: Hackathon }) {
-  const { setSelected } = useSelection();
-  const reduceMotion = useReducedMotion();
-  const meta = STATE_META[h.state];
-  const cd = countdown(h);
-  const dim = h.state === "closed";
-  const openDetails = () => setSelected(h);
-  const onOpenKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    if (e.target !== e.currentTarget) return;
-    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
-      e.preventDefault();
-      openDetails();
-    }
-  };
-
-  return (
-    <motion.article
-      onClick={openDetails}
-      onKeyDown={onOpenKeyDown}
-      role="button"
-      tabIndex={0}
-      aria-label={`View details for ${h.title}`}
-      initial="rest"
-      animate="rest"
-      whileHover={reduceMotion ? undefined : "open"}
-      className={`group relative aspect-[318/380] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-ink ${dim ? "opacity-55 saturate-50" : ""}`}
-      style={{ perspective: 1400 }}
-    >
-      {/* Folder back */}
-      <div className="absolute inset-x-0 top-6 bottom-0 rounded-[21.6px] bg-[#141414]">
-        {/* folder tab */}
-        <div className="absolute -top-3.5 left-0 h-5 w-24 rounded-t-lg bg-[#141414]" />
-      </div>
-
-      {/* Paper - lifts + tilts out on hover */}
-      <motion.div
-        variants={{
-          rest: { y: 0, rotate: 0, boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)" },
-          open: { y: -44, rotate: 6, boxShadow: PAPER_LIFT_SHADOW },
-        }}
-        transition={SPRING}
-        className="absolute inset-x-4 top-2 bottom-32 rounded-lg bg-white px-4 pt-3.5"
-      >
-        <div className="kicker text-[8px] text-ink/40">
-          HackHQ dossier · {h.format}
-        </div>
-        <div className="mt-2 font-display text-lg font-semibold leading-tight tracking-tight text-ink">
-          {h.prize ?? "Prizes on site"}
-        </div>
-        <div className="mt-1.5 flex flex-col gap-1 font-mono text-[10px] leading-relaxed text-ink/60">
-          <span>{h.location}</span>
-          {cd && <span className="text-coral">{cd.toUpperCase()}</span>}
-          {h.themes.length > 0 && <span>{h.themes.map((t) => `#${t}`).join(" ")}</span>}
-        </div>
-        {/* Rotated status stamp */}
-        <div
-          className="absolute bottom-3 right-3 flex h-16 w-16 -rotate-12 items-center justify-center rounded-full border-[2.5px] text-center font-mono text-[8px] font-bold leading-tight tracking-[0.1em]"
-          style={{ borderColor: meta.color, color: meta.color }}
-        >
-          {meta.label.split(" ").map((w) => (
-            <span key={w} className="block w-full">
-              {w}
-            </span>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Folder front flap - swings open (3D, hinged on the left) */}
-      <motion.div
-        variants={{ rest: { rotateY: 0 }, open: { rotateY: -15 } }}
-        transition={SPRING_SLOW}
-        style={{ transformOrigin: "left center", transformStyle: "preserve-3d" }}
-        className="absolute inset-x-0 bottom-0 top-[30%] rounded-[21.6px] bg-[#141414] shadow-[inset_0_3px_2px_rgba(255,255,255,0.2)]">
-        {/* Paperclip */}
-        <div className="absolute -top-2.5 left-5 rotate-[8deg] text-paper/35">
-          <Paperclip />
-        </div>
-
-        {/* Status pill */}
-        <span
-          className="absolute right-4 top-4 rounded-full px-3 py-1 font-mono text-[8px] font-bold tracking-[0.16em] text-ink"
-          style={{ background: meta.color }}
-        >
-          {meta.label}
-        </span>
-
-        {/* Vertical edge label */}
-        <span
-          className="absolute right-2.5 top-1/2 hidden -translate-y-1/2 font-mono text-[8px] tracking-[0.3em] text-paper/25 sm:block"
-          style={{ writingMode: "vertical-rl" }}
-        >
-          HQ-{h.id.slice(0, 4).toUpperCase()}
-        </span>
-
-        {/* Label block (bottom-left, like the original folder) */}
-        <div className="absolute bottom-4 left-5 right-12 flex flex-col gap-1.5">
-          <div className="kicker text-[9px] text-paper/45">{h.host}</div>
-          <h3 className="display line-clamp-2 text-[1.25rem] leading-[1.05] text-paper transition-colors group-hover:text-coral-bright">
-            {h.title}
-          </h3>
-          <div className="mt-1 flex items-center justify-between gap-2">
-            <span className="truncate font-mono text-[9px] tracking-[0.12em] text-paper/40">
-              {h.location.toUpperCase()}
-            </span>
-            <div className="flex shrink-0 items-center gap-2">
-              <SaveHeart h={h} dark />
-              <a
-                href={h.url}
-                target="_blank"
-                rel="noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className={`rounded-full px-4 py-2 font-mono text-[9px] font-bold tracking-[0.14em] text-white transition ${
-                  h.state === "opens_soon"
-                    ? "bg-white/15 hover:bg-white/25"
-                    : "bg-register hover:brightness-110"
-                }`}
-              >
-                {h.state === "opens_soon" ? "SITE" : "REGISTER"}
-              </a>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </motion.article>
   );
 }
 
