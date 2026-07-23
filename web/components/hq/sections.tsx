@@ -137,6 +137,53 @@ const DEVELOPERS: Dev[] = [
   },
 ];
 
+/* Cursor-mask reveal (ported from the Framer "Cursor Mask Reveal"): a grayscale
+   base with the colour photo revealed inside a soft circle that tracks the
+   pointer. The circle centre rides two CSS vars updated on pointer move; the
+   colour layer fades in on hover. Touch devices fall through to full colour. */
+function DevReveal({
+  src,
+  alt,
+  radius,
+}: {
+  src: string;
+  alt: string;
+  radius: number;
+}) {
+  const mask = `radial-gradient(circle ${radius}px at var(--rx, 50%) var(--ry, 50%), #000 55%, transparent 100%)`;
+  return (
+    <div
+      className="group relative h-full w-full"
+      onMouseMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty(
+          "--rx",
+          `${((e.clientX - r.left) / r.width) * 100}%`,
+        );
+        e.currentTarget.style.setProperty(
+          "--ry",
+          `${((e.clientY - r.top) / r.height) * 100}%`,
+        );
+      }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        className="reveal-base absolute inset-0 h-full w-full object-cover"
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+        style={{ WebkitMaskImage: mask, maskImage: mask }}
+      />
+    </div>
+  );
+}
+
 function DevAvatar({ dev, size }: { dev: Dev; size: "lg" | "sm" }) {
   const initials = dev.name
     .split(" ")
@@ -145,18 +192,7 @@ function DevAvatar({ dev, size }: { dev: Dev; size: "lg" | "sm" }) {
     .join("");
   if (dev.image) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={dev.image}
-        alt={dev.name}
-        // Featured portrait in colour; filmstrip thumbnails desaturated and
-        // brightening back to colour on hover (mirrors the reference).
-        className={`h-full w-full object-cover ${
-          size === "sm"
-            ? "grayscale transition duration-300 group-hover:grayscale-0"
-            : ""
-        }`}
-      />
+      <DevReveal src={dev.image} alt={dev.name} radius={size === "lg" ? 130 : 74} />
     );
   }
   return (
