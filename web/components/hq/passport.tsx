@@ -522,7 +522,9 @@ export function Passport({ hackathons }: { hackathons: Hackathon[] }) {
                     P. 04
                   </div>
 
-                  <StampLayer stamps={right} indexOffset={100} visible={opened} />
+                  {/* Offset by the left page's count so every stamp's SVG arc
+                      ids stay globally unique for any number of stamps. */}
+                  <StampLayer stamps={right} indexOffset={left.length} visible={opened} />
                   {opened && isEmpty && <EmptyStampNote />}
                 </div>
 

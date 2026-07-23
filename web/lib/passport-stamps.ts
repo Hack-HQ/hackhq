@@ -64,9 +64,16 @@ function earnsStamp(stage: Stage): stage is StampStage {
 }
 
 // Page geometry (matches the 340x470 pages in passport.tsx).
-const PAGE_W = 340;
-const PAGE_H = 470;
+export const PAGE_W = 340;
+export const PAGE_H = 470;
 const PAD = 10;
+// How far a stamp's inked ring may bleed off the left/right edge — the crowded,
+// stamped-over-the-margin look the original artwork used (its stamps sat at
+// negative `left`). Bounded so it stays constant instead of growing with count.
+export const BLEED = 14;
+
+const clamp = (n: number, lo: number, hi: number) =>
+  Math.max(lo, Math.min(hi, n));
 
 const STOP_WORDS = new Set(["the", "of", "and", "a", "an", "for", "at"]);
 
@@ -201,12 +208,15 @@ function layoutPage(stamps: PassportStamp[], count: number): PassportStamp[] {
     const cx = PAD + rowOffset + cellW * (col + 0.5);
     const cy = PAD + cellH * (row + 0.5);
     // Small deterministic jitter so the grid doesn't read as mechanical.
-    const jx = (hash(s.id + "x") % 17) - 8;
-    const jy = (hash(s.id + "y") % 17) - 8;
-    return {
-      ...s,
-      pos: { left: cx - size / 2 + jx, top: cy - size / 2 + jy, size },
-    };
+    const jx = (hash(s.id + "x") % 15) - 7;
+    const jy = (hash(s.id + "y") % 15) - 7;
+    // Keep every stamp fully within the page vertically (the page clips
+    // overflow, and the legible content sits mid-ring); allow a small, bounded
+    // horizontal bleed for the stamped-over-the-margin look. Denser grids just
+    // overlap more rather than spilling off the bottom.
+    const left = clamp(cx - size / 2 + jx, -BLEED, PAGE_W - size + BLEED);
+    const top = clamp(cy - size / 2 + jy, 0, PAGE_H - size);
+    return { ...s, pos: { left, top, size } };
   });
 }
 
@@ -229,7 +239,9 @@ function makeStamp(
     label,
     color,
     rotate: rotateFor(h.id),
-    delay: index * 80,
+    // Stagger the stamp-in, but cap it so a large passport doesn't leave the
+    // last stamps waiting several seconds to appear.
+    delay: Math.min(index, 9) * 80,
     topSize: topSizeFor(top),
     subSize: subSizeFor(sub),
     monoSize: mono.length >= 3 ? 27 : 34,
