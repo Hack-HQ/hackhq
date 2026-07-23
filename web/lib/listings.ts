@@ -35,6 +35,8 @@ type RawListing = {
   is_visible?: boolean;
   date_posted?: number;
   deadline?: string;
+  startDate?: string;
+  endDate?: string;
 };
 
 const THEME_RULES: [RegExp, string][] = [
@@ -194,6 +196,8 @@ export function loadHackathons(): Hackathon[] {
         prizeValue: parsePrizeValue(r.prize),
         state: deriveState(r, daysLeft),
         deadline: r.deadline ?? null,
+        startDate: r.startDate ?? null,
+        endDate: r.endDate ?? null,
         daysLeft,
         lat,
         lng,

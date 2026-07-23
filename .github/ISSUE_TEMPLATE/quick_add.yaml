@@ -74,3 +74,21 @@ body:
       placeholder: ex. 07/01/2026
     validations:
       required: false
+
+  - type: input
+    id: start_date
+    attributes:
+      label: Start Date (Optional)
+      description: First day of the hackathon event (YYYY-MM-DD or MM/DD/YYYY).
+      placeholder: ex. 09/12/2026
+    validations:
+      required: false
+
+  - type: input
+    id: end_date
+    attributes:
+      label: End Date (Optional)
+      description: Final day of the hackathon event (YYYY-MM-DD or MM/DD/YYYY).
+      placeholder: ex. 09/14/2026
+    validations:
+      required: false

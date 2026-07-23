@@ -16,6 +16,8 @@ export type Hackathon = {
   prizeValue: number;
   state: HackState;
   deadline: string | null;
+  startDate: string | null;
+  endDate: string | null;
   daysLeft: number | null;
   lat: number | null;
   lng: number | null;
@@ -52,7 +54,21 @@ export function countdown(h: Hackathon): string | null {
 
 export function deadlineDisplay(h: Hackathon): string | null {
   if (!h.deadline) return null;
-  const d = new Date(`${h.deadline}T12:00:00`);
+  return dateDisplay(h.deadline);
+}
+
+export function eventDateDisplay(h: Hackathon): string | null {
+  if (!h.startDate && !h.endDate) return null;
+  if (h.startDate && h.endDate) {
+    if (h.startDate === h.endDate) return dateDisplay(h.startDate);
+    return `${dateDisplay(h.startDate)} - ${dateDisplay(h.endDate)}`;
+  }
+  if (h.startDate) return `Starts ${dateDisplay(h.startDate)}`;
+  return `Ends ${dateDisplay(h.endDate!)}`;
+}
+
+function dateDisplay(isoDate: string): string {
+  const d = new Date(`${isoDate}T12:00:00`);
   return d.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",

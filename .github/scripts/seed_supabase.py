@@ -63,6 +63,8 @@ def build_row(listing, synced_at=None):
         "date_updated": listing.get("date_updated"),
         "source": listing.get("source"),
         "deadline": listing.get("deadline"),
+        "startDate": listing.get("startDate"),
+        "endDate": listing.get("endDate"),
         "featured": bool(listing.get("featured", False)),
         # The column defaults to now() on INSERT, but the upsert's UPDATE path
         # never touched it, so a re-synced row kept the timestamp of the very

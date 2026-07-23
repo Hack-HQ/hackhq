@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { submitIssueUrl } from "./types-hq";
+import { eventDateDisplay, submitIssueUrl, type Hackathon } from "./types-hq";
 
 const TEMPLATE_PATH = path.join(
   process.cwd(),
@@ -52,5 +52,51 @@ describe("submitIssueUrl", () => {
       if (key === "template" || key === "title") continue;
       expect(ids, `link_only.yaml has no field id "${key}"`).toContain(key);
     }
+  });
+});
+
+function hackStub(over: Partial<Hackathon>): Hackathon {
+  return {
+    id: "1",
+    host: "X",
+    title: "T",
+    tagline: null,
+    url: "https://x.dev",
+    location: "Online",
+    format: "Virtual",
+    prize: null,
+    prizeValue: 0,
+    state: "open",
+    deadline: null,
+    startDate: null,
+    endDate: null,
+    daysLeft: null,
+    lat: null,
+    lng: null,
+    themes: [],
+    postedAt: 0,
+    ...over,
+  };
+}
+
+describe("eventDateDisplay", () => {
+  it("formats a start/end range", () => {
+    expect(
+      eventDateDisplay(
+        hackStub({ startDate: "2026-09-12", endDate: "2026-09-14" }),
+      ),
+    ).toBe("Sep 12, 2026 - Sep 14, 2026");
+  });
+
+  it("formats a one-day event once", () => {
+    expect(
+      eventDateDisplay(
+        hackStub({ startDate: "2026-09-12", endDate: "2026-09-12" }),
+      ),
+    ).toBe("Sep 12, 2026");
+  });
+
+  it("returns null when event dates are absent", () => {
+    expect(eventDateDisplay(hackStub({}))).toBeNull();
   });
 });

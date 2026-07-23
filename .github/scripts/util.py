@@ -119,12 +119,13 @@ def _listing_errors(listing):
     missing = [field for field in REQUIRED_FIELDS if field not in listing]
     if missing:
         errors.append(f"Listing {listing_id} missing field(s): {', '.join(missing)}")
-    deadline = listing.get("deadline")
-    if deadline is not None:
-        try:
-            parse_deadline_date(deadline)
-        except ValueError as e:
-            errors.append(f"Listing {listing_id} has invalid deadline: {e}")
+    for field in ("deadline", "startDate", "endDate"):
+        value = listing.get(field)
+        if value is not None:
+            try:
+                parse_deadline_date(value)
+            except ValueError as e:
+                errors.append(f"Listing {listing_id} has invalid {field}: {e}")
     featured = listing.get("featured")
     if featured is not None and not isinstance(featured, bool):
         errors.append(
@@ -429,8 +430,8 @@ def parse_state(data):
     return "open"
 
 
-def parse_deadline(data, *keys):
-    """Return an ISO deadline from the first present key, or None (fail on bad format)."""
+def parse_date_field(data, field_name, *keys):
+    """Return an ISO date from the first present key, or None (fail on bad format)."""
     raw = ""
     for key in keys:
         value = data.get(key)
@@ -442,7 +443,12 @@ def parse_deadline(data, *keys):
     try:
         return parse_deadline_date(raw).isoformat()
     except ValueError:
-        fail("Invalid deadline format. Please use YYYY-MM-DD or MM/DD/YYYY.")
+        fail(f"Invalid {field_name} format. Please use YYYY-MM-DD or MM/DD/YYYY.")
+
+
+def parse_deadline(data, *keys):
+    """Return an ISO deadline from the first present key, or None (fail on bad format)."""
+    return parse_date_field(data, "deadline", *keys)
 
 
 def clean_url(url):

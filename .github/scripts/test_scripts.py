@@ -90,6 +90,12 @@ class ParseStateAndDeadline(unittest.TestCase):
         )
         self.assertIsNone(util.parse_deadline({}, "deadline"))
 
+    def test_generic_date_field(self):
+        self.assertEqual(
+            util.parse_date_field({"start_date": "09/12/2026"}, "start date", "start_date"),
+            "2026-09-12",
+        )
+
 
 class ResolveState(unittest.TestCase):
     def test_active_false_overrides_open_state(self):
@@ -244,6 +250,36 @@ class ContributionApprovedUrlGuard(unittest.TestCase):
             ca.handle_new_opportunity(data, "tester")
 
 
+class ContributionApprovedEventDates(unittest.TestCase):
+    def test_manual_submission_persists_event_dates(self):
+        import contribution_approved as ca
+
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "listings.json")
+            with mock.patch.object(util, "LISTINGS_FILE", path), \
+                    mock.patch.object(util, "set_output"), \
+                    mock.patch.object(util, "generate_uuid", return_value="new-id"), \
+                    mock.patch.object(util, "get_current_timestamp", return_value=1):
+                ca.handle_new_opportunity(
+                    {
+                        "link_to_hackathon_page": "https://hackmit.org/",
+                        "host/organizer": "MIT",
+                        "hackathon_name": "HackMIT 2026",
+                        "format": "In-Person",
+                        "location": "Cambridge, MA",
+                        "deadline": "2026-07-04",
+                        "start_date_(optional)": "09/12/2026",
+                        "end_date_(optional)": "09/14/2026",
+                    },
+                    "tester",
+                )
+            with open(path) as f:
+                saved = json.load(f)[0]
+
+        self.assertEqual(saved["startDate"], "2026-09-12")
+        self.assertEqual(saved["endDate"], "2026-09-14")
+
+
 class SsrfGuard(unittest.TestCase):
     def test_blocks_internal_hosts(self):
         for host in ("127.0.0.1", "localhost", "169.254.169.254", "10.0.0.1"):
@@ -376,6 +412,24 @@ class SsrfDnsRebinding(unittest.TestCase):
         send.assert_not_called()
 
 
+class AutoExtractEventDates(unittest.TestCase):
+    def test_parses_valid_ai_event_dates(self):
+        extracted = {"startDate": "2026-09-12", "endDate": "09/14/2026"}
+        self.assertEqual(
+            ax._parse_extracted_event_date(extracted, "startDate"), "2026-09-12"
+        )
+        self.assertEqual(
+            ax._parse_extracted_event_date(extracted, "endDate"), "2026-09-14"
+        )
+
+    def test_ignores_invalid_ai_event_dates(self):
+        with mock.patch.object(util, "warn") as warn:
+            self.assertIsNone(
+                ax._parse_extracted_event_date({"startDate": "September"}, "startDate")
+            )
+        warn.assert_called_once()
+
+
 class DeadlineWatcherRules(unittest.TestCase):
     def _base(self, **over):
         d = {
@@ -441,6 +495,13 @@ class BuildRow(unittest.TestCase):
         row = seed.build_row(self._listing(deadline="2026-07-05", featured=True))
         self.assertEqual(row["deadline"], "2026-07-05")
         self.assertTrue(row["featured"])
+
+    def test_passes_through_event_dates_for_supabase(self):
+        row = seed.build_row(
+            self._listing(startDate="2026-09-12", endDate="2026-09-14")
+        )
+        self.assertEqual(row["startDate"], "2026-09-12")
+        self.assertEqual(row["endDate"], "2026-09-14")
 
     def test_omits_geo_columns_for_geocoder(self):
         row = seed.build_row(self._listing())
@@ -559,15 +620,17 @@ class CheckSchemaCollectsAll(unittest.TestCase):
         del bad_missing["prize"]
         bad_deadline = self._valid(id="bad2", deadline="not-a-date")
         bad_featured = self._valid(id="bad3", featured="yes")
+        bad_start = self._valid(id="bad4", startDate="next Friday")
         with self.assertRaises(ValueError) as ctx:
             util.check_schema(
-                [self._valid(id="good"), bad_missing, bad_deadline, bad_featured]
+                [self._valid(id="good"), bad_missing, bad_deadline, bad_featured, bad_start]
             )
         msg = str(ctx.exception)
         # Every invalid entry is reported, not just the first.
         self.assertIn("bad1", msg)
         self.assertIn("bad2", msg)
         self.assertIn("bad3", msg)
+        self.assertIn("bad4", msg)
         # Missing field names are surfaced; the valid entry is not flagged.
         self.assertIn("url", msg)
         self.assertIn("prize", msg)

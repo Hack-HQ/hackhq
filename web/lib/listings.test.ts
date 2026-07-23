@@ -37,6 +37,8 @@ function hackStub(over: Partial<Hackathon>): Hackathon {
     prizeValue: 0,
     state: "open",
     deadline: null,
+    startDate: null,
+    endDate: null,
     daysLeft: null,
     lat: null,
     lng: null,

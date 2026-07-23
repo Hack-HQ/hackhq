@@ -73,9 +73,25 @@ def handle_new_opportunity(data, username, is_quick_add=False):
 
     # Get prize (optional)
     prize = get_first(data, "prize_pool_(optional)", "prize") or "—"
-    # Map user-submitted status/deadline fields into canonical listing fields.
+    # Map user-submitted status/deadline/date fields into canonical listing fields.
     state = util.parse_state(data)
     deadline = util.parse_deadline(data, "deadline", "deadline_(optional)")
+    start_date = util.parse_date_field(
+        data,
+        "start date",
+        "start_date",
+        "start_date_(optional)",
+        "hackathon_start_date",
+        "hackathon_start_date_(optional)",
+    )
+    end_date = util.parse_date_field(
+        data,
+        "end date",
+        "end_date",
+        "end_date_(optional)",
+        "hackathon_end_date",
+        "hackathon_end_date_(optional)",
+    )
 
     # Create new listing
     new_listing = {
@@ -95,6 +111,10 @@ def handle_new_opportunity(data, username, is_quick_add=False):
     }
     if deadline:
         new_listing["deadline"] = deadline
+    if start_date:
+        new_listing["startDate"] = start_date
+    if end_date:
+        new_listing["endDate"] = end_date
 
     # Validate required fields
     if not new_listing["company_name"]:

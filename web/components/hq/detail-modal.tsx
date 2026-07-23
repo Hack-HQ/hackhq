@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { STATE_META, countdown, deadlineDisplay } from "@/lib/types-hq";
+import {
+  STATE_META,
+  countdown,
+  deadlineDisplay,
+  eventDateDisplay,
+} from "@/lib/types-hq";
 import { lockScroll } from "@/lib/scroll-lock";
 import { useSelection, useTracker } from "./store";
 
@@ -36,6 +41,7 @@ export function DetailModal() {
   const h = selected;
   const meta = STATE_META[h.state];
   const cd = countdown(h);
+  const eventDates = eventDateDisplay(h);
   const tracked = isTracked(h.id);
   const titleId = `detail-modal-title-${h.id}`;
   const onDialogKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -121,6 +127,7 @@ export function DetailModal() {
 
           <div className="mt-5 flex flex-wrap gap-2">
             <InfoChip>{h.location}</InfoChip>
+            {eventDates && <InfoChip>{eventDates}</InfoChip>}
             {h.deadline && (
               <InfoChip>
                 Deadline {deadlineDisplay(h)}

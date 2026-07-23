@@ -358,9 +358,13 @@ Extract and return a JSON object with these fields:
 - locations: Array of locations (e.g., ["Cambridge, MA"], ["Online"]). Use ["Online"] for fully virtual events.
 - format: One of "In-Person", "Virtual", or "Hybrid"
 - prize: The prize pool or rewards if mentioned (e.g., "$50K in prizes", "Swag + prizes"). Use "—" if not specified.
+- startDate: The first day of the hackathon/event itself as YYYY-MM-DD, or null if not stated.
+- endDate: The final day of the hackathon/event itself as YYYY-MM-DD, or null if not stated. Use the same date as startDate for one-day events.
 - is_hackathon: true if this page is for a hackathon / coding event / build competition, false otherwise
 
 For is_hackathon: set to true if the posting mentions a hackathon, hack day, build competition, coding marathon, datathon, or similar event. Set to false only if it is clearly not a hackathon (e.g., a job posting or general conference).
+
+For startDate/endDate: these are the hackathon event dates, not application or registration deadlines. Do not guess if the event dates are not shown.
 
 If the page content is limited (JavaScript-rendered page), do your best to extract from the URL, page title, meta descriptions, and any available structured data. Make reasonable inferences for the host name from the URL domain.
 
@@ -424,6 +428,23 @@ def extract_url_from_body(body):
     return None, data
 
 
+def _parse_extracted_event_date(extracted, *keys):
+    """Parse optional AI-extracted event dates; ignore malformed model output."""
+    raw = ""
+    for key in keys:
+        value = extracted.get(key)
+        if value and str(value).strip():
+            raw = str(value).strip()
+            break
+    if not raw:
+        return None
+    try:
+        return util.parse_deadline_date(raw).isoformat()
+    except ValueError:
+        util.warn(f"Ignoring invalid AI-extracted event date: {raw}")
+        return None
+
+
 def main():
     if len(sys.argv) < 2:
         util.fail("Missing event data file path")
@@ -453,6 +474,22 @@ def main():
     notes = data.get("any_additional_context_optional", "") or data.get("notes", "")
     state = util.parse_state(data)
     deadline = util.parse_deadline(data, "deadline_optional", "deadline")
+    submitted_start_date = util.parse_date_field(
+        data,
+        "start date",
+        "start_date_optional",
+        "start_date",
+        "hackathon_start_date_optional",
+        "hackathon_start_date",
+    )
+    submitted_end_date = util.parse_date_field(
+        data,
+        "end date",
+        "end_date_optional",
+        "end_date",
+        "hackathon_end_date_optional",
+        "hackathon_end_date",
+    )
 
     print(f"Fetching content from: {url}")
 
@@ -479,6 +516,12 @@ def main():
     title = util.sanitize_field(extracted.get("title"))
     locations = extracted.get("locations") or []
     fmt = (extracted.get("format") or "").strip()
+    start_date = submitted_start_date or _parse_extracted_event_date(
+        extracted, "startDate", "start_date"
+    )
+    end_date = submitted_end_date or _parse_extracted_event_date(
+        extracted, "endDate", "end_date"
+    )
 
     if not company_name or company_name == "Unknown":
         util.fail("AI extraction failed: could not determine the host/organizer. Please use the Quick Add template instead.")
@@ -543,6 +586,10 @@ def main():
     }
     if deadline:
         new_listing["deadline"] = deadline
+    if start_date:
+        new_listing["startDate"] = start_date
+    if end_date:
+        new_listing["endDate"] = end_date
 
     # Save
     listings.append(new_listing)
