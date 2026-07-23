@@ -8,6 +8,7 @@ import {
   eventDateDisplay,
   type Hackathon,
 } from "@/lib/types-hq";
+import { safeHttpUrl } from "@/lib/url";
 import { useDialogDismiss } from "./use-dialog-dismiss";
 import { useTracker } from "./store";
 
@@ -137,7 +138,7 @@ function ActionButton({ hackathon }: { hackathon: Hackathon }) {
 
   return (
     <a
-      href={hackathon.url}
+      href={safeHttpUrl(hackathon.url)}
       target="_blank"
       rel="noreferrer"
       className={`block flex-1 rounded-full px-6 py-4 text-center font-mono text-[12px] font-bold tracking-[0.18em] transition focus:outline-none focus:ring-2 ${

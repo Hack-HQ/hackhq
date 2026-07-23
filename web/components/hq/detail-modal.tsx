@@ -8,6 +8,7 @@ import {
   eventDateDisplay,
 } from "@/lib/types-hq";
 import { lockScroll } from "@/lib/scroll-lock";
+import { safeHttpUrl } from "@/lib/url";
 import { useSelection, useTracker } from "./store";
 
 export function DetailModal() {
@@ -163,7 +164,7 @@ export function DetailModal() {
           {/* Actions */}
           <div className="mt-6 flex flex-wrap gap-3">
             <a
-              href={h.url}
+              href={safeHttpUrl(h.url)}
               target="_blank"
               rel="noreferrer"
               className="flex-1 rounded-full bg-coral px-7 py-4 text-center font-mono text-[12px] font-bold tracking-[0.18em] text-paper transition hover:bg-coral-bright"

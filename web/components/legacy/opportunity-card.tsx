@@ -1,4 +1,5 @@
 import { Opportunity } from "@/lib/types";
+import { safeHttpUrl } from "@/lib/url";
 
 const STATUS_STYLES: Record<Opportunity["status"], string> = {
   CLOSING_SOON:
@@ -30,7 +31,7 @@ export function OpportunityCard({ opp }: { opp: Opportunity }) {
 
   return (
     <a
-      href={opp.url || "#"}
+      href={safeHttpUrl(opp.url) ?? "#"}
       target="_blank"
       rel="noopener noreferrer"
       className={`group flex flex-col gap-3 rounded-xl border bg-white p-4 transition-all hover:-translate-y-0.5 hover:shadow-md dark:bg-zinc-950 ${
