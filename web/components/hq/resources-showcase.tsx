@@ -96,22 +96,30 @@ function ServicePanel({
   onActivate: () => void;
 }) {
   return (
-    <Link
-      href={s.href}
+    // The panel itself only expands on hover — it does NOT navigate. Only the
+    // corner arrow (a real link) redirects to the resource section.
+    <div
       onMouseEnter={onActivate}
-      onFocus={onActivate}
-      aria-label={`${s.title} — open resources`}
       style={{ flexGrow: active ? 6 : 1, flexBasis: 0 }}
-      className={`group relative flex min-w-0 flex-col overflow-hidden rounded-[var(--card-radius)] p-6 transition-[flex-grow] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/60 sm:p-7 ${
+      className={`group relative flex min-w-0 flex-col overflow-hidden rounded-[var(--card-radius)] p-6 transition-[flex-grow] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] sm:p-7 ${
         active ? "bg-coral" : "bg-ink-soft/70 hover:bg-ink-soft"
       }`}
     >
-      {/* top: arrow + number + divider */}
+      {/* top: arrow (the only click target that navigates) + number + divider */}
       <div>
         <div className="flex items-center gap-3">
-          <span className={active ? "text-ink" : "text-paper/40"}>
+          <Link
+            href={s.href}
+            onFocus={onActivate}
+            aria-label={`Open ${s.title} resources`}
+            className={`-m-1 rounded p-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/60 ${
+              active
+                ? "text-ink hover:text-ink/60"
+                : "text-paper/40 hover:text-coral"
+            }`}
+          >
             {active ? <IconArrowUpRight /> : <IconArrowDown />}
-          </span>
+          </Link>
           <span
             className={`font-display leading-none transition-all duration-500 ${
               active ? "text-4xl text-white/45" : "text-2xl text-paper/70"
@@ -157,7 +165,7 @@ function ServicePanel({
         <span className={active ? "opacity-90" : "opacity-60"}>{s.icon}</span>
         <span className="text-sm">{s.label}</span>
       </div>
-    </Link>
+    </div>
   );
 }
 
