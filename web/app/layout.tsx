@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Syncopate, Inter, Space_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { validateEnv } from "@/lib/env";
+import { isClerkConfigured, validateEnv } from "@/lib/env";
 import "./globals.css";
 
 // Validate/log environment configuration once when the server boots.
@@ -52,9 +52,13 @@ export default function RootLayout({
     </html>
   );
 
-  // ClerkProvider requires a publishable key; without one (pre-setup) the
-  // site must still run, so only wrap once the key exists.
-  return process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
+  // Mount <ClerkProvider> only when Clerk is FULLY configured (both keys),
+  // matching isClerkConfigured() used by proxy.ts and the /my + /auth gates.
+  // A partial config (one key) previously mounted the provider here while the
+  // proxy and pages treated auth as off — an inconsistent, fail-open state.
+  // Now all surfaces agree: a half-configured deploy runs consistently in open
+  // mode (and /auth redirects to /my rather than rendering a dead form).
+  return isClerkConfigured() ? (
     <ClerkProvider>{page}</ClerkProvider>
   ) : (
     page
