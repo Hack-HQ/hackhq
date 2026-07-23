@@ -128,6 +128,13 @@ const DEVELOPERS: Dev[] = [
     image: "/repo-assets/contributors/jack-he.jpg",
     bio: "Placeholder note — a line or two on Jack's part in HackHQ and what they focus on. Real bio coming soon.",
   },
+  {
+    name: "Henry (Hoan) Nguyen",
+    role: "Founding contributor",
+    org: "HackHQ",
+    image: "/repo-assets/contributors/henry.jpg",
+    bio: "Placeholder note — a line or two on Henry's part in HackHQ and what they focus on. Real bio coming soon.",
+  },
 ];
 
 function DevAvatar({ dev, size }: { dev: Dev; size: "lg" | "sm" }) {
@@ -285,7 +292,7 @@ export function Developers() {
         </div>
 
         {/* filmstrip — active person's slot points up at the card */}
-        <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6 sm:gap-3">
+        <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-7 sm:gap-3">
           {DEVELOPERS.map((d, i) =>
             i === active ? (
               <div
