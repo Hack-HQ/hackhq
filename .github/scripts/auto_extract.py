@@ -538,10 +538,11 @@ def main():
     if fmt not in util.VALID_FORMATS:
         fmt = "In-Person"
 
-    # Sanitize locations — remove any that look like URLs or HTML
+    # Sanitize locations — strip control chars / collapse whitespace / truncate
+    # (sanitize_field), then drop any that look like URLs or HTML.
     clean_locations = []
     for loc in locations:
-        loc = loc.strip()
+        loc = util.sanitize_field(loc)
         if loc and not loc.startswith("http") and "<" not in loc:
             clean_locations.append(loc)
     if not clean_locations:
@@ -582,7 +583,7 @@ def main():
         "url": url,
         "locations": locations,
         "format": fmt,
-        "prize": extracted.get("prize", "—") or "—",
+        "prize": util.sanitize_field(extracted.get("prize")) or "—",
         "state": state,
         "active": state != "closed",
         "is_visible": True,
