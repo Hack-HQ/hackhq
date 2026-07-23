@@ -90,36 +90,42 @@ const DEVELOPERS: Dev[] = [
     name: "Jose Cruz",
     role: "Founding contributor",
     org: "HackHQ",
+    image: "/repo-assets/contributors/jose.jpg",
     bio: "Placeholder note — a line or two on what Jose built and why an open, community-fed map of hackathons matters. Real bio coming soon.",
   },
   {
     name: "Allyson",
     role: "Founding contributor",
     org: "HackHQ",
+    image: "/repo-assets/contributors/allyson.jpg",
     bio: "Placeholder note — a line or two on Allyson's part in HackHQ and what they focus on. Real bio coming soon.",
   },
   {
     name: "Cai",
     role: "Founding contributor",
     org: "HackHQ",
+    image: "/repo-assets/contributors/cai.jpg",
     bio: "Placeholder note — a line or two on Cai's part in HackHQ and what they focus on. Real bio coming soon.",
   },
   {
     name: "Vick Mahindru",
     role: "Founding contributor",
     org: "HackHQ",
+    image: "/repo-assets/contributors/vick-mahindru.jpg",
     bio: "Placeholder note — a line or two on Vick's part in HackHQ and what they focus on. Real bio coming soon.",
   },
   {
     name: "Gnan Sruthi R",
     role: "Founding contributor",
     org: "HackHQ",
+    image: "/repo-assets/contributors/gnan-sruthi-r.jpg",
     bio: "Placeholder note — a line or two on Gnan Sruthi's part in HackHQ and what they focus on. Real bio coming soon.",
   },
   {
     name: "Jack He",
     role: "Founding contributor",
     org: "HackHQ",
+    image: "/repo-assets/contributors/jack-he.jpg",
     bio: "Placeholder note — a line or two on Jack's part in HackHQ and what they focus on. Real bio coming soon.",
   },
 ];
@@ -136,7 +142,13 @@ function DevAvatar({ dev, size }: { dev: Dev; size: "lg" | "sm" }) {
       <img
         src={dev.image}
         alt={dev.name}
-        className="h-full w-full object-cover grayscale"
+        // Featured portrait in colour; filmstrip thumbnails desaturated and
+        // brightening back to colour on hover (mirrors the reference).
+        className={`h-full w-full object-cover ${
+          size === "sm"
+            ? "grayscale transition duration-300 group-hover:grayscale-0"
+            : ""
+        }`}
       />
     );
   }
