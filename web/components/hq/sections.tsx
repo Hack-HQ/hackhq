@@ -159,63 +159,239 @@ export function SubmitSection() {
   );
 }
 
-/* ----- Footer ----- */
+/* ----- Footer / CTA -----
+   "Let's build" contact panel: the HACKHQ wordmark stands in for the giant
+   headline, a stacked pair of cards on the left (socials + what the product
+   does), and a contact form on the right that opens a prefilled GitHub issue -
+   the same "new surface on the same engine" move as SubmitSection. */
 
 export function Footer() {
   return (
     <footer className="p-2 pt-0">
-      <div className="shell bg-ink px-6 pb-8 pt-14 sm:px-12 sm:pt-20">
-        <div className="flex flex-col gap-10 lg:flex-row lg:justify-between">
-          <div className="max-w-sm">
-            <div className="kicker text-coral">HackHQ · Est. 2026</div>
-            <p className="mt-4 text-sm leading-relaxed text-paper/55">
-              A list tells you where the hackathons are. A product gets you
-              into the room. Open source, community-fed, updated daily.
-            </p>
-            <div className="kicker mt-6 text-[9px] text-paper/35">
-              Built by the Todd Mafia - Jose · Allyson · Cai · Vick · Henry
-            </div>
+      <div className="shell bg-ink px-3 pb-6 pt-3 sm:px-4 sm:pb-8 sm:pt-4">
+        {/* Giant wordmark - stands in for the "Let's Talk." headline */}
+        <div className="rounded-[var(--card-radius)] border border-white/8 bg-ink-soft/40 px-5 pb-10 pt-6 sm:px-9 sm:pb-16 sm:pt-9">
+          <div className="flex items-baseline justify-between">
+            <span className="kicker text-coral">Let&rsquo;s build</span>
+            <span className="kicker hidden text-paper/35 sm:inline">
+              Est. 2026
+            </span>
           </div>
-
-          <div className="flex gap-16">
-            <FooterCol
-              title="Site"
-              links={[
-                ["The globe", "/globe"],
-                ["The deck", "/deck"],
-                ["Resources", "/resources"],
-                ["My HackHQ", "/my"],
-                ["Submit", "/#submit"],
-              ]}
-            />
-            <FooterCol
-              title="Open source"
-              links={[
-                ["GitHub repo", REPO_URL],
-                ["listings.json", `${REPO_URL}/blob/main/.github/scripts/listings.json`],
-                ["Contribute", `${REPO_URL}/blob/main/CONTRIBUTING.md`],
-                ["Star us ★", REPO_URL],
-              ]}
+          <div className="mt-8 flex select-none justify-center overflow-hidden sm:mt-10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/hackhq-wordmark.svg"
+              alt="HackHQ"
+              className="w-full max-w-[1200px]"
             />
           </div>
         </div>
 
-        {/* Giant wordmark - official trademark */}
-        <div className="mt-16 flex select-none justify-center overflow-hidden px-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/hackhq-wordmark.svg"
-            alt="HackHQ"
-            className="w-full max-w-[1400px]"
-          />
+        {/* Contact grid: left stack of cards, right form */}
+        <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+          <div className="flex flex-col gap-3">
+            <FollowCard />
+            <OfferCard />
+          </div>
+          <ContactCard />
         </div>
 
-        <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-white/8 pt-6 font-mono text-[10px] tracking-[0.15em] text-paper/35 sm:flex-row">
+        <div className="mt-6 flex flex-col items-center justify-between gap-3 px-2 pt-4 font-mono text-[10px] tracking-[0.15em] text-paper/35 sm:flex-row">
           <span>©2026 HACKHQ · OPEN SOURCE</span>
           <span>FROM REPO → TO PRODUCT</span>
         </div>
       </div>
     </footer>
+  );
+}
+
+/* Real channel: GitHub. X / Discord don't have live handles yet, so they fall
+   back to the repo - swap the hrefs in once the accounts exist. */
+const SOCIALS: { label: string; href: string; icon: React.ReactNode }[] = [
+  {
+    label: "GitHub",
+    href: REPO_URL,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-[18px] w-[18px]">
+        <path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.6 18 4.9 18 4.9c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z" />
+      </svg>
+    ),
+  },
+  {
+    label: "X",
+    href: REPO_URL,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+        <path d="M18.9 1.5h3.6l-7.9 9 9.3 12.3h-7.3l-5.7-7.5-6.5 7.5H.7l8.4-9.6L0 1.5h7.5l5.1 6.8 5.3-6.8Zm-1.3 18.6h2L6.5 3.6H4.4l13.2 16.5Z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Discord",
+    href: REPO_URL,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-[18px] w-[18px]">
+        <path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.2.5c1.7.4 3 .9 4.3 1.7A16.5 16.5 0 0 0 3 4.9c1.2-.8 2.6-1.4 4.3-1.7L7.1 3a19.8 19.8 0 0 0-5 1.4C.8 8.6.1 12.7.4 16.8a19.9 19.9 0 0 0 6 3l.8-1.2c-.6-.2-1.2-.5-1.8-.9l.4-.3a14.2 14.2 0 0 0 12.1 0l.4.3c-.6.4-1.2.7-1.8.9l.8 1.2a19.9 19.9 0 0 0 6-3c.4-4.8-.6-8.9-3-12.4ZM8.5 14.3c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z" />
+      </svg>
+    ),
+  },
+];
+
+function FollowCard() {
+  return (
+    <div className="flex items-center justify-between gap-6 rounded-[var(--card-radius)] border border-white/8 bg-ink-soft/70 px-7 py-7 sm:px-9">
+      <div className="text-lg text-paper sm:text-xl">Follow us</div>
+      <div className="flex items-center gap-2.5">
+        {SOCIALS.map((s) => (
+          <a
+            key={s.label}
+            href={s.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={s.label}
+            className="grid h-10 w-10 place-items-center rounded-xl border border-white/12 text-paper/65 transition hover:border-coral hover:text-coral focus-visible:border-coral focus-visible:outline-none"
+          >
+            {s.icon}
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const OFFERS = [
+  "Live global hackathon map",
+  "Deadlines, prizes & status, tracked",
+  "Open data — one listings.json",
+  "Community-fed, updated daily",
+];
+
+function OfferCard() {
+  return (
+    <div className="flex flex-1 flex-col rounded-[var(--card-radius)] border border-white/8 bg-ink-soft/70 px-7 py-8 sm:px-9">
+      <div className="text-lg text-paper sm:text-xl">What HackHQ does</div>
+      <ul className="mt-5 flex flex-col gap-3 text-sm text-paper/60">
+        {OFFERS.map((o) => (
+          <li key={o} className="flex items-start gap-3">
+            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-coral" />
+            {o}
+          </li>
+        ))}
+      </ul>
+      <div className="mt-8 grid grid-cols-2 gap-6 border-t border-white/8 pt-7">
+        <FooterCol
+          title="Explore"
+          links={[
+            ["The globe", "/globe"],
+            ["The deck", "/deck"],
+            ["Resources", "/resources"],
+            ["My HackHQ", "/my"],
+          ]}
+        />
+        <FooterCol
+          title="Open source"
+          links={[
+            ["GitHub repo", REPO_URL],
+            ["listings.json", `${REPO_URL}/blob/main/.github/scripts/listings.json`],
+            ["Contribute", `${REPO_URL}/blob/main/CONTRIBUTING.md`],
+            ["Star us ★", REPO_URL],
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
+
+const FIELD =
+  "w-full rounded-2xl border border-white/10 bg-ink-deep/50 px-5 py-4 text-sm text-paper outline-none transition placeholder:text-paper/35 focus:border-coral";
+
+function ContactCard() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [org, setOrg] = useState("");
+  const [message, setMessage] = useState("");
+
+  return (
+    <div className="flex flex-col rounded-[var(--card-radius)] border border-white/8 bg-ink-soft/70 px-7 py-8 sm:px-9">
+      <h2 className="text-xl leading-tight text-paper sm:text-2xl">
+        Got a question, challenge, or idea?
+      </h2>
+      <p className="mt-2 text-sm text-paper/50">
+        Tell us what you&rsquo;re building — or what HackHQ is missing.
+      </p>
+
+      <form
+        className="mt-6 flex flex-1 flex-col gap-3"
+        onSubmit={(e) => {
+          e.preventDefault();
+          const body = [
+            `From: ${name || "anonymous"}${email ? ` <${email}>` : ""}`,
+            org ? `Org: ${org}` : null,
+            "",
+            message,
+          ]
+            .filter((line) => line !== null)
+            .join("\n");
+          const url = `${REPO_URL}/issues/new?title=${encodeURIComponent(
+            "Hello from HackHQ",
+          )}&body=${encodeURIComponent(body)}`;
+          window.open(url, "_blank");
+        }}
+      >
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your name"
+          aria-label="Your name"
+          className={FIELD}
+        />
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Your email"
+          aria-label="Your email"
+          type="email"
+          className={FIELD}
+        />
+        <input
+          value={org}
+          onChange={(e) => setOrg(e.target.value)}
+          placeholder="Your GitHub or org (optional)"
+          aria-label="Your GitHub or org"
+          className={FIELD}
+        />
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Your message"
+          aria-label="Your message"
+          required
+          className={`${FIELD} min-h-[132px] flex-1 resize-none`}
+        />
+
+        <div className="mt-1 flex items-center justify-between gap-4 rounded-2xl border border-white/8 px-5 py-4">
+          <p className="text-xs italic leading-snug text-paper/45">
+            Sending opens a prefilled{" "}
+            <a
+              href={`${REPO_URL}/issues`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-coral not-italic transition hover:text-coral-bright"
+            >
+              GitHub issue
+            </a>
+            .
+          </p>
+          <button
+            type="submit"
+            aria-label="Send message"
+            className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-coral text-2xl text-ink transition hover:bg-coral-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50"
+          >
+            →
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 
