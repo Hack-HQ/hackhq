@@ -270,3 +270,26 @@ body {
     animation: none;
   }
 }
+
+/* Developers carousel: the featured card cross-fades as you switch people
+   (components/hq/sections.tsx - Developers). */
+@keyframes hq-fade-swap {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fade-swap {
+  animation: hq-fade-swap 0.4s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-swap {
+    animation: none;
+  }
+}

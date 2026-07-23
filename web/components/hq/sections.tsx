@@ -69,6 +69,229 @@ export function ThemeMarquee({ hackathons }: { hackathons: Hackathon[] }) {
   );
 }
 
+/* ----- Founding contributors carousel (Pillar 03 · The crew) -----
+   A testimonial-style spotlight: one developer featured at a time (portrait +
+   note + name), prev/next arrows, a progress rail, and a filmstrip of everyone
+   else. The active person's filmstrip slot becomes an up-arrow pointing at the
+   card. Names are the public repo crew; roles, notes and photos are
+   PLACEHOLDERS - set a real `bio`, `role` and `image` per person as the copy
+   and photos land. Add or remove entries freely; the whole carousel adapts to
+   the array length. */
+type Dev = {
+  name: string;
+  role: string;
+  org: string;
+  bio: string;
+  image?: string;
+};
+
+const DEVELOPERS: Dev[] = [
+  {
+    name: "Jose Cruz",
+    role: "Founding contributor",
+    org: "HackHQ",
+    bio: "Placeholder note — a line or two on what Jose built and why an open, community-fed map of hackathons matters. Real bio coming soon.",
+  },
+  {
+    name: "Allyson",
+    role: "Founding contributor",
+    org: "HackHQ",
+    bio: "Placeholder note — a line or two on Allyson's part in HackHQ and what they focus on. Real bio coming soon.",
+  },
+  {
+    name: "Cai",
+    role: "Founding contributor",
+    org: "HackHQ",
+    bio: "Placeholder note — a line or two on Cai's part in HackHQ and what they focus on. Real bio coming soon.",
+  },
+  {
+    name: "Vick",
+    role: "Founding contributor",
+    org: "HackHQ",
+    bio: "Placeholder note — a line or two on Vick's part in HackHQ and what they focus on. Real bio coming soon.",
+  },
+];
+
+function DevAvatar({ dev, size }: { dev: Dev; size: "lg" | "sm" }) {
+  const initials = dev.name
+    .split(" ")
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join("");
+  if (dev.image) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={dev.image}
+        alt={dev.name}
+        className="h-full w-full object-cover grayscale"
+      />
+    );
+  }
+  return (
+    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-ink-soft to-ink-deep">
+      <span
+        className={`font-display text-paper/15 ${
+          size === "lg" ? "text-[clamp(2.5rem,7vw,4.5rem)]" : "text-lg"
+        }`}
+      >
+        {initials}
+      </span>
+    </div>
+  );
+}
+
+function DevArrow({ dir }: { dir: "left" | "right" | "up" }) {
+  const rot =
+    dir === "left" ? "rotate-180" : dir === "up" ? "-rotate-90" : "";
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`h-6 w-6 ${rot}`}
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
+export function Developers() {
+  const [active, setActive] = useState(0);
+  const total = DEVELOPERS.length;
+  const go = (delta: number) => setActive((a) => (a + delta + total) % total);
+
+  const dev = DEVELOPERS[active];
+  if (!dev) return null;
+
+  return (
+    <section id="developers" className="p-2 pt-0">
+      <div className="shell bg-ink px-3 py-3 sm:px-4 sm:py-4">
+        {/* header */}
+        <div className="px-4 pb-8 pt-6 sm:px-6 sm:pb-10 sm:pt-8">
+          <div className="kicker text-coral">Open source · Founding crew</div>
+          <h2 className="display mt-4 text-[clamp(2rem,5vw,3.4rem)] text-paper">
+            The developers
+          </h2>
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-paper/55">
+            The founding open-source contributors who made HackHQ — the people
+            behind the product.
+          </p>
+        </div>
+
+        {/* featured card */}
+        <div className="rounded-[var(--card-radius)] border border-white/8 bg-ink-soft/60 p-5 sm:p-8 lg:p-10">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,320px)_1fr_auto] lg:gap-10">
+            <div
+              key={`img-${active}`}
+              className="fade-swap mx-auto aspect-[4/5] w-full max-w-[320px] overflow-hidden rounded-[var(--card-radius)] lg:mx-0"
+            >
+              <DevAvatar dev={dev} size="lg" />
+            </div>
+
+            <div
+              key={`txt-${active}`}
+              className="fade-swap flex flex-col justify-between"
+            >
+              <div>
+                <span
+                  aria-hidden
+                  className="block font-serif text-6xl leading-[0.6] text-paper/15"
+                >
+                  &ldquo;
+                </span>
+                <p className="mt-4 text-[clamp(1.05rem,1.9vw,1.5rem)] italic leading-relaxed text-paper/70">
+                  {dev.bio}
+                </p>
+              </div>
+              <div className="mt-10 flex items-end justify-between gap-4">
+                <div>
+                  <h3 className="text-[clamp(1.5rem,3vw,2.1rem)] font-semibold leading-none text-paper">
+                    {dev.name}
+                  </h3>
+                  <div className="mt-2 text-sm text-paper/45">{dev.role}</div>
+                </div>
+                <div className="shrink-0 text-sm text-paper/40">{dev.org}</div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 lg:border-l lg:border-white/8 lg:pl-8">
+              <button
+                type="button"
+                aria-label="Previous developer"
+                onClick={() => go(-1)}
+                className="grid h-11 w-11 place-items-center rounded-full text-coral transition hover:bg-coral/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50"
+              >
+                <DevArrow dir="left" />
+              </button>
+              <button
+                type="button"
+                aria-label="Next developer"
+                onClick={() => go(1)}
+                className="grid h-11 w-11 place-items-center rounded-full text-coral transition hover:bg-coral/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50"
+              >
+                <DevArrow dir="right" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* progress rail */}
+        <div className="mt-6 flex items-center gap-4 px-2">
+          <span className="kicker text-paper/40">Contributors</span>
+          <div className="flex items-center gap-2">
+            {DEVELOPERS.map((d, i) => (
+              <button
+                key={d.name}
+                type="button"
+                aria-label={`Show ${d.name}`}
+                aria-current={i === active}
+                onClick={() => setActive(i)}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === active
+                    ? "w-8 bg-coral"
+                    : "w-1.5 bg-paper/20 hover:bg-paper/40"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* filmstrip — active person's slot points up at the card */}
+        <div className="mt-4 grid grid-cols-4 gap-2 sm:gap-3">
+          {DEVELOPERS.map((d, i) =>
+            i === active ? (
+              <div
+                key={d.name}
+                aria-hidden
+                className="grid aspect-[4/5] place-items-center rounded-xl bg-ink-soft/30 text-coral"
+              >
+                <DevArrow dir="up" />
+              </div>
+            ) : (
+              <button
+                key={d.name}
+                type="button"
+                aria-label={`Show ${d.name}`}
+                onClick={() => setActive(i)}
+                className="group relative aspect-[4/5] overflow-hidden rounded-xl border border-white/8 transition hover:border-coral/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50"
+              >
+                <DevAvatar dev={d} size="sm" />
+                <span className="absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-black/75 to-transparent px-2 pb-1.5 pt-5 text-left text-[11px] text-paper/85">
+                  {d.name}
+                </span>
+              </button>
+            ),
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ----- Submit (Pillar 04 · Contribute) ----- */
 
 export function SubmitSection() {
