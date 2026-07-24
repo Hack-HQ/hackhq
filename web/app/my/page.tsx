@@ -17,7 +17,7 @@ export default async function MyPage() {
   if (isClerkConfigured()) {
     const { userId } = await auth();
     if (!userId) {
-      redirect("/auth/sign-in");
+      redirect("/auth/sign-in?redirect_url=/my");
     }
   }
 
@@ -26,4 +26,3 @@ export default async function MyPage() {
     <MyClient hackathons={hackathons} authEnabled={isClerkConfigured()} />
   );
 }
-
