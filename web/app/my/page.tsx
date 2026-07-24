@@ -1,3 +1,5 @@
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { loadHackathons } from "@/lib/listings";
 import { MyClient } from "@/components/hq/my-client";
 import { isClerkConfigured } from "@/lib/env";
@@ -11,7 +13,14 @@ export const metadata = {
     "Your hackathon pipeline: save events from the deck and globe, drag them from Interested to Going.",
 };
 
-export default function MyPage() {
+export default async function MyPage() {
+  if (isClerkConfigured()) {
+    const { userId } = await auth();
+    if (!userId) {
+      redirect("/auth/sign-in?redirect_url=/my");
+    }
+  }
+
   const hackathons = loadHackathons();
   return (
     <MyClient hackathons={hackathons} authEnabled={isClerkConfigured()} />
