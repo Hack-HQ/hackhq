@@ -60,7 +60,7 @@ export function NavPill() {
     <nav className="fixed inset-x-0 top-4 z-50 flex justify-center px-3">
       <div
         ref={pillRef}
-        className="glass-dark flex items-center gap-1 rounded-3xl p-2 pl-2.5 shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
+        className="glass-lens flex items-center gap-5 rounded-3xl p-2 pl-2.5 shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
       >
         {/* Logo chip - HQ monogram */}
         <Link
@@ -171,7 +171,7 @@ export function NavPill() {
               window.history.pushState(null, "", "#submit");
             }
           }}
-          className="ml-1 flex items-center gap-2 rounded-2xl bg-paper px-5 py-3 font-mono text-[11px] font-bold tracking-[0.18em] text-ink transition hover:bg-white"
+          className="ml-1 flex items-center gap-2 rounded-2xl bg-paper px-5 py-3 font-mono text-[12px] font-bold tracking-[0.18em] text-ink transition hover:bg-white md:text-[12px]"
         >
           + SUBMIT
         </Link>

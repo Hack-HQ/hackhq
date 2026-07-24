@@ -108,7 +108,7 @@ export function MobileMenu() {
           // it — for exactly the users who set larger text. `top-full` tracks
           // the real height instead. inset-x-3 matches the nav's px-3 gutter,
           // which keeps the panel on screen at 375px.
-          className="glass-dark absolute inset-x-3 top-full mt-3 flex flex-col gap-1 rounded-3xl p-2 shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
+          className="mobile-nav-lens absolute inset-x-3 top-full mt-3 flex flex-col gap-1 rounded-3xl p-2"
         >
           {NAV_LINKS.map(([label, href]) => {
             const active = isActiveRoute(pathname, href);
@@ -123,8 +123,8 @@ export function MobileMenu() {
                 // tap on the section you are already in.
                 onClick={() => setOpen(false)}
                 aria-current={active ? "page" : undefined}
-                className={`rounded-2xl px-4 py-3 font-mono text-[11px] tracking-[0.18em] transition hover:bg-white/10 hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-inset ${
-                  active ? "bg-white/10 text-paper" : "text-paper/80"
+                className={`rounded-2xl px-4 py-3 font-mono text-[15px] tracking-[0.18em] transition hover:bg-white/10 hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-inset ${
+                  active ? "bg-white/10 text-paper" : "text-paper-dim"
                 }`}
               >
                 {label}
@@ -137,7 +137,7 @@ export function MobileMenu() {
             target="_blank"
             rel="noreferrer"
             onClick={() => setOpen(false)}
-            className="rounded-2xl px-4 py-3 font-mono text-[11px] tracking-[0.18em] text-paper/50 transition hover:bg-white/10 hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-inset"
+            className="rounded-2xl px-4 py-3 font-mono text-[13px] tracking-[0.18em] text-paper/50 transition hover:bg-white/10 hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-inset"
           >
             ★ GITHUB
           </a>
@@ -150,16 +150,16 @@ export function MobileMenu() {
 /** Hamburger that becomes a close glyph while the panel is open. */
 function MenuIcon({ open }: { open: boolean }) {
   return (
-    <span aria-hidden="true" className="flex h-4 w-4 flex-col justify-center gap-[3px]">
+    <span aria-hidden="true" className="flex h-5 w-5 flex-col justify-center gap-[5px]">
       <span
         className={`h-[1.5px] w-full bg-current transition ${
-          open ? "translate-y-[4.5px] rotate-45" : ""
+          open ? "translate-y-[6.5px] rotate-45" : ""
         }`}
       />
       <span className={`h-[1.5px] w-full bg-current transition ${open ? "opacity-0" : ""}`} />
       <span
         className={`h-[1.5px] w-full bg-current transition ${
-          open ? "-translate-y-[4.5px] -rotate-45" : ""
+          open ? "-translate-y-[6.5px] -rotate-45" : ""
         }`}
       />
     </span>
