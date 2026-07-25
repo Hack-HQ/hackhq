@@ -316,10 +316,10 @@ function CoverCrest() {
 type Phase = "closed" | "flash" | "open";
 
 export function Passport({ hackathons }: { hackathons: Hackathon[] }) {
-  const { tracked } = useTracker();
-  const { left, right, stampCount, cityCount } = useMemo(
-    () => buildPassport(tracked, hackathons),
-    [tracked, hackathons],
+  const { tracked, wins } = useTracker();
+  const { left, right, stampCount, cityCount, winCount } = useMemo(
+    () => buildPassport(tracked, hackathons, wins),
+    [tracked, hackathons, wins],
   );
   const isEmpty = stampCount === 0;
 
@@ -409,6 +409,12 @@ export function Passport({ hackathons }: { hackathons: Hackathon[] }) {
           </h2>
           <div className="mt-3 font-mono text-[10px] uppercase tracking-[0.16em] text-paper/40">
             {pad2(stampCount)} stamps · {pad2(cityCount)} cities
+            {winCount > 0 && (
+              <>
+                {" · "}
+                <span className="text-trophy">{pad2(winCount)} wins</span>
+              </>
+            )}
           </div>
         </div>
 

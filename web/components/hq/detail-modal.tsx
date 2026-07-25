@@ -10,10 +10,11 @@ import {
 import { lockScroll } from "@/lib/scroll-lock";
 import { safeHttpUrl } from "@/lib/url";
 import { useSelection, useTracker } from "./store";
+import { TrophyBadge } from "./trophy";
 
 export function DetailModal() {
   const { selected, setSelected } = useSelection();
-  const { isTracked, save, remove } = useTracker();
+  const { isTracked, save, remove, hasWin } = useTracker();
   const panelRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -103,6 +104,7 @@ export function DetailModal() {
             <span className="font-mono text-[10px] tracking-[0.22em] text-paper/50">
               {h.format.toUpperCase()}
             </span>
+            {hasWin(h.id) && <TrophyBadge hackathonTitle={h.title} compact />}
           </div>
           <button
             ref={closeButtonRef}
