@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { buildContactMailto } from "@/lib/contact-email";
 import type { Hackathon, SiteStats } from "@/lib/types-hq";
 import { REPO_URL, submitIssueUrl } from "@/lib/types-hq";
 
@@ -600,6 +601,8 @@ function ContactCard() {
   const [email, setEmail] = useState("");
   const [org, setOrg] = useState("");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState("");
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   return (
     <div className="flex flex-col rounded-[var(--card-radius)] border border-white/8 bg-ink-soft/70 px-7 py-8 sm:px-9">
@@ -612,20 +615,11 @@ function ContactCard() {
 
       <form
         className="mt-6 flex flex-1 flex-col gap-3"
+        onInput={() => setHasInteracted(true)}
         onSubmit={(e) => {
           e.preventDefault();
-          const body = [
-            `From: ${name || "anonymous"}${email ? ` <${email}>` : ""}`,
-            org ? `Org: ${org}` : null,
-            "",
-            message,
-          ]
-            .filter((line) => line !== null)
-            .join("\n");
-          const url = `${REPO_URL}/issues/new?title=${encodeURIComponent(
-            "Hello from HackHQ",
-          )}&body=${encodeURIComponent(body)}`;
-          window.open(url, "_blank");
+          if (!hasInteracted || website) return;
+          window.location.href = buildContactMailto({ name, email, org, message });
         }}
       >
         <input
@@ -633,6 +627,7 @@ function ContactCard() {
           onChange={(e) => setName(e.target.value)}
           placeholder="Your name"
           aria-label="Your name"
+          required
           className={FIELD}
         />
         <input
@@ -641,6 +636,7 @@ function ContactCard() {
           placeholder="Your email"
           aria-label="Your email"
           type="email"
+          required
           className={FIELD}
         />
         <input
@@ -658,24 +654,25 @@ function ContactCard() {
           required
           className={`${FIELD} min-h-[132px] flex-1 resize-none`}
         />
+        <input
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="hidden"
+        />
 
         <div className="mt-1 flex items-center justify-between gap-4 rounded-2xl border border-white/8 px-5 py-4">
           <p className="text-xs italic leading-snug text-paper/45">
-            Sending opens a prefilled{" "}
-            <a
-              href={`${REPO_URL}/issues`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-coral not-italic transition hover:text-coral-bright"
-            >
-              GitHub issue
-            </a>
-            .
+            Sending opens your email app with a prefilled message.
           </p>
           <button
             type="submit"
             aria-label="Send message"
-            className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-coral text-2xl text-ink transition hover:bg-coral-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50"
+            disabled={!hasInteracted}
+            className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-coral text-2xl text-ink transition hover:bg-coral-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             →
           </button>
