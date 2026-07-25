@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.12",
+    "@supabase/supabase-js": "^2.110.8",
     "drizzle-orm": "^0.45.2",
     "framer-motion": "^11.18.2",
     "mapbox-gl": "^3.25.0",
@@ -24,6 +25,7 @@
     "postgres": "^3.4.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "server-only": "^0.0.1",
     "sharp": "^0.35.0"
   },
   "devDependencies": {

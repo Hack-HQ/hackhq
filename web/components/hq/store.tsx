@@ -9,35 +9,16 @@ import {
   useState,
 } from "react";
 import type { Hackathon } from "@/lib/types-hq";
+import {
+  sanitizeTrackerMap,
+  type Stage,
+  type TrackerMap,
+} from "@/lib/tracker";
 
-export type Stage = "interested" | "applied" | "accepted" | "going";
-
-export const STAGES: { id: Stage; label: string; color: string }[] = [
-  { id: "interested", label: "Interested", color: "#17b26a" },
-  { id: "applied", label: "Applied", color: "#f5a623" },
-  { id: "accepted", label: "Accepted", color: "#3b6bf0" },
-  { id: "going", label: "Going", color: "#ed5b29" },
-];
-
-type TrackerMap = Record<string, Stage>;
-
-const STAGE_IDS = new Set<string>(STAGES.map((s) => s.id));
-
-/**
- * Coerce an untrusted parsed localStorage value into a clean TrackerMap:
- * keep only string ids mapped to a known Stage, drop everything else. Guards
- * against a valid-JSON-but-wrong-shape payload being cast blindly.
- */
-function sanitizeTrackerMap(value: unknown): TrackerMap {
-  if (!value || typeof value !== "object") return {};
-  const out: TrackerMap = {};
-  for (const [id, stage] of Object.entries(value as Record<string, unknown>)) {
-    if (typeof stage === "string" && STAGE_IDS.has(stage)) {
-      out[id] = stage as Stage;
-    }
-  }
-  return out;
-}
+// The stage vocabulary lives in lib/tracker.ts so /api/tracker can validate
+// against the same list. Re-exported here because this is where the app has
+// always imported it from.
+export { STAGES, type Stage } from "@/lib/tracker";
 
 type TrackerContextValue = {
   tracked: TrackerMap;
