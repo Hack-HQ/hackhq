@@ -14,7 +14,7 @@ describe("buildContactMailto", () => {
 
     expect(url.protocol).toBe("mailto:");
     expect(url.pathname).toBe("hackheadquarters@gmail.com");
-    expect(url.searchParams.get("subject")).toBe("HackHQ contact: Ada Lovelace");
+    expect(url.searchParams.get("subject")).toBe("HackHQ website inquiry from Ada Lovelace");
     expect(url.searchParams.get("body")).toBe(
       [
         "From: Ada Lovelace",
@@ -36,7 +36,7 @@ describe("buildContactMailto", () => {
       }),
     );
 
-    expect(url.searchParams.get("subject")).toBe("HackHQ contact: Ada");
+    expect(url.searchParams.get("subject")).toBe("HackHQ website inquiry from Ada");
     expect(url.searchParams.get("body")).toBe(
       ["From: Ada", "Reply email: ada@example.com", "", "Hello"].join("\n"),
     );

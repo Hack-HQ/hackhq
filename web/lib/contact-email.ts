@@ -13,7 +13,7 @@ export function buildContactMailto({
   org,
   message,
 }: ContactMessage): string {
-  const subject = `HackHQ contact: ${name.trim()}`;
+  const subject = `HackHQ website inquiry from ${name.trim()}`;
   const body = [
     `From: ${name.trim()}`,
     `Reply email: ${email.trim()}`,
@@ -24,5 +24,5 @@ export function buildContactMailto({
     .filter((line): line is string => line !== null)
     .join("\n");
 
-  return `mailto:${CONTACT_EMAIL}?${new URLSearchParams({ subject, body }).toString()}`;
+  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
