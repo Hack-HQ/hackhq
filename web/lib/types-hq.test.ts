@@ -1,7 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { eventDateDisplay, submitIssueUrl, type Hackathon } from "./types-hq";
+import {
+  deadlineDisplay,
+  eventDateDisplay,
+  isActiveHackathon,
+  submitIssueUrl,
+  type Hackathon,
+} from "./types-hq";
 
 const TEMPLATE_PATH = path.join(
   process.cwd(),
@@ -98,5 +104,21 @@ describe("eventDateDisplay", () => {
 
   it("returns null when event dates are absent", () => {
     expect(eventDateDisplay(hackStub({}))).toBeNull();
+  });
+});
+
+describe("isActiveHackathon", () => {
+  it("excludes only closed listings from discovery surfaces", () => {
+    expect(isActiveHackathon(hackStub({ state: "open" }))).toBe(true);
+    expect(isActiveHackathon(hackStub({ state: "opens_soon" }))).toBe(true);
+    expect(isActiveHackathon(hackStub({ state: "closing_soon" }))).toBe(true);
+    expect(isActiveHackathon(hackStub({ state: "closed" }))).toBe(false);
+  });
+});
+
+describe("deadlineDisplay", () => {
+  it("formats a deadline and omits a missing value", () => {
+    expect(deadlineDisplay(hackStub({ deadline: "2026-09-10" }))).toBe("Sep 10, 2026");
+    expect(deadlineDisplay(hackStub({}))).toBeNull();
   });
 });

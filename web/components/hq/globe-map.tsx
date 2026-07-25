@@ -6,6 +6,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import {
   STATE_META,
   countdown,
+  eventDateDisplay,
+  isActiveHackathon,
   type HackState,
   type Hackathon,
 } from "@/lib/types-hq";
@@ -57,14 +59,20 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   const hasToken = Boolean(mapboxgl.accessToken);
 
   const located = useMemo(
-    () => hackathons.filter((h) => h.lat !== null && h.lng !== null),
+    () =>
+      hackathons
+        .filter(isActiveHackathon)
+        .filter((h) => h.lat !== null && h.lng !== null),
     [hackathons],
   );
 
   // Non-virtual listings we could not place. A virtual hackathon isn't missing
   // from the map — it has nowhere to be — so it doesn't count here.
   const unmapped = hackathons.filter(
-    (h) => h.format !== "Virtual" && (h.lat === null || h.lng === null),
+    (h) =>
+      isActiveHackathon(h) &&
+      h.format !== "Virtual" &&
+      (h.lat === null || h.lng === null),
   ).length;
 
   // Search + status apply everywhere (map pins and the virtual list). The
@@ -101,7 +109,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   // dedicated drawer instead — this is how online-only events stay
   // discoverable. They ignore the pin-only format filters.
   const virtualList = useMemo(
-    () => hackathons.filter((h) => h.format === "Virtual" && h.state !== "closed"),
+    () => hackathons.filter(isActiveHackathon).filter((h) => h.format === "Virtual"),
     [hackathons],
   );
   const visibleVirtual = useMemo(
@@ -186,6 +194,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     function showPopup(h: Hackathon) {
       const meta = STATE_META[h.state];
       const cd = countdown(h);
+      const eventDates = eventDateDisplay(h);
 
       const root = document.createElement("div");
 
@@ -210,6 +219,17 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       metaRow.textContent = `${h.host} · ${h.location}`;
 
       root.append(statusRow, titleRow, metaRow);
+
+      if (eventDates) {
+        const datesRow = document.createElement("div");
+        datesRow.style.fontFamily = "var(--font-mono)";
+        datesRow.style.fontSize = "10px";
+        datesRow.style.letterSpacing = "0.1em";
+        datesRow.style.color = "#9ba1a5";
+        datesRow.style.marginTop = "7px";
+        datesRow.textContent = `EVENT DATES · ${eventDates.toUpperCase()}`;
+        root.append(datesRow);
+      }
 
       popup
         .setLngLat([h.lng!, h.lat!])

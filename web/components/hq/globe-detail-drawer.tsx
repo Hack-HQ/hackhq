@@ -95,7 +95,7 @@ export function GlobeDetailDrawer({
           <DetailRow label="City" value={h.location} />
           <DetailRow label="Format" value={h.format} />
           <DetailRow label="Prize" value={h.prize ?? "See website"} />
-          {eventDates && <DetailRow label="Dates" value={eventDates} />}
+          {eventDates && <DetailRow label="Event dates" value={eventDates} />}
           {deadline && <DetailRow label="Deadline" value={deadline} />}
         </div>
 

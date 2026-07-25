@@ -128,7 +128,7 @@ export function DetailModal() {
 
           <div className="mt-5 flex flex-wrap gap-2">
             <InfoChip>{h.location}</InfoChip>
-            {eventDates && <InfoChip>{eventDates}</InfoChip>}
+            {eventDates && <InfoChip>Event dates · {eventDates}</InfoChip>}
             {h.deadline && (
               <InfoChip>
                 Deadline {deadlineDisplay(h)}
