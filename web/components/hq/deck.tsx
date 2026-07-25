@@ -2,7 +2,13 @@
 
 import { useMemo, useState } from "react";
 import type { Hackathon, HackState } from "@/lib/types-hq";
-import { STATE_META, countdown } from "@/lib/types-hq";
+import {
+  STATE_META,
+  countdown,
+  deadlineDisplay,
+  eventDateDisplay,
+  isActiveHackathon,
+} from "@/lib/types-hq";
 import { safeHttpUrl } from "@/lib/url";
 import { useSelection, useTracker } from "./store";
 
@@ -16,7 +22,7 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    return hackathons.filter((h) => {
+    return hackathons.filter(isActiveHackathon).filter((h) => {
       if (status !== "all" && h.state !== status) return false;
       if (format !== "all" && h.format !== format) return false;
       if (!needle) return true;
@@ -172,6 +178,8 @@ function HackRow({ h }: { h: Hackathon }) {
   const { setSelected } = useSelection();
   const meta = STATE_META[h.state];
   const cd = countdown(h);
+  const deadline = deadlineDisplay(h);
+  const eventDates = eventDateDisplay(h);
   const openDetails = () => setSelected(h);
   const onOpenKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.target !== e.currentTarget) return;
@@ -188,7 +196,7 @@ function HackRow({ h }: { h: Hackathon }) {
       role="button"
       tabIndex={0}
       aria-label={`View details for ${h.title}`}
-      className={`flex cursor-pointer items-center gap-4 px-5 py-4 transition hover:bg-ink/4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-inset sm:px-7 ${h.state === "closed" ? "opacity-50" : ""}`}
+      className="flex cursor-pointer items-center gap-4 px-5 py-4 transition hover:bg-ink/4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-inset sm:px-7"
     >
       <span
         className="h-2.5 w-2.5 shrink-0 rounded-full"
@@ -209,9 +217,17 @@ function HackRow({ h }: { h: Hackathon }) {
       <div className="hidden w-32 text-right font-display text-sm font-semibold text-ink sm:block">
         {h.prize ?? "-"}
       </div>
-      <div className="hidden w-28 text-right font-mono text-[10px] tracking-wider text-coral lg:block">
-        {cd?.toUpperCase() ?? ""}
-      </div>
+      {eventDates && (
+        <DateColumn className="hidden w-44 lg:block" label="Event dates" value={eventDates} />
+      )}
+      {deadline && (
+        <DateColumn
+          className="hidden w-36 text-coral lg:block"
+          label="Deadline"
+          value={deadline}
+          detail={cd?.toUpperCase()}
+        />
+      )}
       <SaveHeart h={h} />
       <a
         href={safeHttpUrl(h.url)}
@@ -222,6 +238,26 @@ function HackRow({ h }: { h: Hackathon }) {
       >
         {h.state === "opens_soon" ? "SITE" : "GO"}
       </a>
+    </div>
+  );
+}
+
+function DateColumn({
+  className,
+  label,
+  value,
+  detail,
+}: {
+  className: string;
+  label: string;
+  value: string;
+  detail?: string;
+}) {
+  return (
+    <div className={`text-right font-mono text-[10px] tracking-wider ${className}`}>
+      <div className="text-[9px] text-ink/40">{label.toUpperCase()}</div>
+      <div className="mt-1 leading-tight text-ink/70">{value}</div>
+      {detail && <div className="mt-1 text-[9px]">{detail}</div>}
     </div>
   );
 }

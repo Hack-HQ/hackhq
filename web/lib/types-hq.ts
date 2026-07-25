@@ -33,6 +33,11 @@ export type SiteStats = {
   cities: number;
 };
 
+/** Whether a listing belongs in active discovery surfaces such as the deck and globe. */
+export function isActiveHackathon(hackathon: Pick<Hackathon, "state">): boolean {
+  return hackathon.state !== "closed";
+}
+
 export const STATE_META: Record<
   HackState,
   { label: string; color: string; dim?: boolean }
