@@ -2,6 +2,17 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { isClerkConfigured } from "@/lib/env";
 
+// This is deliberately `middleware.ts`, not Next 16's newer `proxy.ts`.
+// -----------------------------------------------------------------------------
+// Next 16 renamed Middleware -> Proxy and runs `proxy.ts` on the Node.js
+// runtime. Our Cloudflare/OpenNext deploy target (issue #223) does NOT support
+// Node.js middleware — `opennextjs-cloudflare build` hard-fails on it — but it
+// does support the Edge runtime, which is exactly what the (now-deprecated)
+// `middleware.ts` convention still compiles to. clerkMiddleware is Edge-safe, so
+// keeping this as `middleware.ts` lets auth run unchanged while the app stays
+// deployable to Workers. Next prints a middleware->proxy deprecation warning;
+// that is expected and must stay until OpenNext supports Node proxy.
+//
 // Clerk only takes over once its keys exist in .env.local — until then the
 // site runs exactly as before (the /my hub shows setup instructions instead).
 //
