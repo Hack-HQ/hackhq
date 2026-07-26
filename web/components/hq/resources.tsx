@@ -126,13 +126,22 @@ function LinkRow({ link }: { link: ResourceLink }) {
   );
 }
 
+function ComingSoonBadge() {
+  return (
+    <span className="inline-flex shrink-0 items-center rounded-full border border-coral/40 bg-coral/15 px-2.5 py-0.5 font-mono text-[9px] font-bold tracking-[0.16em] text-coral">
+      COMING SOON
+    </span>
+  );
+}
+
 function ToolsStrip() {
   return (
     <section id="tools" style={CLEARS_RAIL} className="p-2 pt-0">
       <div className="shell bg-ink-soft px-6 py-14 sm:px-12 sm:py-20">
         <div className="kicker text-coral">Toolkit · Always useful</div>
-        <h2 className="display mt-3 text-[clamp(1.5rem,3.5vw,2.6rem)] text-paper">
-          Tools & templates
+        <h2 className="mt-3 flex flex-wrap items-center gap-3 text-[clamp(1.5rem,3.5vw,2.6rem)] text-paper">
+          <span className="display">Tools & templates</span>
+          <ComingSoonBadge />
         </h2>
         <p className="mt-4 max-w-xl text-sm leading-relaxed text-paper/60">
           Steal these for any weekend—first hackathon or fiftieth.
@@ -141,8 +150,11 @@ function ToolsStrip() {
         <div className="mt-12 grid gap-10 md:grid-cols-3">
           {RESOURCE_TOOLS.map((tool) => (
             <div key={tool.title}>
-              <div className="font-mono text-[12px] tracking-[0.18em] text-paper">
-                {tool.title.toUpperCase()}
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="font-mono text-[12px] tracking-[0.18em] text-paper">
+                  {tool.title.toUpperCase()}
+                </div>
+                <ComingSoonBadge />
               </div>
               <p className="mt-2 text-sm text-paper/50">{tool.blurb}</p>
               <ul className="mt-5 space-y-2.5">

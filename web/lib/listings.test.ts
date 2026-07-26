@@ -44,6 +44,7 @@ function hackStub(over: Partial<Hackathon>): Hackathon {
     lng: null,
     themes: [],
     postedAt: 0,
+    featured: false,
     ...over,
   };
 }

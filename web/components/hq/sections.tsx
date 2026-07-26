@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { buildContactMailto } from "@/lib/contact-email";
 import type { Hackathon, SiteStats } from "@/lib/types-hq";
-import { REPO_URL, submitIssueUrl } from "@/lib/types-hq";
+import { REPO_URL, submitGalleryPhotoUrl, submitIssueUrl } from "@/lib/types-hq";
 
 /* ----- Stats strip (Magnetto metrics style) ----- */
 
@@ -82,9 +82,17 @@ type Dev = {
   name: string;
   role: string;
   org: string;
-  bio: string;
+  /** Short intro blurb. Optional: when absent the carousel shows FALLBACK_BIO
+      so a profile without copy yet still reads consistently (#222). */
+  bio?: string;
   image?: string;
 };
+
+// Shown in place of a personal blurb until one is written, so a member without
+// copy never renders an empty quote or blocks the whole carousel. Deliberately
+// on-brand and generic rather than name-specific, so it reads cleanly for anyone.
+const FALLBACK_BIO =
+  "Part of the founding crew building an open, community-fed map of hackathons.";
 
 const DEVELOPERS: Dev[] = [
   {
@@ -92,49 +100,49 @@ const DEVELOPERS: Dev[] = [
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/jose.jpg",
-    bio: "Placeholder note — a line or two on what Jose built and why an open, community-fed map of hackathons matters. Real bio coming soon.",
+    bio: "Computer Engineering student at Boston University, concentrating in AI and machine learning. Built HackHQ so finding a hackathon doesn't come down to knowing the right people."
   },
   {
-    name: "Allyson",
+    name: "Allyson Keightley",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/allyson.jpg",
-    bio: "Placeholder note — a line or two on Allyson's part in HackHQ and what they focus on. Real bio coming soon.",
+    bio: "Software Engineering student at Western Governors University. Built HackHQ to alleviate the frustration of hackathons not being discoverable by the builders who need them most."
   },
   {
-    name: "Cai",
+    name: "Cai Zheng",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/cai.jpg",
-    bio: "Placeholder note — a line or two on Cai's part in HackHQ and what they focus on. Real bio coming soon.",
+    bio: "Computer Science and Philosophy graduate from UMass Amherst. Contributed to HackHQ as builders who are obsessed with building should know opportunities available to them."
   },
   {
     name: "Vick Mahindru",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/vick-mahindru.jpg",
-    bio: "Placeholder note — a line or two on Vick's part in HackHQ and what they focus on. Real bio coming soon.",
+    // TODO(#222): real intro blurb pending from Vick. Falls back to FALLBACK_BIO.
   },
   {
     name: "Gnan Sruthi R",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/gnan-sruthi-r.jpg",
-    bio: "Placeholder note — a line or two on Gnan Sruthi's part in HackHQ and what they focus on. Real bio coming soon.",
+    bio: "Computer Science Engineering student at Sri Eshwar College of Engineering. On HackHQ's dev side, since a good hackathon map shouldn't depend on knowing the right people to hear about it."
   },
   {
     name: "Jack He",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/jack-he.jpg",
-    bio: "Placeholder note — a line or two on Jack's part in HackHQ and what they focus on. Real bio coming soon.",
+    bio: "Computer science student at Boston University, concentrating in AI, machine learning, and DevOps. Life doesn't spoon-feed you much, but finding hackathons shouldn't be one more thing you have to fight for; that's why we built HackHQ."
   },
   {
     name: "Henry (Hoan) Nguyen",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/henry.jpg",
-    bio: "Placeholder note — a line or two on Henry's part in HackHQ and what they focus on. Real bio coming soon.",
+    bio: "I’m a Mathematics and Computer Science student at Kenyon College interested in backend, data, and AI systems. I’m helping build HackHQ because finding a great hackathon shouldn’t depend on already being connected to the right people."
   },
 ];
 
@@ -272,7 +280,7 @@ export function Developers() {
                   &ldquo;
                 </span>
                 <p className="mt-4 text-[clamp(1.05rem,1.9vw,1.5rem)] italic leading-relaxed text-paper/70">
-                  {dev.bio}
+                  {dev.bio?.trim() || FALLBACK_BIO}
                 </p>
               </div>
               <div className="mt-10 flex items-end justify-between gap-4">
@@ -354,6 +362,118 @@ export function Developers() {
               </button>
             ),
           )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ----- Share a gallery photo -----
+   Same glass-card pattern as SubmitSection, parked between the infinite
+   canvas and the crew so a visitor who just dragged the wall can contribute
+   without scrolling to the hackathon form further down. Opens gallery_photo.yaml;
+   the image itself has to be attached on GitHub (query params can't carry files). */
+
+type GalleryShareState = "idle" | "ready" | "opened" | "blocked";
+
+export function GallerySubmitSection() {
+  const [hackathon, setHackathon] = useState("");
+  const [credit, setCredit] = useState("");
+  const [state, setState] = useState<GalleryShareState>("idle");
+
+  const trimmed = hackathon.trim();
+  const canSubmit = trimmed.length > 0;
+
+  return (
+    <section
+      id="share-photo"
+      tabIndex={-1}
+      style={{ scrollMarginTop: "var(--nav-pill-bottom, 4.875rem)" }}
+      className="mt-10 p-2 focus:outline-none"
+    >
+      <div className="shell flex min-h-[60vh] items-center justify-center bg-ink px-5 py-14 sm:px-10">
+        <div className="glass w-full max-w-2xl rounded-[2.5rem] p-8 sm:p-12">
+          <div className="kicker text-center text-coral">
+            The community · Share a moment
+          </div>
+          <h2 className="display mt-3 text-center text-[clamp(1.5rem,3.4vw,2.6rem)] text-paper">
+            Add your photo
+            <br />
+            to the wall
+          </h2>
+          <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-paper/60">
+            Went to a hackathon you found here? Drop the name, open the issue,
+            and attach a JPG or PNG (max 5 MB). A maintainer approves it before
+            it lands on the canvas.
+          </p>
+
+          <form
+            className="mt-8 flex flex-col gap-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!canSubmit) {
+                setState("idle");
+                return;
+              }
+              const url = submitGalleryPhotoUrl({
+                hackathon: trimmed,
+                credit: credit.trim() || undefined,
+              });
+              // Same as SubmitSection: open in a new tab from a user gesture.
+              const win = window.open(url, "_blank");
+              if (win) win.opener = null;
+              setState(win ? "opened" : "blocked");
+            }}
+          >
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <label className="flex-1">
+                <span className="kicker mb-2 block text-[9px] text-paper/50">
+                  Hackathon name
+                </span>
+                <input
+                  value={hackathon}
+                  onChange={(e) => {
+                    setHackathon(e.target.value);
+                    setState(e.target.value.trim() ? "ready" : "idle");
+                  }}
+                  placeholder="HackMIT 2027"
+                  maxLength={80}
+                  required
+                  className="w-full rounded-xl border border-white/15 bg-ink-deep/40 px-4 py-3.5 text-sm text-paper outline-none backdrop-blur transition placeholder:text-paper/30 focus:border-coral"
+                />
+              </label>
+              <label className="flex-1">
+                <span className="kicker mb-2 block text-[9px] text-paper/50">
+                  Your name (optional)
+                </span>
+                <input
+                  value={credit}
+                  onChange={(e) => setCredit(e.target.value)}
+                  placeholder="How should we credit you?"
+                  maxLength={80}
+                  className="w-full rounded-xl border border-white/15 bg-ink-deep/40 px-4 py-3.5 text-sm text-paper outline-none backdrop-blur transition placeholder:text-paper/30 focus:border-coral"
+                />
+              </label>
+            </div>
+            <button
+              type="submit"
+              disabled={!canSubmit}
+              className="mt-2 rounded-full bg-paper py-4 font-mono text-[12px] font-bold tracking-[0.2em] text-ink transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              SHARE VIA GITHUB ↗
+            </button>
+          </form>
+
+          <div className="kicker mt-6 text-center text-[9px] text-paper/35">
+            {state === "opened" &&
+              "Issue opened — attach your JPG or PNG there (max 5 MB)."}
+            {state === "blocked" &&
+              "Popup blocked. Allow popups for this site, then try again."}
+            {state === "ready" &&
+              "Opens a prefilled photo issue — attach the image on GitHub."}
+            {state === "idle" &&
+              "Same engine as hackathon submit — opens a prefilled GitHub issue"}
+          </div>
         </div>
       </div>
     </section>

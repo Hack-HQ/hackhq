@@ -1,3 +1,4 @@
+import { loadGalleryPhotos } from "@/lib/gallery";
 import { loadHackathons, siteStats } from "@/lib/listings";
 import { HomeClient } from "@/components/hq/home-client";
 
@@ -8,6 +9,13 @@ export const revalidate = 3600;
 export default function Home() {
   const hackathons = loadHackathons();
   const stats = siteStats(hackathons);
+  const galleryPhotos = loadGalleryPhotos();
 
-  return <HomeClient hackathons={hackathons} stats={stats} />;
+  return (
+    <HomeClient
+      hackathons={hackathons}
+      stats={stats}
+      galleryPhotos={galleryPhotos}
+    />
+  );
 }

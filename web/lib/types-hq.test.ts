@@ -5,6 +5,7 @@ import {
   deadlineDisplay,
   eventDateDisplay,
   isActiveHackathon,
+  submitGalleryPhotoUrl,
   submitIssueUrl,
   type Hackathon,
 } from "./types-hq";
@@ -15,6 +16,14 @@ const TEMPLATE_PATH = path.join(
   ".github",
   "ISSUE_TEMPLATE",
   "link_only.yaml",
+);
+
+const GALLERY_TEMPLATE_PATH = path.join(
+  process.cwd(),
+  "..",
+  ".github",
+  "ISSUE_TEMPLATE",
+  "gallery_photo.yaml",
 );
 
 describe("submitIssueUrl", () => {
@@ -61,6 +70,51 @@ describe("submitIssueUrl", () => {
   });
 });
 
+describe("submitGalleryPhotoUrl", () => {
+  it("targets the gallery_photo issue form", () => {
+    const u = new URL(submitGalleryPhotoUrl({ hackathon: "HackMIT 2026" }));
+    expect(u.pathname).toMatch(/\/issues\/new$/);
+    expect(u.searchParams.get("template")).toBe("gallery_photo.yaml");
+  });
+
+  it("prefills title and hackathon to match the template prefix", () => {
+    const u = new URL(submitGalleryPhotoUrl({ hackathon: "HackMIT 2026" }));
+    expect(u.searchParams.get("title")).toBe("Photo: HackMIT 2026");
+    expect(u.searchParams.get("hackathon")).toBe("HackMIT 2026");
+  });
+
+  it("prefills optional credit fields when provided", () => {
+    const u = new URL(
+      submitGalleryPhotoUrl({
+        hackathon: "YHack",
+        caption: "Demo night",
+        credit: "Ada",
+        creditUrl: "https://example.com/ada",
+      }),
+    );
+    expect(u.searchParams.get("caption")).toBe("Demo night");
+    expect(u.searchParams.get("credit")).toBe("Ada");
+    expect(u.searchParams.get("credit_url")).toBe("https://example.com/ada");
+  });
+
+  it("uses field ids the gallery_photo template declares", () => {
+    const template = fs.readFileSync(GALLERY_TEMPLATE_PATH, "utf8");
+    const ids = [...template.matchAll(/^\s*id:\s*(\S+)/gm)].map((m) => m[1]);
+    const params = new URL(
+      submitGalleryPhotoUrl({
+        hackathon: "X",
+        caption: "c",
+        credit: "n",
+        creditUrl: "https://x.dev",
+      }),
+    ).searchParams;
+    for (const key of params.keys()) {
+      if (key === "template" || key === "title") continue;
+      expect(ids, `gallery_photo.yaml has no field id "${key}"`).toContain(key);
+    }
+  });
+});
+
 function hackStub(over: Partial<Hackathon>): Hackathon {
   return {
     id: "1",
@@ -81,6 +135,7 @@ function hackStub(over: Partial<Hackathon>): Hackathon {
     lng: null,
     themes: [],
     postedAt: 0,
+    featured: false,
     ...over,
   };
 }

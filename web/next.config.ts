@@ -1,4 +1,3 @@
-import path from "node:path";
 import type { NextConfig } from "next";
 
 // Single source of repo identity (mirrors lib/repo.ts; kept inline so the
@@ -7,25 +6,12 @@ const REPO_SLUG =
   process.env.NEXT_PUBLIC_REPO_SLUG ?? "Hack-HQ/hackhq";
 
 const nextConfig: NextConfig = {
-  // The data pages read repo-root files at request time (hourly ISR
-  // revalidation). Those files live outside web/, so Next's serverless file
-  // tracing must be told to bundle them or the runtime read fails with ENOENT.
-  // Set the tracing root to the repo root — there's no lockfile there, so it
-  // would otherwise default to web/ and exclude the parent files — and
-  // explicitly include every data file we read, for every route.
-  //
-  // ANY new fs.readFileSync of a repo-root file must be added here. A build
-  // won't catch the omission: the file is on disk at build time, so it only
-  // fails later, on the first ISR regeneration in production.
-  outputFileTracingRoot: path.join(process.cwd(), ".."),
-  outputFileTracingIncludes: {
-    "/**": [
-      "../README.md",
-      "../.github/scripts/listings.json",
-      // Read by lib/geo.ts to place listings on the globe.
-      "../.github/scripts/geocodes.json",
-    ],
-  },
+  // The repo-root data files (README.md, listings.json, geocodes.json) are no
+  // longer read from disk at request time — scripts/prepare-repo-data.mjs copies
+  // them into lib/generated/ at build time and the loaders import them as
+  // constants. So there is nothing outside web/ to trace into the bundle, and
+  // the runtime carries no filesystem dependency (this is what lets it deploy to
+  // Cloudflare Workers). No outputFileTracing* overrides are needed.
   logging: {
     browserToTerminal: false,
   },

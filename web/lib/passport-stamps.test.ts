@@ -32,6 +32,7 @@ function hack(over: Partial<Hackathon> & { id: string }): Hackathon {
     lng: null,
     themes: [],
     postedAt: 0,
+    featured: false,
     ...over,
   };
 }
