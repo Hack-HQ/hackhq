@@ -1011,5 +1011,41 @@ class BuildRowOrigin(unittest.TestCase):
         self.assertEqual(seed.build_row(self.LISTING)["host"], "Major League Hacking")
 
 
+class GalleryApprovedHelpers(unittest.TestCase):
+    """Pure helpers from gallery_approved.py (#221) — no network."""
+
+    @classmethod
+    def setUpClass(cls):
+        import gallery_approved as ga
+        cls.ga = ga
+
+    def test_extracts_user_attachments_url(self):
+        text = "See ![p](https://github.com/user-attachments/assets/abc-123-def)"
+        self.assertEqual(
+            self.ga.extract_image_url(text),
+            "https://github.com/user-attachments/assets/abc-123-def",
+        )
+
+    def test_extract_returns_empty_when_missing(self):
+        self.assertEqual(self.ga.extract_image_url("no image here"), "")
+
+    def test_slugify_collapses_punctuation(self):
+        self.assertEqual(self.ga.slugify("HackMIT 2026!!!"), "hackmit-2026")
+
+    def test_detects_jpeg_and_png_magic(self):
+        self.assertEqual(self.ga.detect_image_type(b"\xff\xd8\xff\xe0rest"), "jpg")
+        self.assertEqual(self.ga.detect_image_type(b"\x89PNG\r\n\x1a\nrest"), "png")
+        self.assertEqual(self.ga.detect_image_type(b"GIF89a"), "")
+
+    def test_host_allowlist(self):
+        self.assertTrue(
+            self.ga.host_allowed("https://github.com/user-attachments/assets/x")
+        )
+        self.assertTrue(
+            self.ga.host_allowed("https://user-images.githubusercontent.com/1/x.png")
+        )
+        self.assertFalse(self.ga.host_allowed("https://evil.example/x.jpg"))
+
+
 if __name__ == "__main__":
     unittest.main()

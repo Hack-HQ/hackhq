@@ -1,62 +1,53 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  packGalleryTiles,
+  type GalleryPhoto,
+  type GalleryTileItem,
+} from "@/lib/gallery";
 
 /* Infinite draggable canvas of the community's hackathon photos.
 
-   The photos pack into one seamless 6×6 tile (cells matched to each image's
-   orientation — portraits in tall cells, landscapes in wide ones). That tile is
-   repeated across a grid large enough to cover the viewport plus a margin, and
-   the whole world is panned by dragging. The pan offset is wrapped modulo the
-   tile period, so the pattern repeats forever in every direction. */
+   Photos come from gallery.json (via loadGalleryPhotos on the server). They
+   pack into one seamless tile — the hand-tuned 6×6 slot template, stacked
+   vertically when there are more than eight photos — which is repeated across
+   a grid large enough to cover the viewport plus a margin. The pan offset is
+   wrapped modulo the tile period, so the pattern repeats forever.
 
-const BASE = "/repo-assets/gallery/";
-
-type Item = {
-  src: string;
-  col: number;
-  colSpan: number;
-  row: number;
-  rowSpan: number;
-};
-
-// Every cell of the 6×6 grid is filled exactly once, so the tile is a perfect
-// rectangle and butts seamlessly against its own copies.
-const TILE_ITEMS: Item[] = [
-  { src: "lahacks-ucla", col: 1, colSpan: 2, row: 1, rowSpan: 3 }, // portrait
-  { src: "code-and-tell", col: 3, colSpan: 2, row: 1, rowSpan: 2 }, // landscape
-  { src: "library-coding", col: 5, colSpan: 1, row: 1, rowSpan: 2 }, // tall
-  { src: "bostonhacks", col: 6, colSpan: 1, row: 1, rowSpan: 3 }, // tall
-  { src: "hackpsu", col: 3, colSpan: 3, row: 3, rowSpan: 2 }, // landscape
-  { src: "gtm-hackathon", col: 1, colSpan: 2, row: 4, rowSpan: 3 }, // portrait
-  { src: "gtm-welcome", col: 6, colSpan: 1, row: 4, rowSpan: 3 }, // tall
-  { src: "yhack", col: 3, colSpan: 3, row: 5, rowSpan: 2 }, // landscape
-];
+   Photo submission lives in GallerySubmitSection (sections.tsx), immediately
+   below this canvas — same glass-card pattern as the hackathon SubmitSection. */
 
 const CW = 138; // base cell size (px)
 const G = 8; // gap between cells / tiles
-const COLS = 6;
-const ROWS = 6;
-const TILE_W = COLS * CW + (COLS - 1) * G;
-const TILE_H = ROWS * CW + (ROWS - 1) * G;
-const PERIOD_X = TILE_W + G;
-const PERIOD_Y = TILE_H + G;
 
-function Tile() {
+function Tile({
+  items,
+  cols,
+  rows,
+  tileW,
+  tileH,
+}: {
+  items: GalleryTileItem[];
+  cols: number;
+  rows: number;
+  tileW: number;
+  tileH: number;
+}) {
   return (
     <div
       className="grid shrink-0"
       style={{
-        gridTemplateColumns: `repeat(${COLS}, ${CW}px)`,
-        gridTemplateRows: `repeat(${ROWS}, ${CW}px)`,
+        gridTemplateColumns: `repeat(${cols}, ${CW}px)`,
+        gridTemplateRows: `repeat(${rows}, ${CW}px)`,
         gap: `${G}px`,
-        width: TILE_W,
-        height: TILE_H,
+        width: tileW,
+        height: tileH,
       }}
     >
-      {TILE_ITEMS.map((it) => (
+      {items.map((it) => (
         <div
-          key={it.src}
+          key={it.key}
           className="overflow-hidden rounded-lg bg-ink-soft"
           style={{
             gridColumn: `${it.col} / span ${it.colSpan}`,
@@ -65,8 +56,8 @@ function Tile() {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`${BASE}${it.src}.jpg`}
-            alt=""
+            src={it.src}
+            alt={it.alt}
             draggable={false}
             className="pointer-events-none h-full w-full select-none object-cover"
           />
@@ -76,7 +67,13 @@ function Tile() {
   );
 }
 
-export function GalleryCanvas() {
+export function GalleryCanvas({ photos }: { photos: GalleryPhoto[] }) {
+  const packed = useMemo(() => packGalleryTiles(photos), [photos]);
+  const tileW = packed.cols * CW + (packed.cols - 1) * G;
+  const tileH = packed.rows * CW + (packed.rows - 1) * G;
+  const periodX = tileW + G;
+  const periodY = tileH + G;
+
   const canvasRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
   const st = useRef({
@@ -97,9 +94,9 @@ export function GalleryCanvas() {
     const el = worldRef.current;
     if (!el) return;
     const wrap = (v: number, p: number) => (((v % p) + p) % p) - p;
-    el.style.transform = `translate3d(${wrap(st.current.ox, PERIOD_X)}px, ${wrap(
+    el.style.transform = `translate3d(${wrap(st.current.ox, periodX)}px, ${wrap(
       st.current.oy,
-      PERIOD_Y,
+      periodY,
     )}px, 0)`;
   };
 
@@ -109,8 +106,8 @@ export function GalleryCanvas() {
       const el = canvasRef.current;
       if (!el) return;
       setGrid({
-        cols: Math.ceil(el.clientWidth / TILE_W) + 2,
-        rows: Math.ceil(el.clientHeight / TILE_H) + 2,
+        cols: Math.ceil(el.clientWidth / tileW) + 2,
+        rows: Math.ceil(el.clientHeight / tileH) + 2,
       });
     };
     measure();
@@ -120,7 +117,9 @@ export function GalleryCanvas() {
       window.removeEventListener("resize", measure);
       cancelAnimationFrame(s.raf);
     };
-  }, []);
+    // Re-measure when the packed tile size changes (more photos → taller tile).
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- apply closes over periodX/Y
+  }, [tileW, tileH, periodX, periodY]);
 
   const onDown = (e: React.PointerEvent) => {
     cancelAnimationFrame(st.current.raf);
@@ -168,6 +167,7 @@ export function GalleryCanvas() {
   };
 
   const tiles = Array.from({ length: grid.cols * grid.rows });
+  const empty = packed.items.length === 0;
 
   return (
     <section className="p-2 pt-20">
@@ -187,23 +187,45 @@ export function GalleryCanvas() {
         ref={canvasRef}
         aria-label="Photo wall from community hackathons — drag to explore"
         className="shell relative h-[clamp(440px,76vh,820px)] cursor-grab touch-none select-none bg-ink-deep active:cursor-grabbing"
-        onPointerDown={onDown}
-        onPointerMove={onMove}
-        onPointerUp={onUp}
-        onPointerCancel={onUp}
+        onPointerDown={empty ? undefined : onDown}
+        onPointerMove={empty ? undefined : onMove}
+        onPointerUp={empty ? undefined : onUp}
+        onPointerCancel={empty ? undefined : onUp}
       >
-        <div
-          ref={worldRef}
-          className="absolute left-0 top-0 grid will-change-transform"
-          style={{
-            gridTemplateColumns: `repeat(${grid.cols}, ${TILE_W}px)`,
-            gap: `${G}px`,
-          }}
-        >
-          {tiles.map((_, i) => (
-            <Tile key={i} />
-          ))}
-        </div>
+        {empty ? (
+          <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
+            <p className="font-display text-lg text-paper/70">
+              No photos yet — be the first.
+            </p>
+            <p className="max-w-sm text-sm text-paper/40">
+              Use{" "}
+              <a href="#share-photo" className="text-coral underline-offset-4 hover:underline">
+                Share a photo
+              </a>{" "}
+              below to open a GitHub issue and attach a JPG or PNG.
+            </p>
+          </div>
+        ) : (
+          <div
+            ref={worldRef}
+            className="absolute left-0 top-0 grid will-change-transform"
+            style={{
+              gridTemplateColumns: `repeat(${grid.cols}, ${tileW}px)`,
+              gap: `${G}px`,
+            }}
+          >
+            {tiles.map((_, i) => (
+              <Tile
+                key={i}
+                items={packed.items}
+                cols={packed.cols}
+                rows={packed.rows}
+                tileW={tileW}
+                tileH={tileH}
+              />
+            ))}
+          </div>
+        )}
 
         {/* edge vignette so the wall fades into the shell */}
         <div

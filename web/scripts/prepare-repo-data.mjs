@@ -45,6 +45,7 @@ const outDir = path.join(webRoot, "lib", "generated");
 const README_PATH = path.join(repoRoot, "README.md");
 const LISTINGS_PATH = path.join(repoRoot, ".github", "scripts", "listings.json");
 const GEOCODES_PATH = path.join(repoRoot, ".github", "scripts", "geocodes.json");
+const GALLERY_PATH = path.join(repoRoot, ".github", "scripts", "gallery.json");
 const ASSETS_DIR = path.join(repoRoot, "assets");
 
 mkdirSync(outDir, { recursive: true });
@@ -66,6 +67,14 @@ writeFileSync(path.join(outDir, "listings.json"), JSON.stringify(listings));
 
 const geocodes = JSON.parse(readFileSync(GEOCODES_PATH, "utf8"));
 writeFileSync(path.join(outDir, "geocodes.json"), JSON.stringify(geocodes));
+
+// --- gallery.json: community photos for the infinite canvas. Same
+// build-time snapshot pattern as listings, no request-time fs on Workers.
+const gallery = JSON.parse(readFileSync(GALLERY_PATH, "utf8"));
+if (!Array.isArray(gallery)) {
+  throw new Error("gallery.json did not parse to an array");
+}
+writeFileSync(path.join(outDir, "gallery.json"), JSON.stringify(gallery));
 
 // --- Asset manifest: the "assets/<path>" list resolveAssetSrc() uses to decide
 // local-vs-remote without an fs.existsSync at request time. Mirrors what
@@ -92,5 +101,6 @@ writeFileSync(
 
 console.log(
   `[prepare-repo-data] wrote lib/generated/ ` +
-    `(${listings.length} listings, ${assetManifest.length} assets)`,
+    `(${listings.length} listings, ${gallery.length} gallery photos, ` +
+    `${assetManifest.length} assets)`,
 );
