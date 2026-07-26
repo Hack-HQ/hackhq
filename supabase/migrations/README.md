@@ -28,17 +28,22 @@ top saying so and saying how:
 | `20260722145817_rls_policies.sql` | executable SQL — gained four `drop policy if exists` lines |
 | `20260722144205_add_deck_columns.sql` | comments only — a stale claim about enforcement, corrected |
 
-One file is **committed but not yet applied**, so for now `ls` here returns one
-more entry than `list_migrations` does:
+One file was **applied by hand**, not through `apply_migration`, so it is absent
+from `list_migrations` and `ls` here returns one more entry than the recorded
+ledger does:
 
 | file | state |
 | --- | --- |
-| `20260725154500_user_hackathons.sql` | written, never sent to `apply_migration` |
+| `20260725154500_user_hackathons.sql` | applied via the Supabase SQL Editor on 2026-07-26; never sent to `apply_migration` |
 
-Its timestamp is therefore a placeholder rather than a recorded version. Send it
-through `apply_migration`, rename the file to the version that call reports, then
-delete this section — until that happens the two lists do not align, and
-`supabase db push` would try to replay it.
+This project has no Supabase CLI or MCP configured, so the migration was run
+directly in the dashboard. That records nothing in
+`supabase_migrations.schema_migrations`, so its timestamp stays a placeholder
+rather than a recorded version, the two lists do not align, and `supabase db
+push` would try to replay it if a CLI is ever wired up. If you later adopt the
+CLI/MCP, reconcile by inserting the version into the ledger (or re-running it
+through `apply_migration` against a fresh database) rather than trusting the
+filename alone.
 
 The three SQL divergences all exist so the chain replays cleanly onto a fresh
 database. That makes the files the runnable artefact and the recorded statements

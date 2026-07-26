@@ -1,7 +1,10 @@
 -- supabase/migrations/20260725154500_user_hackathons.sql
--- NOTE: not yet applied. Every other file here is named after the version
--- `apply_migration` recorded, per README. Rename this one to the version that
--- call reports before treating the two lists as aligned.
+-- NOTE: applied by hand through the Supabase SQL Editor on 2026-07-26, because
+-- this project has no Supabase CLI or MCP `apply_migration` configured. That
+-- path records nothing in `supabase_migrations.schema_migrations`, so unlike
+-- every other file here this timestamp is NOT a recorded version — it will not
+-- appear in `list_migrations`, and `supabase db push` would try to replay it if
+-- a CLI is ever wired up. See README for the divergence.
 --
 -- The tracker's per-user pipeline, moved off localStorage. One row per
 -- (user, hackathon): which stage it sits in, and whether the user won it (#226).
