@@ -114,7 +114,7 @@ const DEVELOPERS: Dev[] = [
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/cai.jpg",
-    bio: "Computer Science and Philosophy graduate from UMass Amherst. Contributed to HackHQ as builders who are obssesed with building should know opportunities available to them."
+    bio: "Computer Science and Philosophy graduate from UMass Amherst. Contributed to HackHQ as builders who are obsessed with building should know opportunities available to them."
   },
   {
     name: "Vick Mahindru",
