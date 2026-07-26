@@ -83,10 +83,13 @@ Pages are prerendered, then **revalidated hourly** (ISR): every data-backed page
 exports `revalidate = 3600`, so the server re-runs its loader in the background
 at most once an hour.
 
-Be precise about what that refreshes. The loaders `fs.readFileSync` the repo
-files, and those files are **bundled into the deployment** by
-`outputFileTracingIncludes` in `next.config.ts` — so a revalidation re-reads the
-*deployed* copy, not whatever is on `main` now.
+Be precise about what that refreshes. `scripts/prepare-repo-data.mjs` copies the
+repo-root files (`README.md`, `listings.json`, `geocodes.json`) into
+`lib/generated/` at build time, and the loaders **import** them — so the data is
+frozen into the deployment at build, and a revalidation re-runs the loader over
+that *deployed* copy, not whatever is on `main` now. (No request-time filesystem
+read remains, which is what lets the site deploy to Cloudflare Workers — see
+[Deployment](#deployment).)
 
 | Changes without a rebuild | Needs a new build + deploy |
 | ------------------------- | -------------------------- |
@@ -105,17 +108,20 @@ countdown until someone redeployed.
 `next build` prints this: the ISR routes carry a `Revalidate` value of `1h`,
 `/resources` carries none, and `/auth/[[...auth]]` is marked `ƒ (Dynamic)`.
 
-**Development (`npm run dev`)** is more immediate: Next.js re-executes server
-components when you refresh or when files change, so edits to `listings.json`
-or `README.md` show up right away rather than on the next revalidation.
+**Development (`npm run dev`)** snapshots the data once, when `predev` runs
+`scripts/prepare-repo-data.mjs`. Editing `listings.json` or `README.md` while the
+dev server is running does **not** show up on refresh — regenerate the snapshot
+with `npm run prepare-data` (or restart `npm run dev`). Editing a component still
+hot-reloads as usual.
 
 ### Assets
 
 Images referenced in the README (e.g. `assets/hackathons-banner.svg`) are
 resolved by `resolveAssetSrc()` in `lib/parse-readme.ts`:
 
-1. **Local first** — if the file exists under `../assets/`, it's served as a
-   static file from `public/repo-assets/`.
+1. **Local first** — if the file is in the build-time asset manifest (i.e. it
+   exists under `../assets/`), it's served as a static file from
+   `public/repo-assets/`.
 2. **Remote fallback** — otherwise it falls back to the file on `main` via
    `raw.githubusercontent.com`.
 
@@ -211,9 +217,13 @@ connections, and enable email/password under email authentication.
 | `npm run lint`         | Run ESLint                                           |
 | `npm test`             | Run the Vitest suite (what CI runs)                  |
 | `npm run copy-assets`  | Refresh `public/repo-assets/` from `../assets/`      |
+| `npm run prepare-data` | Regenerate `lib/generated/` from the repo-root data  |
+| `npm run preview`      | Build for Cloudflare and preview the Worker locally  |
+| `npm run deploy`       | Build for Cloudflare and deploy to Workers           |
 
-`dev` and `build` run `copy-assets` for you; you only need it directly after
-changing something under `../assets/` while a dev server is already running.
+`dev`, `build`, and `test` run `copy-assets` and/or `prepare-data` for you; you
+only need them directly after changing something under `../assets/` or the
+repo-root data files while a dev server is already running.
 
 ## Production build
 
@@ -223,9 +233,34 @@ npm run start
 ```
 
 After changing `listings.json` or `README.md`, run a new build and deploy — the
-data files are bundled into the deployment, so hourly revalidation alone will
-not pick up an edit. Revalidation keeps *date-derived* state fresh between
-deploys; it does not fetch new content. See [Render model](#render-model).
+data is snapshotted into the deployment at build time, so hourly revalidation
+alone will not pick up an edit. Revalidation keeps *date-derived* state fresh
+between deploys; it does not fetch new content. See [Render model](#render-model).
+
+## Deployment
+
+Production target: **Cloudflare Workers** via
+[OpenNext](https://opennext.js.org/cloudflare) (issue #223). The app carries no
+request-time filesystem dependency — repo data is imported as build-time
+constants (see [Render model](#render-model)) — so the standard OpenNext adapter
+builds and runs it unchanged.
+
+```bash
+npm run preview   # build for Workers and run it locally (wrangler dev)
+npm run deploy    # build for Workers and deploy
+```
+
+Configuration lives in `wrangler.jsonc` (`nodejs_compat` is required) and
+`open-next.config.ts`. Set production values as follows:
+
+- **Build-time, public** (`NEXT_PUBLIC_*` — Mapbox token, Clerk publishable key,
+  repo slug): pass as environment variables to the build, or via
+  `wrangler.jsonc` `vars`. They are inlined into the client bundle.
+- **Runtime secret** (`CLERK_SECRET_KEY`): set with
+  `npx wrangler secret put CLERK_SECRET_KEY` — never commit it.
+
+Vercel remains a drop-in fallback (`git push`, zero config): the same build works
+there because nothing is Workers-specific.
 
 ## Tech stack
 

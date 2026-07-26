@@ -20,6 +20,13 @@
 # generated at build time by scripts/copy-repo-assets.mjs (copied from ../assets)
 /public/repo-assets/
 
+# generated at build time by scripts/prepare-repo-data.mjs (repo-root data as JSON)
+/lib/generated/
+
+# opennext / cloudflare build output
+/.open-next/
+/.wrangler/
+
 # production
 /build
 

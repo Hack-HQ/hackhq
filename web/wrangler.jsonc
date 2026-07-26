@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hackhq",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-04-01",
+  // Required by OpenNext: the adapter runs Next.js server code that relies on
+  // Node.js built-ins (node:crypto, streams, buffer). nodejs_compat provides
+  // them on the Workers runtime.
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".open-next/assets"
+  },
+  "observability": {
+    "enabled": true
+  }
+  // Production values are injected outside version control:
+  //   - NEXT_PUBLIC_* (Mapbox token, Clerk publishable key, repo slug): set as
+  //     build env vars or add a top-level "vars" block here (they are public,
+  //     inlined into the client bundle).
+  //   - CLERK_SECRET_KEY: `npx wrangler secret put CLERK_SECRET_KEY` — never
+  //     commit it.
+}

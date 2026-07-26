@@ -4,12 +4,17 @@
   "private": true,
   "scripts": {
     "copy-assets": "node scripts/copy-repo-assets.mjs",
-    "predev": "node scripts/copy-repo-assets.mjs",
+    "prepare-data": "node scripts/prepare-repo-data.mjs",
+    "predev": "node scripts/copy-repo-assets.mjs && node scripts/prepare-repo-data.mjs",
     "dev": "next dev",
-    "build": "node scripts/copy-repo-assets.mjs && next build",
+    "build": "node scripts/copy-repo-assets.mjs && node scripts/prepare-repo-data.mjs && next build",
     "start": "next start",
     "lint": "eslint",
+    "pretest": "node scripts/prepare-repo-data.mjs",
     "test": "vitest run",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
@@ -27,6 +32,7 @@
     "sharp": "^0.35.0"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.2",
     "@tailwindcss/postcss": "^4",
     "@types/mapbox-gl": "^3.4.1",
     "@types/node": "^20",
@@ -37,7 +43,8 @@
     "eslint-config-next": "16.2.11",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.114.0"
   },
   "overrides": {
     "postcss": "^8.5.12",
