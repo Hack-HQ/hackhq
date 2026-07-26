@@ -82,9 +82,17 @@ type Dev = {
   name: string;
   role: string;
   org: string;
-  bio: string;
+  /** Short intro blurb. Optional: when absent the carousel shows FALLBACK_BIO
+      so a profile without copy yet still reads consistently (#222). */
+  bio?: string;
   image?: string;
 };
+
+// Shown in place of a personal blurb until one is written, so a member without
+// copy never renders an empty quote or blocks the whole carousel. Deliberately
+// on-brand and generic rather than name-specific, so it reads cleanly for anyone.
+const FALLBACK_BIO =
+  "Part of the founding crew building an open, community-fed map of hackathons.";
 
 const DEVELOPERS: Dev[] = [
   {
@@ -92,49 +100,49 @@ const DEVELOPERS: Dev[] = [
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/jose.jpg",
-    bio: "Placeholder note — a line or two on what Jose built and why an open, community-fed map of hackathons matters. Real bio coming soon.",
+    // TODO(#222): real intro blurb pending from Jose. Falls back to FALLBACK_BIO.
   },
   {
     name: "Allyson",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/allyson.jpg",
-    bio: "Placeholder note — a line or two on Allyson's part in HackHQ and what they focus on. Real bio coming soon.",
+    // TODO(#222): real intro blurb pending from Allyson. Falls back to FALLBACK_BIO.
   },
   {
     name: "Cai",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/cai.jpg",
-    bio: "Placeholder note — a line or two on Cai's part in HackHQ and what they focus on. Real bio coming soon.",
+    // TODO(#222): real intro blurb pending from Cai. Falls back to FALLBACK_BIO.
   },
   {
     name: "Vick Mahindru",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/vick-mahindru.jpg",
-    bio: "Placeholder note — a line or two on Vick's part in HackHQ and what they focus on. Real bio coming soon.",
+    // TODO(#222): real intro blurb pending from Vick. Falls back to FALLBACK_BIO.
   },
   {
     name: "Gnan Sruthi R",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/gnan-sruthi-r.jpg",
-    bio: "Placeholder note — a line or two on Gnan Sruthi's part in HackHQ and what they focus on. Real bio coming soon.",
+    // TODO(#222): real intro blurb pending from Gnan Sruthi. Falls back to FALLBACK_BIO.
   },
   {
     name: "Jack He",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/jack-he.jpg",
-    bio: "Placeholder note — a line or two on Jack's part in HackHQ and what they focus on. Real bio coming soon.",
+    // TODO(#222): real intro blurb pending from Jack. Falls back to FALLBACK_BIO.
   },
   {
     name: "Henry (Hoan) Nguyen",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/henry.jpg",
-    bio: "Placeholder note — a line or two on Henry's part in HackHQ and what they focus on. Real bio coming soon.",
+    // TODO(#222): real intro blurb pending from Henry. Falls back to FALLBACK_BIO.
   },
 ];
 
@@ -272,7 +280,7 @@ export function Developers() {
                   &ldquo;
                 </span>
                 <p className="mt-4 text-[clamp(1.05rem,1.9vw,1.5rem)] italic leading-relaxed text-paper/70">
-                  {dev.bio}
+                  {dev.bio?.trim() || FALLBACK_BIO}
                 </p>
               </div>
               <div className="mt-10 flex items-end justify-between gap-4">
