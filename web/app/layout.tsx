@@ -53,7 +53,7 @@ export default function RootLayout({
   );
 
   // Mount <ClerkProvider> only when Clerk is FULLY configured (both keys),
-  // matching isClerkConfigured() used by proxy.ts and the /my + /auth gates.
+  // matching isClerkConfigured() used by middleware.ts and the /my + /auth gates.
   // A partial config (one key) previously mounted the provider here while the
   // proxy and pages treated auth as off — an inconsistent, fail-open state.
   // Now all surfaces agree: a half-configured deploy runs consistently in open

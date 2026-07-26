@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // OpenNext / Wrangler build output (generated, not ours to lint).
+    ".open-next/**",
+    ".wrangler/**",
+    // Generated at build time from repo-root data (scripts/prepare-repo-data.mjs).
+    "lib/generated/**",
     // Vendored third-party Framer components (minified, not ours to lint).
     "components/vendor/**",
   ]),

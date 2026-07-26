@@ -1,5 +1,4 @@
-import fs from "node:fs";
-import path from "node:path";
+import geocodesData from "./generated/geocodes.json";
 
 /**
  * Location -> coordinates for the globe.
@@ -17,24 +16,21 @@ import path from "node:path";
  *
  * The table itself lives in .github/scripts/geocodes.json because the listing
  * automation (Python) has to answer the same question this module does, and the
- * two must not drift. Server-side only — like lib/listings.ts, this reads from
- * disk at build/render time and must not be pulled into a client component.
+ * two must not drift. That file is copied into lib/generated/geocodes.json at
+ * build time (scripts/prepare-repo-data.mjs) and imported here, so no disk read
+ * happens at request time — the table is a compile-time constant that works on
+ * any runtime, including Cloudflare Workers.
  */
-
-const GEOCODES_PATH = path.join(
-  process.cwd(),
-  "..",
-  ".github",
-  "scripts",
-  "geocodes.json",
-);
 
 type GeocodeFile = {
   coordinates: Record<string, [number, number]>;
   unmappable: string[];
 };
 
-const FILE: GeocodeFile = JSON.parse(fs.readFileSync(GEOCODES_PATH, "utf8"));
+// `as unknown` first: JSON widens the coordinate tuples to number[], which does
+// not structurally match [number, number]. The file is the source of truth for
+// this type (and the coverage test guards its shape), so the assertion is safe.
+const FILE = geocodesData as unknown as GeocodeFile;
 
 /** Country suffixes we drop: the city + region prefix already disambiguates. */
 const COUNTRY_SUFFIXES = [

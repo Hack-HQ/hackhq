@@ -1,6 +1,7 @@
-import fs from "node:fs";
-import path from "node:path";
 import crypto from "node:crypto";
+import readmeData from "./generated/readme.json";
+import listingsData from "./generated/listings.json";
+import assetManifest from "./generated/asset-manifest.json";
 import {
   GalleryPhoto,
   Opportunity,
@@ -10,27 +11,15 @@ import {
 } from "./types";
 import { REPO_RAW_BASE } from "./repo";
 
-// The README and listings.json live at the repo root, one level ABOVE this
-// Next.js project (web/). Turbopack's NFT file tracer can't follow reads that
-// climb out of the project via `..`, so a plain `fs` read rooted here makes it
-// give up and trace the ENTIRE repo into the serverless bundle — surfacing the
-// "whole project was traced unintentionally" build warning (#77 item 5) with
-// web/next.config.ts as the canary unexpected file.
-//
-// These two data files are instead bundled deterministically via
-// `outputFileTracingIncludes` in next.config.ts, so the tracer does not need to
-// discover them. We mark `process.cwd()` opaque with `turbopackIgnore` here so
-// every path derived from REPO_ROOT is unknown at trace time and nothing under
-// the repo root gets pulled in. This is trace-time only — at runtime
-// `process.cwd()` still resolves normally and the reads work as before.
-const REPO_ROOT = path.join(/*turbopackIgnore: true*/ process.cwd(), "..");
-const README_PATH = path.join(REPO_ROOT, "README.md");
-const LISTINGS_PATH = path.join(
-  REPO_ROOT,
-  ".github",
-  "scripts",
-  "listings.json",
-);
+// The README, listings.json, and the assets tree live at the repo root, one
+// level ABOVE this Next.js project (web/). Rather than read them from disk at
+// request time — which fails outright on a runtime with no filesystem, such as
+// Cloudflare Workers — they are copied into lib/generated/ at build time
+// (scripts/prepare-repo-data.mjs) and imported here as compile-time constants.
+// This also sidesteps the old Turbopack NFT concern (#77 item 5), where a plain
+// `fs` read climbing out of the project via `..` made the tracer give up and
+// bundle the entire repo: there is no request-time `fs` read left to trace.
+const ASSET_MANIFEST = new Set<string>(assetManifest as string[]);
 
 const TABLE_RE = /<!-- (\w+)_TABLE_START -->([\s\S]*?)<!-- \1_TABLE_END -->/g;
 
@@ -106,20 +95,15 @@ function splitTableCells(line: string): string[] {
  * replace the file read with a query that returns featured URLs.
  */
 function loadFeaturedUrls(): Set<string> {
-  try {
-    const raw = fs.readFileSync(/*turbopackIgnore: true*/ LISTINGS_PATH, "utf-8");
-    const listings = JSON.parse(raw) as Array<{
-      url?: string;
-      featured?: boolean;
-    }>;
-    return new Set(
-      listings
-        .filter((l) => l.featured === true && typeof l.url === "string")
-        .map((l) => l.url as string),
-    );
-  } catch {
-    return new Set();
-  }
+  const listings = listingsData as Array<{
+    url?: string;
+    featured?: boolean;
+  }>;
+  return new Set(
+    listings
+      .filter((l) => l.featured === true && typeof l.url === "string")
+      .map((l) => l.url as string),
+  );
 }
 
 function inlineDeadline(text: string): string {
@@ -136,11 +120,10 @@ export function resolveAssetSrc(src: string): string {
   if (src.startsWith("http://") || src.startsWith("https://")) return src;
 
   const relative = src.replace(/^\/+/, "");
-  const localPath = path.join(/*turbopackIgnore: true*/ REPO_ROOT, relative);
-  if (
-    relative.startsWith("assets/") &&
-    fs.existsSync(/*turbopackIgnore: true*/ localPath)
-  ) {
+  // Local-first: an asset that prepare-repo-data.mjs found under ../assets is
+  // copied into public/repo-assets and served statically. The manifest replaces
+  // an fs.existsSync so the decision needs no filesystem at request time.
+  if (relative.startsWith("assets/") && ASSET_MANIFEST.has(relative)) {
     return `/repo-assets/${relative.replace(/^assets\//, "")}`;
   }
 
@@ -259,19 +242,12 @@ const SECTION_ALIAS: Record<string, Section> = {
 };
 
 /**
- * Read the root README. A read failure means the file isn't available to this
- * runtime (e.g. missing from the serverless bundle); re-throw rather than
- * returning null, because under ISR rendering an empty page would be committed
- * to the cache and blank the site. Throwing makes Next keep the last-good page
- * (and fails the build loudly if the README is genuinely absent).
+ * The root README, captured at build time (scripts/prepare-repo-data.mjs) and
+ * imported as a constant. If the README were genuinely absent the build fails at
+ * generation, so this never has to degrade at render time.
  */
 function readReadme(): string {
-  try {
-    return fs.readFileSync(/*turbopackIgnore: true*/ README_PATH, "utf-8");
-  } catch (err) {
-    console.error(`[parse-readme] could not read ${README_PATH}:`, err);
-    throw err;
-  }
+  return (readmeData as { content: string }).content;
 }
 
 export function loadOpportunities(): Opportunity[] {

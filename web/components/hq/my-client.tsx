@@ -53,7 +53,7 @@ function GatedHub({ hackathons }: { hackathons: Hackathon[] }) {
 }
 
 /* ----- Signed-out: the members gate -----
-   proxy.ts redirects signed-out visitors to /auth/sign-in before this page
+   middleware.ts redirects signed-out visitors to /auth/sign-in before this page
    renders, so this is only a backstop. It links to that screen rather than
    embedding <SignIn> again: the form uses path routing bound to /auth/sign-in
    and misbehaves when mounted on another route. */
