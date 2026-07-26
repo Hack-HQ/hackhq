@@ -165,7 +165,12 @@ class SupabaseSyncTriggers(unittest.TestCase):
     def test_bot_pushes_cannot_trigger_a_run(self):
         # The premise of the above: no workflow checks out with a PAT, so every
         # push these workflows make carries the default token.
-        for name in ("auto_extract.yml", "contribution_approved.yml"):
+        for name in (
+            "auto_extract.yml",
+            "contribution_approved.yml",
+            "gallery_approved.yml",
+            "gallery.yml",
+        ):
             with self.subTest(workflow=name):
                 text = read(name)
                 self.assertIn("git push origin main", text)
