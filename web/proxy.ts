@@ -2,19 +2,20 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { isClerkConfigured } from "@/lib/env";
 
-// This is deliberately `middleware.ts`, not Next 16's newer `proxy.ts`.
+// Next 16's Node-runtime middleware convention (renamed from `middleware.ts`).
 // -----------------------------------------------------------------------------
-// Next 16 renamed Middleware -> Proxy and runs `proxy.ts` on the Node.js
-// runtime. Our Cloudflare/OpenNext deploy target (issue #223) does NOT support
-// Node.js middleware — `opennextjs-cloudflare build` hard-fails on it — but it
-// does support the Edge runtime, which is exactly what the (now-deprecated)
-// `middleware.ts` convention still compiles to. clerkMiddleware is Edge-safe, so
-// keeping this as `middleware.ts` lets auth run unchanged while the app stays
-// deployable to Workers. Next prints a middleware->proxy deprecation warning;
-// that is expected and must stay until OpenNext supports Node proxy.
+// This deploys to Vercel, where Clerk must run on the Node.js runtime: its
+// shared modules pull Node built-ins (#crypto, #safe-node-apis) that the Edge
+// runtime rejects — the "Edge Function is referencing unsupported modules"
+// build error. Next 16 runs `proxy.ts` on Node, so keeping this as `proxy.ts`
+// (not the deprecated Edge `middleware.ts`) is what lets Clerk auth build.
 //
-// Clerk only takes over once its keys exist in .env.local — until then the
-// site runs exactly as before (the /my hub shows setup instructions instead).
+// The Cloudflare/OpenNext branch keeps this same logic as `middleware.ts`
+// instead, because `opennextjs-cloudflare build` cannot compile Node middleware
+// and only the Edge convention works there. Same code, different runtime file.
+//
+// Clerk only takes over once its keys exist — until then the site runs exactly
+// as before (the /my hub shows setup instructions instead).
 //
 // /my is protected here, server-side: a signed-out visitor never reaches the
 // page. signInUrl/signUpUrl are pinned in code rather than left to
