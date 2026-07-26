@@ -104,4 +104,33 @@ export function submitIssueUrl(name = "", url = ""): string {
   return `${REPO_URL}/issues/new?${params.toString()}`;
 }
 
+/**
+ * Prefilled GitHub issue for sharing a gallery photo (#221).
+ *
+ * Targets gallery_photo.yaml. The image itself cannot be attached via query
+ * params — GitHub only prefills text fields — so the form opens with the
+ * hackathon (and optional credit fields) filled and the submitter drops the
+ * JPG/PNG onto the issue. Field ids must match the template; the test pins them.
+ */
+export function submitGalleryPhotoUrl(fields: {
+  hackathon?: string;
+  caption?: string;
+  credit?: string;
+  creditUrl?: string;
+} = {}): string {
+  const params = new URLSearchParams({ template: "gallery_photo.yaml" });
+  const hackathon = fields.hackathon?.trim() ?? "";
+  if (hackathon) {
+    params.set("title", `Photo: ${hackathon}`);
+    params.set("hackathon", hackathon);
+  }
+  const caption = fields.caption?.trim() ?? "";
+  if (caption) params.set("caption", caption);
+  const credit = fields.credit?.trim() ?? "";
+  if (credit) params.set("credit", credit);
+  const creditUrl = fields.creditUrl?.trim() ?? "";
+  if (creditUrl) params.set("credit_url", creditUrl);
+  return `${REPO_URL}/issues/new?${params.toString()}`;
+}
+
 export { REPO_URL };
