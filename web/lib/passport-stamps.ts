@@ -39,6 +39,7 @@ export type PassportStamp = {
   mono: string; // big monogram in the middle
   label: string; // HACKED / VISA / ADMITTED
   color: string;
+  won: boolean; // true -> render the gold trophy over-stamp on top
   pos: { left: number; top: number; size: number };
   rotate: number;
   delay: number; // stamp-in animation delay, ms
@@ -248,6 +249,7 @@ function makeStamp(
     mono,
     label,
     color,
+    won,
     rotate: rotateFor(h.id),
     // Stagger the stamp-in, but cap it so a large passport doesn't leave the
     // last stamps waiting several seconds to appear.
