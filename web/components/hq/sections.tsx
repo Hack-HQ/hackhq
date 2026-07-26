@@ -100,21 +100,21 @@ const DEVELOPERS: Dev[] = [
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/jose.jpg",
-    // TODO(#222): real intro blurb pending from Jose. Falls back to FALLBACK_BIO.
+    bio: "Computer Engineering student at Boston University, concentrating in AI and machine learning. Built HackHQ so finding a hackathon doesn't come down to knowing the right people."
   },
   {
-    name: "Allyson",
+    name: "Allyson Keightley",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/allyson.jpg",
-    // TODO(#222): real intro blurb pending from Allyson. Falls back to FALLBACK_BIO.
+    bio: "Software Engineering student at Western Governors University. Built HackHQ to alleviate the frustration of hackathons not being discoverable by the builders who need them most."
   },
   {
-    name: "Cai",
+    name: "Cai Zheng",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/cai.jpg",
-    // TODO(#222): real intro blurb pending from Cai. Falls back to FALLBACK_BIO.
+    bio: "Computer Science and Philosophy graduate from UMass Amherst. Contributed to HackHQ as builders who are obssesed with building should know opportunities available to them."
   },
   {
     name: "Vick Mahindru",
@@ -128,21 +128,21 @@ const DEVELOPERS: Dev[] = [
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/gnan-sruthi-r.jpg",
-    // TODO(#222): real intro blurb pending from Gnan Sruthi. Falls back to FALLBACK_BIO.
+    bio: "Computer Science Engineering student at Sri Eshwar College of Engineering. On HackHQ's dev side, since a good hackathon map shouldn't depend on knowing the right people to hear about it."
   },
   {
     name: "Jack He",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/jack-he.jpg",
-    // TODO(#222): real intro blurb pending from Jack. Falls back to FALLBACK_BIO.
+    bio: "Computer science student at Boston University, concentrating in AI, machine learning, and DevOps. Life doesn't spoon-feed you much, but finding hackathons shouldn't be one more thing you have to fight for; that's why we built HackHQ."
   },
   {
     name: "Henry (Hoan) Nguyen",
     role: "Founding contributor",
     org: "HackHQ",
     image: "/repo-assets/contributors/henry.jpg",
-    // TODO(#222): real intro blurb pending from Henry. Falls back to FALLBACK_BIO.
+    bio: "I’m a Mathematics and Computer Science student at Kenyon College interested in backend, data, and AI systems. I’m helping build HackHQ because finding a great hackathon shouldn’t depend on already being connected to the right people."
   },
 ];
 
