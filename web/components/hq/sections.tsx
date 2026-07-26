@@ -419,7 +419,11 @@ export function GallerySubmitSection() {
                 hackathon: trimmed,
                 credit: credit.trim() || undefined,
               });
-              const win = window.open(url, "_blank", "noopener,noreferrer");
+              // Same as SubmitSection: open in a new tab from a user gesture.
+              // Do NOT pass "noopener" as a window feature — browsers then return
+              // null even when the tab opened, which falsely looked like a block.
+              const win = window.open(url, "_blank");
+              if (win) win.opener = null;
               setState(win ? "opened" : "blocked");
             }}
           >
