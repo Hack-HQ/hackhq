@@ -141,7 +141,6 @@ function ToolsStrip() {
         <div className="kicker text-coral">Toolkit · Always useful</div>
         <h2 className="mt-3 flex flex-wrap items-center gap-3 text-[clamp(1.5rem,3.5vw,2.6rem)] text-paper">
           <span className="display">Tools & templates</span>
-          <ComingSoonBadge />
         </h2>
         <p className="mt-4 max-w-xl text-sm leading-relaxed text-paper/60">
           Steal these for any weekend—first hackathon or fiftieth.
