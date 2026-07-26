@@ -1,4 +1,4 @@
-# Approve a "Share a Hackathon Photo" issue → commit image + gallery.json (#221).
+# Approve a "Share a Hackathon Photo" issue → commit image + gallery.json.
 #
 # Mirrors contribution_approved.yml: maintainer applies the `approved` label,
 # the bot downloads the attached JPG/PNG (SSRF-guarded), appends gallery.json,

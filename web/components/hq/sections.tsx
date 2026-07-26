@@ -368,7 +368,7 @@ export function Developers() {
   );
 }
 
-/* ----- Share a gallery photo (#221) -----
+/* ----- Share a gallery photo -----
    Same glass-card pattern as SubmitSection, parked between the infinite
    canvas and the crew so a visitor who just dragged the wall can contribute
    without scrolling to the hackathon form further down. Opens gallery_photo.yaml;
@@ -420,8 +420,6 @@ export function GallerySubmitSection() {
                 credit: credit.trim() || undefined,
               });
               // Same as SubmitSection: open in a new tab from a user gesture.
-              // Do NOT pass "noopener" as a window feature — browsers then return
-              // null even when the tab opened, which falsely looked like a block.
               const win = window.open(url, "_blank");
               if (win) win.opener = null;
               setState(win ? "opened" : "blocked");

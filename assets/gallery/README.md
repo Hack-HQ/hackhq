@@ -18,7 +18,7 @@ Community photos from hackathons people found through this list.
 
 ## Filename convention
 
-`hackathon-credit.jpg` (or `.png`) — for example `hackmit-2026-jose.jpg`.
+`hackathon-year-name.jpg` (or `.png`) — for example `hackmit-2026-jose.jpg`.
 The approval bot slugifies the hackathon + credit fields automatically.
 
 ## gallery.json entry
