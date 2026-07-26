@@ -107,7 +107,7 @@ export function submitIssueUrl(name = "", url = ""): string {
 }
 
 /**
- * Prefilled GitHub issue for sharing a gallery photo (#221).
+ * Prefilled GitHub issue for sharing a gallery photo.
  *
  * Targets gallery_photo.yaml. The image itself cannot be attached via query
  * params — GitHub only prefills text fields — so the form opens with the
