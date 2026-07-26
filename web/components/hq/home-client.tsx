@@ -1,5 +1,6 @@
 "use client";
 
+import type { GalleryPhoto } from "@/lib/gallery";
 import type { Hackathon, SiteStats } from "@/lib/types-hq";
 import { HQProvider } from "./store";
 import { NavPill } from "./nav";
@@ -20,9 +21,11 @@ import { GalleryCanvas } from "./gallery-canvas";
 export function HomeClient({
   hackathons,
   stats,
+  galleryPhotos,
 }: {
   hackathons: Hackathon[];
   stats: SiteStats;
+  galleryPhotos: GalleryPhoto[];
 }) {
   return (
     <HQProvider>
@@ -33,7 +36,7 @@ export function HomeClient({
         <StatsStrip stats={stats} />
         <ThemeMarquee hackathons={hackathons} />
         <ResourcesShowcase />
-        <GalleryCanvas />
+        <GalleryCanvas photos={galleryPhotos} />
         <Developers />
         <SubmitSection />
       </main>
