@@ -68,8 +68,8 @@ writeFileSync(path.join(outDir, "listings.json"), JSON.stringify(listings));
 const geocodes = JSON.parse(readFileSync(GEOCODES_PATH, "utf8"));
 writeFileSync(path.join(outDir, "geocodes.json"), JSON.stringify(geocodes));
 
-// --- gallery.json: community photos for the infinite canvas (#221). Same
-// build-time snapshot pattern as listings — no request-time fs on Workers.
+// --- gallery.json: community photos for the infinite canvas. Same
+// build-time snapshot pattern as listings, no request-time fs on Workers.
 const gallery = JSON.parse(readFileSync(GALLERY_PATH, "utf8"));
 if (!Array.isArray(gallery)) {
   throw new Error("gallery.json did not parse to an array");

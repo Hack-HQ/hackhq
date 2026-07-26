@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-   Community gallery photos (#221).
+   Community gallery photos.
 
    Source of truth is .github/scripts/gallery.json (same file the README collage
    is built from). prepare-repo-data.mjs snapshots it into lib/generated/ so the

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Process an approved "Share a Hackathon Photo" issue (#221).
+Process an approved "Share a Hackathon Photo" issue.
 
 On `approved` + `gallery` labels:
   1. Parse the issue form fields (hackathon, caption, credit, …).
