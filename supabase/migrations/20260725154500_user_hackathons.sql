@@ -79,5 +79,14 @@ create policy "delete own tracker"
 grant select, insert, update, delete on public.user_hackathons to authenticated;
 grant all on public.user_hackathons to service_role;
 
+-- Supabase's stock bootstrap grants every new public table to anon and
+-- authenticated via ALTER DEFAULT PRIVILEGES. A per-user tracker must not
+-- inherit that, so undo it: anon gets nothing at all, and authenticated keeps
+-- only the row DML the policies above gate. TRUNCATE in particular is NOT
+-- subject to RLS, so it must never linger on an API role. Mirrors the intent of
+-- 20260722154244 for the hackathons table.
+revoke all on public.user_hackathons from anon;
+revoke truncate, references, trigger on public.user_hackathons from authenticated;
+
 -- Listing a user's tracker is the only read pattern; the primary key already
 -- serves it (user_id leads), so no extra index is created here.
