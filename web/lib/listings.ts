@@ -31,6 +31,7 @@ type RawListing = {
   deadline?: string;
   startDate?: string;
   endDate?: string;
+  featured?: boolean;
 };
 
 const THEME_RULES: [RegExp, string][] = [
@@ -175,6 +176,7 @@ export function loadHackathons(): Hackathon[] {
         lng,
         themes: themesFor(r.title + " " + r.company_name),
         postedAt: r.date_posted ?? 0,
+        featured: r.featured === true,
       } satisfies Hackathon;
     })
     .sort((a, b) => {

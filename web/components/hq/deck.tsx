@@ -7,31 +7,24 @@ import {
   countdown,
   deadlineDisplay,
   eventDateDisplay,
-  isActiveHackathon,
 } from "@/lib/types-hq";
+import {
+  filterDeckHackathons,
+  type DeckFormatFilter,
+  type DeckStatusFilter,
+} from "@/lib/deck-order";
 import { safeHttpUrl } from "@/lib/url";
 import { useSelection, useTracker } from "./store";
 
-type StatusFilter = "all" | HackState;
-type FormatFilter = "all" | "In-Person" | "Virtual";
-
 export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
   const [q, setQ] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("all");
-  const [format, setFormat] = useState<FormatFilter>("all");
+  const [status, setStatus] = useState<DeckStatusFilter>("all");
+  const [format, setFormat] = useState<DeckFormatFilter>("all");
 
-  const filtered = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-    return hackathons.filter(isActiveHackathon).filter((h) => {
-      if (status !== "all" && h.state !== status) return false;
-      if (format !== "all" && h.format !== format) return false;
-      if (!needle) return true;
-      return [h.title, h.host, h.location, ...h.themes]
-        .join(" ")
-        .toLowerCase()
-        .includes(needle);
-    });
-  }, [hackathons, q, status, format]);
+  const filtered = useMemo(
+    () => filterDeckHackathons(hackathons, { q, status, format }),
+    [hackathons, q, status, format],
+  );
 
   return (
     <section id="deck" className="p-2 pt-0">
@@ -65,7 +58,7 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
                 ["open", "OPEN"],
                 ["closing_soon", "CLOSING SOON"],
                 ["opens_soon", "OPENS SOON"],
-              ] as [StatusFilter, string][]
+              ] as [DeckStatusFilter, string][]
             ).map(([id, label]) => (
               <FilterPill
                 key={id}
@@ -82,7 +75,7 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
                 ["all", "ANY FORMAT"],
                 ["In-Person", "IN-PERSON"],
                 ["Virtual", "VIRTUAL"],
-              ] as [FormatFilter, string][]
+              ] as [DeckFormatFilter, string][]
             ).map(([id, label]) => (
               <FilterPill
                 key={id}

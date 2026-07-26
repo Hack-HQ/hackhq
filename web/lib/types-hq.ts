@@ -23,6 +23,8 @@ export type Hackathon = {
   lng: number | null;
   themes: string[];
   postedAt: number;
+  /** Editorial spotlight from listings.json — deck default view sorts these first. */
+  featured: boolean;
 };
 
 export type SiteStats = {
