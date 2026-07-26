@@ -6,7 +6,6 @@ import {
   type GalleryPhoto,
   type GalleryTileItem,
 } from "@/lib/gallery";
-import { submitGalleryPhotoUrl } from "@/lib/types-hq";
 
 /* Infinite draggable canvas of the community's hackathon photos.
 
@@ -14,7 +13,10 @@ import { submitGalleryPhotoUrl } from "@/lib/types-hq";
    pack into one seamless tile — the hand-tuned 6×6 slot template, stacked
    vertically when there are more than eight photos — which is repeated across
    a grid large enough to cover the viewport plus a margin. The pan offset is
-   wrapped modulo the tile period, so the pattern repeats forever. */
+   wrapped modulo the tile period, so the pattern repeats forever.
+
+   Photo submission lives in GallerySubmitSection (sections.tsx), immediately
+   below this canvas — same glass-card pattern as the hackathon SubmitSection. */
 
 const CW = 138; // base cell size (px)
 const G = 8; // gap between cells / tiles
@@ -61,65 +63,6 @@ function Tile({
           />
         </div>
       ))}
-    </div>
-  );
-}
-
-type ShareState = "idle" | "ready" | "opened" | "blocked";
-
-function SharePhotoCta() {
-  const [hackathon, setHackathon] = useState("");
-  const [state, setState] = useState<ShareState>("idle");
-
-  const trimmed = hackathon.trim();
-  const canSubmit = trimmed.length > 0;
-
-  return (
-    <div className="mt-4 flex flex-col gap-3 sm:mt-0 sm:max-w-sm sm:items-end">
-      <form
-        className="flex w-full flex-col gap-2 sm:flex-row sm:items-end"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!canSubmit) {
-            setState("idle");
-            return;
-          }
-          const url = submitGalleryPhotoUrl({ hackathon: trimmed });
-          const win = window.open(url, "_blank", "noopener,noreferrer");
-          setState(win ? "opened" : "blocked");
-        }}
-      >
-        <label className="min-w-0 flex-1">
-          <span className="kicker mb-1.5 block text-[9px] text-paper/45">
-            Share a photo
-          </span>
-          <input
-            value={hackathon}
-            onChange={(e) => {
-              setHackathon(e.target.value);
-              setState(e.target.value.trim() ? "ready" : "idle");
-            }}
-            placeholder="Which hackathon?"
-            maxLength={80}
-            className="w-full rounded-xl border border-white/15 bg-ink-deep/40 px-3 py-2.5 text-sm text-paper outline-none backdrop-blur transition placeholder:text-paper/30 focus:border-coral"
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={!canSubmit}
-          className="shrink-0 rounded-full bg-coral px-5 py-2.5 font-mono text-[10px] font-bold tracking-[0.16em] text-paper transition hover:bg-coral-bright disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          OPEN GITHUB ↗
-        </button>
-      </form>
-      <p className="text-right font-mono text-[10px] tracking-wide text-paper/35">
-        {state === "opened" &&
-          "Issue opened — attach a JPG or PNG (max 5 MB) there."}
-        {state === "blocked" &&
-          "Popup blocked. Allow popups for this site, then try again."}
-        {state === "ready" && "Opens a prefilled photo issue. JPG or PNG, ≤5 MB."}
-        {state === "idle" && "JPG or PNG, ≤5 MB. A maintainer approves before it lands."}
-      </p>
     </div>
   );
 }
@@ -228,18 +171,16 @@ export function GalleryCanvas({ photos }: { photos: GalleryPhoto[] }) {
 
   return (
     <section className="p-2 pt-20">
-      <div className="mb-3 flex flex-col gap-4 px-2 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-3 flex items-end justify-between px-2">
         <div>
           <div className="kicker text-coral">The community · In the wild</div>
           <h2 className="display mt-3 text-[clamp(2rem,5vw,3.4rem)] text-paper">
             The gallery
           </h2>
-          <p className="mt-2 hidden max-w-md text-sm text-paper/50 sm:block">
-            Drag to explore. Photos land here after a maintainer approves a
-            Share a Hackathon Photo issue.
-          </p>
         </div>
-        <SharePhotoCta />
+        <span className="kicker hidden text-paper/35 sm:block">
+          Drag to explore ↔
+        </span>
       </div>
 
       <div
@@ -257,8 +198,11 @@ export function GalleryCanvas({ photos }: { photos: GalleryPhoto[] }) {
               No photos yet — be the first.
             </p>
             <p className="max-w-sm text-sm text-paper/40">
-              Use Share a photo above to open a GitHub issue and attach a JPG or
-              PNG from a hackathon you found here.
+              Use{" "}
+              <a href="#share-photo" className="text-coral underline-offset-4 hover:underline">
+                Share a photo
+              </a>{" "}
+              below to open a GitHub issue and attach a JPG or PNG.
             </p>
           </div>
         ) : (
