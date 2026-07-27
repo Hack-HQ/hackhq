@@ -9,3 +9,9 @@ deadline_proposals.md
 
 # node
 node_modules/
+
+# There is no npm project at the repo root — the app is web/. Running npm here by
+# mistake drops an empty stub lockfile, which Next then treats as a candidate
+# workspace root and resolves the build against (it has picked $HOME before).
+# One was committed by accident already; ignore it so it cannot happen again.
+/package-lock.json
