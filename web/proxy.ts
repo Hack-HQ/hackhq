@@ -10,9 +10,11 @@ import { isClerkConfigured } from "@/lib/env";
 // build error. Next 16 runs `proxy.ts` on Node, so keeping this as `proxy.ts`
 // (not the deprecated Edge `middleware.ts`) is what lets Clerk auth build.
 //
-// The Cloudflare/OpenNext branch keeps this same logic as `middleware.ts`
-// instead, because `opennextjs-cloudflare build` cannot compile Node middleware
-// and only the Edge convention works there. Same code, different runtime file.
+// Reviving the Cloudflare/OpenNext path means renaming this file back to
+// `middleware.ts` — same logic, Edge runtime — because `opennextjs-cloudflare
+// build` cannot compile Node middleware. That rename breaks the Vercel build the
+// moment it lands, so it must not happen on `main` while `main` is what
+// production deploys. See the Deployment section of README.md.
 //
 // Clerk only takes over once its keys exist — until then the site runs exactly
 // as before (the /my hub shows setup instructions instead).
