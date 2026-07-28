@@ -2,3 +2,5 @@
 requests==2.32.3
 beautifulsoup4==4.12.3
 openai==1.54.4
+# openai 1.54 passes `proxies=` to httpx; httpx 0.28 removed that argument.
+httpx==0.27.2
