@@ -1020,6 +1020,25 @@
     "source": "akeight"
   },
   {
+    "id": "1ca3cb27-e753-4c95-a757-9b554a0a5080",
+    "company_name": "Stellic",
+    "title": "The Pathfinders Challenge",
+    "url": "https://www.stellic.com/pathfinders",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$12,000 pool",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1785205219,
+    "date_updated": 1785205219,
+    "source": "akeight",
+    "startDate": "2023-07-20",
+    "endDate": "2023-08-21"
+  },
+  {
     "id": "7f7e5157-6738-420b-841d-a1b019b14000",
     "company_name": "Stony Brook University",
     "title": "SBUHacks (Collegiate Hackathon; Applications Coming Soon)",
