@@ -899,6 +899,25 @@
     "date_updated": 1783821900
   },
   {
+    "id": "43a7a3d5-82cc-42c0-b4b5-a14048ebebfb",
+    "company_name": "OregonHacks",
+    "title": "OregonHacks 2026",
+    "url": "https://www.oregonhacks.com",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$100+ in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1785477682,
+    "date_updated": 1785477682,
+    "source": "akeight",
+    "startDate": "2026-08-15",
+    "endDate": "2026-08-17"
+  },
+  {
     "id": "4f232f08-b904-4d75-a0e2-a31c2b247a5b",
     "company_name": "Pixel Forge",
     "title": "Pixel Forge AI Hackathon",

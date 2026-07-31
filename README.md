@@ -73,6 +73,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 <!-- HACKATHONS_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |
+| ✅ **[OPEN]** | OregonHacks | OregonHacks 2026 | Virtual | Online | $100+ in prizes | — | <a href="https://www.oregonhacks.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |
 | ✅ **[OPEN]** | Pixel Forge | Pixel Forge AI Hackathon | Virtual | Online | Recognition, certificates, Discord roles, and featured placements for standout projects and participants. | — | <a href="https://pixelforgehackathons.info/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |
 | ✅ **[OPEN]** | RevenueCat | Shipaton 2026 | Virtual | Online | $700k+ in cash prizes | — | <a href="https://www.shipaton.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |
 | ✅ **[OPEN]** | NASA | NASA Space Apps Challenge | In-Person | Global | — | — | <a href="https://www.spaceappschallenge.org/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |
