@@ -987,6 +987,23 @@
     "source": "Tenz1ng"
   },
   {
+    "id": "679a76eb-c55c-43f5-97ac-125e18b1cbfa",
+    "company_name": "RevenueCat",
+    "title": "Shipaton 2026",
+    "url": "https://www.shipaton.com",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$700k+ in cash prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1785475657,
+    "date_updated": 1785475657,
+    "source": "akeight"
+  },
+  {
     "company_name": "Rice University",
     "title": "HackRice 16 (Student Hackathon; Interest Form Open)",
     "url": "https://hackrice.com/",
