@@ -465,8 +465,7 @@
     "is_visible": true,
     "date_posted": 1782522000,
     "date_updated": 1782522000,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "featured": true
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "e87fb32d-3bb3-44d2-9472-17845bcfe034",
@@ -890,7 +889,7 @@
     ],
     "format": "Virtual",
     "prize": "$100,000",
-    "state": "open",
+    "state": "closed",
     "active": true,
     "is_visible": true,
     "source": "devpost",
@@ -1159,8 +1158,7 @@
     "is_visible": true,
     "date_posted": 1782518400,
     "date_updated": 1782518400,
-    "source": "Jose-Gael-Cruz-Lopez",
-    "featured": true
+    "source": "Jose-Gael-Cruz-Lopez"
   },
   {
     "id": "b703a6ab-c107-4bab-808f-076e0ec65afa",
@@ -1361,14 +1359,13 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
+    "state": "closed",
     "deadline": "2026-07-27",
     "active": true,
     "is_visible": true,
     "date_posted": 1783666800,
     "date_updated": 1783666800,
-    "source": "akeight",
-    "featured": true
+    "source": "akeight"
   },
   {
     "company_name": "uOttaHack",
