@@ -777,6 +777,25 @@
     "deadline": "2026-07-04"
   },
   {
+    "id": "7575b5be-b3ef-44a7-b2da-527199b7b035",
+    "company_name": "NASA",
+    "title": "NASA Space Apps Challenge",
+    "url": "https://www.spaceappschallenge.org/",
+    "locations": [
+      "Global"
+    ],
+    "format": "In-Person",
+    "prize": "\u2014",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1785472972,
+    "date_updated": 1785472972,
+    "source": "bl3rred",
+    "startDate": "2026-11-14",
+    "endDate": "2026-11-15"
+  },
+  {
     "id": "b681dde7-9955-4488-b965-a87d05774284",
     "company_name": "NC State",
     "title": "Hack_NCState 2027 \u2014 Feb 6\u20137, 2027",
