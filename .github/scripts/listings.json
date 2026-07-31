@@ -900,6 +900,25 @@
     "date_updated": 1783821900
   },
   {
+    "id": "4f232f08-b904-4d75-a0e2-a31c2b247a5b",
+    "company_name": "Pixel Forge",
+    "title": "Pixel Forge AI Hackathon",
+    "url": "https://pixelforgehackathons.info/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "Recognition, certificates, Discord roles, and featured placements for standout projects and participants.",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1785476343,
+    "date_updated": 1785476343,
+    "source": "akeight",
+    "startDate": "2026-08-15",
+    "endDate": "2026-08-22"
+  },
+  {
     "company_name": "Purdue",
     "title": "InnovateHer (Student Hackathon; Next Event Feb 6\u20137, 2027)",
     "url": "https://innovateherhacks.org",
