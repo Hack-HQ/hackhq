@@ -2,19 +2,26 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { isClerkConfigured } from "@/lib/env";
 
-// Next 16's Node-runtime middleware convention (renamed from `middleware.ts`).
+// This is deliberately `middleware.ts`, not Next 16's newer `proxy.ts`.
 // -----------------------------------------------------------------------------
-// This deploys to Vercel, where Clerk must run on the Node.js runtime: its
-// shared modules pull Node built-ins (#crypto, #safe-node-apis) that the Edge
-// runtime rejects — the "Edge Function is referencing unsupported modules"
-// build error. Next 16 runs `proxy.ts` on Node, so keeping this as `proxy.ts`
-// (not the deprecated Edge `middleware.ts`) is what lets Clerk auth build.
+// Next 16 renamed Middleware -> Proxy and runs `proxy.ts` on the Node.js
+// runtime. `opennextjs-cloudflare build` hard-fails on Node middleware
+// ("Node.js middleware is not currently supported"), but it compiles the Edge
+// runtime that `middleware.ts` still targets — so this filename is what keeps
+// the app deployable to Workers. Next prints a middleware->proxy deprecation
+// warning; that is expected and must stay until OpenNext supports Node proxy.
 //
-// Reviving the Cloudflare/OpenNext path means renaming this file back to
-// `middleware.ts` — same logic, Edge runtime — because `opennextjs-cloudflare
-// build` cannot compile Node middleware. That rename breaks the Vercel build the
-// moment it lands, so it must not happen on `main` while `main` is what
-// production deploys. See the Deployment section of README.md.
+// This file cannot simply be deleted in favour of gating /my inside the page:
+// `auth()` requires clerkMiddleware to have run, and without it every server-
+// side caller — including /api/tracker, which the whole synced tracker depends
+// on — fails with "auth() was called but Clerk can't detect usage of
+// clerkMiddleware()".
+//
+// An earlier revision moved this to `proxy.ts`, on the understanding that Clerk
+// pulled Node built-ins (#crypto, #safe-node-apis) that Edge rejects. With
+// @clerk/nextjs 7.6.0 that is no longer so: `main` carries this file as Edge
+// middleware and both hosts build it green — Workers Builds and Vercel alike.
+// Verify with a Vercel build before reintroducing the rename.
 //
 // Clerk only takes over once its keys exist — until then the site runs exactly
 // as before (the /my hub shows setup instructions instead).

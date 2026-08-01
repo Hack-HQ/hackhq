@@ -165,7 +165,7 @@ web/
 ├── drizzle.config.ts                  # Drizzle Kit config
 ├── open-next.config.ts                # OpenNext adapter — Cloudflare, see Deployment
 ├── wrangler.jsonc                     # Cloudflare Workers config (nodejs_compat)
-└── proxy.ts                           # Clerk auth (Node runtime; see Deployment)
+└── middleware.ts                      # Clerk auth (Edge; see Deployment for why not proxy.ts)
 ```
 
 ## Getting started
@@ -191,20 +191,20 @@ Copy `.env.example` to `.env.local` (gitignored) and set the values you need.
 | Variable | Required | Used by | If missing |
 | -------- | -------- | ------- | ---------- |
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | For globe | `components/hq/globe-map.tsx` | Globe shows a placeholder instead of the Mapbox map |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For auth | `app/layout.tsx`, `app/my/page.tsx`, `proxy.ts` | Site runs without Clerk; `/my` shows setup instructions and `/auth/*` redirects to `/my` |
-| `CLERK_SECRET_KEY` | For auth | `app/my/page.tsx`, `proxy.ts` | Same as above — both Clerk keys are needed together |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For auth | `app/layout.tsx`, `app/my/page.tsx`, `middleware.ts` | Site runs without Clerk; `/my` shows setup instructions and `/auth/*` redirects to `/my` |
+| `CLERK_SECRET_KEY` | For auth | `app/my/page.tsx`, `middleware.ts` | Same as above — both Clerk keys are needed together |
 | `SUPABASE_URL` | For tracker sync | `lib/tracker-store.ts` | Tracker stays browser-local; `/api/tracker` reports `synced: false` |
 | `SUPABASE_SERVICE_ROLE_KEY` | For tracker sync | `lib/tracker-store.ts` | Same as above — both Supabase values are needed together, **and** Clerk must be configured or there is no user to attribute a row to |
 | `DATABASE_URL` | For DB scripts | `drizzle.config.ts` | `npm run db:*` commands fail fast before touching Supabase |
 
 The two keys are the only Clerk variables you need. The auth routes
 (`/auth/sign-in`, `/auth/sign-up`) and the post-sign-in landing (`/my`) are
-pinned in `proxy.ts` and `components/hq/auth-screen.tsx` rather than read from
+pinned in `middleware.ts` and `components/hq/auth-screen.tsx` rather than read from
 `NEXT_PUBLIC_CLERK_*_URL` env vars — when those are unset, Clerk redirects to
 its hosted account portal instead of the app's own screens.
 
 Clerk is **optional**. When both keys are set, `ClerkProvider` wraps the app,
-`/my` is protected in `proxy.ts` (signed-out visitors are redirected to
+`/my` is protected in `middleware.ts` (signed-out visitors are redirected to
 `/auth/sign-in`), and users can sign in with Google, GitHub, or email/password.
 Without them, the tracker still works locally; nothing is persisted server-side.
 
@@ -274,39 +274,54 @@ placeholder, without Clerk the tracker stays browser-local, without Supabase it
 stays browser-local for signed-in users too. `validateEnv()` in `lib/env.ts`
 warns on the half-configured cases rather than failing the build.
 
-### Auth runs on the Node runtime (why `proxy.ts`)
+### Auth runs as Edge middleware (why `middleware.ts`)
 
-Clerk's shared modules import Node built-ins (`#crypto`, `#safe-node-apis`). On
-the Edge runtime that is the *"Edge Function is referencing unsupported modules"*
-build error, so on Vercel the auth layer has to run on Node. Next 16 renamed
-Middleware to Proxy and runs `proxy.ts` on the Node.js runtime — and per the Next
-docs the `runtime` config option is **not available in Proxy files** and throws
-if set. So `proxy.ts` is Node, not by preference but by construction.
+Next 16 renamed Middleware to Proxy and runs `proxy.ts` on the Node.js runtime.
+This app stays on the older `middleware.ts` convention on purpose, because
+`opennextjs-cloudflare build` rejects Node middleware outright:
 
-### Cloudflare Workers — retained, not currently deployable
+```
+ERROR Node.js middleware is not currently supported. Consider switching to Edge Middleware.
+```
+
+Edge is what `middleware.ts` compiles to, and `clerkMiddleware` runs there
+fine, so one file satisfies both hosts. Next prints a middleware→proxy
+deprecation warning; that is expected and stays until OpenNext supports Node
+proxy.
+
+An earlier revision moved this to `proxy.ts` on the understanding that Clerk
+pulled Node built-ins (`#crypto`, `#safe-node-apis`) that Edge rejects with
+*"Edge Function is referencing unsupported modules"*. As of `@clerk/nextjs`
+7.6.0 that no longer happens: `main` carries the file as Edge middleware and
+**both** hosts build it green. If you hit that error again, pin the Clerk
+version in the fix rather than renaming the file — the rename breaks Cloudflare.
+
+**The middleware cannot simply be deleted** in favour of gating `/my` inside the
+page. `auth()` requires `clerkMiddleware` to have run; without it every
+server-side caller — including `/api/tracker`, which the synced tracker depends
+on — fails with *"auth() was called but Clerk can't detect usage of
+clerkMiddleware()"*.
+
+### Both hosts build from `main`
 
 `wrangler.jsonc`, `open-next.config.ts` and the `preview` / `deploy` /
-`cf-typegen` scripts are all still here, and the runtime work from #230 that made
-them viable still stands: the app has no request-time filesystem dependency, so
-it *builds* for Workers.
+`cf-typegen` scripts are all live, not vestigial. The runtime work from #230
+stands — no request-time filesystem dependency — so the app builds and deploys
+for Workers.
 
-What blocks it is auth, and it is a genuine either/or:
-
-| | Vercel | Cloudflare / OpenNext |
+| | Vercel | Cloudflare Workers |
 | --- | --- | --- |
-| File convention | `proxy.ts` | `middleware.ts` |
-| Runtime | Node | Edge |
-| The other one fails with | Edge rejects Clerk's Node built-ins | `Node.js middleware is not currently supported.` |
+| Trigger | Vercel Git integration | Workers Builds (Git integration) |
+| Branch | `main` | `main` |
+| Build | `next build` | `npx opennextjs-cloudflare build` |
+| Root | `web` | `/web` |
 
-One file, two hosts, mutually exclusive — and whichever convention is committed,
-the other host's build breaks. Reviving the Cloudflare path means renaming
-`proxy.ts` back to `middleware.ts` (the logic is identical; only the filename and
-runtime differ), which immediately breaks Vercel. Do not do it on `main` while
-`main` is what production deploys.
-
-The clean exit is upstream: once OpenNext supports Node proxy, both hosts read
-the same file and the fork disappears. Until then this is the standing reason
-`npm run preview` and `npm run deploy` fail — not a misconfiguration.
+Both watch `main`, so any commit that lands there — a PR merge or a listing
+workflow's push — rebuilds both. Environment variables have to be set in **both**
+dashboards; on Cloudflare the `NEXT_PUBLIC_*` pair are *build* variables
+(Settings → Build → Variables and secrets) while the rest are runtime secrets
+(Settings → Variables & Secrets), because build variables are not readable at
+runtime.
 
 ## Tech stack
 
