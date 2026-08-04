@@ -93,6 +93,30 @@ def _extract_deadline(client, listing, page):
         return None
 
 
+# The evidence phrase has to agree that the date is a closing one. #244 proposed
+# NASA Space Apps' "Registration opens August 26, 2026" as a registration
+# deadline: every other gate passed — found, high confidence, participant-facing
+# type, quoted evidence, future date — because none of them read the words. A
+# whitelist rather than a ban on "open": "open until August 1" is a deadline.
+_CLOSING_CUE = re.compile(
+    r"\b(deadline|due|closes?|closed|closing|until|till|til|ends?|ending"
+    r"|cut-?off|by|no later than|last day)\b",
+    re.IGNORECASE,
+)
+# "opens"/"opening" name a start date. If one appears the quoted phrase is
+# either about the wrong date or about both, and which the model picked is not
+# recoverable — so decline. A missing proposal leaves the deadline blank, which
+# is where it already was; a wrong one closes a live listing.
+_OPENING_CUE = re.compile(r"\b(opens|opening)\b", re.IGNORECASE)
+
+
+def _evidence_states_a_closing_date(evidence):
+    """True when the quoted phrase reads as a cut-off rather than a start."""
+    if _OPENING_CUE.search(evidence):
+        return False
+    return bool(_CLOSING_CUE.search(evidence))
+
+
 def _accept(extracted, today=None):
     """Apply the safety rules. Returns (iso_deadline, evidence) or None.
 
@@ -108,6 +132,8 @@ def _accept(extracted, today=None):
         return None
     evidence = str(extracted.get("evidence") or "").strip()
     if not evidence:
+        return None
+    if not _evidence_states_a_closing_date(evidence):
         return None
     raw = str(extracted.get("deadline") or "").strip()
     try:

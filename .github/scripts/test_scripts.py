@@ -511,6 +511,74 @@ class DeadlineWatcherRules(unittest.TestCase):
         self.assertIsNone(dw._accept(self._base(found=False)))
         self.assertIsNone(dw._accept(self._base(deadline="sometime in August")))
 
+    def test_rejects_an_opening_date_labelled_as_a_deadline(self):
+        """The false positive in #244.
+
+        The model returned NASA Space Apps' "Registration opens August 26,
+        2026" as a registration deadline of 2026-08-26. Every other gate passed
+        — found, high confidence, participant-facing type, non-empty evidence,
+        future date — so the proposal reached the review issue. Applying it
+        would have closed a listing on the day its registration opened, three
+        months before the November event.
+        """
+        self.assertIsNone(
+            dw._accept(
+                self._base(
+                    deadline="2026-08-26",
+                    deadline_type="registration",
+                    evidence="Registration opens August 26, 2026",
+                ),
+                today=date(2026, 8, 4),
+            )
+        )
+
+    def test_accepts_an_until_phrasing(self):
+        """The true positive in the same batch must survive the guard.
+
+        NJIT GirlHacks' page says "Register until September 9th!" — a real
+        registration cut-off, and one whose wording contains "open"-adjacent
+        language nowhere, so a naive keyword ban would have dropped it.
+        """
+        self.assertEqual(
+            dw._accept(
+                self._base(
+                    deadline="2026-09-09",
+                    deadline_type="registration",
+                    evidence="Register until September 9th!",
+                ),
+                today=date(2026, 8, 4),
+            ),
+            ("2026-09-09", "Register until September 9th!"),
+        )
+
+    def test_accepts_other_ordinary_closing_phrasings(self):
+        for evidence in (
+            "Applications due August 1, 2026",
+            "Apply by August 1, 2026",
+            "Last day to register is August 1, 2026",
+            "Registration Deadline: August 1, 2026",
+            "Submissions close on August 1, 2026",
+        ):
+            with self.subTest(evidence=evidence):
+                self.assertIsNotNone(
+                    dw._accept(
+                        self._base(evidence=evidence), today=date(2026, 7, 1)
+                    ),
+                )
+
+    def test_rejects_evidence_that_states_both_an_opening_and_a_close(self):
+        # Which of the two dates the model picked is unknowable from the
+        # phrase, and a wrong pick silently closes a live listing. A missing
+        # proposal only leaves the deadline blank, which is where it already is.
+        self.assertIsNone(
+            dw._accept(
+                self._base(
+                    evidence="Registration opens June 1 and closes August 1, 2026"
+                ),
+                today=date(2026, 5, 1),
+            )
+        )
+
 
 class BuildRow(unittest.TestCase):
     def _listing(self, **overrides):
