@@ -29,7 +29,11 @@ export const ZOOMED_IN_ZOOM = 3.2;
  * or `null` when it should not spin at all.
  */
 export function spinDegrees(zoom: number): number | null {
-  if (zoom > SPIN_MAX_ZOOM) return null;
+  // Inclusive: at the cutoff the taper already yields zero degrees, and a
+  // zero-degree step is not "no spin" to the caller — it still runs a 1s easeTo
+  // to the same centre, whose moveend re-arms the next one. Saying null ends
+  // the chain instead of leaving a no-op animation looping at this zoom.
+  if (zoom >= SPIN_MAX_ZOOM) return null;
   const full = 360 / SECONDS_PER_REVOLUTION;
   if (zoom <= SPIN_TAPER_ZOOM) return full;
   return full * ((SPIN_MAX_ZOOM - zoom) / SPIN_TAPER_ZOOM);
@@ -48,6 +52,17 @@ export type CameraInteraction = {
   pointerUp(): void;
   /** A wheel tick at `now`. */
   wheel(now: number): void;
+  /**
+   * The wheel gesture is over — call this from the idle timer that the `wheel`
+   * ticks keep resetting.
+   *
+   * Releasing the camera has to be an explicit statement rather than something
+   * `isInteracting` re-derives from the clock. The resume is the only thing
+   * scheduled after the last tick, so if it were to consult the clock and find
+   * itself a fraction of a millisecond early, it would decline and leave
+   * nothing behind to try again — the spin would stop for good.
+   */
+  wheelEnded(): void;
   /** Whether the user owns the camera at `now`. */
   isInteracting(now: number): boolean;
 };
@@ -67,6 +82,9 @@ export function createCameraInteraction(
     },
     wheel(now: number) {
       lastWheel = now;
+    },
+    wheelEnded() {
+      lastWheel = null;
     },
     isInteracting(now: number) {
       if (pointerHeld) return true;

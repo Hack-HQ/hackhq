@@ -14,19 +14,27 @@ describe("spinDegrees", () => {
     expect(spinDegrees(1.55)).toBeCloseTo(FULL_RATE);
   });
 
-  it("holds the globe still once the camera is zoomed past the cutoff", () => {
+  it("holds the globe still at the cutoff and beyond", () => {
+    // The cutoff itself must be null, not zero. A zero-degree step still ran a
+    // 1s easeTo to the same centre, and its moveend re-armed the next one — a
+    // permanent no-op animation loop at exactly this zoom.
+    expect(spinDegrees(SPIN_MAX_ZOOM)).toBeNull();
     expect(spinDegrees(SPIN_MAX_ZOOM + 0.01)).toBeNull();
     expect(spinDegrees(9.5)).toBeNull();
   });
 
-  it("tapers to a standstill as the camera approaches the cutoff", () => {
+  it("tapers as the camera approaches the cutoff", () => {
     // Half-way through the taper band, half the rate.
     expect(spinDegrees(3)).toBeCloseTo(FULL_RATE / 2);
-    expect(spinDegrees(SPIN_MAX_ZOOM)).toBeCloseTo(0);
+    // Just inside the cutoff the rate is vanishing but still a real spin.
+    const last = spinDegrees(SPIN_MAX_ZOOM - 0.001);
+    expect(last).not.toBeNull();
+    expect(last as number).toBeGreaterThan(0);
+    expect(last as number).toBeLessThan(FULL_RATE / 100);
   });
 
   it("never speeds up as the camera zooms in", () => {
-    const rates = [1, 1.55, 2, 2.5, 3, 3.5, SPIN_MAX_ZOOM].map(
+    const rates = [1, 1.55, 2, 2.5, 3, 3.5, SPIN_MAX_ZOOM - 0.001].map(
       (z) => spinDegrees(z) ?? Number.NaN,
     );
     rates.reduce((previous, rate) => {
@@ -79,6 +87,34 @@ describe("createCameraInteraction", () => {
     input.pointerDown();
     input.wheel(0);
     expect(input.isInteracting(10_000)).toBe(true);
+  });
+
+  it("releases the camera the moment the wheel gesture is declared over", () => {
+    // Immediately — not "once the window has elapsed". The caller's idle timer
+    // firing IS the end of the gesture. Making the resume re-derive that from
+    // the clock is what let a timer firing a hair early strand the spin: the
+    // resume was the only thing scheduled, so when it declined, nothing was
+    // left to try again and the globe stopped rotating for good.
+    const input = createCameraInteraction();
+    input.wheel(1000);
+    input.wheelEnded();
+    expect(input.isInteracting(1000)).toBe(false);
+  });
+
+  it("does not hand back a held pointer when the wheel gesture ends", () => {
+    const input = createCameraInteraction();
+    input.pointerDown();
+    input.wheel(1000);
+    input.wheelEnded();
+    expect(input.isInteracting(1000)).toBe(true);
+  });
+
+  it("reserves the camera again if the wheel resumes after ending", () => {
+    const input = createCameraInteraction();
+    input.wheel(1000);
+    input.wheelEnded();
+    input.wheel(2000);
+    expect(input.isInteracting(2000)).toBe(true);
   });
 
   it("stays reserved after pointer release while the wheel is still warm", () => {

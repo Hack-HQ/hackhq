@@ -186,7 +186,16 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     map.on("mousedown", () => input.pointerDown());
     map.on("touchstart", () => input.pointerDown());
     map.on("mouseup", releaseCamera);
-    map.on("touchend", releaseCamera);
+    // Mapbox re-fires the raw DOM touchend, which fires once per finger. On a
+    // two-finger pinch the first lift would otherwise hand the camera back and
+    // start the globe rotating while the second finger is still zooming — the
+    // same fight this whole change is about, on touch instead of wheel.
+    // `touches` is what is still down (the lifted finger is in changedTouches),
+    // so an empty list is the last finger leaving.
+    map.on("touchend", (e) => {
+      if (e.originalEvent?.touches?.length) return;
+      releaseCamera();
+    });
     map.on("dragend", releaseCamera);
     // Scroll/trackpad zoom fires neither mousedown nor touchstart, and unlike a
     // drag it has no end event. Without this the spin thought the camera was
@@ -198,7 +207,16 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     map.on("wheel", () => {
       input.wheel(performance.now());
       clearTimeout(wheelIdleTimer);
-      wheelIdleTimer = setTimeout(spinGlobe, WHEEL_IDLE_MS);
+      // wheelEnded() before spinGlobe(), not just spinGlobe(): this timer is
+      // the only thing scheduled after the last tick, so if spinGlobe were left
+      // to re-check the clock and found itself a fraction early, it would
+      // decline and leave nothing to try again — the globe would stop for good.
+      // The timer firing *is* the end of the gesture; say so rather than
+      // re-derive it.
+      wheelIdleTimer = setTimeout(() => {
+        input.wheelEnded();
+        spinGlobe();
+      }, WHEEL_IDLE_MS);
     });
     map.on("moveend", spinGlobe);
     // Only threshold crossings reach React. `zoom` fires once per frame of every
