@@ -175,12 +175,18 @@ export function DetailModal() {
           </div>
 
           {/* Actions */}
-          <div className="mt-6 flex flex-wrap gap-3">
+          {/* Stacked below sm. flex-wrap never fired here: flex-1 gives the CTA
+              a hypothetical main size of 0, so the pair stayed side by side and
+              the link was squeezed to 139px at 375px while "VISIT WEBSITE ↗"
+              needs 199px — the primary CTA's label broke across two lines
+              inside its own pill. Trimming padding cannot rescue it; the widest
+              the CTA can ever be beside the save button is 166.5px. */}
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <a
               href={safeHttpUrl(h.url)}
               target="_blank"
               rel="noreferrer"
-              className="flex-1 rounded-full bg-coral px-7 py-4 text-center font-mono text-[12px] font-bold tracking-[0.18em] text-paper transition hover:bg-coral-bright"
+              className="w-full rounded-full bg-coral px-7 py-4 text-center font-mono text-[12px] font-bold tracking-[0.18em] text-paper transition hover:bg-coral-bright sm:flex-1"
             >
               {h.state === "opens_soon" ? "VISIT WEBSITE ↗" : "REGISTER ↗"}
             </a>

@@ -820,14 +820,17 @@ function FooterCol({
   return (
     <div>
       <div className="kicker mb-4 text-paper/40">{title}</div>
-      <ul className="flex flex-col gap-2.5">
+      {/* No gap below sm: the anchors become 44px blocks that sit flush, so the
+          whole column is live rather than 17px targets separated by 10px of
+          dead space. sm restores the gap and the inline anchors. */}
+      <ul className="flex flex-col sm:gap-2.5">
         {links.map(([label, href]) => (
           <li key={label}>
             <a
               href={href}
               target={href.startsWith("http") ? "_blank" : undefined}
               rel="noreferrer"
-              className="text-sm text-paper/75 transition hover:text-coral"
+              className="block py-3 text-sm text-paper/75 transition hover:text-coral sm:inline sm:py-0"
             >
               {label}
             </a>
