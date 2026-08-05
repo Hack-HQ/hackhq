@@ -49,7 +49,10 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search name, host, city, theme…"
-            className="w-full rounded-full border-2 border-ink/15 bg-white/70 px-6 py-3.5 font-mono text-[13px] tracking-wide text-ink outline-none transition placeholder:text-ink/40 focus:border-coral lg:max-w-sm"
+            // text-base below sm for the same reason as the globe search: under
+            // 16px iOS zooms the page on focus and there is no maximum-scale to
+            // stop it. sm: restores the 13px mono exactly.
+            className="w-full rounded-full border-2 border-ink/15 bg-white/70 px-6 py-3.5 font-mono text-base tracking-wide text-ink outline-none transition placeholder:text-ink/40 focus:border-coral sm:text-[13px] lg:max-w-sm"
           />
           <div className="flex flex-wrap items-center gap-2">
             {(

@@ -17,7 +17,15 @@ export function StatsStrip({ stats }: { stats: SiteStats }) {
   return (
     <section className="p-2 pt-0">
       <div className="shell bg-ink-soft px-6 py-12 sm:px-12 sm:py-16">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
+        {/* One per row below sm. The display clamp floors at 3rem and never
+            shrinks further, but a 2-up grid only gives each cell 116px at
+            320px — and prizeDisplay renders up to 7 characters ("$12.3M" plus
+            the "+" span), which cannot fit at 48px under any font. It bled past
+            both edges of its cell, collided with the neighbouring number, and
+            was silently cut off by .shell's overflow:hidden rather than
+            scrolling. Stacking keeps the giant-number look instead of dropping
+            the clamp floor to fit. sm and up are unchanged. */}
+        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((it, i) => (
             <div
               key={it.label}

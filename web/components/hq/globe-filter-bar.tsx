@@ -52,7 +52,13 @@ export function GlobeFilterBar({
           onChange={(e) => onQueryChange(e.target.value)}
           placeholder="Search hackathon, location…"
           aria-label="Search hackathons"
-          className="glass-dark w-56 rounded-full border border-white/15 px-4 py-2 text-sm text-paper placeholder:text-paper/40 focus:outline-none focus:ring-2 focus:ring-coral sm:w-72"
+          // text-base below sm: iOS Safari zooms the whole page when a focused
+          // input is under 16px, and layout.tsx sets no viewport with
+          // maximum-scale to suppress it — so tapping search zoomed the globe
+          // and left the user there. w-60 rather than w-56 because at 16px the
+          // placeholder needs ~210px and w-56 leaves only 190px of content box.
+          // sm: restores the exact previous rendering.
+          className="glass-dark w-60 rounded-full border border-white/15 px-4 py-2.5 text-base text-paper placeholder:text-paper/40 focus:outline-none focus:ring-2 focus:ring-coral sm:w-72 sm:py-2 sm:text-sm"
         />
         {anyActive && (
           <button
