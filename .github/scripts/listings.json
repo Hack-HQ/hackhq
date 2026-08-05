@@ -918,6 +918,25 @@
     "endDate": "2026-08-17"
   },
   {
+    "id": "898ed659-c32d-4146-98df-b56f02ede941",
+    "company_name": "Pasteur Labs",
+    "title": "Tesseract Hackathon 2026",
+    "url": "https://pasteurlabs.ai/tesseract-hackathon-2026/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$20,000 prize pool",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1785945677,
+    "date_updated": 1785945677,
+    "source": "samalipio",
+    "deadline": "2026-08-31",
+    "startDate": "2026-08-03"
+  },
+  {
     "id": "4f232f08-b904-4d75-a0e2-a31c2b247a5b",
     "company_name": "Pixel Forge",
     "title": "Pixel Forge AI Hackathon",
