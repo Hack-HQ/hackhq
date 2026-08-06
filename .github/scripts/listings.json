@@ -114,11 +114,11 @@
     ],
     "format": "Virtual",
     "prize": "$10,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782532800,
-    "date_updated": 1782532800,
+    "date_updated": 1785980875,
     "source": "devpost",
     "deadline": "2026-08-03"
   },
@@ -126,7 +126,7 @@
     "id": "1e31d21c-0355-494e-a0a2-2431a51301a6",
     "company_name": "Carleton University",
     "title": "cuHacking 2026 \u2014 Jul 10 \u2013 Jul 12, 2026",
-    "url": "https://cuhacking.ca",
+    "url": "https://cuhacking07.devpost.com/",
     "locations": [
       "Ottawa, ON"
     ],
@@ -136,7 +136,7 @@
     "active": false,
     "is_visible": true,
     "date_posted": 1783105200,
-    "date_updated": 1784606296,
+    "date_updated": 1785980875,
     "source": "akeight"
   },
   {
@@ -419,18 +419,18 @@
   {
     "id": "668030a6-6da3-45b9-afea-9640ce79a34d",
     "company_name": "Hack the Valley",
-    "title": "Hack the Valley 11 (Pre-Registration Open)",
+    "title": "Hack the Valley 11 (Applications Open)",
     "url": "https://hackthevalley.io/",
     "locations": [
       "Toronto, ON"
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1783726800,
-    "date_updated": 1783726800,
+    "date_updated": 1785980875,
     "source": "ChimdumebiNebolisa"
   },
   {
@@ -579,11 +579,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782572400,
-    "date_updated": 1784606326,
+    "date_updated": 1785980875,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
@@ -785,11 +785,11 @@
     ],
     "format": "In-Person",
     "prize": "\u2014",
-    "state": "open",
+    "state": "opens_soon",
     "active": true,
     "is_visible": true,
     "date_posted": 1785472972,
-    "date_updated": 1785472972,
+    "date_updated": 1785980875,
     "source": "bl3rred",
     "startDate": "2026-11-14",
     "endDate": "2026-11-15"
@@ -890,13 +890,13 @@
     "format": "Virtual",
     "prize": "$100,000",
     "state": "closed",
-    "active": true,
+    "active": false,
     "is_visible": true,
     "source": "devpost",
     "deadline": "2026-07-21",
     "id": "04555631-8888-4d5a-b192-384c42fa0577",
     "date_posted": 1783821900,
-    "date_updated": 1783821900
+    "date_updated": 1785980875
   },
   {
     "id": "43a7a3d5-82cc-42c0-b4b5-a14048ebebfb",
@@ -1125,10 +1125,11 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1785205219,
-    "date_updated": 1785205219,
+    "date_updated": 1785980875,
     "source": "akeight",
-    "startDate": "2023-07-20",
-    "endDate": "2023-08-21"
+    "startDate": "2026-07-20",
+    "endDate": "2026-08-21",
+    "deadline": "2026-08-21"
   },
   {
     "id": "7f7e5157-6738-420b-841d-a1b019b14000",
@@ -1399,10 +1400,10 @@
     "prize": "TBA",
     "state": "closed",
     "deadline": "2026-07-27",
-    "active": true,
+    "active": false,
     "is_visible": true,
     "date_posted": 1783666800,
-    "date_updated": 1783666800,
+    "date_updated": 1785980875,
     "source": "akeight"
   },
   {
