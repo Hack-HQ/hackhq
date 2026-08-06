@@ -61,6 +61,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 ## Table of Contents
 
 - [The Website](#the-website)
+- [Stats](#stats)
 - [Hackathons](#hackathons-1)
 - [Resources](#resources)
 - [Contributing](#contributing)
@@ -77,8 +78,8 @@ Hackathons are the fastest way to build something real, meet your future team, a
 | ✅ **[OPEN]** | OregonHacks | OregonHacks 2026 | Virtual | Online | $100+ in prizes | — | <a href="https://www.oregonhacks.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |
 | ✅ **[OPEN]** | Pixel Forge | Pixel Forge AI Hackathon | Virtual | Online | Recognition, certificates, Discord roles, and featured placements for standout projects and participants. | — | <a href="https://pixelforgehackathons.info/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |
 | ✅ **[OPEN]** | RevenueCat | Shipaton 2026 | Virtual | Online | $700k+ in cash prizes | — | <a href="https://www.shipaton.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |
-| ✅ **[OPEN]** | NASA | NASA Space Apps Challenge | In-Person | Global | — | — | <a href="https://www.spaceappschallenge.org/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |
-| ✅ **[OPEN]** | Stellic | The Pathfinders Challenge | Virtual | Online | $12,000 pool | — | <a href="https://www.stellic.com/pathfinders"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 27, 2026 |
+| ⏳ **[OPENS SOON]** | NASA | NASA Space Apps Challenge | In-Person | Global | — | — | <a href="https://www.spaceappschallenge.org/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 30, 2026 |
+| ✅ **[OPEN]** | Stellic | The Pathfinders Challenge | Virtual | Online | $12,000 pool | Aug 21, 2026 | <a href="https://www.stellic.com/pathfinders"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 27, 2026 |
 | ⏳ **[OPENS SOON]** | Tec ACM | HackMTY 2026 — Sep 11–13, 2026 (Registration Opening Soon) | In-Person | Monterrey, Mexico | TBA | — | <a href="https://hackmty.com/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 20, 2026 |
 | ✅ **[OPEN]** | CougarCS | CodeRED Orion — Oct 10–11, 2026 | In-Person | Houston, TX | TBA | — | <a href="https://uhcode.red/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 20, 2026 |
 | ⏳ **[OPENS SOON]** | Girls Who Code at GSU | HackHers — Sep 18–19, 2026 (Registration Opening Soon) | In-Person | Atlanta, GA | TBA | — | <a href="https://hackhers.club/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 20, 2026 |
@@ -113,7 +114,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 | ⏳ **[OPENS SOON]** | Stony Brook University | SBUHacks (Collegiate Hackathon; Applications Coming Soon) | In-Person | Stony Brook, NY | TBA | — | <a href="https://hack.sbcs.io/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 11, 2026 |
 | ✅ **[OPEN]** | University of Pittsburgh | SteelHacks XIII (Student Hackathon; Applications Open) | In-Person | Pittsburgh, PA | TBA | — | <a href="https://steelhacks.org/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 11, 2026 |
 | ⏳ **[OPENS SOON]** | DubHacks | DubHacks 2026 (Collegiate Hackathon; Applications Coming Soon) | In-Person | Seattle, WA | $44,000+ in prizes | — | <a href="https://dubhacks.co/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 10, 2026 |
-| ⏳ **[OPENS SOON]** | Hack the Valley | Hack the Valley 11 (Pre-Registration Open) | In-Person | Toronto, ON | TBA | — | <a href="https://hackthevalley.io/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 10, 2026 |
+| ✅ **[OPEN]** | Hack the Valley | Hack the Valley 11 (Applications Open) | In-Person | Toronto, ON | TBA | — | <a href="https://hackthevalley.io/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 10, 2026 |
 | ⏳ **[OPENS SOON]** | Hack@Brown | Hack@Brown 2027 (Student Hackathon; Applications Coming Soon) | In-Person | Providence, RI | TBA | — | <a href="https://hackatbrown.org/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 10, 2026 |
 | ✅ **[OPEN]** | HackHarvard | HackHarvard 2026 (Student Hackathon; Applications Open) | In-Person | Cambridge, MA | TBA | — | <a href="https://hackharvard.io/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 10, 2026 |
 | ⏳ **[OPENS SOON]** | HackNC | HackNC 2026 (Student Hackathon; Interest Form Open) | In-Person | Chapel Hill, NC | TBA | — | <a href="https://hacknc.com/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 10, 2026 |
@@ -126,12 +127,10 @@ Hackathons are the fastest way to build something real, meet your future team, a
 | ✅ **[OPEN]** | CS Girlies | CS Girlies Annual Hackathon - Technology For Wellness — Aug 14 – Aug 16, 2026 | Virtual | Online | $5,000 in Prizes | — | <a href="https://cs-girlies-wellness-hackathon.devpost.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 03, 2026 |
 | ✅ **[OPEN]** | UMass Amherst | HackUMass XIV (36-Hour Student Hackathon; Pre-Registration Open) | In-Person | Amherst, MA | TBA | — | <a href="https://www.hackumass.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 02, 2026 |
 | ✅ **[OPEN]** | Arcangel | Arcangel AI: $1,000,000 IP-A-THON (Early Access; Approval Required) | In-Person | TBA | $1,000,000 | — | <a href="https://luma.com/98z2mych"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 29, 2026 |
-| ✅ **[OPEN]** | Hexafalls | Hexafalls 2 — Jul 24–26, 2026 | In-Person | Kolkata, India | TBA | — | <a href="https://hexafalls.org"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 27, 2026 |
 | ✅ **[OPEN]** | Major League Hacking | Global Hack Week: Agents — Aug 7–13, 2026 | Virtual | Online | Swag + prizes | — | <a href="https://ghw.mlh.io/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 27, 2026 |
 | ✅ **[OPEN]** | Major League Hacking | Global Hack Week: Data — Sep 11–17, 2026 | Virtual | Online | Swag + prizes | — | <a href="https://ghw.mlh.io/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 27, 2026 |
 | ✅ **[OPEN]** | XPRIZE | Build with Gemini XPRIZE — May 19 – Aug 17, 2026 | Virtual | Online | $2,000,000 | Aug 17, 2026 | <a href="https://xprize.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 27, 2026 |
 | ✅ **[OPEN]** | Arm | Arm Create: AI Optimization Challenge — Jun 4 – Aug 14, 2026 | Virtual | Online | $8,000 | Aug 14, 2026 | <a href="https://arm-ai-optimization-challenge.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 26, 2026 |
-| ✅ **[OPEN]** | Backblaze | Backblaze Generative Media Hackathon: Build with Genblaze on B2 — Jun 22 – Aug 3, 2026 | Virtual | Online | $10,000 | Aug 03, 2026 | <a href="https://backblaze-generative-media.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 26, 2026 |
 | ✅ **[OPEN]** | University of Michigan | MHacks 2026 (Student Hackathon; Applications Open) | In-Person | Ann Arbor, MI | $40K+ in prizes | Sep 12, 2026 | <a href="https://mhacks.org/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 26, 2026 |
 | ⏳ **[OPENS SOON]** | Freetail Hackers | HackTX 26 (Student Hackathon; Applications Coming Soon) | In-Person | Austin, TX | TBA | — | <a href="https://hacktx.com/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jun 26, 2026 |
 | ⏳ **[OPENS SOON]** | Hackathons @ Berkeley | Cal Hacks (Collegiate Hackathon; 2026 Cycle Not Yet Posted) | In-Person | Berkeley / San Francisco, CA | TBA | — | <a href="https://calhacks.io/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jun 26, 2026 |
@@ -147,7 +146,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 - [MLH Official Event Calendar](https://www.mlh.com/events) — Major League Hacking's full season schedule
 - [Devpost Hackathons](https://devpost.com/hackathons) — online & in-person hackathons with submissions
 - [hackathon.com](https://www.hackathon.com/) — global hackathon directory
-- [Hackathon Survival Guide](https://github.com/Devang-25/Hackathon-Survival-Guide) — tips for first-timers
+- [Ultimate Hackathon Starting Guide](https://github.com/kdesai2018/ultimate-hackathon-starting-guide) — tips for first-timers, by the Freetail Hackers team
 - [Archived / Past Hackathons](ARCHIVE.md) — events that have ended (many run annually and reopen next cycle)
 
 ---
