@@ -502,6 +502,23 @@
     "source": "ChimdumebiNebolisa"
   },
   {
+    "id": "47d9d612-9de8-41c5-8265-c435ebfd8870",
+    "company_name": "HackKnight",
+    "title": "HackKnight",
+    "url": "https://hackknight.org/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "\u2014",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1786079446,
+    "date_updated": 1786079446,
+    "source": "akeight"
+  },
+  {
     "id": "50cb89da-27df-43aa-b3ee-2fe2bc0c22dd",
     "company_name": "HackNC",
     "title": "HackNC 2026 (Student Hackathon; Interest Form Open)",

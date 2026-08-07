@@ -74,6 +74,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 <!-- HACKATHONS_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |
+| ✅ **[OPEN]** | HackKnight | HackKnight | Virtual | Online | — | — | <a href="https://hackknight.org/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Aug 06, 2026 |
 | ✅ **[OPEN]** | Pasteur Labs | Tesseract Hackathon 2026 | Virtual | Online | $20,000 prize pool | Aug 31, 2026 | <a href="https://pasteurlabs.ai/tesseract-hackathon-2026/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Aug 05, 2026 |
 | ✅ **[OPEN]** | OregonHacks | OregonHacks 2026 | Virtual | Online | $100+ in prizes | — | <a href="https://www.oregonhacks.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |
 | ✅ **[OPEN]** | Pixel Forge | Pixel Forge AI Hackathon | Virtual | Online | Recognition, certificates, Discord roles, and featured placements for standout projects and participants. | — | <a href="https://pixelforgehackathons.info/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |
