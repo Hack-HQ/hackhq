@@ -74,7 +74,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 <!-- HACKATHONS_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |
-| ✅ **[OPEN]** | hacklanta.dev | Hacklanta '26 | In-Person | ATL | — | — | <a href="https://hacklanta.dev/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Aug 07, 2026 |
+| ✅ **[OPEN]** | hacklanta.dev | Hacklanta '26 | In-Person | Atlanta, GA | — | — | <a href="https://hacklanta.dev/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Aug 07, 2026 |
 | ✅ **[OPEN]** | HackKnight | HackKnight | Virtual | Online | — | — | <a href="https://hackknight.org/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Aug 06, 2026 |
 | ✅ **[OPEN]** | Pasteur Labs | Tesseract Hackathon 2026 | Virtual | Online | $20,000 prize pool | Aug 31, 2026 | <a href="https://pasteurlabs.ai/tesseract-hackathon-2026/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Aug 05, 2026 |
 | ✅ **[OPEN]** | OregonHacks | OregonHacks 2026 | Virtual | Online | $100+ in prizes | — | <a href="https://www.oregonhacks.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |
