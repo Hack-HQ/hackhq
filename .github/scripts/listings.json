@@ -678,6 +678,25 @@
     "id": "00892477-a0ca-418b-acd8-af3bf285d35a"
   },
   {
+    "id": "e05b16b1-d7bf-5d6d-adad-e230b650fe71",
+    "company_name": "IBM",
+    "title": "IBM Dev Day: Bob in Action + Hackathon \u2014 Aug 27\u201330, 2026",
+    "url": "https://ibmdevday-bob.bemyapp.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$2,000 grand prize + IBM TechXchange 2026 passes (top 50 teams)",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "startDate": "2026-08-27",
+    "endDate": "2026-08-30",
+    "date_posted": 1786265703,
+    "date_updated": 1786265703,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
     "id": "b1b101f8-41a0-524e-8a3b-128f48c7450a",
     "company_name": "JPMorgan Chase",
     "title": "2027 Code for Good Hackathon \u2014 Brooklyn Oct 16\u201317 & Columbus Nov 6\u20137, 2026 (Leads to Software Engineer Program Internship)",
