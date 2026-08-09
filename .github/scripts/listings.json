@@ -239,8 +239,10 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1783105200,
-    "date_updated": 1783771200,
-    "source": "akeight"
+    "date_updated": 1786253991,
+    "source": "akeight",
+    "startDate": "2026-08-14",
+    "endDate": "2026-08-16"
   },
   {
     "company_name": "DataHub",
@@ -726,8 +728,10 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782568800,
-    "date_updated": 1783771200,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "date_updated": 1786253991,
+    "source": "Jose-Gael-Cruz-Lopez",
+    "startDate": "2026-08-07",
+    "endDate": "2026-08-13"
   },
   {
     "id": "421c6652-25a9-42c9-9ac9-5396f32396f5",
@@ -743,8 +747,10 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782565200,
-    "date_updated": 1783771200,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "date_updated": 1786253991,
+    "source": "Jose-Gael-Cruz-Lopez",
+    "startDate": "2026-09-11",
+    "endDate": "2026-09-17"
   },
   {
     "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
