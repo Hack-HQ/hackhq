@@ -556,20 +556,22 @@
   },
   {
     "company_name": "hackUMBC",
-    "title": "hackUMBC 2026 (Student Hackathon; Interest Form Open)",
+    "title": "hackUMBC 2026 \u2014 Sep 26\u201327, 2026",
     "url": "https://hackumbc.tech",
     "locations": [
       "Catonsville, MD"
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "source": "srirae",
     "date_posted": 1784609137,
-    "date_updated": 1784609137,
-    "id": "4aec82ec-35e8-4e91-b62e-6314a4572b16"
+    "date_updated": 1786253227,
+    "id": "4aec82ec-35e8-4e91-b62e-6314a4572b16",
+    "startDate": "2026-09-26",
+    "endDate": "2026-09-27"
   },
   {
     "company_name": "HackUTD",
@@ -701,12 +703,14 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1783857600,
-    "date_updated": 1784606318,
-    "source": "hongchengw"
+    "date_updated": 1786253227,
+    "source": "hongchengw",
+    "date_closed": "2026-08-08",
+    "archive_note": "Archived 2026-08-08 \u2014 registration closed (Luma: \"Registration Closed. This event is not currently taking registrations.\"); event dated Aug 9, 2026"
   },
   {
     "id": "0dd13a0e-b5ce-4dd0-a35c-f435b52ea23f",
@@ -840,12 +844,14 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1784607900,
-    "date_updated": 1784653424,
-    "source": "srirae"
+    "date_updated": 1786253227,
+    "source": "srirae",
+    "startDate": "2027-02-06",
+    "endDate": "2027-02-07"
   },
   {
     "id": "91e1f610-aacd-4c73-9563-09968fd9dc7d",
@@ -861,8 +867,11 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1783771200,
-    "date_updated": 1783771200,
-    "source": "Tenz1ng"
+    "date_updated": 1786253227,
+    "source": "Tenz1ng",
+    "deadline": "2026-09-09",
+    "startDate": "2026-10-03",
+    "endDate": "2026-10-04"
   },
   {
     "id": "632953bb-00f6-4a0f-aa8f-383ef624a36a",
@@ -1097,20 +1106,22 @@
   },
   {
     "company_name": "Rice University",
-    "title": "HackRice 16 (Student Hackathon; Interest Form Open)",
+    "title": "HackRice 16 \u2014 Sep 11\u201313, 2026",
     "url": "https://hackrice.com/",
     "locations": [
       "Houston, TX"
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "source": "ChimdumebiNebolisa",
     "id": "55843864-d4f0-4a6a-b79c-46ff7a5e9a12",
     "date_posted": 1783811100,
-    "date_updated": 1783811100
+    "date_updated": 1786253227,
+    "startDate": "2026-09-11",
+    "endDate": "2026-09-13"
   },
   {
     "id": "8a6a6656-8eff-40ea-9688-6bb50b18d290",
