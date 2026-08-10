@@ -114,11 +114,11 @@
     ],
     "format": "Virtual",
     "prize": "$10,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782532800,
-    "date_updated": 1782532800,
+    "date_updated": 1785980875,
     "source": "devpost",
     "deadline": "2026-08-03"
   },
@@ -126,7 +126,7 @@
     "id": "1e31d21c-0355-494e-a0a2-2431a51301a6",
     "company_name": "Carleton University",
     "title": "cuHacking 2026 \u2014 Jul 10 \u2013 Jul 12, 2026",
-    "url": "https://cuhacking.ca",
+    "url": "https://cuhacking07.devpost.com/",
     "locations": [
       "Ottawa, ON"
     ],
@@ -136,7 +136,7 @@
     "active": false,
     "is_visible": true,
     "date_posted": 1783105200,
-    "date_updated": 1784606296,
+    "date_updated": 1785980875,
     "source": "akeight"
   },
   {
@@ -239,8 +239,10 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1783105200,
-    "date_updated": 1783771200,
-    "source": "akeight"
+    "date_updated": 1786253991,
+    "source": "akeight",
+    "startDate": "2026-08-14",
+    "endDate": "2026-08-16"
   },
   {
     "company_name": "DataHub",
@@ -419,18 +421,18 @@
   {
     "id": "668030a6-6da3-45b9-afea-9640ce79a34d",
     "company_name": "Hack the Valley",
-    "title": "Hack the Valley 11 (Pre-Registration Open)",
+    "title": "Hack the Valley 11 (Applications Open)",
     "url": "https://hackthevalley.io/",
     "locations": [
       "Toronto, ON"
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1783726800,
-    "date_updated": 1783726800,
+    "date_updated": 1785980875,
     "source": "ChimdumebiNebolisa"
   },
   {
@@ -502,6 +504,42 @@
     "source": "ChimdumebiNebolisa"
   },
   {
+    "id": "47d9d612-9de8-41c5-8265-c435ebfd8870",
+    "company_name": "HackKnight",
+    "title": "HackKnight",
+    "url": "https://hackknight.org/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "\u2014",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1786079446,
+    "date_updated": 1786079446,
+    "source": "akeight"
+  },
+  {
+    "id": "ecdd4e02-b831-4943-9328-eb1d220adb46",
+    "company_name": "hacklanta.dev",
+    "title": "Hacklanta '26",
+    "url": "https://hacklanta.dev/",
+    "locations": [
+      "Atlanta, GA"
+    ],
+    "format": "In-Person",
+    "prize": "\u2014",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1786151388,
+    "date_updated": 1786151388,
+    "source": "akeight",
+    "startDate": "2026-10-09",
+    "endDate": "2026-10-11"
+  },
+  {
     "id": "50cb89da-27df-43aa-b3ee-2fe2bc0c22dd",
     "company_name": "HackNC",
     "title": "HackNC 2026 (Student Hackathon; Interest Form Open)",
@@ -520,20 +558,22 @@
   },
   {
     "company_name": "hackUMBC",
-    "title": "hackUMBC 2026 (Student Hackathon; Interest Form Open)",
+    "title": "hackUMBC 2026 \u2014 Sep 26\u201327, 2026",
     "url": "https://hackumbc.tech",
     "locations": [
       "Catonsville, MD"
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "source": "srirae",
     "date_posted": 1784609137,
-    "date_updated": 1784609137,
-    "id": "4aec82ec-35e8-4e91-b62e-6314a4572b16"
+    "date_updated": 1786253227,
+    "id": "4aec82ec-35e8-4e91-b62e-6314a4572b16",
+    "startDate": "2026-09-26",
+    "endDate": "2026-09-27"
   },
   {
     "company_name": "HackUTD",
@@ -579,11 +619,11 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782572400,
-    "date_updated": 1784606326,
+    "date_updated": 1785980875,
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
@@ -638,6 +678,66 @@
     "id": "00892477-a0ca-418b-acd8-af3bf285d35a"
   },
   {
+    "id": "e05b16b1-d7bf-5d6d-adad-e230b650fe71",
+    "company_name": "IBM",
+    "title": "IBM Dev Day: Bob in Action + Hackathon \u2014 Aug 27\u201330, 2026",
+    "url": "https://ibmdevday-bob.bemyapp.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$2,000 grand prize + IBM TechXchange 2026 passes (top 50 teams)",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "startDate": "2026-08-27",
+    "endDate": "2026-08-30",
+    "date_posted": 1786265703,
+    "date_updated": 1786265703,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "b1b101f8-41a0-524e-8a3b-128f48c7450a",
+    "company_name": "JPMorgan Chase",
+    "title": "2027 Code for Good Hackathon \u2014 Brooklyn Oct 16\u201317 & Columbus Nov 6\u20137, 2026 (Leads to Software Engineer Program Internship)",
+    "url": "https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/job/210773759",
+    "locations": [
+      "Brooklyn, NY",
+      "Columbus, OH"
+    ],
+    "format": "In-Person",
+    "prize": "Internship consideration; travel covered",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "deadline": "2026-09-18",
+    "startDate": "2026-10-16",
+    "endDate": "2026-10-17",
+    "date_posted": 1786265678,
+    "date_updated": 1786265678,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
+    "id": "2fe3f9b8-d850-5198-82c4-8fa011521ea4",
+    "company_name": "JPMorgan Chase",
+    "title": "2027 Data for Good Hackathon \u2014 Oct 16\u201317, 2026 (Leads to Data & AI Program Internship)",
+    "url": "https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/job/210775223",
+    "locations": [
+      "Brooklyn, NY"
+    ],
+    "format": "In-Person",
+    "prize": "Internship consideration; travel covered",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "deadline": "2026-10-15",
+    "startDate": "2026-10-16",
+    "endDate": "2026-10-17",
+    "date_posted": 1786265690,
+    "date_updated": 1786265690,
+    "source": "Jose-Gael-Cruz-Lopez"
+  },
+  {
     "company_name": "Lincoln Financial Group",
     "title": "codeLinc 11 with Lincoln Financial & AWS \u2014 Oct 3\u20134, 2026",
     "url": "https://codelinc11.devpost.com/",
@@ -665,12 +765,14 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1783857600,
-    "date_updated": 1784606318,
-    "source": "hongchengw"
+    "date_updated": 1786253227,
+    "source": "hongchengw",
+    "date_closed": "2026-08-08",
+    "archive_note": "Archived 2026-08-08 \u2014 registration closed (Luma: \"Registration Closed. This event is not currently taking registrations.\"); event dated Aug 9, 2026"
   },
   {
     "id": "0dd13a0e-b5ce-4dd0-a35c-f435b52ea23f",
@@ -686,8 +788,10 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782568800,
-    "date_updated": 1783771200,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "date_updated": 1786253991,
+    "source": "Jose-Gael-Cruz-Lopez",
+    "startDate": "2026-08-07",
+    "endDate": "2026-08-13"
   },
   {
     "id": "421c6652-25a9-42c9-9ac9-5396f32396f5",
@@ -703,8 +807,10 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782565200,
-    "date_updated": 1783771200,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "date_updated": 1786253991,
+    "source": "Jose-Gael-Cruz-Lopez",
+    "startDate": "2026-09-11",
+    "endDate": "2026-09-17"
   },
   {
     "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
@@ -785,11 +891,11 @@
     ],
     "format": "In-Person",
     "prize": "\u2014",
-    "state": "open",
+    "state": "opens_soon",
     "active": true,
     "is_visible": true,
     "date_posted": 1785472972,
-    "date_updated": 1785472972,
+    "date_updated": 1785980875,
     "source": "bl3rred",
     "startDate": "2026-11-14",
     "endDate": "2026-11-15"
@@ -804,12 +910,14 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "date_posted": 1784607900,
-    "date_updated": 1784653424,
-    "source": "srirae"
+    "date_updated": 1786253227,
+    "source": "srirae",
+    "startDate": "2027-02-06",
+    "endDate": "2027-02-07"
   },
   {
     "id": "91e1f610-aacd-4c73-9563-09968fd9dc7d",
@@ -825,8 +933,11 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1783771200,
-    "date_updated": 1783771200,
-    "source": "Tenz1ng"
+    "date_updated": 1786253227,
+    "source": "Tenz1ng",
+    "deadline": "2026-09-09",
+    "startDate": "2026-10-03",
+    "endDate": "2026-10-04"
   },
   {
     "id": "632953bb-00f6-4a0f-aa8f-383ef624a36a",
@@ -890,13 +1001,13 @@
     "format": "Virtual",
     "prize": "$100,000",
     "state": "closed",
-    "active": true,
+    "active": false,
     "is_visible": true,
     "source": "devpost",
     "deadline": "2026-07-21",
     "id": "04555631-8888-4d5a-b192-384c42fa0577",
     "date_posted": 1783821900,
-    "date_updated": 1783821900
+    "date_updated": 1785980875
   },
   {
     "id": "43a7a3d5-82cc-42c0-b4b5-a14048ebebfb",
@@ -935,6 +1046,26 @@
     "source": "samalipio",
     "deadline": "2026-08-31",
     "startDate": "2026-08-03"
+  },
+  {
+    "id": "c801890c-0461-5c2d-b2f6-9e302180451b",
+    "company_name": "Peddie Computer Science Club",
+    "title": "PeddieHacks 2026 \u2014 Aug 14\u201316, 2026",
+    "url": "https://peddiehacks-2026.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$800+ in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "deadline": "2026-08-16",
+    "startDate": "2026-08-14",
+    "endDate": "2026-08-16",
+    "date_posted": 1786343222,
+    "date_updated": 1786343222,
+    "source": "akeight"
   },
   {
     "id": "4f232f08-b904-4d75-a0e2-a31c2b247a5b",
@@ -1061,20 +1192,22 @@
   },
   {
     "company_name": "Rice University",
-    "title": "HackRice 16 (Student Hackathon; Interest Form Open)",
+    "title": "HackRice 16 \u2014 Sep 11\u201313, 2026",
     "url": "https://hackrice.com/",
     "locations": [
       "Houston, TX"
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
+    "state": "open",
     "active": true,
     "is_visible": true,
     "source": "ChimdumebiNebolisa",
     "id": "55843864-d4f0-4a6a-b79c-46ff7a5e9a12",
     "date_posted": 1783811100,
-    "date_updated": 1783811100
+    "date_updated": 1786253227,
+    "startDate": "2026-09-11",
+    "endDate": "2026-09-13"
   },
   {
     "id": "8a6a6656-8eff-40ea-9688-6bb50b18d290",
@@ -1125,10 +1258,11 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1785205219,
-    "date_updated": 1785205219,
+    "date_updated": 1785980875,
     "source": "akeight",
-    "startDate": "2023-07-20",
-    "endDate": "2023-08-21"
+    "startDate": "2026-07-20",
+    "endDate": "2026-08-21",
+    "deadline": "2026-08-21"
   },
   {
     "id": "7f7e5157-6738-420b-841d-a1b019b14000",
@@ -1399,10 +1533,10 @@
     "prize": "TBA",
     "state": "closed",
     "deadline": "2026-07-27",
-    "active": true,
+    "active": false,
     "is_visible": true,
     "date_posted": 1783666800,
-    "date_updated": 1783666800,
+    "date_updated": 1785980875,
     "source": "akeight"
   },
   {

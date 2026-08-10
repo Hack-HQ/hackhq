@@ -20,6 +20,7 @@ import auto_extract as ax
 import deadline_watcher as dw
 import seed_supabase as seed
 import closing_soon as cs
+import update_readmes
 
 
 class ParseDeadlineDate(unittest.TestCase):
@@ -978,72 +979,203 @@ class BannerDateFormat(unittest.TestCase):
         self.assertIn("as of December 9, 2026", out)
 
 
-class ClosingSoonDeadlineCell(unittest.TestCase):
-    """Regression tests for issue #70.
+def _listing(**overrides):
+    """A minimal open listing; override any field per test."""
+    base = {
+        "id": "x",
+        "company_name": "Some Org",
+        "title": "Some Hack",
+        "url": "https://example.org",
+        "locations": ["Remote"],
+        "format": "Virtual",
+        "prize": "TBA",
+        "state": "open",
+        "active": True,
+        "is_visible": True,
+        "date_posted": 0,
+        "date_updated": 0,
+        "source": "test",
+    }
+    base.update(overrides)
+    return base
 
-    The closing-soon badge must be derived from the Deadline cell alone, never
-    from event dates that live in the Hackathon title (or any other) cell.
+
+class ClosingSoonRule(unittest.TestCase):
+    """The 🔥 CLOSING SOON rule (util.is_closing_soon).
+
+    Includes the regression for issue #70: the badge is derived from the
+    structured deadline/startDate/endDate fields only. Dates written into the
+    Hackathon *title* are never parsed — harvesting those is what made cuHacking
+    look like it was closing when it had no deadline at all.
     """
 
-    # Today is 1 day before cuHacking's *event* end date (Jul 12, 2026) — the
-    # date the old code harvested out of the title and mistook for a deadline.
-    TODAY = datetime(2026, 7, 11, tzinfo=cs.PST)
+    # 1 day before cuHacking's *event* end date (Jul 12, 2026) — the date the old
+    # text-scraping code harvested out of the title and mistook for a deadline.
+    TODAY = date(2026, 7, 11)
 
-    def test_event_date_in_title_with_dash_deadline_stays_open(self):
-        # Exact cuHacking-style row from issue #70: event dates in the title,
-        # "—" (no deadline) in the Deadline cell. Must NOT become CLOSING SOON.
-        row = (
-            "| ✅ **[OPEN]** | Carleton University | "
-            "cuHacking 2026 — Jul 10 – Jul 12, 2026 | In-Person | Ottawa, ON | "
-            "TBA | — | "
-            '<a href="https://cuhacking.ca"><img '
-            'src="https://img.shields.io/badge/Register-blue?style=for-the-badge" '
-            'alt="Register"></a> | Jul 03, 2026 |'
+    def test_event_dates_in_title_only_are_never_read(self):
+        # Exact cuHacking case from #70: event dates live in the title, and there
+        # is no structured deadline or event date anywhere. Must NOT close soon.
+        listing = _listing(
+            company_name="Carleton University",
+            title="cuHacking 2026 — Jul 10 – Jul 12, 2026",
         )
-        new_row, changed = cs.update_row(row, self.TODAY)
-        self.assertFalse(changed)
-        self.assertEqual(new_row, row)
-        self.assertIn(cs.OPEN, new_row)
-        self.assertNotIn(cs.CLOSING, new_row)
+        self.assertIsNone(util.urgency_date(listing, self.TODAY))
+        self.assertFalse(util.is_closing_soon(listing, self.TODAY))
+        self.assertEqual("open", util.display_state(listing, self.TODAY))
 
-    def test_real_deadline_within_seven_days_becomes_closing_soon(self):
-        # Deadline Jul 15, 2026 is 4 days from TODAY -> CLOSING SOON. The far-off
-        # event date (Aug 20) in the title must be ignored entirely.
-        row = (
-            "| ✅ **[OPEN]** | Some Org | Some Hack — Aug 20, 2026 | Online | "
-            "Remote | $10k | Jul 15, 2026 | "
-            '<a href="https://example.org">Register</a> | Jul 01, 2026 |'
-        )
-        new_row, changed = cs.update_row(row, self.TODAY)
-        self.assertTrue(changed)
-        self.assertIn(cs.CLOSING, new_row)
-        self.assertNotIn(cs.OPEN, new_row)
+    def test_deadline_inside_window_closes_soon(self):
+        listing = _listing(deadline="2026-07-15", title="Some Hack — Aug 20, 2026")
+        self.assertTrue(util.is_closing_soon(listing, self.TODAY))
+        self.assertEqual("closing_soon", util.display_state(listing, self.TODAY))
 
-    def test_real_deadline_beyond_seven_days_stays_open(self):
-        # Deadline Aug 20 is > 7 days away; title event date is irrelevant.
-        row = (
-            "| ✅ **[OPEN]** | Some Org | Some Hack — Jul 12, 2026 | Online | "
-            "Remote | $10k | Aug 20, 2026 | "
-            '<a href="https://example.org">Register</a> | Jul 01, 2026 |'
-        )
-        new_row, changed = cs.update_row(row, self.TODAY)
-        self.assertFalse(changed)
-        self.assertEqual(new_row, row)
+    def test_deadline_outside_window_stays_open(self):
+        listing = _listing(deadline="2026-08-20", title="Some Hack — Jul 12, 2026")
+        self.assertFalse(util.is_closing_soon(listing, self.TODAY))
+        self.assertEqual("open", util.display_state(listing, self.TODAY))
 
-    def test_escaped_pipe_in_cell_does_not_shift_deadline_column(self):
-        # A literal "|" in a cell is escaped as "\|" by sanitize_table_cell.
-        # Splitting on it would push the Deadline out of column 6 and misread the
-        # badge. The Host cell holds "Foo \| Bar"; the real Deadline (Jul 15, 4
-        # days out) must still be read and flip the row to CLOSING SOON.
-        row = (
-            "| ✅ **[OPEN]** | Foo \\| Bar | Some Hack — Aug 20, 2026 | Online | "
-            "Remote | $10k | Jul 15, 2026 | "
-            '<a href="https://example.org">Register</a> | Jul 01, 2026 |'
+    def test_window_boundary_is_inclusive_at_fourteen_days(self):
+        # 14 days out closes soon; 15 does not.
+        self.assertEqual(14, util.CLOSING_SOON_DAYS)
+        inside = _listing(deadline="2026-07-25")   # TODAY + 14
+        outside = _listing(deadline="2026-07-26")  # TODAY + 15
+        self.assertTrue(util.is_closing_soon(inside, self.TODAY))
+        self.assertFalse(util.is_closing_soon(outside, self.TODAY))
+
+    def test_deadline_today_closes_soon_but_yesterday_does_not(self):
+        self.assertTrue(util.is_closing_soon(_listing(deadline="2026-07-11"), self.TODAY))
+        self.assertFalse(util.is_closing_soon(_listing(deadline="2026-07-10"), self.TODAY))
+
+    def test_event_start_is_used_when_no_deadline_is_recorded(self):
+        # The gap this closes: a hackathon with no application deadline that
+        # starts in three days was never badged at all.
+        listing = _listing(startDate="2026-07-14", endDate="2026-07-16")
+        self.assertEqual(date(2026, 7, 14), util.urgency_date(listing, self.TODAY))
+        self.assertTrue(util.is_closing_soon(listing, self.TODAY))
+
+    def test_running_event_falls_back_to_its_end_date(self):
+        # Started two days ago, runs two more — still joinable, so still closing.
+        listing = _listing(startDate="2026-07-09", endDate="2026-07-13")
+        self.assertEqual(date(2026, 7, 13), util.urgency_date(listing, self.TODAY))
+        self.assertTrue(util.is_closing_soon(listing, self.TODAY))
+
+    def test_finished_event_with_no_deadline_is_not_closing_soon(self):
+        listing = _listing(startDate="2026-07-01", endDate="2026-07-03")
+        self.assertIsNone(util.urgency_date(listing, self.TODAY))
+        self.assertFalse(util.is_closing_soon(listing, self.TODAY))
+
+    def test_deadline_wins_over_event_dates(self):
+        # Registration closes long after the listing's own start date; the
+        # deadline is the date you must act on, so it is the one that counts.
+        listing = _listing(deadline="2026-08-31", startDate="2026-07-12")
+        self.assertEqual(date(2026, 8, 31), util.urgency_date(listing, self.TODAY))
+        self.assertFalse(util.is_closing_soon(listing, self.TODAY))
+
+    def test_opens_soon_and_closed_listings_never_close_soon(self):
+        # Nothing to close yet, and nothing left to close, respectively.
+        opens_soon = _listing(state="opens_soon", deadline="2026-07-12")
+        closed = _listing(state="closed", deadline="2026-07-12")
+        inactive = _listing(active=False, deadline="2026-07-12")
+        for listing in (opens_soon, closed, inactive):
+            self.assertFalse(util.is_closing_soon(listing, self.TODAY))
+        self.assertEqual("opens_soon", util.display_state(opens_soon, self.TODAY))
+        self.assertEqual("closed", util.display_state(closed, self.TODAY))
+        self.assertEqual("closed", util.display_state(inactive, self.TODAY))
+
+
+class ClosingSoonOrdering(unittest.TestCase):
+    """Closing-soon rows sort to the top of the table, soonest first."""
+
+    TODAY = date(2026, 7, 11)
+
+    def test_closing_soon_rows_lead_sorted_by_soonest(self):
+        far = _listing(id="far", company_name="Far", deadline="2026-12-01")
+        soon = _listing(id="soon", company_name="Soon", deadline="2026-07-20")
+        sooner = _listing(id="sooner", company_name="Sooner", deadline="2026-07-13")
+        by_start = _listing(id="start", company_name="Start", startDate="2026-07-16")
+
+        order = [x["id"] for x in util.sort_listings([far, soon, by_start, sooner], self.TODAY)]
+        self.assertEqual(["sooner", "start", "soon", "far"], order)
+
+    def test_closing_soon_outranks_a_featured_pin(self):
+        # A pin must not bury a row that is about to stop accepting entries.
+        pinned = _listing(id="pinned", company_name="Pinned", featured=True)
+        closing = _listing(id="closing", company_name="Closing", deadline="2026-07-13")
+        order = [x["id"] for x in util.sort_listings([pinned, closing], self.TODAY)]
+        self.assertEqual(["closing", "pinned"], order)
+
+    def test_non_closing_rows_keep_featured_then_newest_order(self):
+        # Everything below the closing-soon block keeps the previous ordering.
+        old_pin = _listing(id="pin", company_name="Pin", featured=True, date_posted=1)
+        newer = _listing(id="newer", company_name="Newer", date_posted=9)
+        older = _listing(id="older", company_name="Older", date_posted=2)
+        order = [x["id"] for x in util.sort_listings([older, newer, old_pin], self.TODAY)]
+        self.assertEqual(["pin", "newer", "older"], order)
+
+
+class ClosingSoonRendering(unittest.TestCase):
+    """The generated README table renders and orders the badge consistently."""
+
+    TODAY = date(2026, 7, 11)
+
+    def test_table_renders_closing_soon_with_a_register_badge(self):
+        listing = _listing(deadline="2026-07-13")
+        table = update_readmes.create_hackathons_table([listing], self.TODAY)
+        self.assertIn("🔥 **[CLOSING SOON]**", table)
+        # Still joinable, so it keeps the actionable blue Register badge.
+        self.assertIn("badge/Register-blue", table)
+
+    def test_table_puts_closing_soon_first(self):
+        listings = util.sort_listings(
+            [
+                _listing(id="open", company_name="Zeta", title="Open One"),
+                _listing(id="closing", company_name="Alpha", title="Closing One",
+                         deadline="2026-07-13"),
+            ],
+            self.TODAY,
         )
-        new_row, changed = cs.update_row(row, self.TODAY)
-        self.assertTrue(changed)
-        self.assertIn(cs.CLOSING, new_row)
-        self.assertNotIn(cs.OPEN, new_row)
+        table = update_readmes.create_hackathons_table(listings, self.TODAY)
+        body = [l for l in table.split("\n") if l.startswith("| ") and "Status |" not in l]
+        rows = [r for r in body if "shields.io" in r]
+        self.assertIn("Closing One", rows[0])
+        self.assertIn("🔥 **[CLOSING SOON]**", rows[0])
+        self.assertIn("Open One", rows[1])
+
+    def test_closing_soon_script_counts_only_status_changes(self):
+        before = (
+            "| Status | Host | Hackathon |\n"
+            "| ------ | ---- | --------- |\n"
+            "| ✅ **[OPEN]** | A | One |\n"
+            "| ✅ **[OPEN]** | B | Two |\n"
+        )
+        after = (
+            "| Status | Host | Hackathon |\n"
+            "| ------ | ---- | --------- |\n"
+            "| 🔥 **[CLOSING SOON]** | A | One |\n"
+            "| ✅ **[OPEN]** | B | Two |\n"
+        )
+        self.assertEqual(1, cs.count_status_changes(before, after))
+        self.assertEqual(0, cs.count_status_changes(after, after))
+
+    def test_reordering_alone_is_not_counted_as_a_status_change(self):
+        # The script now re-sorts the table, so a row that merely moved must not
+        # be reported as a badge flip in the commit message.
+        before = (
+            "| ✅ **[OPEN]** | A | One |\n"
+            "| ✅ **[OPEN]** | B | Two |\n"
+        )
+        after = (
+            "| ✅ **[OPEN]** | B | Two |\n"
+            "| ✅ **[OPEN]** | A | One |\n"
+        )
+        self.assertEqual(0, cs.count_status_changes(before, after))
+
+    def test_escaped_pipe_in_a_cell_does_not_shift_columns(self):
+        # A literal "|" in a cell is escaped as "\|" by sanitize_table_cell;
+        # splitting on it would misalign the row key and miscount changes.
+        before = "| ✅ **[OPEN]** | Foo \\| Bar | One |\n"
+        after = "| 🔥 **[CLOSING SOON]** | Foo \\| Bar | One |\n"
+        self.assertEqual(1, cs.count_status_changes(before, after))
 
 
 class WeeklyDigestWorkflow(unittest.TestCase):

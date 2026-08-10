@@ -36,8 +36,12 @@ def main():
         # Only visible listings
         hackathons = [l for l in listings if l.get("is_visible", True)]
 
+        # One date for the whole run, so a job that straddles midnight cannot
+        # sort by one day's closing-soon set and badge by the next day's.
+        today = util.today_pst()
+
         # Sort listings
-        hackathons = util.sort_listings(hackathons)
+        hackathons = util.sort_listings(hackathons, today)
 
         # Split live from closed. A closed hackathon belongs in ARCHIVE.md, not
         # the README — otherwise every past event accumulates in the main table
@@ -52,7 +56,7 @@ def main():
         # Embed the live table in README
         util.embed_table(
             os.path.join(repo_root, "README.md"),
-            create_hackathons_table(live),
+            create_hackathons_table(live, today),
             "<!-- HACKATHONS_TABLE_START -->",
             "<!-- HACKATHONS_TABLE_END -->"
         )
@@ -94,8 +98,14 @@ def main():
         util.fail(str(e))
 
 
-def create_hackathons_table(listings):
-    """Create a table for hackathons."""
+def create_hackathons_table(listings, today=None):
+    """Create a table for hackathons.
+
+    ``today`` drives the closing-soon badge; pass the same value used to sort so
+    the row order and the badges can never be computed from two different dates.
+    """
+    if today is None:
+        today = util.today_pst()
     rows = []
     header = "| Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |"
     separator = "| ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |"
@@ -103,7 +113,7 @@ def create_hackathons_table(listings):
     rows.append(separator)
 
     for listing in listings:
-        state = util.resolve_state(listing)
+        state = util.display_state(listing, today)
         host = util.sanitize_table_cell(listing["company_name"])
         title = util.sanitize_table_cell(listing["title"])
         if util.is_featured(listing):
@@ -120,6 +130,11 @@ def create_hackathons_table(listings):
         elif state == "closed":
             status = "🔒 **[CLOSED]**"
             link = ":lock:"
+        elif state == "closing_soon":
+            # Still joinable, so it keeps the actionable blue Register badge —
+            # only the status cell changes.
+            status = "🔥 **[CLOSING SOON]**"
+            link = util.format_link(listing["url"])
         else:
             status = "✅ **[OPEN]**"
             link = util.format_link(listing["url"])

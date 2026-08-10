@@ -1,147 +1,95 @@
 #!/usr/bin/env python3
 """
-closing_soon.py — flag opportunities closing within 7 days as 🔥 [CLOSING SOON].
+closing_soon.py — refresh the 🔥 [CLOSING SOON] badges in README.md.
 
-Scans every <!-- *_TABLE_START --> ... <!-- *_TABLE_END --> region in README.md.
-For each row with status ✅ [OPEN] or 🔥 [CLOSING SOON]:
-  - Read ONLY the Deadline cell (never other cells, whose dates are event dates)
-  - Prefer a structured deadline (YYYY-MM-DD) in that cell, else its earliest date
-  - A row with no deadline ("—") keeps its current status
-  - If 0–7 days away: flip status to 🔥 [CLOSING SOON]
-  - If >7 days away: flip status back to ✅ [OPEN]
-  - If unparseable / past / Rolling / Check site: leave alone
+A listing is closing soon when it is open and its act-by date is within
+util.CLOSING_SOON_DAYS. The act-by date is the application deadline, or — when
+no deadline is recorded — the event's own start date (or its end date, once the
+event is already running). See util.urgency_date.
 
-[OPENS SOON] and [CLOSED] rows are never modified.
+The badge is derived from the structured `deadline` / `startDate` / `endDate`
+fields in listings.json, never from dates written into the Hackathon title. That
+distinction is issue #70: the old text-scraping version read every date in the
+row and mistook cuHacking's event dates for a registration deadline.
+
+This regenerates the README's hackathon table from listings.json rather than
+rewriting status cells in place, so the daily cron and the push-triggered
+update_readmes.py run produce byte-identical output — including row order, which
+puts closing-soon rows at the top, soonest first. Rewriting cells in place could
+not do that: the row order lives in the generator, not in the README text.
+
+Nothing is written back to listings.json. 'closing_soon' is a function of
+today's date, so storing it would go stale the moment the date rolled over.
+
 Idempotent — safe to run daily.
 """
 
 import os
-import re
-from datetime import datetime
-from zoneinfo import ZoneInfo
 
+import update_readmes
 import util
 
-PST = ZoneInfo("America/Los_Angeles")
 README = os.path.join(os.path.dirname(__file__), "..", "..", "README.md")
 
-OPEN = "✅ **[OPEN]**"
-CLOSING = "🔥 **[CLOSING SOON]**"
-
-MONTHS = (
-    "January|February|March|April|May|June|July|August|September|October|November|December|"
-    "Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec"
-)
-DATE_RE = re.compile(rf"\b({MONTHS})\s+(\d{{1,2}}),?\s+(\d{{4}})\b")
-ISO_DATE_RE = re.compile(r"\b(\d{4}-\d{2}-\d{2})\b")
-
-TABLE_RE = re.compile(r"(<!-- \w+_TABLE_START -->)(.*?)(<!-- \w+_TABLE_END -->)", re.DOTALL)
+START_MARKER = "<!-- HACKATHONS_TABLE_START -->"
+END_MARKER = "<!-- HACKATHONS_TABLE_END -->"
 
 
-def parse_date(month: str, day: str, year: str):
-    """Return a datetime or None."""
-    m = month.replace(".", "")
-    if m == "Sept":
-        m = "Sep"
-    for fmt in ("%B %d %Y", "%b %d %Y"):
-        try:
-            return datetime.strptime(f"{m} {day} {year}", fmt).replace(tzinfo=PST)
-        except ValueError:
+def status_by_row(table):
+    """Map each row's non-status cells to its status cell.
+
+    Keyed on the rest of the row rather than on position so that re-sorting the
+    table — which this script now does — is not miscounted as a badge change.
+    """
+    out = {}
+    for line in table.split("\n"):
+        if not line.startswith("| ") or "Status |" in line:
             continue
-    return None
-
-
-def earliest_upcoming(text: str, today: datetime):
-    """Find earliest date in text that is >= today's date. None if none found."""
-    upcoming = []
-    for m in DATE_RE.finditer(text):
-        d = parse_date(m.group(1), m.group(2), m.group(3))
-        if d and d.date() >= today.date():
-            upcoming.append(d)
-    return min(upcoming) if upcoming else None
-
-
-def parse_iso_deadline(row: str):
-    """Return structured row deadline if a YYYY-MM-DD token exists."""
-    m = ISO_DATE_RE.search(row)
-    if not m:
-        return None
-    try:
-        return datetime.strptime(m.group(1), "%Y-%m-%d").replace(tzinfo=PST)
-    except ValueError:
-        return None
-
-
-DEADLINE_COL = 6  # 0=Status 1=Host 2=Hackathon 3=Format 4=Location 5=Prize 6=Deadline 7=Application 8=Date Posted
-
-
-def update_row(row: str, today: datetime):
-    """Return (new_row, changed)."""
-    has_open = OPEN in row
-    has_closing = CLOSING in row
-    if not (has_open or has_closing):
-        return row, False
-    # Derive the closing-soon decision from the Deadline cell ALONE. Scanning any
-    # other cell harvests the event date out of the Hackathon title (e.g. a row
-    # named "cuHacking 2026 — Jul 10 – Jul 12, 2026" with a "—" Deadline) or the
-    # trailing "Date Posted" cell, and mistakes it for a registration deadline
-    # (issue #70).
-    # Split on unescaped pipes only: sanitize_table_cell escapes a literal "|"
-    # inside a cell as "\|", and splitting on that would shift the Deadline out
-    # of DEADLINE_COL. Separator pipes are always space-padded ("| "), so a "\|"
-    # (backslash immediately before the pipe) is unambiguously an escaped value.
-    cells = [c.strip() for c in re.split(r"(?<!\\)\|", row.strip().strip("|"))]
-    if len(cells) <= DEADLINE_COL:
-        return row, False
-    deadline_cell = cells[DEADLINE_COL]
-    # A row with no real deadline (empty or the "—" placeholder) keeps its
-    # current status — it must never be invented into CLOSING SOON.
-    if deadline_cell in ("", "—", "-"):
-        return row, False
-    deadline = parse_iso_deadline(deadline_cell) or earliest_upcoming(deadline_cell, today)
-    if not deadline:
-        return row, False
-    days_until = (deadline.date() - today.date()).days
-    target = CLOSING if 0 <= days_until <= 7 else OPEN
-    current = CLOSING if has_closing else OPEN
-    if target == current:
-        return row, False
-    return row.replace(current, target, 1), True
-
-
-def process_table_body(body: str, today: datetime):
-    lines = body.split("\n")
-    changed = 0
-    for i, line in enumerate(lines):
-        if not line.startswith("| "):
+        cells = util.split_table_cells(line)
+        if len(cells) < 2 or set(cells[0]) <= {"-", " "}:
             continue
-        if "Status |" in line or re.match(r"\|\s*-+", line):
-            continue
-        new_line, did = update_row(line, today)
-        if did:
-            lines[i] = new_line
-            changed += 1
-    return "\n".join(lines), changed
+        out[tuple(cells[1:])] = cells[0]
+    return out
+
+
+def count_status_changes(before, after):
+    """How many rows present in both tables changed status."""
+    old = status_by_row(before)
+    new = status_by_row(after)
+    return sum(1 for row, status in new.items() if row in old and old[row] != status)
+
+
+def extract_table(content):
+    """Return the text currently between the table markers, or "" if absent."""
+    start = content.find(START_MARKER)
+    end = content.find(END_MARKER)
+    if start == -1 or end == -1:
+        return ""
+    return content[start + len(START_MARKER):end]
 
 
 def main():
+    listings = util.get_listings_from_json()
+
+    # Skip only the malformed listings, matching update_readmes.py: one bad
+    # entry must not block the badge refresh for all the good ones.
+    valid, errors = util.partition_valid_listings(listings)
+    for err in errors:
+        util.warn(err)
+    listings = valid
+
+    today = util.today_pst()
+    visible = [l for l in listings if l.get("is_visible", True)]
+    live = [l for l in util.sort_listings(visible, today)
+            if util.resolve_state(l) != "closed"]
+
     with open(README, "r") as f:
-        content = f.read()
+        before = f.read()
 
-    today = datetime.now(tz=PST)
-    total = 0
+    table = update_readmes.create_hackathons_table(live, today)
+    util.embed_table(README, table, START_MARKER, END_MARKER)
 
-    def replace(m):
-        nonlocal total
-        new_body, n = process_table_body(m.group(2), today)
-        total += n
-        return m.group(1) + new_body + m.group(3)
-
-    new_content = TABLE_RE.sub(replace, content)
-
-    if new_content != content:
-        with open(README, "w") as f:
-            f.write(new_content)
+    changed = count_status_changes(extract_table(before), table)
 
     # Refresh the live stats banner (status counts may have changed). Surface a
     # failure as a workflow annotation so a stale banner isn't shipped silently.
@@ -151,11 +99,11 @@ def main():
     except Exception as e:
         util.warn(f"could not regenerate stats banner (it may be stale): {e}")
 
-    print(f"Updated {total} row(s).")
+    print(f"Updated {changed} row(s).")
     gh_out = os.environ.get("GITHUB_OUTPUT")
     if gh_out:
         with open(gh_out, "a") as f:
-            f.write(f"changes={total}\n")
+            f.write(f"changes={changed}\n")
 
 
 if __name__ == "__main__":
