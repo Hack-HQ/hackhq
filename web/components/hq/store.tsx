@@ -141,12 +141,15 @@ export function HQProvider({ children }: { children: React.ReactNode }) {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ entries: local }),
             });
-            if (imported.ok) {
-              const merged = await imported.json();
-              if (merged?.synced === true) {
-                entries = parseTrackerEntries(merged.entries);
-              }
-            }
+            // A failed handover must not be marked done: setting the flag here
+            // would lose these rows for good, and adopting the server's list
+            // below would wipe them from this browser too. Stay local instead —
+            // the next visit retries the whole handover. (A thrown fetch takes
+            // the catch below and bails the same way.)
+            if (!imported.ok) return;
+            const merged = await imported.json();
+            if (merged?.synced !== true) return;
+            entries = parseTrackerEntries(merged.entries);
           }
           localStorage.setItem(LS_IMPORTED_KEY, "1");
         }
