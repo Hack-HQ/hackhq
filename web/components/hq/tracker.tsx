@@ -222,13 +222,19 @@ function TrackerCard({
             {h.host}
           </div>
         </div>
+        {/* Hover-reveal is a desktop affordance: with no hover, touch users got
+            an invisible control. Below sm this is always visible and 44x44; from
+            sm up it reverts exactly to the hover-revealed, auto-sized button.
+            The negative margin absorbs into the card's padding so the larger hit
+            box costs no layout. */}
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onRemove();
           }}
           aria-label="Remove"
-          className="text-paper/25 opacity-0 transition group-hover:opacity-100 hover:text-coral"
+          className="-m-2 flex h-11 w-11 shrink-0 items-center justify-center text-paper/25 opacity-100 transition hover:text-coral sm:m-0 sm:h-auto sm:w-auto sm:opacity-0 sm:group-hover:opacity-100"
         >
           ✕
         </button>
@@ -250,7 +256,7 @@ function TrackerCard({
               onMoveStage(prevStage.id);
             }}
             aria-label={`Move ${h.title} to ${prevStage.label}`}
-            className="rounded-full border border-white/20 px-3 py-1 font-mono text-[9px] tracking-[0.14em] text-paper/80 transition hover:border-white/35 hover:bg-white/10"
+            className="inline-flex min-h-11 items-center rounded-full border border-white/20 px-3 py-1 font-mono text-[9px] tracking-[0.14em] text-paper/80 transition hover:border-white/35 hover:bg-white/10 sm:min-h-0"
           >
             ← {prevStage.label.toUpperCase()}
           </button>
@@ -263,7 +269,7 @@ function TrackerCard({
               onMoveStage(nextStage.id);
             }}
             aria-label={`Move ${h.title} to ${nextStage.label}`}
-            className="rounded-full border border-coral/40 px-3 py-1 font-mono text-[9px] tracking-[0.14em] text-coral transition hover:border-coral hover:bg-coral/12"
+            className="inline-flex min-h-11 items-center rounded-full border border-coral/40 px-3 py-1 font-mono text-[9px] tracking-[0.14em] text-coral transition hover:border-coral hover:bg-coral/12 sm:min-h-0"
           >
             {nextStage.label.toUpperCase()} →
           </button>

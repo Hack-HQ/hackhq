@@ -117,7 +117,14 @@ export function DetailModal() {
         {/* Body */}
         <div className="px-7 py-6">
           <div className="kicker text-coral">{h.host}</div>
-          <h3 id={titleId} className="display mt-2 text-[clamp(1.8rem,4vw,2.6rem)] text-paper">
+          {/* break-words: 4vw never reaches the 1.8rem clamp floor at phone
+              widths, so the title is locked at 28.8px, and Syncopate Bold costs
+              ~25.8px per capital. Real titles carry unbreakable tokens —
+              "(Pre-Registration" needs 377px against a 240px body box at 320px —
+              which ran past the panel and were clipped by its overflow-hidden.
+              overflow-wrap only breaks a word that cannot fit alone, so every
+              width >= 640px renders byte-identically to before. */}
+          <h3 id={titleId} className="display mt-2 break-words text-[clamp(1.8rem,4vw,2.6rem)] text-paper">
             {h.title}
           </h3>
           {h.tagline && (
@@ -141,15 +148,21 @@ export function DetailModal() {
           </div>
 
           {/* Prize row */}
-          <div className="mt-6 flex items-center justify-between rounded-2xl border border-white/10 bg-white/4 px-6 py-4">
-            <div>
+          {/* Stacked below sm. At 320px this row's content box is 190px, but
+              every prize string in the data exceeds it once the countdown is
+              beside it — "$44,000+ in prizes" by 40px, the longest entry by
+              127px — and the overflow was clipped by the panel, cutting off the
+              countdown, which is the primary urgency signal. break-words is
+              needed too: "participants." alone measures 228.9px. */}
+          <div className="mt-6 flex flex-col items-start gap-4 rounded-2xl border border-white/10 bg-white/4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6">
+            <div className="min-w-0">
               <div className="kicker text-[9px] text-paper/40">Prize pool</div>
-              <div className="font-display text-2xl font-semibold tracking-tight text-paper">
+              <div className="font-display text-2xl font-semibold tracking-tight break-words text-paper">
                 {h.prize ?? "See website"}
               </div>
             </div>
             {cd && (
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <div className="kicker text-[9px] text-paper/40">Countdown</div>
                 <div
                   className="font-mono text-lg font-bold tracking-tight"
@@ -162,12 +175,18 @@ export function DetailModal() {
           </div>
 
           {/* Actions */}
-          <div className="mt-6 flex flex-wrap gap-3">
+          {/* Stacked below sm. flex-wrap never fired here: flex-1 gives the CTA
+              a hypothetical main size of 0, so the pair stayed side by side and
+              the link was squeezed to 139px at 375px while "VISIT WEBSITE ↗"
+              needs 199px — the primary CTA's label broke across two lines
+              inside its own pill. Trimming padding cannot rescue it; the widest
+              the CTA can ever be beside the save button is 166.5px. */}
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <a
               href={safeHttpUrl(h.url)}
               target="_blank"
               rel="noreferrer"
-              className="flex-1 rounded-full bg-coral px-7 py-4 text-center font-mono text-[12px] font-bold tracking-[0.18em] text-paper transition hover:bg-coral-bright"
+              className="w-full rounded-full bg-coral px-7 py-4 text-center font-mono text-[12px] font-bold tracking-[0.18em] text-paper transition hover:bg-coral-bright sm:flex-1"
             >
               {h.state === "opens_soon" ? "VISIT WEBSITE ↗" : "REGISTER ↗"}
             </a>

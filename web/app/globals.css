@@ -201,6 +201,35 @@ body {
   transform: scale(1.45);
 }
 
+/* Touch hit area for the map pins.
+   The dot is 14px. Opening a hackathon is the only thing the globe does, and a
+   14px target is a third of the 44px minimum in each axis — a near-miss lands
+   on the canvas, whose click handler dismisses instead of opening. This grows
+   the *hit* area to 44x44 without touching a pixel of the visible dot.
+
+   `.hq-marker` is `position: absolute` already: mapbox adds `.mapboxgl-marker`
+   to whatever element you hand `new Marker({element})`, and that class carries
+   `position:absolute;top:0;left:0`. So the pseudo-element anchors to the dot
+   with no extra positioning here.
+
+   Behind a coarse-pointer query on purpose. Applied unconditionally it would
+   fire the hover popup from 15px of empty space on desktop, and neighbouring
+   pins' zones would overlap. `pointer: coarse` is included alongside
+   `hover: none` so touch-first hybrids — touchscreen laptops, tablets in
+   desktop mode — that still report `hover: hover` get the larger target too.
+
+   This makes individual pins tappable; it does not disambiguate dense
+   clusters, where the 44px discs overlap and the last pin in DOM order wins.
+   That ambiguity already exists at 14px, and pinch-zoom separates them. */
+@media (hover: none), (pointer: coarse) {
+  .hq-marker::after {
+    content: "";
+    position: absolute;
+    inset: -15px; /* 14 + (15 * 2) = 44 */
+    border-radius: 9999px;
+  }
+}
+
 .hq-marker[data-state="open"] {
   background: #17b26a;
   box-shadow: 0 0 0 5px rgba(23, 178, 106, 0.25), 0 0 14px rgba(23, 178, 106, 0.8);

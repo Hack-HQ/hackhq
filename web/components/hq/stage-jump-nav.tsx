@@ -3,8 +3,13 @@
 import { useEffect, useRef } from "react";
 import { RESOURCE_STAGES } from "@/lib/resources";
 
+// min-h-11 below sm: these pills are the only in-page navigation on /resources
+// at mobile and each computed to 35px — text-[10px] sets font-size only, so it
+// inherits preflight's line-height 1.5 (15px) plus py-2.5, and adjacent targets
+// sit just 4px apart. inline-flex items-center is load-bearing: a bare
+// min-height on an inline anchor would not apply.
 const LINK =
-  "shrink-0 rounded-full px-4 py-2.5 font-mono text-[10px] tracking-[0.18em] text-paper/70 transition hover:bg-white/10 hover:text-paper sm:text-[11px]";
+  "inline-flex min-h-11 shrink-0 items-center rounded-full px-4 py-2.5 font-mono text-[10px] tracking-[0.18em] text-paper/70 transition hover:bg-white/10 hover:text-paper sm:min-h-0 sm:text-[11px]";
 
 /**
  * The stage rail, pinned below the nav pill.
