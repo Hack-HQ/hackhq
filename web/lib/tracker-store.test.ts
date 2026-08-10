@@ -26,6 +26,9 @@ const calls: Call[] = [];
 let chainResult: { data: unknown; error: unknown } = { data: [], error: null };
 // Result the `.maybeSingle()` read inside an upsert resolves to.
 let singleResult: { data: unknown; error: unknown } = { data: null, error: null };
+// Result `.rpc()` resolves to. The atomic upsert function `returns table`, so a
+// real client hands back a one-row array.
+let rpcResult: { data: unknown; error: unknown } = { data: [], error: null };
 
 const builder: Record<string, unknown> = {
   from: (t: string) => (calls.push(["from", t]), builder),
@@ -35,6 +38,9 @@ const builder: Record<string, unknown> = {
     calls.push(["upsert", payload, opts]), builder
   ),
   delete: () => (calls.push(["delete"]), builder),
+  rpc: (fn: string, args: unknown) => (
+    calls.push(["rpc", fn, args]), Promise.resolve(rpcResult)
+  ),
   maybeSingle: () => (calls.push(["maybeSingle"]), Promise.resolve(singleResult)),
   // Makes the builder awaitable: `await client.from(...).select(...).eq(...)`.
   then: (onFulfilled: (v: unknown) => unknown, onRejected?: (e: unknown) => unknown) =>
@@ -67,12 +73,19 @@ function lastUpsert(): { payload: unknown; opts: unknown } | undefined {
   return c ? { payload: c[1], opts: c[2] } : undefined;
 }
 
+function lastRpc(): { fn: unknown; args: unknown } | undefined {
+  const c = [...calls].reverse().find((c) => c[0] === "rpc");
+  return c ? { fn: c[1], args: c[2] } : undefined;
+}
+
 beforeEach(() => {
   process.env.SUPABASE_URL = "https://example.supabase.co";
   process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role-key";
   calls.length = 0;
   chainResult = { data: [], error: null };
   singleResult = { data: null, error: null };
+  // Reset too, or the error case below leaks into whichever test runs next.
+  rpcResult = { data: [], error: null };
 });
 
 describe("listTracker", () => {
@@ -97,36 +110,52 @@ describe("listTracker", () => {
 });
 
 describe("upsertTrackerRow", () => {
-  it("scopes the pre-read by user_id AND hackathon_id and stamps user_id on the write", async () => {
+  it("stamps the caller's user_id on the write and never another user's", async () => {
+    rpcResult = { data: [{ stage: "applied", is_win: false }], error: null };
+
     const entry = await upsertTrackerRow(USER, ID_A, { stage: "applied" });
 
-    // The existence read is scoped to this user's row for this hackathon only.
-    expect(eqFilters("user_id")).toEqual([USER]);
-    expect(eqFilters("hackathon_id")).toEqual([ID_A]);
-
-    // The written row carries the caller's id — a client body can't set it.
-    const up = lastUpsert();
-    expect(up?.payload).toMatchObject({
-      user_id: USER,
-      hackathon_id: ID_A,
-      stage: "applied",
-      is_win: false,
-    });
-    expect(up?.opts).toMatchObject({ onConflict: "user_id,hackathon_id" });
+    // The row is written for the caller resolved from the Clerk session — a
+    // client request body has no way to reach p_user_id.
+    const call = lastRpc();
+    expect(call?.fn).toBe("upsert_tracker_row");
+    expect(call?.args).toMatchObject({ p_user_id: USER, p_hackathon_id: ID_A });
+    expect(call?.args).not.toMatchObject({ p_user_id: OTHER });
     expect(entry).toEqual({ hackathonId: ID_A, stage: "applied", isWin: false });
   });
 
-  it("preserves the stored stage/win when the patch omits them (partial update)", async () => {
-    singleResult = { data: { stage: "going", is_win: true }, error: null };
+  it("does the partial merge in one statement instead of reading first", async () => {
+    // The guarantee this protects: a concurrent PUT must not be able to observe
+    // a half-applied update. Reading the row and merging in JS left a window
+    // where two requests read the same snapshot and the second clobbered the
+    // first, so there must be no pre-read at all.
+    rpcResult = { data: [{ stage: "going", is_win: false }], error: null };
+
+    await upsertTrackerRow(USER, ID_A, { isWin: false });
+
+    expect(calls.some((c) => c[0] === "maybeSingle")).toBe(false);
+    expect(calls.some((c) => c[0] === "upsert")).toBe(false);
+    expect(lastRpc()?.fn).toBe("upsert_tracker_row");
+  });
+
+  it("sends null for an omitted field so the database keeps the stored value", async () => {
+    rpcResult = { data: [{ stage: "going", is_win: false }], error: null };
 
     const entry = await upsertTrackerRow(USER, ID_A, { isWin: false });
 
+    // null, not a default: "leave stage alone" has to be distinguishable from
+    // "set stage to interested", or recording a win would reset the pipeline.
+    expect(lastRpc()?.args).toMatchObject({ p_stage: null, p_is_win: false });
+    // The row the function returns is what the caller gets back, not the patch.
     expect(entry).toEqual({ hackathonId: ID_A, stage: "going", isWin: false });
-    expect(lastUpsert()?.payload).toMatchObject({
-      user_id: USER,
-      stage: "going",
-      is_win: false,
-    });
+  });
+
+  it("surfaces a database error rather than reporting a write that did not land", async () => {
+    rpcResult = { data: null, error: { message: "deadlock detected" } };
+
+    await expect(upsertTrackerRow(USER, ID_A, { stage: "applied" })).rejects.toThrow(
+      "deadlock detected",
+    );
   });
 });
 

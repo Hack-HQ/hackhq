@@ -10,8 +10,10 @@
    ## Why the service role, and what still guards the rows
 
    The client is built with the service role key, which bypasses RLS. Ownership
-   is therefore enforced here, by the `.eq("user_id", userId)` on every read,
-   update and delete and by writing `user_id` explicitly on every insert.
+   is therefore enforced here, by the `.eq("user_id", userId)` on every read and
+   delete, by writing `user_id` explicitly on every insert, and by passing it as
+   `p_user_id` to the upsert function — which stamps it onto the row rather than
+   taking the caller's word for it.
 
    The RLS policies in the migration are not redundant. They mean `anon` and
    `authenticated` cannot touch this table at all, so nothing reachable with a
@@ -79,32 +81,34 @@ export async function upsertTrackerRow(
   hackathonId: string,
   patch: { stage?: Stage; isWin?: boolean },
 ): Promise<TrackerEntry> {
-  const { data: existing, error: readError } = await client()
-    .from(TABLE)
-    .select("stage, is_win")
-    .eq("user_id", userId)
-    .eq("hackathon_id", hackathonId)
-    .maybeSingle();
-  if (readError) throw new Error(readError.message);
-
-  const stage: Stage = patch.stage ?? (existing?.stage as Stage) ?? "interested";
-  const isWin = patch.isWin ?? existing?.is_win === true;
-
-  const { error } = await client()
-    .from(TABLE)
-    .upsert(
-      {
-        user_id: userId,
-        hackathon_id: hackathonId,
-        stage,
-        is_win: isWin,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id,hackathon_id" },
-    );
+  // One statement rather than read-merge-write. Reading the row here and
+  // merging the patch in JS left a window where two concurrent PUTs for the
+  // same (user, hackathon) both read the same snapshot and the second write
+  // clobbered the first — losing exactly the field the other request was
+  // preserving. public.upsert_tracker_row does the coalesce inside the same
+  // ON CONFLICT DO UPDATE that writes, so there is nothing to interleave with.
+  // A null argument means "leave that column at its stored value", which is how
+  // an omitted patch field is expressed without a prior read.
+  const { data, error } = await client().rpc("upsert_tracker_row", {
+    p_user_id: userId,
+    p_hackathon_id: hackathonId,
+    p_stage: patch.stage ?? null,
+    p_is_win: patch.isWin ?? null,
+  });
   if (error) throw new Error(error.message);
 
-  return { hackathonId, stage, isWin };
+  // `returns table (...)` arrives as a one-row array. Fall back to the patch if
+  // a client ever hands back a bare object instead, so the caller still gets
+  // the values it asked for rather than undefined.
+  const row = (Array.isArray(data) ? data[0] : data) as
+    | { stage?: string; is_win?: boolean }
+    | undefined;
+
+  return {
+    hackathonId,
+    stage: (row?.stage as Stage) ?? patch.stage ?? "interested",
+    isWin: row?.is_win ?? patch.isWin ?? false,
+  };
 }
 
 export async function deleteTrackerRow(
