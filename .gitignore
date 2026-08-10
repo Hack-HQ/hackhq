@@ -1,3 +1,15 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# tool caches
+.freebuff/
+.wrangler/
+
+# python
+__pycache__/
+.pytest_cache/
+
 .github/scripts/__pycache__/
 digest.md
 deadline_proposals.md

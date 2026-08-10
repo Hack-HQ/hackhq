@@ -2,15 +2,23 @@ import { describe, it, expect } from "vitest";
 import {
   parsePrizeValue,
   deriveState,
+  daysUntilAction,
   daysUntilDeadline,
   siteStats,
   splitTitle,
   themesFor,
+  CLOSING_SOON_DAYS,
 } from "./listings";
 import type { Hackathon } from "./types-hq";
 
 // Minimal raw listing (deriveState only reads state/active).
-const raw = (over: { state?: string; active?: boolean }) => ({
+const raw = (over: {
+  state?: string;
+  active?: boolean;
+  deadline?: string;
+  startDate?: string;
+  endDate?: string;
+}) => ({
   id: "1",
   company_name: "X",
   title: "T",
@@ -98,11 +106,52 @@ describe("deriveState from deadline", () => {
     expect(deriveState(raw({}), daysLeft)).toBe("closed");
   });
 
-  it("closing_soon at 7 days out, open at 8", () => {
-    expect(deriveState(raw({}), daysUntilDeadline("2026-07-16", today))).toBe(
+  it("closing_soon at 14 days out, open at 15", () => {
+    // Mirrors util.CLOSING_SOON_DAYS on the README side; if the two windows
+    // drift apart the same listing shows a different status in each place.
+    expect(CLOSING_SOON_DAYS).toBe(14);
+    expect(deriveState(raw({}), daysUntilDeadline("2026-07-23", today))).toBe(
       "closing_soon",
     );
-    expect(deriveState(raw({}), daysUntilDeadline("2026-07-17", today))).toBe("open");
+    expect(deriveState(raw({}), daysUntilDeadline("2026-07-24", today))).toBe("open");
+  });
+});
+
+// Mirrors util.urgency_date on the README side.
+describe("daysUntilAction", () => {
+  const today = localMidnight(2026, 6, 9); // Jul 9, 2026
+
+  it("uses the deadline when one is recorded", () => {
+    expect(daysUntilAction(raw({ deadline: "2026-07-13" }), today)).toBe(4);
+  });
+
+  it("lets the deadline win over the event's own dates", () => {
+    const r = raw({ deadline: "2026-08-31", startDate: "2026-07-10" });
+    expect(daysUntilAction(r, today)).toBe(daysUntilDeadline("2026-08-31", today));
+    expect(deriveState(r, daysUntilAction(r, today))).toBe("open");
+  });
+
+  it("falls back to the event start when there is no deadline", () => {
+    const r = raw({ startDate: "2026-07-12", endDate: "2026-07-14" });
+    expect(daysUntilAction(r, today)).toBe(3);
+    expect(deriveState(r, daysUntilAction(r, today))).toBe("closing_soon");
+  });
+
+  it("falls back to the end date while an event is already running", () => {
+    const r = raw({ startDate: "2026-07-07", endDate: "2026-07-11" });
+    expect(daysUntilAction(r, today)).toBe(2);
+    expect(deriveState(r, daysUntilAction(r, today))).toBe("closing_soon");
+  });
+
+  it("returns null for a finished event with no deadline", () => {
+    const r = raw({ startDate: "2026-07-01", endDate: "2026-07-03" });
+    expect(daysUntilAction(r, today)).toBeNull();
+    // null, not a negative number: absent dates must not force it CLOSED.
+    expect(deriveState(r, daysUntilAction(r, today))).toBe("open");
+  });
+
+  it("returns null when the listing carries no dates at all", () => {
+    expect(daysUntilAction(raw({}), today)).toBeNull();
   });
 });
 
@@ -160,6 +209,8 @@ describe("deriveState", () => {
     expect(deriveState(raw({}), -1)).toBe("closed");
     expect(deriveState(raw({}), 0)).toBe("closing_soon");
     expect(deriveState(raw({}), 7)).toBe("closing_soon");
+    expect(deriveState(raw({}), 14)).toBe("closing_soon");
+    expect(deriveState(raw({}), 15)).toBe("open");
     expect(deriveState(raw({}), 30)).toBe("open");
     expect(deriveState(raw({}), null)).toBe("open");
   });

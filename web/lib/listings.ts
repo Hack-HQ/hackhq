@@ -59,9 +59,36 @@ export function parsePrizeValue(prize: string | undefined): number {
   return n * mult;
 }
 
+// How many days out still counts as CLOSING SOON. Keep this in sync with
+// CLOSING_SOON_DAYS in .github/scripts/util.py, which derives the same badge for
+// the README — if the two windows disagree, the same listing shows a different
+// status on the site than in the list.
+export const CLOSING_SOON_DAYS = 14;
+
 export function daysUntilDeadline(deadline: string, today: Date): number {
   const d = new Date(`${deadline}T00:00:00`);
   return Math.round((d.getTime() - today.getTime()) / 86_400_000);
+}
+
+/**
+ * Days until the date a listing has to be acted on, or null when it has none.
+ *
+ * An application deadline wins when one exists — it is the date you must
+ * register by. With no deadline recorded, the event itself is the thing to act
+ * on: its start date while still upcoming, or its end date once it is already
+ * running (a hackathon you can still join for three more days is exactly what a
+ * closing-soon badge is for).
+ *
+ * Mirrors util.urgency_date in .github/scripts/util.py.
+ */
+export function daysUntilAction(raw: RawListing, today: Date): number | null {
+  if (raw.deadline) return daysUntilDeadline(raw.deadline, today);
+  for (const value of [raw.startDate, raw.endDate]) {
+    if (!value) continue;
+    const days = daysUntilDeadline(value, today);
+    if (days >= 0) return days;
+  }
+  return null;
 }
 
 export function deriveState(raw: RawListing, daysLeft: number | null): HackState {
@@ -74,7 +101,7 @@ export function deriveState(raw: RawListing, daysLeft: number | null): HackState
   if (raw.state === "opens_soon") return "opens_soon";
   if (daysLeft !== null) {
     if (daysLeft < 0) return "closed";
-    if (daysLeft <= 7) return "closing_soon";
+    if (daysLeft <= CLOSING_SOON_DAYS) return "closing_soon";
   }
   return "open";
 }
@@ -123,10 +150,11 @@ export function loadHackathons(): Hackathon[] {
       // present but empty, and an empty string is no more mappable than a
       // missing one. `??` would let it through and report a blank name.
       const location = r.locations?.[0]?.trim() || "TBA";
-      let daysLeft: number | null = null;
-      if (r.deadline) {
-        daysLeft = daysUntilDeadline(r.deadline, today);
-      }
+      // Days until the listing has to be acted on — its deadline when it has
+      // one, otherwise its own event dates. Driving the countdown, the badge and
+      // the sort off one number keeps a card from reading "12 days left" while
+      // its badge says something else.
+      const daysLeft: number | null = daysUntilAction(r, today);
       const { title, tagline } = splitTitle(r.title);
 
       let lat: number | null = null;
