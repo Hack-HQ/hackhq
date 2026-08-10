@@ -1048,6 +1048,26 @@
     "startDate": "2026-08-03"
   },
   {
+    "id": "c801890c-0461-5c2d-b2f6-9e302180451b",
+    "company_name": "Peddie Computer Science Club",
+    "title": "PeddieHacks 2026 \u2014 Aug 14\u201316, 2026",
+    "url": "https://peddiehacks-2026.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$800+ in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "deadline": "2026-08-16",
+    "startDate": "2026-08-14",
+    "endDate": "2026-08-16",
+    "date_posted": 1786343222,
+    "date_updated": 1786343222,
+    "source": "akeight"
+  },
+  {
     "id": "4f232f08-b904-4d75-a0e2-a31c2b247a5b",
     "company_name": "Pixel Forge",
     "title": "Pixel Forge AI Hackathon",
