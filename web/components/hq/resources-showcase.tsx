@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 
 /* The resources feature, rebuilt as a horizontal "expanding panels" accordion
@@ -18,6 +18,12 @@ type Service = {
   label: string;
   href: string;
   icon: React.ReactNode;
+  /** Card artwork (#220). Re-encoded to 600px wide, CRF 30, audio stripped,
+      +faststart — 3.4MB of source became 1.3MB across all four. */
+  video: string;
+  /** First frame. This is all that loads until a panel is opened, and all a
+      reduced-motion visitor ever sees. */
+  poster: string;
 };
 
 const SERVICES: Service[] = [
@@ -28,6 +34,8 @@ const SERVICES: Service[] = [
     label: "basics",
     href: "/resources#getting-started",
     icon: <IconFlag />,
+    video: "/resource-getting-started.mp4",
+    poster: "/resource-getting-started-poster.jpg",
   },
   {
     n: "02",
@@ -36,6 +44,8 @@ const SERVICES: Service[] = [
     label: "crew",
     href: "/resources#finding-people",
     icon: <IconUsers />,
+    video: "/resource-finding-people.mp4",
+    poster: "/resource-finding-people-poster.jpg",
   },
   {
     n: "03",
@@ -44,6 +54,8 @@ const SERVICES: Service[] = [
     label: "season",
     href: "/resources#leveling-up",
     icon: <IconTrophy />,
+    video: "/resource-leveling-up.mp4",
+    poster: "/resource-leveling-up-poster.jpg",
   },
   {
     n: "04",
@@ -52,6 +64,8 @@ const SERVICES: Service[] = [
     label: "toolkit",
     href: "/resources#tools",
     icon: <IconWrench />,
+    video: "/resource-tools.mp4",
+    poster: "/resource-tools-poster.jpg",
   },
 ];
 
@@ -149,11 +163,7 @@ function ServicePanel({
         <p className="mt-3 max-w-md text-sm leading-relaxed text-white/85">
           {s.desc}
         </p>
-        <div className="mt-6 flex-1 overflow-hidden rounded-2xl bg-gradient-to-br from-paper/25 to-paper/5">
-          <div className="grid h-full w-full place-items-center text-white/25">
-            <div className="scale-[2.2]">{s.icon}</div>
-          </div>
-        </div>
+        <PanelMedia s={s} active={active} />
       </div>
 
       {/* bottom label */}
@@ -165,6 +175,48 @@ function ServicePanel({
         <span className={active ? "opacity-90" : "opacity-60"}>{s.icon}</span>
         <span className="text-sm">{s.label}</span>
       </div>
+    </div>
+  );
+}
+
+/* ---- Card artwork (#220) ----
+
+   Only the open panel plays. `preload="none"` means nothing but the poster is
+   fetched until a panel is actually opened, so the four clips cost 0 bytes on
+   first paint and at most one of them ever decodes at a time. Under
+   prefers-reduced-motion the video is never started, leaving the poster — which
+   is why every clip needs one that reads on its own.
+
+   Decorative, so aria-hidden and no alt: the panel is already a labelled link
+   ("Open {title} resources") above a visible heading and description, and
+   narrating "VHS titling reading BUILD" would add noise, not information. */
+function PanelMedia({ s, active }: { s: Service; active: boolean }) {
+  const reduceMotion = useReducedMotion();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (active && !reduceMotion) {
+      video.play().catch(() => {});
+      return;
+    }
+    video.pause();
+  }, [active, reduceMotion]);
+
+  return (
+    <div className="mt-6 flex-1 overflow-hidden rounded-2xl bg-gradient-to-br from-paper/25 to-paper/5">
+      <video
+        ref={videoRef}
+        className="h-full w-full object-cover"
+        src={s.video}
+        poster={s.poster}
+        muted
+        loop
+        playsInline
+        preload="none"
+        aria-hidden
+      />
     </div>
   );
 }
@@ -187,6 +239,21 @@ function MobileServiceCard({ s }: { s: Service }) {
       </div>
       <h3 className="mt-4 text-xl font-semibold text-paper">{s.title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-paper/60">{s.desc}</p>
+      {/* The still, not the clip. Four autoplaying videos stacked down a phone
+          would burn data and battery for decoration, and only one can be on
+          screen at a time anyway. Lazy so it costs nothing until scrolled to.
+          Decorative — the card is a link with a visible heading. */}
+      <div className="mt-5 overflow-hidden rounded-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={s.poster}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          decoding="async"
+          className="h-40 w-full object-cover"
+        />
+      </div>
       <div className="mt-5 flex items-center gap-3 text-paper/45">
         {s.icon}
         <span className="text-sm">{s.label}</span>
