@@ -7,7 +7,7 @@ import json
 import os
 import re
 import tempfile
-from datetime import datetime
+from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
 # Constants
@@ -15,6 +15,12 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 LISTINGS_FILE = os.path.join(SCRIPT_DIR, "listings.json")
 README_FILE = os.path.join(SCRIPT_DIR, "..", "..", "README.md")
 PST = ZoneInfo("America/Los_Angeles")
+
+# How many days out still counts as 🔥 CLOSING SOON. Keep this in sync with
+# CLOSING_SOON_DAYS in web/lib/listings.ts — the site derives the same badge for
+# the globe and the deck, and if the two windows disagree the same listing shows
+# a different status on the site than in the README.
+CLOSING_SOON_DAYS = 14
 
 # Required fields for each listing
 REQUIRED_FIELDS = [
@@ -175,17 +181,36 @@ def is_featured(listing):
     return bool(listing.get("featured", False))
 
 
-def sort_listings(listings):
-    """Sort listings: featured first, then active, newest, then host name."""
-    return sorted(
-        listings,
-        key=lambda x: (
-            not is_featured(x),           # Featured pinned to top
-            not x.get("active", False),   # Active first
-            -x.get("date_posted", 0),     # Newest first
-            x.get("company_name", "").lower()
+def sort_listings(listings, today=None):
+    """Sort listings: closing soon first, then featured, active, newest, host.
+
+    Closing-soon outranks even a featured pin, and sorts by soonest act-by date
+    within its own block: the whole point of the badge is that those rows are
+    about to become unjoinable, so burying one under a pin would defeat it. A
+    featured listing that is closing soon is already in that top block.
+
+    Sorting on the same rule that renders the badge is deliberate — computing
+    the order and the badge from two different places is how the README ended up
+    showing closing-soon rows scattered through the middle of the table.
+    """
+    if today is None:
+        today = today_pst()
+
+    def key(listing):
+        closing = is_closing_soon(listing, today)
+        # date.max parks every other row behind the closing-soon block while
+        # keeping this slot a single comparable type for all listings.
+        due = urgency_date(listing, today) if closing else None
+        return (
+            not closing,                        # Closing soon pinned to top
+            due or date.max,                    # ...soonest act-by date first
+            not is_featured(listing),           # Featured next
+            not listing.get("active", False),   # Active first
+            -listing.get("date_posted", 0),     # Newest first
+            listing.get("company_name", "").lower(),
         )
-    )
+
+    return sorted(listings, key=key)
 
 
 def sanitize_table_cell(value):
@@ -271,13 +296,77 @@ def format_website_link(url):
 
 
 def resolve_state(listing):
-    """Return one of 'open', 'opens_soon', 'closed' for a listing."""
+    """Return the stored state: one of 'open', 'opens_soon', 'closed'.
+
+    This is the *base* state as recorded in listings.json. 'closing_soon' is
+    never stored, because it is a function of today's date and would go stale
+    the moment it was written; use :func:`display_state` to render a listing.
+    """
     if listing.get("active") is False:
         return "closed"
     state = listing.get("state")
     if state in ("open", "opens_soon", "closed"):
         return state
     return "open"
+
+
+def today_pst():
+    """Today's date in the project's reference timezone."""
+    return datetime.now(tz=PST).date()
+
+
+def urgency_date(listing, today):
+    """The date by which someone has to act on a listing, or None.
+
+    An application deadline is authoritative when one exists — it is the date
+    you must register by, and it is the only thing a "closing soon" badge can
+    honestly mean. With no deadline recorded, the event itself is the thing to
+    act on: the start date while it is still upcoming, and the end date once it
+    is already running (a hackathon you can still join for three more days is
+    exactly what a closing-soon badge is for).
+
+    Only the structured `deadline` / `startDate` / `endDate` fields are read.
+    Dates written into the Hackathon *title* are never parsed — harvesting those
+    is what made cuHacking look like it was closing when it was not (issue #70).
+    """
+    deadline = listing.get("deadline")
+    if deadline:
+        return parse_deadline_date(deadline)
+    for field in ("startDate", "endDate"):
+        value = listing.get(field)
+        if value:
+            parsed = parse_deadline_date(value)
+            if parsed >= today:
+                return parsed
+    return None
+
+
+def is_closing_soon(listing, today):
+    """True when an open listing is within CLOSING_SOON_DAYS of its act-by date.
+
+    Only listings that are actually open can be closing soon: an 'opens_soon'
+    listing has nothing to close yet, and a closed one has already closed.
+    """
+    if resolve_state(listing) != "open":
+        return False
+    target = urgency_date(listing, today)
+    if target is None:
+        return False
+    return 0 <= (target - today).days <= CLOSING_SOON_DAYS
+
+
+def display_state(listing, today=None):
+    """Return the state to render: 'open', 'closing_soon', 'opens_soon', 'closed'.
+
+    Derived fresh from today's date on every render, which is what keeps the
+    badge from going stale between runs.
+    """
+    if today is None:
+        today = today_pst()
+    state = resolve_state(listing)
+    if state == "open" and is_closing_soon(listing, today):
+        return "closing_soon"
+    return state
 
 
 def format_date(timestamp):
