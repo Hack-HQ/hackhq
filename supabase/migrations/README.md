@@ -28,6 +28,23 @@ top saying so and saying how:
 | `20260722145817_rls_policies.sql` | executable SQL — gained four `drop policy if exists` lines |
 | `20260722144205_add_deck_columns.sql` | comments only — a stale claim about enforcement, corrected |
 
+One file was **applied by hand**, not through `apply_migration`, so it is absent
+from `list_migrations` and `ls` here returns one more entry than the recorded
+ledger does:
+
+| file | state |
+| --- | --- |
+| `20260725154500_user_hackathons.sql` | applied via the Supabase SQL Editor on 2026-07-26; never sent to `apply_migration` |
+
+This project has no Supabase CLI or MCP configured, so the migration was run
+directly in the dashboard. That records nothing in
+`supabase_migrations.schema_migrations`, so its timestamp stays a placeholder
+rather than a recorded version, the two lists do not align, and `supabase db
+push` would try to replay it if a CLI is ever wired up. If you later adopt the
+CLI/MCP, reconcile by inserting the version into the ledger (or re-running it
+through `apply_migration` against a fresh database) rather than trusting the
+filename alone.
+
 The three SQL divergences all exist so the chain replays cleanly onto a fresh
 database. That makes the files the runnable artefact and the recorded statements
 the historical record; they are not interchangeable, and where they disagree the
@@ -53,6 +70,16 @@ They predate this work. `.github/scripts/seed_supabase.py` reads them under thos
 names, so renaming them is a breaking change for no benefit.
 
 **`host` is `company_name` renamed**, done by `build_row` in that same script.
+
+**`user_hackathons` has no foreign key to `hackathons`.** It is the per-user
+tracker (stage + win flag) added for #226, keyed on the Clerk `sub` like
+`submitted_by`. An FK would look obvious and be wrong: this table's `hackathon_id`
+comes from `listings.json`, which the app renders from directly, while
+`hackathons` trails it by up to an hour — so a user saving a listing added since
+the last sync would hit a constraint violation for a listing that plainly exists
+on screen. The id is checked against the live listing set in the app layer
+instead, and `user_id` defaults from `auth.jwt()` rather than being sent by the
+client, so the owner cannot be spoofed even before the policies are consulted.
 
 ## The two write paths
 
