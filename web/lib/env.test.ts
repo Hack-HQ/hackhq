@@ -95,6 +95,9 @@ describe("validateEnv", () => {
       mapbox: true,
       clerk: "enabled",
       trackerSync: "enabled",
+      // No key in this fixture: analytics off is the intended default, and it
+      // must not warn — see lib/analytics.ts.
+      posthog: false,
     });
     expect(warn).not.toHaveBeenCalled();
   });
