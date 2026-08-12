@@ -196,6 +196,8 @@ Copy `.env.example` to `.env.local` (gitignored) and set the values you need.
 | `SUPABASE_URL` | For tracker sync | `lib/tracker-store.ts` | Tracker stays browser-local; `/api/tracker` reports `synced: false` |
 | `SUPABASE_SERVICE_ROLE_KEY` | For tracker sync | `lib/tracker-store.ts` | Same as above — both Supabase values are needed together, **and** Clerk must be configured or there is no user to attribute a row to |
 | `DATABASE_URL` | For DB scripts | `drizzle.config.ts` | `npm run db:*` commands fail fast before touching Supabase |
+| `NEXT_PUBLIC_POSTHOG_KEY` | No | `lib/analytics.ts` | Analytics is fully off — posthog-js is never downloaded |
+| `NEXT_PUBLIC_POSTHOG_HOST` | No | `lib/analytics.ts` | Defaults to `https://us.i.posthog.com` |
 
 The two keys are the only Clerk variables you need. The auth routes
 (`/auth/sign-in`, `/auth/sign-up`) and the post-sign-in landing (`/my`) are
@@ -210,6 +212,27 @@ Without them, the tracker still works locally; nothing is persisted server-side.
 
 To finish Clerk setup in the dashboard, enable Google and GitHub under social
 connections, and enable email/password under email authentication.
+
+## Analytics
+
+Product analytics (PostHog) is **optional and off by default**. To enable it,
+set `NEXT_PUBLIC_POSTHOG_KEY` (and optionally `NEXT_PUBLIC_POSTHOG_HOST`) and
+rebuild — without the key, the posthog-js chunk is never downloaded and no
+requests leave the browser.
+
+The integration is deliberately cookieless and anonymous (`lib/analytics.ts`):
+
+- **Collected:** SPA pageviews, plus two product events — `register_click`
+  (outbound register/apply links in the deck and detail modal) and
+  `globe_pin_click` (opening a pin's detail card on the globe). Events carry
+  the listing id/title, nothing about the visitor.
+- **Not collected:** no cookies or localStorage (in-memory persistence only),
+  no autocapture, no session recording, no surveys, no user identification or
+  person profiles. Visitors with Do Not Track or Global Privacy Control enabled
+  are never tracked at all.
+
+Because nothing is stored on the device and events are anonymous aggregate
+stats, this configuration does not require a consent banner.
 
 ## Scripts
 

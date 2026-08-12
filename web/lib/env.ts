@@ -10,6 +10,7 @@ export type EnvReport = {
   mapbox: boolean;
   clerk: Availability;
   trackerSync: Availability;
+  posthog: boolean;
 };
 
 let reported = false;
@@ -45,6 +46,9 @@ function availability(...flags: boolean[]): Availability {
 
 export function validateEnv(): EnvReport {
   const mapbox = Boolean(process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
+  // Reported for completeness only — an absent key is the intended default
+  // (analytics stays entirely off, see lib/analytics.ts), so no warning.
+  const posthog = Boolean(process.env.NEXT_PUBLIC_POSTHOG_KEY);
   const pub = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
   const secret = Boolean(process.env.CLERK_SECRET_KEY);
   const supabaseUrl = Boolean(process.env.SUPABASE_URL);
@@ -81,5 +85,5 @@ export function validateEnv(): EnvReport {
       );
     }
   }
-  return { mapbox, clerk, trackerSync };
+  return { mapbox, clerk, trackerSync, posthog };
 }

@@ -13,6 +13,7 @@ import {
   type DeckFormatFilter,
   type DeckStatusFilter,
 } from "@/lib/deck-order";
+import { capture } from "@/lib/analytics";
 import { safeHttpUrl } from "@/lib/url";
 import { useSelection, useTracker } from "./store";
 import { TrophyBadge } from "./trophy";
@@ -250,7 +251,10 @@ function HackRow({ h }: { h: Hackathon }) {
         href={safeHttpUrl(h.url)}
         target="_blank"
         rel="noreferrer"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          capture("register_click", { id: h.id, title: h.title, source: "deck" });
+        }}
         className="hidden rounded-full bg-register px-4 py-2 font-mono text-[9px] font-bold tracking-[0.15em] text-white transition hover:brightness-110 sm:block"
       >
         {h.state === "opens_soon" ? "SITE" : "GO"}

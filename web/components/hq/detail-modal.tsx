@@ -7,6 +7,7 @@ import {
   deadlineDisplay,
   eventDateDisplay,
 } from "@/lib/types-hq";
+import { capture } from "@/lib/analytics";
 import { lockScroll } from "@/lib/scroll-lock";
 import { safeHttpUrl } from "@/lib/url";
 import { useSelection, useTracker } from "./store";
@@ -188,6 +189,13 @@ export function DetailModal() {
               href={safeHttpUrl(h.url)}
               target="_blank"
               rel="noreferrer"
+              onClick={() =>
+                capture("register_click", {
+                  id: h.id,
+                  title: h.title,
+                  source: "detail_modal",
+                })
+              }
               className="w-full rounded-full bg-coral px-7 py-4 text-center font-mono text-[12px] font-bold tracking-[0.18em] text-paper transition hover:bg-coral-bright sm:flex-1"
             >
               {h.state === "opens_soon" ? "VISIT WEBSITE ↗" : "REGISTER ↗"}
