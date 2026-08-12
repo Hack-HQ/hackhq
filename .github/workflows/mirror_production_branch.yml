@@ -1,0 +1,61 @@
+# Mirror main onto the `vercel` branch, which the Vercel project deploys as
+# production (the dashboard's production branch has not been repointed to main;
+# that lives in a dashboard we can't reach from CI — see #223 / PR #236).
+#
+# Until the dashboard is fixed, `vercel` is a deploy mirror of main:
+#   - DO NOT commit or push to `vercel` directly; this workflow force-pushes
+#     main over it. All work lands on main.
+#   - Deleting this file is the correct cleanup once the Vercel project's
+#     production branch is switched to main in the dashboard.
+#
+# Why a schedule as well as push: the six listing bots push to main with the
+# default GITHUB_TOKEN, and token pushes never trigger `on: push` workflows
+# (the same loop-prevention test_workflows.py documents). Without the sweep,
+# exactly the automated commits this mirror exists to ship would be the ones
+# it never saw. Human pushes mirror instantly; bot commits ride the next
+# half-hour sweep — the bots run daily, so the lag is immaterial. The push to
+# `vercel` still reaches Vercel because deploys ride GitHub webhooks, which
+# fire for token pushes even though workflow triggers do not.
+
+name: Mirror main to production branch
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mirror-production
+  cancel-in-progress: true
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Fast-forward vercel to main
+        run: |
+          git fetch origin vercel
+          # Compare SHAs, not diffs: the branches are equal exactly when they
+          # point at the same commit, and this also stays clear of the
+          # working-tree `git diff --quiet` idiom test_workflows.py forbids.
+          if [ "$(git rev-parse origin/vercel)" = "$(git rev-parse main)" ]; then
+            echo "vercel already matches main - nothing to mirror"
+            exit 0
+          fi
+          # Force, not force-with-lease: this branch is a mirror by contract
+          # (see header), so main is always the truth and anything else on it
+          # is a mistake to overwrite.
+          git push origin main:vercel --force
+          echo "mirrored $(git rev-parse --short main) -> vercel"
