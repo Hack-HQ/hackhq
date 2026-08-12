@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-closing_soon.py — refresh the 🔥 [CLOSING SOON] badges in README.md.
+closing_soon.py — refresh the 🔥 [CLOSING SOON] badges in README.md and
+auto-close listings whose window has verifiably passed.
 
 A listing is closing soon when it is open and its act-by date is within
 util.CLOSING_SOON_DAYS. The act-by date is the application deadline, or — when
@@ -18,8 +19,12 @@ update_readmes.py run produce byte-identical output — including row order, whi
 puts closing-soon rows at the top, soonest first. Rewriting cells in place could
 not do that: the row order lives in the generator, not in the README text.
 
-Nothing is written back to listings.json. 'closing_soon' is a function of
-today's date, so storing it would go stale the moment the date rolled over.
+Before regenerating, expired listings are closed (util.close_expired) and the
+result saved back to listings.json. Unlike 'closing_soon' — a function of
+today's date that would go stale if stored — a passed deadline is a fact, and
+without a writer for it the README kept rendering ✅ OPEN on listings whose
+deadlines were days gone, until a human happened to run a weekly audit. This
+daily cron is that single writer; closures move rows to ARCHIVE.md here too.
 
 Idempotent — safe to run daily.
 """
@@ -30,9 +35,12 @@ import update_readmes
 import util
 
 README = os.path.join(os.path.dirname(__file__), "..", "..", "README.md")
+ARCHIVE = os.path.join(os.path.dirname(__file__), "..", "..", "ARCHIVE.md")
 
 START_MARKER = "<!-- HACKATHONS_TABLE_START -->"
 END_MARKER = "<!-- HACKATHONS_TABLE_END -->"
+ARCHIVE_START_MARKER = "<!-- ARCHIVE_TABLE_START -->"
+ARCHIVE_END_MARKER = "<!-- ARCHIVE_TABLE_END -->"
 
 
 def status_by_row(table):
@@ -69,25 +77,50 @@ def extract_table(content):
 
 
 def main():
-    listings = util.get_listings_from_json()
+    all_listings = util.get_listings_from_json()
 
     # Skip only the malformed listings, matching update_readmes.py: one bad
     # entry must not block the badge refresh for all the good ones.
-    valid, errors = util.partition_valid_listings(listings)
+    valid, errors = util.partition_valid_listings(all_listings)
     for err in errors:
         util.warn(err)
     listings = valid
 
     today = util.today_pst()
+
+    # Close anything whose deadline/event window has verifiably passed.
+    # close_expired mutates the shared listing dicts, so saving all_listings
+    # (not just the valid subset) keeps the malformed rows we merely skipped
+    # instead of silently dropping them from the file.
+    newly_closed = util.close_expired(listings, today)
+    if newly_closed:
+        util.save_listings_to_json(all_listings)
+        # listings.json is committed with a trailing newline; save writes none.
+        with open(util.LISTINGS_FILE, "a") as f:
+            f.write("\n")
+        for title, reason in newly_closed:
+            print(f"Auto-closed: {title} ({reason})")
+
     visible = [l for l in listings if l.get("is_visible", True)]
-    live = [l for l in util.sort_listings(visible, today)
-            if util.resolve_state(l) != "closed"]
+    ordered = util.sort_listings(visible, today)
+    live = [l for l in ordered if util.resolve_state(l) != "closed"]
+    closed = [l for l in ordered if util.resolve_state(l) == "closed"]
 
     with open(README, "r") as f:
         before = f.read()
 
     table = update_readmes.create_hackathons_table(live, today)
     util.embed_table(README, table, START_MARKER, END_MARKER)
+
+    # Keep ARCHIVE.md in step: an auto-closed row leaves the README on this
+    # run, so it must appear in the archive on the same run, not whenever
+    # update_readmes.py next happens to fire.
+    util.embed_table(
+        ARCHIVE,
+        update_readmes.create_archive_table(closed),
+        ARCHIVE_START_MARKER,
+        ARCHIVE_END_MARKER,
+    )
 
     changed = count_status_changes(extract_table(before), table)
 
@@ -99,11 +132,12 @@ def main():
     except Exception as e:
         util.warn(f"could not regenerate stats banner (it may be stale): {e}")
 
-    print(f"Updated {changed} row(s).")
+    print(f"Updated {changed} row(s), auto-closed {len(newly_closed)} listing(s).")
     gh_out = os.environ.get("GITHUB_OUTPUT")
     if gh_out:
         with open(gh_out, "a") as f:
             f.write(f"changes={changed}\n")
+            f.write(f"closed={len(newly_closed)}\n")
 
 
 if __name__ == "__main__":

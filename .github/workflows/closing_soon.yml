@@ -36,7 +36,10 @@ jobs:
           # on README alone threw that away and let the committed "as of" date
           # go stale (#112). Staging first and asking `--cached` also means a run
           # that changed nothing at all still commits nothing.
-          git add README.md assets/hackathons-banner.svg
+          # listings.json and ARCHIVE.md change when the script auto-closes an
+          # expired listing; leaving them unstaged would commit a README that
+          # dropped the row without the source-of-truth edit that justifies it.
+          git add README.md ARCHIVE.md .github/scripts/listings.json assets/hackathons-banner.svg
           if git diff --cached --quiet; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
@@ -56,11 +59,16 @@ jobs:
         if: steps.check.outputs.has_changes == 'true'
         env:
           CHANGES: ${{ steps.run.outputs.changes }}
+          CLOSED: ${{ steps.run.outputs.closed }}
           README_CHANGED: ${{ steps.check.outputs.readme_changed }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if [ "$README_CHANGED" = "true" ]; then
+          # Closures outrank badge flips in the message: they are the edit a
+          # reader auditing history actually needs to find.
+          if [ "${CLOSED:-0}" -gt 0 ]; then
+            MSG="chore: auto-close ${CLOSED} expired listing(s), update closing-soon badges"
+          elif [ "$README_CHANGED" = "true" ]; then
             MSG="chore: update closing-soon badges (${CHANGES:-0} changes)"
           else
             MSG="chore: refresh stats banner"
