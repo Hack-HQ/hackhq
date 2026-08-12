@@ -65,6 +65,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 - [Hackathons](#hackathons-1)
 - [Resources](#resources)
 - [Contributing](#contributing)
+- [License](#license)
 - [Acknowledgements](#acknowledgements)
 - [Contributors](#contributors)
 - [Gallery](#gallery)
@@ -74,7 +75,6 @@ Hackathons are the fastest way to build something real, meet your future team, a
 <!-- HACKATHONS_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |
-| 🔥 **[CLOSING SOON]** | DataHub | Build with DataHub: The Agent Hackathon — Jul 6– Aug 10, 2026 | Virtual | Online | $20,500 | Aug 10, 2026 | <a href="https://datahub.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 11, 2026 |
 | 🔥 **[CLOSING SOON]** | Major League Hacking | Global Hack Week: Agents — Aug 7–13, 2026 | Virtual | Online | Swag + prizes | — | <a href="https://ghw.mlh.io/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 27, 2026 |
 | 🔥 **[CLOSING SOON]** | CS Girlies | CS Girlies Annual Hackathon - Technology For Wellness — Aug 14 – Aug 16, 2026 | Virtual | Online | $5,000 in Prizes | — | <a href="https://cs-girlies-wellness-hackathon.devpost.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 03, 2026 |
 | 🔥 **[CLOSING SOON]** | Arm | Arm Create: AI Optimization Challenge — Jun 4 – Aug 14, 2026 | Virtual | Online | $8,000 | Aug 14, 2026 | <a href="https://arm-ai-optimization-challenge.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 26, 2026 |
@@ -84,6 +84,7 @@ Hackathons are the fastest way to build something real, meet your future team, a
 | 🔥 **[CLOSING SOON]** | XPRIZE | Build with Gemini XPRIZE — May 19 – Aug 17, 2026 | Virtual | Online | $2,000,000 | Aug 17, 2026 | <a href="https://xprize.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 27, 2026 |
 | 🔥 **[CLOSING SOON]** | Cockroach Labs | CockroachDB × AWS Hackathon — Build with Agentic Memory — Jun 30– Aug 18, 2026 | Virtual | Online | $8,750 | Aug 18, 2026 | <a href="https://cockroachdb-ai.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 11, 2026 |
 | 🔥 **[CLOSING SOON]** | Stellic | The Pathfinders Challenge | Virtual | Online | $12,000 pool | Aug 21, 2026 | <a href="https://www.stellic.com/pathfinders"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 27, 2026 |
+| 🔥 **[CLOSING SOON]** | Africa Deep Tech Foundation | Africa Deep Tech Challenge 2026 — The Laptop LLM Challenge | Virtual | Online | $16,500 | Aug 24, 2026 | <a href="https://adtc-2026.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 11, 2026 |
 | ✅ **[OPEN]** | IBM | IBM Dev Day: Bob in Action + Hackathon — Aug 27–30, 2026 | Virtual | Online | $2,000 grand prize + IBM TechXchange 2026 passes (top 50 teams) | — | <a href="https://ibmdevday-bob.bemyapp.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Aug 09, 2026 |
 | ✅ **[OPEN]** | JPMorgan Chase | 2027 Data for Good Hackathon — Oct 16–17, 2026 (Leads to Data & AI Program Internship) | In-Person | Brooklyn, NY | Internship consideration; travel covered | Oct 15, 2026 | <a href="https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/job/210775223"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Aug 09, 2026 |
 | ✅ **[OPEN]** | JPMorgan Chase | 2027 Code for Good Hackathon — Brooklyn Oct 16–17 & Columbus Nov 6–7, 2026 (Leads to Software Engineer Program Internship) | In-Person | Brooklyn, NY, Columbus, OH | Internship consideration; travel covered | Sep 18, 2026 | <a href="https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/job/210773759"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Aug 09, 2026 |
@@ -109,9 +110,9 @@ Hackathons are the fastest way to build something real, meet your future team, a
 | ⏳ **[OPENS SOON]** | UTSA ACM | RowdyHacks XII (Student Hackathon; Applications Not Yet Open) | In-Person | San Antonio, TX | TBA | — | <a href="https://rowdyhacks.org"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 20, 2026 |
 | ✅ **[OPEN]** | NC State | Hack_NCState 2027 — Feb 6–7, 2027 | In-Person | Raleigh, NC | TBA | — | <a href="https://hackncstate.org"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 20, 2026 |
 | ✅ **[OPEN]** | University of Central Florida | Knight Hacks IX — Oct 9–11, 2026 | In-Person | Orlando, FL | TBA | — | <a href="https://2026.knighthacks.org/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 12, 2026 |
+| ✅ **[OPEN]** | DataHub | Build with DataHub: The Agent Hackathon — Jul 6– Aug 10, 2026 | Virtual | Online | $20,500 | Aug 10, 2026 | <a href="https://datahub.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 11, 2026 |
 | ✅ **[OPEN]** | Rice University | HackRice 16 — Sep 11–13, 2026 | In-Person | Houston, TX | TBA | — | <a href="https://hackrice.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 11, 2026 |
 | ⏳ **[OPENS SOON]** | HexLabs | HackGT 13 — Sep 25–27, 2026 | In-Person | Atlanta, GA | TBA | — | <a href="https://hack.gt/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 11, 2026 |
-| ✅ **[OPEN]** | Africa Deep Tech Foundation | Africa Deep Tech Challenge 2026 — The Laptop LLM Challenge | Virtual | Online | $16,500 | Aug 24, 2026 | <a href="https://adtc-2026.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 11, 2026 |
 | ✅ **[OPEN]** | DevNetwork | DevNetwork [API + Cloud + AI] Hackathon 2026 — Aug 17– Sep 3, 2026 | Hybrid | Santa Clara, CA, Online | $12,500 | Sep 03, 2026 | <a href="https://api-cloud-ai-hackathon-2026.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 11, 2026 |
 | ⏳ **[OPENS SOON]** | Lincoln Financial Group | codeLinc 11 with Lincoln Financial & AWS — Oct 3–4, 2026 | In-Person | Greensboro, NC | $10,000 | Oct 04, 2026 | <a href="https://codelinc11.devpost.com/"><img src="https://img.shields.io/badge/Website-gray?style=for-the-badge" alt="Website"></a> | Jul 11, 2026 |
 | ✅ **[OPEN]** | OneAquaHealth | OneAquaHealth IEEE Global Hackathon — Sep 16–30, 2026 | Virtual | Online | $3,000 | Aug 31, 2026 | <a href="https://oneaquahealth-ieee-hackathon.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 11, 2026 |
@@ -161,6 +162,14 @@ Hackathons are the fastest way to build something real, meet your future team, a
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a hackathon!
 
 We welcome contributions from anyone. If you know of a hackathon that isn't listed, please submit an issue.
+
+---
+
+## License
+
+[MIT](LICENSE) — use it, fork it, build on it. Vendored third-party assets
+(e.g. the Framer disc-player module in `web/components/vendor/`) remain under
+their original terms.
 
 ---
 

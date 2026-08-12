@@ -52,7 +52,13 @@ export function GlobeFilterBar({
           onChange={(e) => onQueryChange(e.target.value)}
           placeholder="Search hackathon, location…"
           aria-label="Search hackathons"
-          className="glass-dark w-56 rounded-full border border-white/15 px-4 py-2 text-sm text-paper placeholder:text-paper/40 focus:outline-none focus:ring-2 focus:ring-coral sm:w-72"
+          // text-base below sm: iOS Safari zooms the whole page when a focused
+          // input is under 16px, and layout.tsx sets no viewport with
+          // maximum-scale to suppress it — so tapping search zoomed the globe
+          // and left the user there. w-60 rather than w-56 because at 16px the
+          // placeholder needs ~210px and w-56 leaves only 190px of content box.
+          // sm: restores the exact previous rendering.
+          className="glass-dark w-60 rounded-full border border-white/15 px-4 py-2.5 text-base text-paper placeholder:text-paper/40 focus:outline-none focus:ring-2 focus:ring-coral sm:w-72 sm:py-2 sm:text-sm"
         />
         {anyActive && (
           <button
@@ -96,7 +102,7 @@ export function GlobeFilterBar({
           ref={virtualButtonRef}
           type="button"
           onClick={onOpenVirtual}
-          className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-coral/40 bg-coral/10 px-3 py-1.5 font-mono text-[10px] tracking-[0.12em] text-paper/80 transition hover:bg-coral/20 hover:text-paper focus:outline-none focus:ring-2 focus:ring-coral"
+          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-coral/40 bg-coral/10 px-3 py-1.5 font-mono text-[10px] tracking-[0.12em] text-paper/80 transition hover:bg-coral/20 hover:text-paper focus:outline-none focus:ring-2 focus:ring-coral sm:min-h-0"
         >
           🌐 VIRTUAL ({virtualCount})
         </button>
@@ -121,7 +127,11 @@ function FilterPill({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[10px] tracking-[0.12em] transition focus:outline-none focus:ring-2 focus:ring-coral ${
+      // min-h-11 below sm: the pill was ~29px (10px text at the inherited 1.5
+      // line-height, plus py-1.5 and the border). Already inline-flex
+      // items-center, so the label and status dot stay centred in the taller
+      // box; sm:min-h-0 restores the compact desktop pill exactly.
+      className={`inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[10px] tracking-[0.12em] transition focus:outline-none focus:ring-2 focus:ring-coral sm:min-h-0 ${
         active
           ? "bg-paper text-ink"
           : "glass-dark border border-white/15 text-paper/70 hover:text-paper"

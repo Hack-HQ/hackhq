@@ -11,6 +11,12 @@ import {
   type HackState,
   type Hackathon,
 } from "@/lib/types-hq";
+import {
+  WHEEL_IDLE_MS,
+  ZOOMED_IN_ZOOM,
+  createCameraInteraction,
+  spinDegrees,
+} from "@/lib/globe-spin";
 import { GlobeDetailDrawer } from "./globe-detail-drawer";
 import { GlobeFilterBar } from "./globe-filter-bar";
 import { GlobeVirtualDrawer } from "./globe-virtual-drawer";
@@ -23,8 +29,6 @@ const GLOBE_VIEW = {
   pitch: 0,
   bearing: 0,
 };
-
-const SECONDS_PER_REVOLUTION = 110;
 
 export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,6 +49,10 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   // focus back to it on close (WCAG 2.4.3) — the marker path uses markerRefs.
   const virtualTriggerRef = useRef<HTMLButtonElement>(null);
   const [zoomedIn, setZoomedIn] = useState(false);
+  // Mirrors `zoomedIn` for the map's zoom listener, which needs the last value
+  // it pushed without re-subscribing on every render. backToGlobe writes it too,
+  // so a flight cut short can't leave the listener disagreeing with React.
+  const zoomedInRef = useRef(false);
   const [selectedHackathon, setSelectedHackathon] = useState<Hackathon | null>(
     null,
   );
@@ -68,12 +76,16 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
 
   // Non-virtual listings we could not place. A virtual hackathon isn't missing
   // from the map — it has nowhere to be — so it doesn't count here.
-  const unmapped = hackathons.filter(
-    (h) =>
-      isActiveHackathon(h) &&
-      h.format !== "Virtual" &&
-      (h.lat === null || h.lng === null),
-  ).length;
+  const unmapped = useMemo(
+    () =>
+      hackathons.filter(
+        (h) =>
+          isActiveHackathon(h) &&
+          h.format !== "Virtual" &&
+          (h.lat === null || h.lng === null),
+      ).length,
+    [hackathons],
+  );
 
   // Search + status apply everywhere (map pins and the virtual list). The
   // format pills (In-Person / Hybrid) only narrow the map pins — "Virtual" is
@@ -130,7 +142,12 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       projection: "globe",
       center: GLOBE_VIEW.center,
       zoom: GLOBE_VIEW.zoom,
-      antialias: true,
+      // MSAA smooths the sphere's edge against space, but it is the most
+      // expensive thing we ask of the GPU and it costs the most exactly where it
+      // helps least: on a 2x display the extra pixel density already hides most
+      // of the aliasing, while the multisampled buffer is 4x the area. Pay for
+      // it only on the 1x screens that actually need it.
+      antialias: window.devicePixelRatio < 2,
       attributionControl: false,
     });
     mapRef.current = map;
@@ -146,37 +163,71 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
       });
     });
 
-    // - Auto-rotate (pause while the user is interacting) -
-    let userInteracting = false;
+    // - Auto-rotate (pause while the user owns the camera) -
+    const input = createCameraInteraction();
+    let wheelIdleTimer: ReturnType<typeof setTimeout> | undefined;
     spinEnabledRef.current = !reducedMotion;
 
     function spinGlobe() {
-      if (!spinEnabledRef.current || userInteracting) return;
-      const zoom = map.getZoom();
-      if (zoom > 4) return;
-      let distancePerSecond = 360 / SECONDS_PER_REVOLUTION;
-      if (zoom > 2) distancePerSecond *= (4 - zoom) / 2;
+      if (!spinEnabledRef.current || input.isInteracting(performance.now()))
+        return;
+      const degrees = spinDegrees(map.getZoom());
+      if (degrees === null) return;
       const center = map.getCenter();
-      center.lng -= distancePerSecond;
+      center.lng -= degrees;
       map.easeTo({ center, duration: 1000, easing: (n) => n });
     }
 
-    map.on("mousedown", () => (userInteracting = true));
-    map.on("touchstart", () => (userInteracting = true));
-    map.on("mouseup", () => {
-      userInteracting = false;
+    const releaseCamera = () => {
+      input.pointerUp();
       spinGlobe();
+    };
+
+    map.on("mousedown", () => input.pointerDown());
+    map.on("touchstart", () => input.pointerDown());
+    map.on("mouseup", releaseCamera);
+    // Mapbox re-fires the raw DOM touchend, which fires once per finger. On a
+    // two-finger pinch the first lift would otherwise hand the camera back and
+    // start the globe rotating while the second finger is still zooming — the
+    // same fight this whole change is about, on touch instead of wheel.
+    // `touches` is what is still down (the lifted finger is in changedTouches),
+    // so an empty list is the last finger leaving.
+    map.on("touchend", (e) => {
+      if (e.originalEvent?.touches?.length) return;
+      releaseCamera();
     });
-    map.on("touchend", () => {
-      userInteracting = false;
-      spinGlobe();
-    });
-    map.on("dragend", () => {
-      userInteracting = false;
-      spinGlobe();
+    map.on("dragend", releaseCamera);
+    // Scroll/trackpad zoom fires neither mousedown nor touchstart, and unlike a
+    // drag it has no end event. Without this the spin thought the camera was
+    // free mid-gesture — and mapbox emits `moveend` on *every* wheel tick (its
+    // handler manager cancels the in-flight easeTo, which fires the ease's end
+    // callback), so each tick re-armed a fresh 1s rotation that fought the zoom.
+    // Quiet time is the only end-of-gesture signal a wheel offers, hence the
+    // timer to resume spinning once the user has actually stopped.
+    map.on("wheel", () => {
+      input.wheel(performance.now());
+      clearTimeout(wheelIdleTimer);
+      // wheelEnded() before spinGlobe(), not just spinGlobe(): this timer is
+      // the only thing scheduled after the last tick, so if spinGlobe were left
+      // to re-check the clock and found itself a fraction early, it would
+      // decline and leave nothing to try again — the globe would stop for good.
+      // The timer firing *is* the end of the gesture; say so rather than
+      // re-derive it.
+      wheelIdleTimer = setTimeout(() => {
+        input.wheelEnded();
+        spinGlobe();
+      }, WHEEL_IDLE_MS);
     });
     map.on("moveend", spinGlobe);
-    map.on("zoom", () => setZoomedIn(map.getZoom() > 3.2));
+    // Only threshold crossings reach React. `zoom` fires once per frame of every
+    // zoom, and a setState per frame re-rendered this component — unmounting the
+    // filter bar (see the `!zoomedIn` gate below) partway through the gesture.
+    map.on("zoom", () => {
+      const next = map.getZoom() > ZOOMED_IN_ZOOM;
+      if (next === zoomedInRef.current) return;
+      zoomedInRef.current = next;
+      setZoomedIn(next);
+    });
     map.on("load", spinGlobe);
 
     // - Markers + shared hover popup -
@@ -325,6 +376,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
 
     return () => {
       ro.disconnect();
+      clearTimeout(wheelIdleTimer);
       globeEl.removeEventListener("hq:backToGlobe", restoreSpin);
       markers.forEach((m) => m.remove());
       markerMap.clear();
@@ -341,6 +393,7 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
   const backToGlobe = () => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const markerId = selectedMarkerIdRef.current;
+    zoomedInRef.current = false;
     setZoomedIn(false);
     setSelectedHackathon(null);
     selectedMarkerIdRef.current = null;

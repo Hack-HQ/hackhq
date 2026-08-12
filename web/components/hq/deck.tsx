@@ -50,7 +50,10 @@ export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search name, host, city, theme…"
-            className="w-full rounded-full border-2 border-ink/15 bg-white/70 px-6 py-3.5 font-mono text-[13px] tracking-wide text-ink outline-none transition placeholder:text-ink/40 focus:border-coral lg:max-w-sm"
+            // text-base below sm for the same reason as the globe search: under
+            // 16px iOS zooms the page on focus and there is no maximum-scale to
+            // stop it. sm: restores the 13px mono exactly.
+            className="w-full rounded-full border-2 border-ink/15 bg-white/70 px-6 py-3.5 font-mono text-base tracking-wide text-ink outline-none transition placeholder:text-ink/40 focus:border-coral sm:text-[13px] lg:max-w-sm"
           />
           <div className="flex flex-wrap items-center gap-2">
             {(
@@ -155,7 +158,10 @@ function SaveHeart({ h, dark }: { h: Hackathon; dark?: boolean }) {
       }}
       aria-label={tracked ? "Remove from tracker" : "Save to tracker"}
       title={tracked ? "Remove from My HackHQ" : "Save to My HackHQ"}
-      className={`flex h-9 w-9 items-center justify-center rounded-full border-2 text-[15px] transition ${
+      // 44px below sm, restoring the 36px circle from sm up where the GO pill
+      // reappears. Below sm the row has only three children (dot, text, heart),
+      // so the taller circle adds no horizontal pressure.
+      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 text-[15px] transition sm:h-9 sm:w-9 ${
         tracked
           ? "border-coral bg-coral text-paper"
           : dark
@@ -208,6 +214,18 @@ function HackRow({ h }: { h: Hackathon }) {
         </div>
         <div className="truncate text-[12px] text-ink/50">
           {h.host} · {h.location}
+        </div>
+        {/* Status as text, not colour alone. The dot beside the row carries it
+            only through `title`, which never appears without a pointer — so on
+            a phone the state was conveyed by hue alone (also WCAG 1.4.1). The
+            columns that spell it out are hidden below lg, and `cd` is already
+            computed for the deadline column, so it costs nothing to show. */}
+        <div
+          className="mt-0.5 truncate font-mono text-[10px] tracking-wider lg:hidden"
+          style={{ color: meta.color }}
+        >
+          {meta.label.toUpperCase()}
+          {cd ? ` · ${cd.toUpperCase()}` : ""}
         </div>
       </div>
       <div className="hidden w-28 font-mono text-[10px] tracking-wider text-ink/50 md:block">

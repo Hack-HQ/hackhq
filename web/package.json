@@ -1,6 +1,7 @@
 {
   "name": "web",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "copy-assets": "node scripts/copy-repo-assets.mjs",
