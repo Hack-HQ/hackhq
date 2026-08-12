@@ -253,14 +253,16 @@
     ],
     "format": "Virtual",
     "prize": "$20,500",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "source": "devpost",
     "deadline": "2026-08-10",
     "id": "f9654f6f-b75f-48b0-b14f-c080bbe0e52d",
     "date_posted": 1783818300,
-    "date_updated": 1783818300
+    "date_updated": 1786578259,
+    "date_closed": "2026-08-12",
+    "archive_note": "Auto-archived 2026-08-12 \u2014 deadline passed 2026-08-10"
   },
   {
     "company_name": "DevNetwork",

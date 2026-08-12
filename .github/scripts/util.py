@@ -355,6 +355,75 @@ def is_closing_soon(listing, today):
     return 0 <= (target - today).days <= CLOSING_SOON_DAYS
 
 
+def is_expired(listing, today):
+    """True when a non-closed listing's window has verifiably passed.
+
+    Decided only from the structured date fields, in order of authority:
+
+    - A ``deadline`` strictly before today means registration has closed. The
+      deadline day itself is still open, matching the 0-days-left convention
+      in :func:`is_closing_soon`. When a deadline exists it is the whole
+      answer — event dates are never consulted, because the deadline is the
+      date you must act on even when it falls after the event starts.
+    - Otherwise an ``endDate`` before today means the event itself is over.
+    - Otherwise a ``startDate`` before today, with no end date recorded,
+      means a single-dated event has begun and passed.
+
+    A listing with no structured dates never auto-expires: dates written into
+    the Hackathon *title* are never parsed (issue #70's hard rule), so a
+    listing we have no dated evidence about stays as-is rather than being
+    closed on a guess. 'opens_soon' listings are held to the same rule — one
+    whose event dates have already passed is expired, but one with only a
+    future date (or no dates) is untouched.
+    """
+    if resolve_state(listing) == "closed":
+        return False
+    deadline = listing.get("deadline")
+    if deadline:
+        return parse_deadline_date(deadline) < today
+    end = listing.get("endDate")
+    if end:
+        return parse_deadline_date(end) < today
+    start = listing.get("startDate")
+    if start:
+        return parse_deadline_date(start) < today
+    return False
+
+
+def close_expired(listings, today):
+    """Close every listing whose window has verifiably passed (mutates in place).
+
+    Unlike 'closing_soon', which is derived fresh at render time, closing is a
+    *fact* and gets written back: state='closed', active=False (both, because
+    renderers consult both fields), plus date_closed and an archive_note that
+    record when and why the automation closed it — so a human auditing the
+    archive can tell an auto-closure from a maintainer one. date_updated is
+    bumped so downstream consumers notice the change.
+
+    Returns a list of ``(title, reason)`` pairs for logging/commit messages.
+    Idempotent: already-closed listings are skipped by :func:`is_expired`, so
+    a second run on the same day closes nothing.
+    """
+    closed = []
+    iso = today.isoformat()
+    for listing in listings:
+        if not is_expired(listing, today):
+            continue
+        deadline = listing.get("deadline")
+        if deadline:
+            reason = f"deadline passed {parse_deadline_date(deadline).isoformat()}"
+        else:
+            ended = listing.get("endDate") or listing.get("startDate")
+            reason = f"event ended {parse_deadline_date(ended).isoformat()}"
+        listing["state"] = "closed"
+        listing["active"] = False
+        listing["date_closed"] = iso
+        listing["archive_note"] = f"Auto-archived {iso} — {reason}"
+        listing["date_updated"] = get_current_timestamp()
+        closed.append((listing.get("title", ""), reason))
+    return closed
+
+
 def display_state(listing, today=None):
     """Return the state to render: 'open', 'closing_soon', 'opens_soon', 'closed'.
 

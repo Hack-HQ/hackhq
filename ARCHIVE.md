@@ -21,6 +21,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | localhost:nyc | Checkout: The Travel & Hospitality Hackathon — Aug 9, 2026 | In-Person | New York, NY | :lock: | Jul 12, 2026 |
 | 🔒 **[CLOSED]** | OnlyExit Hacker House | Hack Your Way Into the Hacker House — Jul 18, 2026 | In-Person | New York, NY | :lock: | Jul 12, 2026 |
 | 🔒 **[CLOSED]** | OpenAI | OpenAI Build Week: Join a global week of building with Codex — Jul 13–21, 2026 | Virtual | Online | :lock: | Jul 11, 2026 |
+| 🔒 **[CLOSED]** | DataHub | Build with DataHub: The Agent Hackathon — Jul 6– Aug 10, 2026 | Virtual | Online | :lock: | Jul 11, 2026 |
 | 🔒 **[CLOSED]** | University of Waterloo | Hack the North — Sept 18–20, 2026 | In-Person | Toronto, ON | :lock: | Jul 10, 2026 |
 | 🔒 **[CLOSED]** | Carleton University | cuHacking 2026 — Jul 10 – Jul 12, 2026 | In-Person | Ottawa, ON | :lock: | Jul 03, 2026 |
 | 🔒 **[CLOSED]** | AITHORS × Okareo | First Ever Agent Evalathon — Jul 6–13, 2026 | Virtual | Online | :lock: | Jul 02, 2026 |

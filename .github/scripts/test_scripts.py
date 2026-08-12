@@ -1083,6 +1083,94 @@ class ClosingSoonRule(unittest.TestCase):
         self.assertEqual("closed", util.display_state(inactive, self.TODAY))
 
 
+class AutoCloseExpired(unittest.TestCase):
+    """Auto-closing expired listings (util.is_expired / util.close_expired).
+
+    The rule mirrors is_closing_soon's conventions: only the structured
+    deadline/startDate/endDate fields are read (title dates are never parsed —
+    issue #70), the deadline day itself is still open (0-days-left), and a
+    deadline is authoritative over event dates.
+    """
+
+    TODAY = date(2026, 7, 11)
+
+    def test_deadline_yesterday_expires(self):
+        self.assertTrue(util.is_expired(_listing(deadline="2026-07-10"), self.TODAY))
+
+    def test_deadline_today_stays_open(self):
+        # The deadline day itself is still open — same 0-days-left convention
+        # as is_closing_soon, so the two rules can never disagree about today.
+        self.assertFalse(util.is_expired(_listing(deadline="2026-07-11"), self.TODAY))
+
+    def test_end_date_yesterday_expires_even_from_opens_soon(self):
+        # An opens_soon listing whose event is already over can never open.
+        for state in ("open", "opens_soon"):
+            listing = _listing(state=state, startDate="2026-07-08", endDate="2026-07-10")
+            self.assertTrue(util.is_expired(listing, self.TODAY))
+
+    def test_start_date_only_yesterday_expires(self):
+        # A single-dated event that has begun and passed is over.
+        self.assertTrue(util.is_expired(_listing(startDate="2026-07-10"), self.TODAY))
+
+    def test_future_start_date_stays(self):
+        for state in ("open", "opens_soon"):
+            listing = _listing(state=state, startDate="2026-07-20")
+            self.assertFalse(util.is_expired(listing, self.TODAY))
+
+    def test_no_structured_dates_never_expires(self):
+        # cuHacking-style: event dates live only in the title, which is never
+        # parsed (issue #70's hard rule) — absence of evidence keeps it open.
+        listing = _listing(title="cuHacking 2026 — Jul 10 – Jul 12, 2026")
+        self.assertFalse(util.is_expired(listing, self.TODAY))
+
+    def test_deadline_wins_over_event_dates(self):
+        # Registration open past the event's end: not expired. And a passed
+        # deadline expires the listing even though the event is still ahead.
+        still_open = _listing(deadline="2026-08-01", startDate="2026-07-01",
+                              endDate="2026-07-05")
+        self.assertFalse(util.is_expired(still_open, self.TODAY))
+        passed = _listing(deadline="2026-07-10", startDate="2026-07-20")
+        self.assertTrue(util.is_expired(passed, self.TODAY))
+
+    def test_future_end_date_stays_even_after_start(self):
+        # Event still running: joinable, not expired.
+        listing = _listing(startDate="2026-07-09", endDate="2026-07-13")
+        self.assertFalse(util.is_expired(listing, self.TODAY))
+
+    def test_close_expired_mutation_shape_and_idempotence(self):
+        expired = _listing(id="e", title="Expired Hack", deadline="2026-07-01")
+        ended = _listing(id="v", title="Ended Event", startDate="2026-07-02",
+                         endDate="2026-07-03")
+        fresh = _listing(id="f", title="Fresh Hack", deadline="2026-08-01")
+        listings = [expired, ended, fresh]
+
+        closed = util.close_expired(listings, self.TODAY)
+        self.assertEqual(
+            [("Expired Hack", "deadline passed 2026-07-01"),
+             ("Ended Event", "event ended 2026-07-03")],
+            closed,
+        )
+        for listing in (expired, ended):
+            self.assertEqual("closed", listing["state"])
+            self.assertFalse(listing["active"])
+            self.assertEqual("2026-07-11", listing["date_closed"])
+            self.assertNotEqual(0, listing["date_updated"])
+        self.assertEqual(
+            "Auto-archived 2026-07-11 — deadline passed 2026-07-01",
+            expired["archive_note"],
+        )
+        self.assertEqual(
+            "Auto-archived 2026-07-11 — event ended 2026-07-03",
+            ended["archive_note"],
+        )
+        self.assertEqual("open", fresh["state"])
+        self.assertNotIn("date_closed", fresh)
+
+        # Second run is a no-op: closed listings are never re-closed, so the
+        # daily cron cannot rewrite date_closed/archive_note every morning.
+        self.assertEqual([], util.close_expired(listings, self.TODAY))
+
+
 class ClosingSoonOrdering(unittest.TestCase):
     """Closing-soon rows sort to the top of the table, soonest first."""
 
