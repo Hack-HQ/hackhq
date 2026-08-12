@@ -17,6 +17,7 @@ import {
   createCameraInteraction,
   spinDegrees,
 } from "@/lib/globe-spin";
+import { capture } from "@/lib/analytics";
 import { GlobeDetailDrawer } from "./globe-detail-drawer";
 import { GlobeFilterBar } from "./globe-filter-bar";
 import { GlobeVirtualDrawer } from "./globe-virtual-drawer";
@@ -289,6 +290,10 @@ export function GlobeMap({ hackathons }: { hackathons: Hackathon[] }) {
     }
 
     function openHackathon(h: Hackathon) {
+      // Both pin entry points (click and Enter/Space) funnel through here, and
+      // nothing else does — the virtual-list path opens via openVirtual — so
+      // this is the single hook for the globe_pin_click product event.
+      capture("globe_pin_click", { id: h.id, title: h.title });
       selectedMarkerIdRef.current = h.id;
       setSelectedHackathon(h);
       setVirtualOpen(false);
