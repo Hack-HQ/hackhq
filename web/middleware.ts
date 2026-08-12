@@ -5,16 +5,26 @@ import { isClerkConfigured } from "@/lib/env";
 // This is deliberately `middleware.ts`, not Next 16's newer `proxy.ts`.
 // -----------------------------------------------------------------------------
 // Next 16 renamed Middleware -> Proxy and runs `proxy.ts` on the Node.js
-// runtime. Our Cloudflare/OpenNext deploy target (issue #223) does NOT support
-// Node.js middleware — `opennextjs-cloudflare build` hard-fails on it — but it
-// does support the Edge runtime, which is exactly what the (now-deprecated)
-// `middleware.ts` convention still compiles to. clerkMiddleware is Edge-safe, so
-// keeping this as `middleware.ts` lets auth run unchanged while the app stays
-// deployable to Workers. Next prints a middleware->proxy deprecation warning;
-// that is expected and must stay until OpenNext supports Node proxy.
+// runtime. `opennextjs-cloudflare build` hard-fails on Node middleware
+// ("Node.js middleware is not currently supported"), but it compiles the Edge
+// runtime that `middleware.ts` still targets — so this filename is what keeps
+// the app deployable to Workers. Next prints a middleware->proxy deprecation
+// warning; that is expected and must stay until OpenNext supports Node proxy.
 //
-// Clerk only takes over once its keys exist in .env.local — until then the
-// site runs exactly as before (the /my hub shows setup instructions instead).
+// This file cannot simply be deleted in favour of gating /my inside the page:
+// `auth()` requires clerkMiddleware to have run, and without it every server-
+// side caller — including /api/tracker, which the whole synced tracker depends
+// on — fails with "auth() was called but Clerk can't detect usage of
+// clerkMiddleware()".
+//
+// An earlier revision moved this to `proxy.ts`, on the understanding that Clerk
+// pulled Node built-ins (#crypto, #safe-node-apis) that Edge rejects. With
+// @clerk/nextjs 7.6.0 that is no longer so: `main` carries this file as Edge
+// middleware and both hosts build it green — Workers Builds and Vercel alike.
+// Verify with a Vercel build before reintroducing the rename.
+//
+// Clerk only takes over once its keys exist — until then the site runs exactly
+// as before (the /my hub shows setup instructions instead).
 //
 // /my is protected here, server-side: a signed-out visitor never reaches the
 // page. signInUrl/signUpUrl are pinned in code rather than left to

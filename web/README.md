@@ -88,7 +88,7 @@ repo-root files (`README.md`, `listings.json`, `geocodes.json`) into
 `lib/generated/` at build time, and the loaders **import** them — so the data is
 frozen into the deployment at build, and a revalidation re-runs the loader over
 that *deployed* copy, not whatever is on `main` now. (No request-time filesystem
-read remains, which is what lets the site deploy to Cloudflare Workers — see
+read remains, which is what keeps the app portable across hosts — see
 [Deployment](#deployment).)
 
 | Changes without a rebuild | Needs a new build + deploy |
@@ -163,7 +163,7 @@ web/
 │   ├── types-hq.ts                    # Hackathon types and display helpers
 │   └── types.ts                       # Legacy opportunity types
 ├── drizzle.config.ts                  # Drizzle Kit config
-├── open-next.config.ts                # OpenNext adapter for Cloudflare Workers
+├── open-next.config.ts                # OpenNext adapter — Cloudflare, see Deployment
 ├── wrangler.jsonc                     # Cloudflare Workers config (nodejs_compat)
 └── middleware.ts                      # Clerk auth (Edge; see Deployment for why not proxy.ts)
 ```
@@ -193,6 +193,8 @@ Copy `.env.example` to `.env.local` (gitignored) and set the values you need.
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | For globe | `components/hq/globe-map.tsx` | Globe shows a placeholder instead of the Mapbox map |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For auth | `app/layout.tsx`, `app/my/page.tsx`, `middleware.ts` | Site runs without Clerk; `/my` shows setup instructions and `/auth/*` redirects to `/my` |
 | `CLERK_SECRET_KEY` | For auth | `app/my/page.tsx`, `middleware.ts` | Same as above — both Clerk keys are needed together |
+| `SUPABASE_URL` | For tracker sync | `lib/tracker-store.ts` | Tracker stays browser-local; `/api/tracker` reports `synced: false` |
+| `SUPABASE_SERVICE_ROLE_KEY` | For tracker sync | `lib/tracker-store.ts` | Same as above — both Supabase values are needed together, **and** Clerk must be configured or there is no user to attribute a row to |
 | `DATABASE_URL` | For DB scripts | `drizzle.config.ts` | `npm run db:*` commands fail fast before touching Supabase |
 
 The two keys are the only Clerk variables you need. The auth routes
@@ -220,8 +222,8 @@ connections, and enable email/password under email authentication.
 | `npm test`             | Run the Vitest suite (what CI runs)                  |
 | `npm run copy-assets`  | Refresh `public/repo-assets/` from `../assets/`      |
 | `npm run prepare-data` | Regenerate `lib/generated/` from the repo-root data  |
-| `npm run preview`      | Build for Cloudflare and preview the Worker locally  |
-| `npm run deploy`       | Build for Cloudflare and deploy to Workers           |
+| `npm run preview`      | Cloudflare only — currently fails, see [Deployment](#deployment) |
+| `npm run deploy`       | Cloudflare only — currently fails, see [Deployment](#deployment) |
 
 `dev`, `build`, and `test` run `copy-assets` and/or `prepare-data` for you; you
 only need them directly after changing something under `../assets/` or the
@@ -241,40 +243,85 @@ between deploys; it does not fetch new content. See [Render model](#render-model
 
 ## Deployment
 
-Production target: **Cloudflare Workers** via
-[OpenNext](https://opennext.js.org/cloudflare) (issue #223). The app carries no
-request-time filesystem dependency — repo data is imported as build-time
-constants (see [Render model](#render-model)) — so the standard OpenNext adapter
-builds and runs it unchanged.
+Production target: **Vercel** (issue #223), deploying from `main` via the Vercel
+Git integration. There is no deploy workflow in `.github/workflows/` — the
+integration *is* the pipeline, and it is what makes the listing automation work:
+`closing_soon`, `auto_extract`, `contribution_approved`, `update_readmes` and the
+gallery workflows all push commits to `main`, and because listing data is frozen
+into the bundle at build time (see [Render model](#render-model)), each of those
+pushes only reaches users because it triggers a rebuild.
 
-```bash
-npm run preview   # build for Workers and run it locally (wrangler dev)
-npm run deploy    # build for Workers and deploy
+That coupling is the thing to protect. **Production must deploy from `main`.**
+Pointing it at a long-lived branch silently strips the site of every automated
+listing update, because those commits land on `main` and nowhere else.
+
+### Environment variables in production
+
+Set these in the Vercel project (Settings → Environment Variables). The
+`NEXT_PUBLIC_*` values are inlined into the client bundle at build time; the rest
+are server-only and must never gain a `NEXT_PUBLIC_` prefix.
+
+| Variable | Scope | Notes |
+| -------- | ----- | ----- |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | Build, public | Globe renders a placeholder without it |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Build, public | Both Clerk values or neither |
+| `CLERK_SECRET_KEY` | Runtime, secret | Both Clerk values or neither |
+| `SUPABASE_URL` | Runtime, secret | Both Supabase values or neither, **and** Clerk configured |
+| `SUPABASE_SERVICE_ROLE_KEY` | Runtime, secret | Bypasses RLS — see [#235](https://github.com/Hack-HQ/hackhq/issues/235) |
+
+Every one is optional and degrades gracefully: without Mapbox the globe shows a
+placeholder, without Clerk the tracker stays browser-local, without Supabase it
+stays browser-local for signed-in users too. `validateEnv()` in `lib/env.ts`
+warns on the half-configured cases rather than failing the build.
+
+### Auth runs as Edge middleware (why `middleware.ts`)
+
+Next 16 renamed Middleware to Proxy and runs `proxy.ts` on the Node.js runtime.
+This app stays on the older `middleware.ts` convention on purpose, because
+`opennextjs-cloudflare build` rejects Node middleware outright:
+
+```
+ERROR Node.js middleware is not currently supported. Consider switching to Edge Middleware.
 ```
 
-### Middleware runs on the Edge (why `middleware.ts`, not `proxy.ts`)
-
-Next 16 renamed Middleware to Proxy and runs `proxy.ts` on the **Node.js**
-runtime. OpenNext's Cloudflare build does **not** support Node.js middleware
-(`opennextjs-cloudflare build` fails on it), but it does support the **Edge**
-runtime — which is what the older, now-deprecated `middleware.ts` convention
-still compiles to. Clerk's `clerkMiddleware` is Edge-safe, so the auth
-middleware lives in `middleware.ts` and runs on the Edge, keeping the app both
-authenticated and Workers-deployable. `next build` prints a middleware→proxy
+Edge is what `middleware.ts` compiles to, and `clerkMiddleware` runs there
+fine, so one file satisfies both hosts. Next prints a middleware→proxy
 deprecation warning; that is expected and stays until OpenNext supports Node
 proxy.
 
-Configuration lives in `wrangler.jsonc` (`nodejs_compat` is required) and
-`open-next.config.ts`. Set production values as follows:
+An earlier revision moved this to `proxy.ts` on the understanding that Clerk
+pulled Node built-ins (`#crypto`, `#safe-node-apis`) that Edge rejects with
+*"Edge Function is referencing unsupported modules"*. As of `@clerk/nextjs`
+7.6.0 that no longer happens: `main` carries the file as Edge middleware and
+**both** hosts build it green. If you hit that error again, pin the Clerk
+version in the fix rather than renaming the file — the rename breaks Cloudflare.
 
-- **Build-time, public** (`NEXT_PUBLIC_*` — Mapbox token, Clerk publishable key,
-  repo slug): pass as environment variables to the build, or via
-  `wrangler.jsonc` `vars`. They are inlined into the client bundle.
-- **Runtime secret** (`CLERK_SECRET_KEY`): set with
-  `npx wrangler secret put CLERK_SECRET_KEY` — never commit it.
+**The middleware cannot simply be deleted** in favour of gating `/my` inside the
+page. `auth()` requires `clerkMiddleware` to have run; without it every
+server-side caller — including `/api/tracker`, which the synced tracker depends
+on — fails with *"auth() was called but Clerk can't detect usage of
+clerkMiddleware()"*.
 
-Vercel remains a drop-in fallback (`git push`, zero config): the same build works
-there because nothing is Workers-specific.
+### Both hosts build from `main`
+
+`wrangler.jsonc`, `open-next.config.ts` and the `preview` / `deploy` /
+`cf-typegen` scripts are all live, not vestigial. The runtime work from #230
+stands — no request-time filesystem dependency — so the app builds and deploys
+for Workers.
+
+| | Vercel | Cloudflare Workers |
+| --- | --- | --- |
+| Trigger | Vercel Git integration | Workers Builds (Git integration) |
+| Branch | `main` | `main` |
+| Build | `next build` | `npx opennextjs-cloudflare build` |
+| Root | `web` | `/web` |
+
+Both watch `main`, so any commit that lands there — a PR merge or a listing
+workflow's push — rebuilds both. Environment variables have to be set in **both**
+dashboards; on Cloudflare the `NEXT_PUBLIC_*` pair are *build* variables
+(Settings → Build → Variables and secrets) while the rest are runtime secrets
+(Settings → Variables & Secrets), because build variables are not readable at
+runtime.
 
 ## Tech stack
 
@@ -283,6 +330,7 @@ there because nothing is Workers-specific.
 - [Tailwind CSS 4](https://tailwindcss.com)
 - [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) (globe)
 - [Clerk](https://clerk.com/) (optional auth)
+- [Supabase](https://supabase.com/) (optional per-user tracker persistence)
 - TypeScript
 
 ## Notes

@@ -173,7 +173,34 @@ describe("buildPassport", () => {
 
   it("returns an empty passport for no tracked hackathons", () => {
     const p = buildPassport({}, hackathons);
-    expect(p).toEqual({ left: [], right: [], stampCount: 0, cityCount: 0 });
+    expect(p).toEqual({
+      left: [],
+      right: [],
+      stampCount: 0,
+      cityCount: 0,
+      winCount: 0,
+    });
+  });
+
+  it("stamps a recorded win as CHAMPION in gold, overriding the stage label", () => {
+    const p = buildPassport({ a: "going", b: "going" }, hackathons, { a: true });
+    const all = [...p.left, ...p.right];
+    const stamp = (id: string) => all.find((s) => s.id === id)!;
+    expect(stamp("a").label).toBe("CHAMPION");
+    expect(stamp("a").color).toBe("#c9992f");
+    expect(stamp("b").label).toBe("HACKED");
+    expect(p.winCount).toBe(1);
+  });
+
+  it("ignores a win on a hackathon with no stamp, so the count matches the pages", () => {
+    // `ghost` isn't in the listing set and `a` is only bookmarked, so neither
+    // earns a stamp — and neither should be counted as a win.
+    const p = buildPassport({ a: "interested" }, hackathons, {
+      a: true,
+      ghost: true,
+    });
+    expect(p.stampCount).toBe(0);
+    expect(p.winCount).toBe(0);
   });
 
   it.each([12, 20, 40])(

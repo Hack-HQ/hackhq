@@ -4,9 +4,12 @@
 // so we warn rather than throw. But a *partial* Clerk config (one key set, the
 // other missing) is a real misconfiguration worth flagging loudly at startup.
 
+export type Availability = "enabled" | "disabled" | "partial";
+
 export type EnvReport = {
   mapbox: boolean;
-  clerk: "enabled" | "disabled" | "partial";
+  clerk: Availability;
+  trackerSync: Availability;
 };
 
 let reported = false;
@@ -21,12 +24,33 @@ export function isClerkConfigured(): boolean {
   );
 }
 
+// Persisting a tracker needs somewhere to put it *and* someone to attribute it
+// to, so this is deliberately Clerk-inclusive: with Supabase configured but
+// sign-in switched off there is no user id, and /api/tracker would have nothing
+// to scope a row by. Both variables are server-only — no NEXT_PUBLIC_ prefix —
+// so the service role key never reaches the browser bundle.
+export function isTrackerSyncConfigured(): boolean {
+  return Boolean(
+    isClerkConfigured() &&
+      process.env.SUPABASE_URL &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
+}
+
+function availability(...flags: boolean[]): Availability {
+  if (flags.every(Boolean)) return "enabled";
+  if (flags.every((f) => !f)) return "disabled";
+  return "partial";
+}
+
 export function validateEnv(): EnvReport {
   const mapbox = Boolean(process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
   const pub = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
   const secret = Boolean(process.env.CLERK_SECRET_KEY);
-  const clerk: EnvReport["clerk"] =
-    pub && secret ? "enabled" : !pub && !secret ? "disabled" : "partial";
+  const supabaseUrl = Boolean(process.env.SUPABASE_URL);
+  const supabaseKey = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+  const clerk = availability(pub, secret);
+  const trackerSync = availability(supabaseUrl, supabaseKey);
 
   if (!reported) {
     reported = true;
@@ -41,6 +65,21 @@ export function validateEnv(): EnvReport {
           "and CLERK_SECRET_KEY, or neither. Sign-in stays disabled until both exist.",
       );
     }
+    if (trackerSync === "partial") {
+      console.warn(
+        "[env] Supabase is half-configured: set BOTH SUPABASE_URL and " +
+          "SUPABASE_SERVICE_ROLE_KEY, or neither. Trackers stay browser-local until both exist.",
+      );
+    }
+    // Not "partial" in the half-configured sense — both Supabase values are
+    // present and valid — but the result is the same dead end, so it is worth
+    // the same warning rather than a silent fallback to localStorage.
+    if (trackerSync === "enabled" && clerk !== "enabled") {
+      console.warn(
+        "[env] Supabase is configured but Clerk is not, so tracker sync stays off: " +
+          "there is no signed-in user to attribute a saved hackathon to.",
+      );
+    }
   }
-  return { mapbox, clerk };
+  return { mapbox, clerk, trackerSync };
 }

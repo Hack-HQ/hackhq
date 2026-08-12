@@ -1,3 +1,6 @@
+import { fileURLToPath } from "node:url";
+import { dirname } from "node:path";
+
 import type { NextConfig } from "next";
 
 // Single source of repo identity (mirrors lib/repo.ts; kept inline so the
@@ -81,6 +84,14 @@ const nextConfig: NextConfig = {
     ];
   },
   turbopack: {
+    // Pin the workspace root to web/ instead of letting Turbopack infer it.
+    // Inference walks up looking for a lockfile, so a stray package-lock.json
+    // anywhere above this directory silently wins — it has resolved to $HOME on
+    // a dev machine. Pinning also matches what the app actually needs: since
+    // #230 nothing outside web/ is read at build (repo data is copied into
+    // lib/generated/ first), and Turbopack does not resolve files outside the
+    // root, so this makes that invariant enforced rather than incidental.
+    root: dirname(fileURLToPath(import.meta.url)),
     resolveAlias: {
       // Vendored Framer modules (components/vendor/*) import "framer" for
       // design-tool APIs; route that package to a tiny local shim.

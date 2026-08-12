@@ -23,6 +23,9 @@
   --color-soon: #f5a623;
   --color-register: #3b6bf0;
   --color-muted: #9ba1a5;
+  /* Trophy gold for hackathon wins (#226). Lifted from the passport cover's
+     foil gradient so a win reads the same on a card as it does on a stamp. */
+  --color-trophy: #e7c874;
 }
 
 :root {

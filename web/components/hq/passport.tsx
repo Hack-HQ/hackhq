@@ -154,6 +154,53 @@ function StampMark({ stamp, index }: { stamp: Stamp; index: number }) {
   );
 }
 
+/* The win over-stamp: a large gold trophy slapped on top of a CHAMPION stamp
+   (#226). Same 220x220 coordinate space and rough-inked treatment as
+   <StampMark> — multiply blend + the shared pp-ink turbulence filter — so it
+   reads as the same foil ink, just bolder so it dominates the stamp beneath.
+   Flat gold (the win token), with the lighter trophy gold for the star. */
+function TrophyStamp() {
+  const gold = "#c9992f";
+  const star = "#e7c874";
+  return (
+    <svg
+      viewBox="0 0 220 220"
+      width="100%"
+      height="100%"
+      style={{ mixBlendMode: "multiply", overflow: "visible" }}
+      aria-hidden
+    >
+      <g
+        filter="url(#pp-ink)"
+        stroke={gold}
+        fill="none"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      >
+        {/* rim + bowl */}
+        <path d="M68,62 H152" strokeWidth="4" />
+        <path
+          d="M72,66 H148 C148,106 130,128 110,128 C90,128 72,106 72,66 Z"
+          strokeWidth="5.5"
+        />
+        {/* handles */}
+        <path d="M72,72 C50,72 50,106 74,112" strokeWidth="4.5" />
+        <path d="M148,72 C170,72 170,106 146,112" strokeWidth="4.5" />
+        {/* stem, collar, plinth */}
+        <path d="M110,128 V148 M90,148 H130" strokeWidth="4.5" />
+        <path d="M82,164 H138 L131,150 H89 Z" strokeWidth="5" />
+        {/* star on the cup face */}
+        <path
+          d="M110,75 L113.5,85.2 L124.3,85.4 L115.7,91.9 L118.8,102.1 L110,96 L101.2,102.1 L104.3,91.9 L95.7,85.4 L106.5,85.2 Z"
+          fill={star}
+          stroke={gold}
+          strokeWidth="1.4"
+        />
+      </g>
+    </svg>
+  );
+}
+
 function StampLayer({
   stamps,
   indexOffset,
@@ -176,11 +223,29 @@ function StampLayer({
             width: s.pos.size,
             height: s.pos.size,
             transform: `rotate(${s.rotate}deg)`,
+            // Won stamps sit above their neighbours so the trophy over-stamp
+            // isn't clipped by the next overlapping stamp in a dense grid.
+            zIndex: s.won ? 5 : 1,
           }}
         >
           <div className="pp-stamp" style={{ width: "100%", height: "100%", animationDelay: `${s.delay}ms` }}>
             <StampMark stamp={s} index={indexOffset + i} />
           </div>
+          {s.won && (
+            <div
+              className="pp-stamp"
+              style={{
+                position: "absolute",
+                inset: 0,
+                // A slight counter-rotation and scale-up for the hand-slapped
+                // over-stamp look; lands just after its base stamp.
+                transform: "rotate(9deg) scale(1.14)",
+                animationDelay: `${s.delay + 220}ms`,
+              }}
+            >
+              <TrophyStamp />
+            </div>
+          )}
         </div>
       ))}
     </div>
@@ -316,10 +381,10 @@ function CoverCrest() {
 type Phase = "closed" | "flash" | "open";
 
 export function Passport({ hackathons }: { hackathons: Hackathon[] }) {
-  const { tracked } = useTracker();
-  const { left, right, stampCount, cityCount } = useMemo(
-    () => buildPassport(tracked, hackathons),
-    [tracked, hackathons],
+  const { tracked, wins } = useTracker();
+  const { left, right, stampCount, cityCount, winCount } = useMemo(
+    () => buildPassport(tracked, hackathons, wins),
+    [tracked, hackathons, wins],
   );
   const isEmpty = stampCount === 0;
 
@@ -409,6 +474,12 @@ export function Passport({ hackathons }: { hackathons: Hackathon[] }) {
           </h2>
           <div className="mt-3 font-mono text-[10px] uppercase tracking-[0.16em] text-paper/40">
             {pad2(stampCount)} stamps · {pad2(cityCount)} cities
+            {winCount > 0 && (
+              <>
+                {" · "}
+                <span className="text-trophy">{pad2(winCount)} wins</span>
+              </>
+            )}
           </div>
         </div>
 

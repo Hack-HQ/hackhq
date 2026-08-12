@@ -15,6 +15,7 @@ import {
 } from "@/lib/deck-order";
 import { safeHttpUrl } from "@/lib/url";
 import { useSelection, useTracker } from "./store";
+import { TrophyBadge } from "./trophy";
 
 export function Deck({ hackathons }: { hackathons: Hackathon[] }) {
   const [q, setQ] = useState("");
@@ -175,6 +176,8 @@ function SaveHeart({ h, dark }: { h: Hackathon; dark?: boolean }) {
 
 function HackRow({ h }: { h: Hackathon }) {
   const { setSelected } = useSelection();
+  const { hasWin } = useTracker();
+  const won = hasWin(h.id);
   const meta = STATE_META[h.state];
   const cd = countdown(h);
   const deadline = deadlineDisplay(h);
@@ -203,8 +206,11 @@ function HackRow({ h }: { h: Hackathon }) {
         title={meta.label}
       />
       <div className="min-w-0 flex-1">
-        <div className="truncate font-display text-[15px] font-semibold text-ink">
-          {h.title}
+        <div className="flex items-center gap-2">
+          <span className="truncate font-display text-[15px] font-semibold text-ink">
+            {h.title}
+          </span>
+          {won && <TrophyBadge hackathonTitle={h.title} compact />}
         </div>
         <div className="truncate text-[12px] text-ink/50">
           {h.host} · {h.location}

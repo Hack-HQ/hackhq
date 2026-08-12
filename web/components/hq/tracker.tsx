@@ -6,9 +6,10 @@ import { STATE_META, countdown } from "@/lib/types-hq";
 import { countKnownTracked } from "@/lib/tracker-utils";
 import { safeHttpUrl } from "@/lib/url";
 import { STAGES, useSelection, useTracker, type Stage } from "./store";
+import { TrophyBadge, WinToggle } from "./trophy";
 
 export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
-  const { tracked, move, remove } = useTracker();
+  const { tracked, move, remove, hasWin, toggleWin } = useTracker();
   const { setSelected } = useSelection();
   const [dragId, setDragId] = useState<string | null>(null);
   const [overStage, setOverStage] = useState<Stage | null>(null);
@@ -104,6 +105,7 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
                     h={h}
                     dragging={dragId === h.id}
                     stageId={col.id}
+                    won={hasWin(h.id)}
                     onDragStart={() => setDragId(h.id)}
                     onDragEnd={() => {
                       setDragId(null);
@@ -112,6 +114,7 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
                     onOpen={() => setSelected(h)}
                     onRemove={() => remove(h.id)}
                     onMoveStage={(stage) => move(h.id, stage)}
+                    onToggleWin={() => toggleWin(h.id)}
                   />
                 ))}
                 {col.items.length === 0 && (
@@ -164,20 +167,24 @@ function TrackerCard({
   h,
   dragging,
   stageId,
+  won,
   onDragStart,
   onDragEnd,
   onOpen,
   onRemove,
   onMoveStage,
+  onToggleWin,
 }: {
   h: Hackathon;
   dragging: boolean;
   stageId: Stage;
+  won: boolean;
   onDragStart: () => void;
   onDragEnd: () => void;
   onOpen: () => void;
   onRemove: () => void;
   onMoveStage: (stage: Stage) => void;
+  onToggleWin: () => void;
 }) {
   const meta = STATE_META[h.state];
   const cd = countdown(h);
@@ -218,6 +225,11 @@ function TrackerCard({
           <div className="mt-1 line-clamp-2 text-[13px] font-semibold leading-snug text-paper">
             {h.title}
           </div>
+          {won && (
+            <div className="mt-1.5">
+              <TrophyBadge hackathonTitle={h.title} compact />
+            </div>
+          )}
           <div className="mt-0.5 truncate text-[11px] text-paper/40">
             {h.host}
           </div>
@@ -248,6 +260,11 @@ function TrackerCard({
         </div>
       )}
       <div className="mt-3 flex flex-wrap items-center gap-2">
+        {/* Only in Going: a win belongs to an event you actually attended, and
+            claiming one from an earlier stage would silently move the card. */}
+        {stageId === "going" && (
+          <WinToggle won={won} hackathonTitle={h.title} onToggle={onToggleWin} />
+        )}
         {prevStage && (
           <button
             type="button"

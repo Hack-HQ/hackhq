@@ -14,12 +14,15 @@
    Which stage earns a stamp, and its label (issue #199):
      applied  -> VISA        accepted -> ADMITTED        going -> HACKED
    `interested` (a mere bookmark) earns nothing.
+
+   A recorded win (#226) overrides that label with CHAMPION in trophy gold. The
+   win is the more interesting fact about a hackathon than the stage it reached,
+   and the store only lets a win sit on `going`, so nothing is lost by letting it
+   take the stamp over.
 --------------------------------------------------------------------------- */
 
 import type { Hackathon } from "./types-hq";
-// Type-only import: erased at build, so this file stays free of the "use client"
-// store module at runtime (and in tests).
-import type { Stage } from "@/components/hq/store";
+import type { Stage, WinMap } from "./tracker";
 
 /** A tracker map: hackathon id -> pipeline stage. Mirrors store.tsx. */
 export type TrackerMap = Record<string, Stage>;
@@ -36,6 +39,7 @@ export type PassportStamp = {
   mono: string; // big monogram in the middle
   label: string; // HACKED / VISA / ADMITTED
   color: string;
+  won: boolean; // true -> render the gold trophy over-stamp on top
   pos: { left: number; top: number; size: number };
   rotate: number;
   delay: number; // stamp-in animation delay, ms
@@ -49,6 +53,7 @@ export type Passport = {
   right: PassportStamp[]; // right base page
   stampCount: number;
   cityCount: number;
+  winCount: number;
 };
 
 /* Stage -> stamp presentation. Colours mirror STAGES in store.tsx; the labels
@@ -58,6 +63,11 @@ const STAGE_STAMP: Record<StampStage, { label: string; color: string }> = {
   accepted: { label: "ADMITTED", color: "#3b6bf0" },
   going: { label: "HACKED", color: "#ed5b29" },
 };
+
+/* The win overlay. Gold matches the `trophy` token in globals.css and the
+   passport cover's own foil, so the stamp reads as the same award the trophy
+   badges elsewhere are marking. */
+const WIN_STAMP = { label: "CHAMPION", color: "#c9992f" };
 
 function earnsStamp(stage: Stage): stage is StampStage {
   return stage !== "interested";
@@ -224,8 +234,9 @@ function makeStamp(
   h: Hackathon,
   stage: StampStage,
   index: number,
+  won: boolean,
 ): PassportStamp {
-  const { label, color } = STAGE_STAMP[stage];
+  const { label, color } = won ? WIN_STAMP : STAGE_STAMP[stage];
   const name = cleanName(h.title) || h.host || "HACKATHON";
   const top = name.toUpperCase();
   const sub = locationArc(h.location);
@@ -238,6 +249,7 @@ function makeStamp(
     mono,
     label,
     color,
+    won,
     rotate: rotateFor(h.id),
     // Stagger the stamp-in, but cap it so a large passport doesn't leave the
     // last stamps waiting several seconds to appear.
@@ -257,6 +269,7 @@ function makeStamp(
 export function buildPassport(
   tracked: TrackerMap,
   hackathons: Hackathon[],
+  wins: WinMap = {},
 ): Passport {
   const byId = new Map(hackathons.map((h) => [h.id, h]));
 
@@ -266,7 +279,9 @@ export function buildPassport(
     .filter((e): e is { h: Hackathon; stage: StampStage } => Boolean(e.h))
     .sort((a, b) => eventTime(a.h) - eventTime(b.h));
 
-  const stamps = earned.map((e, i) => makeStamp(e.h, e.stage, i));
+  const stamps = earned.map((e, i) =>
+    makeStamp(e.h, e.stage, i, wins[e.h.id] === true),
+  );
 
   // Split half/half; earliest events fill the left (inside-cover) page first.
   const perPage = Math.max(1, Math.ceil(stamps.length / 2));
@@ -277,5 +292,10 @@ export function buildPassport(
     earned.map((e) => cityKey(e.h.location)).filter((k): k is string => Boolean(k)),
   ).size;
 
-  return { left, right, stampCount: stamps.length, cityCount };
+  // Counted from the stamps rather than from `wins` directly: a win on a
+  // delisted hackathon has no stamp to show, so counting it would leave the
+  // header claiming a trophy the pages don't have.
+  const winCount = earned.filter((e) => wins[e.h.id] === true).length;
+
+  return { left, right, stampCount: stamps.length, cityCount, winCount };
 }
