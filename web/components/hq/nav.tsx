@@ -65,6 +65,10 @@ export function NavPill() {
         {/* Logo chip - HQ monogram */}
         <Link
           href="/"
+          // The pill renders on every page, so default prefetch fires an RSC
+          // request for each nav route on load. A burst of those saturated the
+          // Worker isolate (#CPU-limit). Fetch on hover/tap instead.
+          prefetch={false}
           className="mr-1 flex items-center rounded-2xl bg-ink px-3.5 py-3.5 ring-1 ring-white/10 transition hover:ring-coral/60"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -119,6 +123,7 @@ export function NavPill() {
               <Link
                 key={label}
                 href={href}
+                prefetch={false}
                 aria-current={active ? "page" : undefined}
                 onMouseEnter={() => setHovered(label)}
                 onFocus={() => setHovered(label)}
@@ -144,6 +149,7 @@ export function NavPill() {
             still does the work and we leave it alone. */}
         <Link
           href="/#submit"
+          prefetch={false}
           onClick={(e) => {
             if (pathname !== "/") return;
             // Leave modified and non-primary clicks to the browser, or
