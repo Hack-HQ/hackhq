@@ -116,6 +116,10 @@ export function MobileMenu() {
               <Link
                 key={label}
                 href={href}
+                // Opening the panel would otherwise prefetch every nav route at
+                // once; that RSC burst helped saturate the Worker isolate
+                // (#CPU-limit). Fetch on tap instead.
+                prefetch={false}
                 // Dismiss on the press. A route change does remount the nav (each
                 // page renders its own PageShell), but that lands after the
                 // navigation resolves — and it never happens at all for GITHUB
