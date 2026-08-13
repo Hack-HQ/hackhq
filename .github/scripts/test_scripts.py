@@ -230,11 +230,84 @@ class CleanUrl(unittest.TestCase):
     def test_valid_host_normalizes(self):
         self.assertEqual(util.clean_url("example.com"), "https://example.com")
 
+    def test_strips_modern_tracking_params(self):
+        # The exact noise #253 arrived with: Devpost discovery refs plus a GA
+        # cross-domain _gl blob. utm_*-only stripping stored all of it verbatim
+        # as the public Register link.
+        self.assertEqual(
+            util.clean_url(
+                "https://peddiehacks-2026.devpost.com/"
+                "?ref_feature=challenge&ref_medium=discover&_gl=1*131zby0*_gcl_au*Mjg5"
+            ),
+            "https://peddiehacks-2026.devpost.com/",
+        )
+        self.assertEqual(
+            util.clean_url("https://x.devpost.com/?gclid=abc&fbclid=def&mc_eid=z"),
+            "https://x.devpost.com/",
+        )
+
+    def test_kept_params_survive_byte_for_byte(self):
+        # The old parse_qs/urlencode round-trip re-encoded surviving values
+        # (asterisks came back as %2A), changing URLs it had removed nothing
+        # from. Kept pairs must pass through untouched.
+        self.assertEqual(
+            util.clean_url("https://x.com/?a=1*2&_gl=1*zzz"),
+            "https://x.com/?a=1*2",
+        )
+        self.assertEqual(
+            util.clean_url("https://x.com/?q=a%20b&utm_source=t"),
+            "https://x.com/?q=a%20b",
+        )
+
+    def test_uppercase_scheme_is_a_scheme(self):
+        # "HTTP://…" must not get a second https:// prefixed onto it.
+        self.assertEqual(
+            util.clean_url("HTTP://Example.com/x"), "http://Example.com/x"
+        )
+
     def test_strips_tracking_params(self):
         self.assertEqual(
             util.clean_url("https://example.com/e?utm_source=x&a=1"),
             "https://example.com/e?a=1",
         )
+
+
+class UrlDedupeKey(unittest.TestCase):
+    """auto_extract's duplicate check compares these keys, not raw strings.
+
+    Found resolving #253/#257: the same hackathon submitted from two discovery
+    paths differs in scheme, www, host case, a trailing slash, or tracking
+    params, and every one of those slipped an exact-string comparison.
+    """
+
+    def test_cosmetic_variants_collapse(self):
+        base = util.url_dedupe_key("https://hackmit.org/")
+        for variant in (
+            "https://hackmit.org",
+            "http://hackmit.org/",
+            "https://www.hackmit.org/",
+            "HTTP://WWW.HackMIT.org/",
+            "https://hackmit.org/?utm_source=newsletter",
+            "hackmit.org",
+        ):
+            with self.subTest(variant=variant):
+                self.assertEqual(base, util.url_dedupe_key(variant))
+
+    def test_real_differences_stay_distinct(self):
+        # Different Devpost slugs are genuinely different events, and a
+        # surviving (non-tracking) query param can be the whole identity.
+        self.assertNotEqual(
+            util.url_dedupe_key("https://a.devpost.com/x"),
+            util.url_dedupe_key("https://a.devpost.com/y"),
+        )
+        self.assertNotEqual(
+            util.url_dedupe_key("https://x.com/e?id=1"),
+            util.url_dedupe_key("https://x.com/e?id=2"),
+        )
+
+    def test_hostless_input_is_empty(self):
+        self.assertEqual("", util.url_dedupe_key(""))
+        self.assertEqual("", util.url_dedupe_key("https://"))
 
 
 class ContributionApprovedUrlGuard(unittest.TestCase):
