@@ -506,6 +506,23 @@
     "source": "ChimdumebiNebolisa"
   },
   {
+    "id": "d0a43c22-5436-5113-947d-6ea4ecc7323b",
+    "company_name": "HackIllinois",
+    "title": "HackIllinois 2027 (Student Hackathon; Next Cycle Not Yet Posted)",
+    "url": "https://www.hackillinois.org/",
+    "locations": [
+      "Urbana-Champaign, IL"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "opens_soon",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1786579817,
+    "date_updated": 1786579817,
+    "source": "Mataimvcb"
+  },
+  {
     "id": "47d9d612-9de8-41c5-8265-c435ebfd8870",
     "company_name": "HackKnight",
     "title": "HackKnight",
