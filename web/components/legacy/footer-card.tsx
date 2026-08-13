@@ -18,7 +18,7 @@ export function FooterCard({ total }: { total: number }) {
     <footer className="relative bg-black px-6 pb-40 pt-24 sm:px-12">
       <p className="body-copy mx-auto w-[min(88vw,440px)] text-center">
         HackHQ is your headquarters for every hackathon worth joining. Open
-        source and community-driven — every listing lives in a public repo,
+        source and community-driven - every listing lives in a public repo,
         updated daily.
       </p>
 

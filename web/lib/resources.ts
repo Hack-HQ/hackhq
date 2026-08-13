@@ -26,21 +26,21 @@ export const RESOURCE_STAGES: ResourceStage[] = [
     label: "First steps",
     title: "Getting started",
     summary:
-      "A hackathon is a build sprint with a demo at the end—not a coding exam. Show up curious; leave with a story.",
+      "A hackathon is a build sprint with a demo at the end - not a coding exam. Show up curious; leave with a story.",
     tips: [
       "Pick for fit, not prestige: virtual vs in-person, theme, team size, and whether you can finish the weekend without burning out.",
       "Before you register, check eligibility, deadline, Discord invite, and whether you can join solo or need a team.",
-      "Done for a first timer means a working demo someone can understand in two minutes—not perfect code.",
+      "Done for a first timer means a working demo someone can understand in two minutes - not perfect code.",
       "Read the rules once. Note prize tracks, hardware limits, and what counts as a submission.",
     ],
     links: [
       {
         title: "Major League Hacking",
         href: "https://www.mlh.com/",
-        blurb: "The student hackathon circuit—events, community, and how seasons work.",
+        blurb: "The student hackathon circuit - events, community, and how seasons work.",
       },
       {
-        title: "Devpost — Discover hackathons",
+        title: "Devpost - Discover hackathons",
         href: "https://devpost.com/hackathons",
         blurb: "Browse live and upcoming events; many use Devpost for submissions.",
       },
@@ -56,10 +56,10 @@ export const RESOURCE_STAGES: ResourceStage[] = [
     label: "Crew",
     title: "Finding your people",
     summary:
-      "Solo is fine. A balanced team is often better. The goal is people who finish together—not a stacked résumé.",
+      "Solo is fine. A balanced team is often better. The goal is people who finish together - not a stacked résumé.",
     tips: [
       "Open with a 30-second pitch: what you build, what you need, and what energy you bring.",
-      "Hunt teammates in the event Discord, campus clubs, and mixers—not only LinkedIn cold DMs.",
+      "Hunt teammates in the event Discord, campus clubs, and mixers - not only LinkedIn cold DMs.",
       "Aim for complementary roles: builder, designer, storyteller, and someone who knows the domain.",
       "Joining an existing team? Ask what is missing, ship a small contribution early, and own a clear slice.",
     ],
@@ -89,9 +89,9 @@ export const RESOURCE_STAGES: ResourceStage[] = [
       "Treat the clock as a design constraint. Ideate fast, cut scope early, and protect time for the pitch.",
     tips: [
       "Prep the night before: accounts, repo, stack, chargers, and a sleep plan you will actually follow.",
-      "Mental model: ideate → MVP → polish → pitch. If polish eats the demo, cut features—not the story.",
+      "Mental model: ideate → MVP → polish → pitch. If polish eats the demo, cut features - not the story.",
       "Demo structure: problem → solution → live proof → ask. Rehearse once out loud.",
-      "Ask mentors early when stuck. Judges reward impact, originality, execution, and clarity—not all-nighter lore.",
+      "Ask mentors early when stuck. Judges reward impact, originality, execution, and clarity - not all-nighter lore.",
     ],
     links: [
       {
@@ -102,7 +102,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
       {
         title: "MLH Hackathon Organizer Guide",
         href: "https://guide.mlh.com/",
-        blurb: "Useful even as a participant—see how weekends are structured from the inside.",
+        blurb: "Useful even as a participant - see how weekends are structured from the inside.",
       },
       {
         title: "Pitch deck basics",
@@ -118,7 +118,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
     summary:
       "After a few events, stop treating every weekend the same. Choose on purpose and reuse what works.",
     tips: [
-      "Pick events for sponsors, stack, prize tracks, and people—not only total prize pool.",
+      "Pick events for sponsors, stack, prize tracks, and people - not only total prize pool.",
       "Build a personal kit: boilerplate, design tokens, pitch template, and a README you can fork.",
       "Chase a sponsor challenge only if it still serves a product you believe in.",
       "Ship the repo publicly within 48 hours. Follow up with mentors and teammates while the weekend is warm.",
@@ -132,7 +132,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
       {
         title: "Open Source Guides",
         href: "https://opensource.guide/",
-        blurb: "Turn a hack into a real project—docs, contributors, and maintainership.",
+        blurb: "Turn a hack into a real project - docs, contributors, and maintainership.",
       },
       {
         title: "Devpost winners archive",
@@ -149,7 +149,7 @@ export const RESOURCE_STAGES: ResourceStage[] = [
       "The next level is not more caffeine. It is better selection, sharper demos, and giving back.",
     tips: [
       "Novelty without a user is a trap. Winning patterns usually solve a sharp problem with a crisp demo.",
-      "Plan recovery between events. Skipping a weekend is a skill—burnout kills seasons.",
+      "Plan recovery between events. Skipping a weekend is a skill - burnout kills seasons.",
       "Mentor, judge, or organize once you know the rhythm. Teaching forces clearer instincts.",
       "Build in public and recruit for future weekends before the Discord goes quiet.",
     ],

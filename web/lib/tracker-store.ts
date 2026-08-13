@@ -1,8 +1,8 @@
 /* ---------------------------------------------------------------------------
    Server-side reads and writes for public.user_hackathons.
 
-   This is the app's first runtime database access — every other page reads
-   listings.json off disk — so it is deliberately narrow: four operations, all
+   This is the app's first runtime database access - every other page reads
+   listings.json off disk - so it is deliberately narrow: four operations, all
    scoped to one user, and no query in here takes a user id from a caller's
    request body. The id always comes from the Clerk session, resolved in the
    route handler.
@@ -12,12 +12,12 @@
    The client is built with the service role key, which bypasses RLS. Ownership
    is therefore enforced here, by the `.eq("user_id", userId)` on every read and
    delete, by writing `user_id` explicitly on every insert, and by passing it as
-   `p_user_id` to the upsert function — which stamps it onto the row rather than
+   `p_user_id` to the upsert function - which stamps it onto the row rather than
    taking the caller's word for it.
 
    The RLS policies in the migration are not redundant. They mean `anon` and
    `authenticated` cannot touch this table at all, so nothing reachable with a
-   publishable key can read one user's tracker — and they are what a future
+   publishable key can read one user's tracker - and they are what a future
    browser-direct path would run under. The trade-off of the service role is
    that a missing filter in this file would not be caught by the database, which
    is why the surface is kept this small and why `userId` is a required

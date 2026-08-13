@@ -37,7 +37,7 @@ export function JournalCard({
         <Reveal delay={80}>
           <p className="body-copy mx-auto mt-6 w-[min(88vw,440px)] text-center">
             The next deadlines on the clock. Every entry links straight to the
-            organizer&apos;s registration — no middleman, no signup wall.
+            organizer&apos;s registration - no middleman, no signup wall.
           </p>
         </Reveal>
 
@@ -78,7 +78,7 @@ export function JournalCard({
                   <div className="mt-6 flex flex-col items-center gap-2 text-center">
                     <h3 className="w-[min(88vw,560px)] text-lg text-white/90">
                       {opp.title}
-                      {opp.organization ? ` — ${opp.organization}` : ""}
+                      {opp.organization ? ` - ${opp.organization}` : ""}
                     </h3>
                     <p className="px-label text-[12px] text-white/55">
                       {STATUS_LABELS[opp.status]}

@@ -45,7 +45,7 @@ function Hero() {
           to final pitch
         </h1>
         <p className="mt-6 max-w-xl text-sm leading-relaxed text-paper/60 sm:text-base">
-          Practical tips and curated links for every stage—first timer, team
+          Practical tips and curated links for every stage - first timer, team
           finder, weekend survivor, and power user.
         </p>
       </div>
@@ -143,7 +143,7 @@ function ToolsStrip() {
           <span className="display">Tools & templates</span>
         </h2>
         <p className="mt-4 max-w-xl text-sm leading-relaxed text-paper/60">
-          Steal these for any weekend—first hackathon or fiftieth.
+          Steal these for any weekend - first hackathon or fiftieth.
         </p>
 
         <div className="mt-12 grid gap-10 md:grid-cols-3">
@@ -184,7 +184,7 @@ function NextStepCta() {
           Ready to pick one?
         </h2>
         <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-paper/60">
-          Browse the globe or flip the deck—then show up with a plan.
+          Browse the globe or flip the deck - then show up with a plan.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link

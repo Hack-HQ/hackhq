@@ -63,8 +63,8 @@ const LS_IMPORTED_KEY = "hackhq-tracker-imported-v1";
    visitor gets. On mount the provider then asks /api/tracker whether this
    session has somewhere better to put it. Three answers, all of them fine:
 
-     200 { synced: false }  sync isn't configured — stay local
-     401                    signed out — stay local
+     200 { synced: false }  sync isn't configured - stay local
+     401                    signed out - stay local
      200 { synced: true }   adopt the account's rows as the truth
 
    The provider asks the route rather than reading Clerk hooks, because it also

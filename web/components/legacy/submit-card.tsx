@@ -27,7 +27,7 @@ export function SubmitCard() {
         <Reveal delay={80}>
           <p className="body-copy w-[min(88vw,560px)] text-center">
             Running a hackathon? Whether it&apos;s a campus classic, a
-            high-school first, or a global online sprint — get it in front of
+            high-school first, or a global online sprint - get it in front of
             hackers who are looking for it.
           </p>
         </Reveal>

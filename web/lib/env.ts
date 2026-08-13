@@ -60,7 +60,7 @@ export function validateEnv(): EnvReport {
     reported = true;
     if (!mapbox) {
       console.warn(
-        "[env] NEXT_PUBLIC_MAPBOX_TOKEN is not set — the globe will show a placeholder.",
+        "[env] NEXT_PUBLIC_MAPBOX_TOKEN is not set - the globe will show a placeholder.",
       );
     }
     if (clerk === "partial") {

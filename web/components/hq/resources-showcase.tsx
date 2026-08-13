@@ -19,12 +19,12 @@ type Service = {
   href: string;
   icon: React.ReactNode;
   /** Card artwork (#220), the universal fallback: 600px H.264, CRF 30,
-      audio stripped, +faststart — 3.4MB of source became 1.3MB across all
+      audio stripped, +faststart - 3.4MB of source became 1.3MB across all
       four. Browsers without AV1 decode land here and see what they always
       saw. */
   video: string;
   /** The same clip MetalFX-upscaled 4x and encoded AV1 10-bit (no true
-      higher-res master exists — 600x750 was every pixel we had). Listed
+      higher-res master exists - 600x750 was every pixel we had). Listed
       first in the <source> order; the codecs parameter is what lets a
       non-AV1 browser skip it without fetching a byte. */
   videoUhd: string;
@@ -37,7 +37,7 @@ const SERVICES: Service[] = [
   {
     n: "01",
     title: "Getting started",
-    desc: "A hackathon is a build sprint with a demo at the end — not a coding exam. Show up curious; leave with a story.",
+    desc: "A hackathon is a build sprint with a demo at the end - not a coding exam. Show up curious; leave with a story.",
     label: "basics",
     href: "/resources#getting-started",
     icon: <IconFlag />,
@@ -48,7 +48,7 @@ const SERVICES: Service[] = [
   {
     n: "02",
     title: "Finding your people",
-    desc: "Solo is fine. A balanced team is often better. The goal is people who finish together — not a stacked résumé.",
+    desc: "Solo is fine. A balanced team is often better. The goal is people who finish together - not a stacked résumé.",
     label: "crew",
     href: "/resources#finding-people",
     icon: <IconUsers />,
@@ -195,7 +195,7 @@ function ServicePanel({
    Only the open panel plays. `preload="none"` means nothing but the poster is
    fetched until a panel is actually opened, so the four clips cost 0 bytes on
    first paint and at most one of them ever decodes at a time. Under
-   prefers-reduced-motion the video is never started, leaving the poster — which
+   prefers-reduced-motion the video is never started, leaving the poster - which
    is why every clip needs one that reads on its own.
 
    Decorative, so aria-hidden and no alt: the panel is already a labelled link
@@ -255,7 +255,7 @@ function MobileServiceCard({ s }: { s: Service }) {
       {/* The still, not the clip. Four autoplaying videos stacked down a phone
           would burn data and battery for decoration, and only one can be on
           screen at a time anyway. Lazy so it costs nothing until scrolled to.
-          Decorative — the card is a link with a visible heading. */}
+          Decorative - the card is a link with a visible heading. */}
       <div className="mt-5 overflow-hidden rounded-2xl">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -293,7 +293,7 @@ function CorePanel({ accordion }: { accordion?: boolean }) {
         Everything you need, from first commit to demo day
       </h3>
       <p className="mt-4 max-w-sm text-sm leading-relaxed text-paper/55">
-        Curated guides, communities, and tools — the shortcuts a first-timer
+        Curated guides, communities, and tools - the shortcuts a first-timer
         usually learns the hard way. Start anywhere in the stack:
       </p>
 

@@ -28,8 +28,8 @@ export function HeroCard() {
 
         {/* Intro copy */}
         <p className="body-copy absolute bottom-[112px] left-1/2 w-[min(88vw,440px)] -translate-x-1/2 text-center text-white/90">
-          At HackHQ, we track every hackathon worth joining — in-person,
-          virtual, and hybrid — so you can find your next build weekend before
+          At HackHQ, we track every hackathon worth joining - in-person,
+          virtual, and hybrid - so you can find your next build weekend before
           the deadline closes.
         </p>
       </div>

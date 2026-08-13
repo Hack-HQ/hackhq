@@ -11,8 +11,8 @@ import { submitGalleryPhotoUrl } from "@/lib/types-hq";
 /* Infinite draggable canvas of the community's hackathon photos.
 
    Photos come from gallery.json (via loadGalleryPhotos on the server). They
-   pack into one seamless tile — the hand-tuned 6×6 slot template, stacked
-   vertically when there are more than eight photos — which is repeated across
+   pack into one seamless tile - the hand-tuned 6×6 slot template, stacked
+   vertically when there are more than eight photos - which is repeated across
    a grid large enough to cover the viewport plus a margin. The pan offset is
    wrapped modulo the tile period, so the pattern repeats forever.
 
@@ -188,7 +188,7 @@ export function GalleryCanvas({ photos }: { photos: GalleryPhoto[] }) {
 
       <div
         ref={canvasRef}
-        aria-label="Photo wall from community hackathons — drag to explore"
+        aria-label="Photo wall from community hackathons - drag to explore"
         className="shell relative h-[clamp(440px,76vh,820px)] cursor-grab touch-none select-none bg-ink-deep active:cursor-grabbing"
         onPointerDown={empty ? undefined : onDown}
         onPointerMove={empty ? undefined : onMove}
@@ -198,7 +198,7 @@ export function GalleryCanvas({ photos }: { photos: GalleryPhoto[] }) {
         {empty ? (
           <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
             <p className="font-display text-lg text-paper/70">
-              No photos yet — be the first.
+              No photos yet - be the first.
             </p>
             <p className="max-w-sm text-sm text-paper/40">
               <a

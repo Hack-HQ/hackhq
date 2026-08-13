@@ -5,7 +5,7 @@
    is built from). prepare-repo-data.mjs snapshots it into lib/generated/ so the
    infinite canvas can import it on Workers with no request-time filesystem.
 
-   The canvas needs a perfect rectangular tile with no holes — otherwise the
+   The canvas needs a perfect rectangular tile with no holes - otherwise the
    modulo wrap exposes empty cells. SLOT_TEMPLATE is the hand-packed 6×6 layout
    the gallery shipped with; packGalleryTiles stacks that template vertically
    enough times to hold every photo, cycling when a stack isn't full so the
@@ -140,7 +140,7 @@ export function packGalleryTiles(photos: GalleryPhoto[]): PackedGallery {
       const photo = photos[(s * slotsPerStack + i) % photos.length]!;
       const slot = SLOT_TEMPLATE[i]!;
       const alt = photo.caption
-        ? `${photo.hackathon} — ${photo.caption}`
+        ? `${photo.hackathon} - ${photo.caption}`
         : photo.hackathon;
       items.push({
         src: galleryPublicSrc(photo.image),

@@ -26,7 +26,7 @@ export function AboutCard() {
         <Reveal delay={120} className="absolute bottom-[16svh]">
           <p className="body-copy w-[min(88vw,460px)] text-center text-white/90">
             HackHQ pulls every hackathon into a single, always-current
-            headquarters — college, high-school, and open events across the
+            headquarters - college, high-school, and open events across the
             world. No more digging through a dozen sites and stale
             spreadsheets. Updated daily, straight from an open-source repo.
           </p>

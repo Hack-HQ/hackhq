@@ -3,8 +3,8 @@
 /* ---------------------------------------------------------------------------
    Trophy badges for hackathon wins (#226).
 
-   One icon and one badge, shared by every surface that can show a win — deck
-   row, detail dialog, tracker card — so the gold, the size and the wording stay
+   One icon and one badge, shared by every surface that can show a win - deck
+   row, detail dialog, tracker card - so the gold, the size and the wording stay
    in step. The colour is the `trophy` design token, which is the passport
    cover's foil gold.
 
