@@ -136,7 +136,7 @@ export function NavPill() {
         {/* Submit CTA.
             On the home page this has to scroll itself. <Link>'s documented
             default is to *maintain* scroll position and only jump when the
-            target Page is outside the viewport — on "/" the Page is already
+            target Page is outside the viewport - on "/" the Page is already
             visible, so the router kept the position and the button appeared
             dead. The footer's plain <a> never had the problem because it
             bypasses the router and the browser handles the fragment.

@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-   Passport stamp generator — derives ink-stamped visas from the local tracker.
+   Passport stamp generator - derives ink-stamped visas from the local tracker.
 
    The My Passport artwork (components/hq/passport.tsx) was authored with eight
    hand-tuned stamps: every monogram, colour, rotation and coordinate picked per
@@ -8,7 +8,7 @@
    into fully-placed stamps, deriving each visual property from the data.
 
    Kept as a pure, side-effect-free module (no React, no DOM) so the fiddly
-   string logic — name cleaning, monogram derivation, location parsing — is unit
+   string logic - name cleaning, monogram derivation, location parsing - is unit
    tested in isolation (passport-stamps.test.ts).
 
    Which stage earns a stamp, and its label (issue #199):

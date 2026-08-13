@@ -90,7 +90,7 @@ export function ScrollGallery({
   flyers,
   eyebrow = "The wall",
   title = "Every flyer, one scroll",
-  description = "Every hackathon we track, laid out as a living wall. Scroll to move through the deck — the flyer in focus tells you who's building and when.",
+  description = "Every hackathon we track, laid out as a living wall. Scroll to move through the deck - the flyer in focus tells you who's building and when.",
 }: {
   flyers: Flyer[];
   eyebrow?: string;

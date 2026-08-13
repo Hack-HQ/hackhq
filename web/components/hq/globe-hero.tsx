@@ -26,7 +26,7 @@ export function GlobeHero() {
             else falls through to the original 1080p H.264. The codecs param on
             the first <source> is what makes non-AV1 browsers skip it without
             fetching a byte. The 4K file is AV1 10-bit CRF 39 (18 MiB), sized to
-            stay under Cloudflare Workers' 25 MiB static-asset cap — the reason
+            stay under Cloudflare Workers' 25 MiB static-asset cap - the reason
             the hero was 1080p-only in the first place (see b29f06f). */}
         <div className="absolute inset-0">
           <video

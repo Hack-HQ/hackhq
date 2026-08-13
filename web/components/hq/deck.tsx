@@ -217,7 +217,7 @@ function HackRow({ h }: { h: Hackathon }) {
           {h.host} · {h.location}
         </div>
         {/* Status as text, not colour alone. The dot beside the row carries it
-            only through `title`, which never appears without a pointer — so on
+            only through `title`, which never appears without a pointer - so on
             a phone the state was conveyed by hue alone (also WCAG 1.4.1). The
             columns that spell it out are hidden below lg, and `cd` is already
             computed for the deadline column, so it costs nothing to show. */}

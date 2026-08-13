@@ -122,8 +122,8 @@ export function DetailModal() {
           <div className="kicker text-coral">{h.host}</div>
           {/* break-words: 4vw never reaches the 1.8rem clamp floor at phone
               widths, so the title is locked at 28.8px, and Syncopate Bold costs
-              ~25.8px per capital. Real titles carry unbreakable tokens —
-              "(Pre-Registration" needs 377px against a 240px body box at 320px —
+              ~25.8px per capital. Real titles carry unbreakable tokens - 
+              "(Pre-Registration" needs 377px against a 240px body box at 320px - 
               which ran past the panel and were clipped by its overflow-hidden.
               overflow-wrap only breaks a word that cannot fit alone, so every
               width >= 640px renders byte-identically to before. */}
@@ -153,8 +153,8 @@ export function DetailModal() {
           {/* Prize row */}
           {/* Stacked below sm. At 320px this row's content box is 190px, but
               every prize string in the data exceeds it once the countdown is
-              beside it — "$44,000+ in prizes" by 40px, the longest entry by
-              127px — and the overflow was clipped by the panel, cutting off the
+              beside it - "$44,000+ in prizes" by 40px, the longest entry by
+              127px - and the overflow was clipped by the panel, cutting off the
               countdown, which is the primary urgency signal. break-words is
               needed too: "participants." alone measures 228.9px. */}
           <div className="mt-6 flex flex-col items-start gap-4 rounded-2xl border border-white/10 bg-white/4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6">
@@ -181,7 +181,7 @@ export function DetailModal() {
           {/* Stacked below sm. flex-wrap never fired here: flex-1 gives the CTA
               a hypothetical main size of 0, so the pair stayed side by side and
               the link was squeezed to 139px at 375px while "VISIT WEBSITE ↗"
-              needs 199px — the primary CTA's label broke across two lines
+              needs 199px - the primary CTA's label broke across two lines
               inside its own pill. Trimming padding cannot rescue it; the widest
               the CTA can ever be beside the save button is 166.5px. */}
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">

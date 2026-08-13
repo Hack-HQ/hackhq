@@ -6,7 +6,7 @@ import { buildPassport, type PassportStamp } from "@/lib/passport-stamps";
 import { useTracker } from "./store";
 
 /* ---------------------------------------------------------------------------
-   My Passport — Members · Pillar 03
+   My Passport - Members · Pillar 03
 
    A React port of the "My Passport.dc.html" Claude Design component. A
    collectible hacker passport that flips open in 3D to reveal ink-stamped
@@ -156,7 +156,7 @@ function StampMark({ stamp, index }: { stamp: Stamp; index: number }) {
 
 /* The win over-stamp: a large gold trophy slapped on top of a CHAMPION stamp
    (#226). Same 220x220 coordinate space and rough-inked treatment as
-   <StampMark> — multiply blend + the shared pp-ink turbulence filter — so it
+   <StampMark> - multiply blend + the shared pp-ink turbulence filter - so it
    reads as the same foil ink, just bolder so it dominates the stamp beneath.
    Flat gold (the win token), with the lighter trophy gold for the star. */
 function TrophyStamp() {

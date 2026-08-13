@@ -20,7 +20,7 @@ export function HostsCard({ orgs }: { orgs: string[] }) {
 
         <Reveal delay={80}>
           <p className="body-copy w-[min(88vw,420px)] text-center">
-            From university clubs to the world&apos;s biggest tech companies —
+            From university clubs to the world&apos;s biggest tech companies - 
             the organizations running the hackathons we track.
           </p>
         </Reveal>

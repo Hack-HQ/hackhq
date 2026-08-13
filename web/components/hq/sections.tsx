@@ -19,7 +19,7 @@ export function StatsStrip({ stats }: { stats: SiteStats }) {
       <div className="shell bg-ink-soft px-6 py-12 sm:px-12 sm:py-16">
         {/* One per row below sm. The display clamp floors at 3rem and never
             shrinks further, but a 2-up grid only gives each cell 116px at
-            320px — and prizeDisplay renders up to 7 characters ("$12.3M" plus
+            320px - and prizeDisplay renders up to 7 characters ("$12.3M" plus
             the "+" span), which cannot fit at 48px under any font. It bled past
             both edges of its cell, collided with the neighbouring number, and
             was silently cut off by .shell's overflow:hidden rather than
@@ -261,7 +261,7 @@ export function Developers() {
             The developers
           </h2>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-paper/55">
-            The founding open-source contributors who made HackHQ — the people
+            The founding open-source contributors who made HackHQ - the people
             behind the product.
           </p>
         </div>
@@ -344,7 +344,7 @@ export function Developers() {
           </div>
         </div>
 
-        {/* filmstrip — active person's slot points up at the card */}
+        {/* filmstrip - active person's slot points up at the card */}
         <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-7 sm:gap-3">
           {DEVELOPERS.map((d, i) =>
             i === active ? (
@@ -569,7 +569,7 @@ function FollowCard() {
 const OFFERS = [
   "Live global hackathon map",
   "Deadlines, prizes & status, tracked",
-  "Open data — one listings.json",
+  "Open data - one listings.json",
   "Community-fed, updated daily",
 ];
 
@@ -626,7 +626,7 @@ function ContactCard() {
         Got a question, challenge, or idea?
       </h2>
       <p className="mt-2 text-sm text-paper/50">
-        Tell us what you&rsquo;re building — or what HackHQ is missing.
+        Tell us what you&rsquo;re building - or what HackHQ is missing.
       </p>
 
       <form

@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-   /api/tracker — the signed-in user's pipeline and wins (#226).
+   /api/tracker - the signed-in user's pipeline and wins (#226).
 
    | Method | Does |
    | ------ | ---- |
@@ -12,7 +12,7 @@
    `{ synced: false }` with a 200, returned when Clerk or Supabase is not
    configured. The tracker has always worked without a server, that stays true,
    and the client treats a 200 with `synced: false` as its cue to keep using
-   localStorage alone. A signed-out caller, by contrast, gets a 401 — on a
+   localStorage alone. A signed-out caller, by contrast, gets a 401 - on a
    configured deployment that is a real failure, not a degraded mode.
 --------------------------------------------------------------------------- */
 
