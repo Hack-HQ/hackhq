@@ -6,6 +6,7 @@ import {
   type GalleryPhoto,
   type GalleryTileItem,
 } from "@/lib/gallery";
+import { submitGalleryPhotoUrl } from "@/lib/types-hq";
 
 /* Infinite draggable canvas of the community's hackathon photos.
 
@@ -15,8 +16,10 @@ import {
    a grid large enough to cover the viewport plus a margin. The pan offset is
    wrapped modulo the tile period, so the pattern repeats forever.
 
-   Photo submission lives in GallerySubmitSection (sections.tsx), immediately
-   below this canvas — same glass-card pattern as the hackathon SubmitSection. */
+   Photo submission is handled on GitHub rather than by an on-site form: the
+   image itself can't ride along in issue query params, so a form here could
+   only ever collect the text and hand the visitor off anyway. The empty state
+   links straight to the prefilled gallery_photo.yaml issue. */
 
 const CW = 138; // base cell size (px)
 const G = 8; // gap between cells / tiles
@@ -198,11 +201,15 @@ export function GalleryCanvas({ photos }: { photos: GalleryPhoto[] }) {
               No photos yet — be the first.
             </p>
             <p className="max-w-sm text-sm text-paper/40">
-              Use{" "}
-              <a href="#share-photo" className="text-coral underline-offset-4 hover:underline">
+              <a
+                href={submitGalleryPhotoUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-coral underline-offset-4 hover:underline"
+              >
                 Share a photo
               </a>{" "}
-              below to open a GitHub issue and attach a JPG or PNG.
+              to open a GitHub issue and attach a JPG or PNG.
             </p>
           </div>
         ) : (
