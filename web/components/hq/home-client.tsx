@@ -12,7 +12,6 @@ import {
   StatsStrip,
   ThemeMarquee,
   Developers,
-  GallerySubmitSection,
   SubmitSection,
   Footer,
 } from "./sections";
@@ -38,7 +37,6 @@ export function HomeClient({
         <ThemeMarquee hackathons={hackathons} />
         <ResourcesShowcase />
         <GalleryCanvas photos={galleryPhotos} />
-        <GallerySubmitSection />
         <Developers />
         <SubmitSection />
       </main>
