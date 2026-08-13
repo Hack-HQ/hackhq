@@ -27,3 +27,7 @@ node_modules/
 # workspace root and resolves the build against (it has picked $HOME before).
 # One was committed by accident already; ignore it so it cannot happen again.
 /package-lock.json
+
+# local agent-session config and Supabase CLI scratch
+.claude/
+supabase/.temp/

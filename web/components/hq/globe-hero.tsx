@@ -19,18 +19,31 @@ export function GlobeHero() {
   return (
     <section id="globe" className="p-2">
       <div className="shell bg-ink h-[min(94vh,1000px)] min-h-[640px]">
-        {/* Opening animation from the RedNote Red Hackathon Summit */}
+        {/* Opening animation from the RedNote Red Hackathon Summit.
+
+            Two encodes of the same master: browsers that decode AV1 (Chrome,
+            Firefox, Edge, Safari on M3+/A17+) pick the 4K UHD source; everyone
+            else falls through to the original 1080p H.264. The codecs param on
+            the first <source> is what makes non-AV1 browsers skip it without
+            fetching a byte. The 4K file is AV1 10-bit CRF 39 (18 MiB), sized to
+            stay under Cloudflare Workers' 25 MiB static-asset cap — the reason
+            the hero was 1080p-only in the first place (see b29f06f). */}
         <div className="absolute inset-0">
           <video
             ref={videoRef}
             className="h-full w-full object-cover"
-            src="/rednote-summit-opening.mp4"
             poster="/rednote-summit-poster.jpg"
             muted
             loop
             playsInline
             preload="auto"
-          />
+          >
+            <source
+              src="/rednote-summit-opening-4k.mp4"
+              type='video/mp4; codecs="av01.0.12M.10"'
+            />
+            <source src="/rednote-summit-opening.mp4" type="video/mp4" />
+          </video>
         </div>
 
         {/* Legibility gradient */}
