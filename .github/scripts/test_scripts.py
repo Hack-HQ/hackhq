@@ -1170,6 +1170,22 @@ class AutoCloseExpired(unittest.TestCase):
         # daily cron cannot rewrite date_closed/archive_note every morning.
         self.assertEqual([], util.close_expired(listings, self.TODAY))
 
+    def test_close_expired_unfeatures_what_it_closes(self):
+        # Featuring is a homepage promise a closed listing must not keep
+        # (#150). Before this, the only guard was test_featured going red
+        # after the fact; now the closure itself clears the pin — and leaves
+        # the flag alone on listings it does not close.
+        pinned_expired = _listing(id="p", title="Pinned Expired",
+                                  deadline="2026-07-01", featured=True)
+        pinned_fresh = _listing(id="q", title="Pinned Fresh",
+                                deadline="2026-08-01", featured=True)
+
+        closed = util.close_expired([pinned_expired, pinned_fresh], self.TODAY)
+
+        self.assertEqual([("Pinned Expired", "deadline passed 2026-07-01")], closed)
+        self.assertFalse(pinned_expired["featured"])
+        self.assertTrue(pinned_fresh["featured"])
+
 
 class ClosingSoonOrdering(unittest.TestCase):
     """Closing-soon rows sort to the top of the table, soonest first."""

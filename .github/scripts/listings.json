@@ -366,8 +366,9 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1783771200,
-    "date_updated": 1783771200,
-    "source": "Tenz1ng"
+    "date_updated": 1786581328,
+    "source": "Tenz1ng",
+    "featured": true
   },
   {
     "id": "d0050dec-4255-4140-ac37-c133d4d77c2e",
@@ -733,8 +734,9 @@
     "startDate": "2026-10-16",
     "endDate": "2026-10-17",
     "date_posted": 1786265678,
-    "date_updated": 1786265678,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "date_updated": 1786581328,
+    "source": "Jose-Gael-Cruz-Lopez",
+    "featured": true
   },
   {
     "id": "2fe3f9b8-d850-5198-82c4-8fa011521ea4",
@@ -1365,8 +1367,9 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1783207800,
-    "date_updated": 1783771200,
-    "source": "ChimdumebiNebolisa"
+    "date_updated": 1786581328,
+    "source": "ChimdumebiNebolisa",
+    "featured": true
   },
   {
     "id": "82a4e957-ddf5-479a-bcda-24c0146a3e21",
@@ -1468,9 +1471,10 @@
     "active": true,
     "is_visible": true,
     "date_posted": 1782529200,
-    "date_updated": 1783004757,
+    "date_updated": 1786581328,
     "source": "Jose-Gael-Cruz-Lopez",
-    "deadline": "2026-09-12"
+    "deadline": "2026-09-12",
+    "featured": true
   },
   {
     "id": "4dcf8a02-80eb-4943-a22c-5ee51e7660d1",

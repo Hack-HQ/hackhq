@@ -420,6 +420,12 @@ def close_expired(listings, today):
         listing["date_closed"] = iso
         listing["archive_note"] = f"Auto-archived {iso} — {reason}"
         listing["date_updated"] = get_current_timestamp()
+        # Featuring is a homepage promise, and a closed listing must never keep
+        # it (#150): the deck pins featured entries to the top, and before this
+        # the only guard was test_featured going red *after* the fact. Clearing
+        # the flag here makes the removal part of the closure itself.
+        if listing.get("featured"):
+            listing["featured"] = False
         closed.append((listing.get("title", ""), reason))
     return closed
 
