@@ -68,10 +68,27 @@ export function eventDateDisplay(h: Hackathon): string | null {
   if (!h.startDate && !h.endDate) return null;
   if (h.startDate && h.endDate) {
     if (h.startDate === h.endDate) return dateDisplay(h.startDate);
-    return `${dateDisplay(h.startDate)} - ${dateDisplay(h.endDate)}`;
+    return rangeDisplay(h.startDate, h.endDate);
   }
   if (h.startDate) return `Starts ${dateDisplay(h.startDate)}`;
   return `Ends ${dateDisplay(h.endDate!)}`;
+}
+
+/** Compact range: "Oct 16-17, 2026" / "Oct 30 - Nov 2, 2026", falling back to
+    both-sides-dated only across a year boundary. The verbose form repeated the
+    month and year ("Oct 16, 2026 - Oct 17, 2026") and wrapped inside the
+    deck's fixed date column. */
+function rangeDisplay(startIso: string, endIso: string): string {
+  const s = new Date(`${startIso}T12:00:00`);
+  const e = new Date(`${endIso}T12:00:00`);
+  if (s.getFullYear() !== e.getFullYear()) {
+    return `${dateDisplay(startIso)} - ${dateDisplay(endIso)}`;
+  }
+  const month = (d: Date) => d.toLocaleDateString("en-US", { month: "short" });
+  if (s.getMonth() === e.getMonth()) {
+    return `${month(s)} ${s.getDate()}-${e.getDate()}, ${e.getFullYear()}`;
+  }
+  return `${month(s)} ${s.getDate()} - ${month(e)} ${e.getDate()}, ${e.getFullYear()}`;
 }
 
 function dateDisplay(isoDate: string): string {

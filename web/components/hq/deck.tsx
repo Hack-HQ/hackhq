@@ -229,23 +229,35 @@ function HackRow({ h }: { h: Hackathon }) {
           {cd ? ` · ${cd.toUpperCase()}` : ""}
         </div>
       </div>
-      <div className="hidden w-28 font-mono text-[10px] tracking-wider text-ink/50 md:block">
+      <div className="hidden w-28 shrink-0 font-mono text-[10px] tracking-wider text-ink/50 md:block">
         {h.format.toUpperCase()}
       </div>
-      <div className="hidden w-32 text-right font-display text-sm font-semibold text-ink sm:block">
+      {/* Clamped, not free-flowing: sponsor prize copy runs to sentences
+          ("Internship consideration; travel covered") and a free-wrapping cell
+          turned one row into a four-line tower. Full text stays reachable via
+          title and the details modal. */}
+      <div
+        className="line-clamp-2 hidden w-36 shrink-0 text-right font-display text-[13px] font-semibold leading-snug text-ink sm:block"
+        title={h.prize ?? undefined}
+      >
         {h.prize ?? "-"}
       </div>
-      {eventDates && (
-        <DateColumn className="hidden w-44 lg:block" label="Event dates" value={eventDates} />
-      )}
-      {deadline && (
-        <DateColumn
-          className="hidden w-36 text-coral lg:block"
-          label="Deadline"
-          value={deadline}
-          detail={cd?.toUpperCase()}
-        />
-      )}
+      {/* The slots render even when empty. Conditional columns made every row
+          lay out its own grid: a row with no event dates slid FORMAT and the
+          prize into the space, so nothing lined up down the page. */}
+      <div className="hidden w-40 shrink-0 lg:block">
+        {eventDates && <DateColumn label="Event dates" value={eventDates} />}
+      </div>
+      <div className="hidden w-32 shrink-0 lg:block">
+        {deadline && (
+          <DateColumn
+            className="text-coral"
+            label="Deadline"
+            value={deadline}
+            detail={cd?.toUpperCase()}
+          />
+        )}
+      </div>
       <SaveHeart h={h} />
       <a
         href={safeHttpUrl(h.url)}
@@ -264,12 +276,12 @@ function HackRow({ h }: { h: Hackathon }) {
 }
 
 function DateColumn({
-  className,
+  className = "",
   label,
   value,
   detail,
 }: {
-  className: string;
+  className?: string;
   label: string;
   value: string;
   detail?: string;
@@ -277,7 +289,9 @@ function DateColumn({
   return (
     <div className={`text-right font-mono text-[10px] tracking-wider ${className}`}>
       <div className="text-[9px] text-ink/40">{label.toUpperCase()}</div>
-      <div className="mt-1 leading-tight text-ink/70">{value}</div>
+      {/* nowrap: a date range must never break mid-range; the compact
+          rangeDisplay form is sized to the slot. */}
+      <div className="mt-1 whitespace-nowrap leading-tight text-ink/70">{value}</div>
       {detail && <div className="mt-1 text-[9px]">{detail}</div>}
     </div>
   );
