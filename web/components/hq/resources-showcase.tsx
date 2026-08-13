@@ -18,9 +18,16 @@ type Service = {
   label: string;
   href: string;
   icon: React.ReactNode;
-  /** Card artwork (#220). Re-encoded to 600px wide, CRF 30, audio stripped,
-      +faststart — 3.4MB of source became 1.3MB across all four. */
+  /** Card artwork (#220), the universal fallback: 600px H.264, CRF 30,
+      audio stripped, +faststart — 3.4MB of source became 1.3MB across all
+      four. Browsers without AV1 decode land here and see what they always
+      saw. */
   video: string;
+  /** The same clip MetalFX-upscaled 4x and encoded AV1 10-bit (no true
+      higher-res master exists — 600x750 was every pixel we had). Listed
+      first in the <source> order; the codecs parameter is what lets a
+      non-AV1 browser skip it without fetching a byte. */
+  videoUhd: string;
   /** First frame. This is all that loads until a panel is opened, and all a
       reduced-motion visitor ever sees. */
   poster: string;
@@ -34,6 +41,7 @@ const SERVICES: Service[] = [
     label: "basics",
     href: "/resources#getting-started",
     icon: <IconFlag />,
+    videoUhd: "/resource-getting-started-4k.mp4",
     video: "/resource-getting-started.mp4",
     poster: "/resource-getting-started-poster.jpg",
   },
@@ -44,6 +52,7 @@ const SERVICES: Service[] = [
     label: "crew",
     href: "/resources#finding-people",
     icon: <IconUsers />,
+    videoUhd: "/resource-finding-people-4k.mp4",
     video: "/resource-finding-people.mp4",
     poster: "/resource-finding-people-poster.jpg",
   },
@@ -54,6 +63,7 @@ const SERVICES: Service[] = [
     label: "season",
     href: "/resources#leveling-up",
     icon: <IconTrophy />,
+    videoUhd: "/resource-leveling-up-4k.mp4",
     video: "/resource-leveling-up.mp4",
     poster: "/resource-leveling-up-poster.jpg",
   },
@@ -64,6 +74,7 @@ const SERVICES: Service[] = [
     label: "toolkit",
     href: "/resources#tools",
     icon: <IconWrench />,
+    videoUhd: "/resource-tools-4k.mp4",
     video: "/resource-tools.mp4",
     poster: "/resource-tools-poster.jpg",
   },
@@ -209,14 +220,16 @@ function PanelMedia({ s, active }: { s: Service; active: boolean }) {
       <video
         ref={videoRef}
         className="h-full w-full object-cover"
-        src={s.video}
         poster={s.poster}
         muted
         loop
         playsInline
         preload="none"
         aria-hidden
-      />
+      >
+        <source src={s.videoUhd} type='video/mp4; codecs="av01.0.12M.10"' />
+        <source src={s.video} type="video/mp4" />
+      </video>
     </div>
   );
 }
