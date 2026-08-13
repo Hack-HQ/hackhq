@@ -141,12 +141,28 @@ function hackStub(over: Partial<Hackathon>): Hackathon {
 }
 
 describe("eventDateDisplay", () => {
-  it("formats a start/end range", () => {
+  it("formats a same-month range compactly", () => {
     expect(
       eventDateDisplay(
         hackStub({ startDate: "2026-09-12", endDate: "2026-09-14" }),
       ),
-    ).toBe("Sep 12, 2026 - Sep 14, 2026");
+    ).toBe("Sep 12-14, 2026");
+  });
+
+  it("formats a cross-month range with one year", () => {
+    expect(
+      eventDateDisplay(
+        hackStub({ startDate: "2026-10-30", endDate: "2026-11-02" }),
+      ),
+    ).toBe("Oct 30 - Nov 2, 2026");
+  });
+
+  it("keeps both years across a year boundary", () => {
+    expect(
+      eventDateDisplay(
+        hackStub({ startDate: "2026-12-30", endDate: "2027-01-02" }),
+      ),
+    ).toBe("Dec 30, 2026 - Jan 2, 2027");
   });
 
   it("formats a one-day event once", () => {
