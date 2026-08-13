@@ -604,10 +604,15 @@ def main():
         warning_msg = "AI did not confirm this is a hackathon. A maintainer approved it, so it was added anyway. Please verify and remove if incorrect."
         print(f"WARNING: {warning_msg}")
 
-    # Check for duplicates (by URL or by host+title)
+    # Check for duplicates (by URL or by host+title). URLs compare on their
+    # normalized dedupe key, not the raw string: the same hackathon submitted
+    # from two discovery paths differs in scheme, www, a trailing slash, or
+    # tracking params, and the exact-string check missed all of those — #257
+    # (HackMIT) only matched its archived listing after cleaning by hand.
+    url_key = util.url_dedupe_key(url)
     listings = util.get_listings_from_json()
     for listing in listings:
-        if listing.get("url") == url:
+        if url_key and util.url_dedupe_key(listing.get("url", "")) == url_key:
             util.set_output("is_duplicate", "true")
             util.set_output("duplicate_id", listing.get("id", ""))
             util.set_output("duplicate_reason", f"This URL already exists in the repository")

@@ -627,16 +627,74 @@ def clean_url(url):
     url = (url or "").strip()
     if not url:
         return ""
-    if not url.startswith(("http://", "https://")):
+    # Case-insensitive: a pasted "HTTP://…" is a scheme too, and prefixing it
+    # again would bury the real host inside the path.
+    if not re.match(r"(?i)^https?://", url):
         url = "https://" + url
-    # Remove common tracking parameters
-    tracking_params = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]
-    from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+    from urllib.parse import urlparse, urlunparse
     parsed = urlparse(url)
     if not parsed.netloc:
         return ""
-    params = parse_qs(parsed.query)
-    cleaned_params = {k: v for k, v in params.items() if k not in tracking_params}
-    cleaned_query = urlencode(cleaned_params, doseq=True)
-    cleaned_url = urlunparse(parsed._replace(query=cleaned_query))
-    return cleaned_url
+    cleaned_query = _strip_tracking_params(parsed.query)
+    return urlunparse(parsed._replace(query=cleaned_query))
+
+
+# Analytics/tracking parameters that never identify the page. utm_* only was
+# the original list, which let Devpost discovery links through with
+# ref_feature/ref_medium and a Google Analytics _gl blob attached — the exact
+# noise #253 arrived with, stored verbatim as the public Register link.
+_TRACKING_EXACT = {
+    "gclid", "gbraid", "wbraid",          # Google Ads click ids
+    "fbclid", "igshid",                   # Meta
+    "msclkid", "ttclid", "twclid", "yclid",  # Bing / TikTok / Twitter / Yandex
+    "mc_cid", "mc_eid",                   # Mailchimp
+    "_gl", "_ga",                         # GA cross-domain linker / client id
+    "ref_feature", "ref_medium", "ref_content",  # Devpost discovery refs
+}
+_TRACKING_PREFIXES = ("utm_", "_ga_", "_gcl_", "_hs")
+
+
+def _strip_tracking_params(query):
+    """Drop tracking pairs from a raw query string, preserving the rest byte-for-byte.
+
+    Works on the undecoded string on purpose. The previous parse_qs/urlencode
+    round-trip re-encoded every surviving value, which mangled characters that
+    are legal in a query — a _gl blob's asterisks came back as %2A — so a URL
+    could change even when nothing was removed. Splitting on & and filtering by
+    key leaves kept pairs exactly as they arrived.
+    """
+    if not query:
+        return ""
+    kept = []
+    for pair in query.split("&"):
+        key = pair.split("=", 1)[0].lower()
+        if key in _TRACKING_EXACT or key.startswith(_TRACKING_PREFIXES):
+            continue
+        kept.append(pair)
+    return "&".join(kept)
+
+
+def url_dedupe_key(url):
+    """A normalized form of ``url`` for duplicate detection, or "" if host-less.
+
+    Two submissions of the same hackathon routinely differ in scheme, www,
+    host case, a trailing slash, or attached tracking params — auto_extract's
+    exact-string comparison missed all of those (found resolving #253, where
+    the submitted URL matched an existing listing only after cleaning). This
+    key ignores exactly that cosmetic surface and nothing else: path case and
+    surviving query params still distinguish, because on Devpost and campus
+    sites different slugs are genuinely different events.
+    """
+    from urllib.parse import urlparse
+    cleaned = clean_url(url)
+    if not cleaned:
+        return ""
+    parsed = urlparse(cleaned)
+    host = parsed.netloc.lower()
+    if host.startswith("www."):
+        host = host[4:]
+    path = parsed.path.rstrip("/")
+    key = f"{host}{path}"
+    if parsed.query:
+        key += f"?{parsed.query}"
+    return key
