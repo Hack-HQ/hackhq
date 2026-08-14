@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { buildContactMailto } from "@/lib/contact-email";
 import type { Hackathon, SiteStats } from "@/lib/types-hq";
-import { REPO_URL, submitIssueUrl } from "@/lib/types-hq";
+import { REPO_URL, submitIssueUrl, submitGalleryPhotoUrl } from "@/lib/types-hq";
 
 /* ----- Stats strip (Magnetto metrics style) ----- */
 
@@ -376,7 +376,113 @@ export function Developers() {
   );
 }
 
-/* ----- Submit (Pillar 04 · Contribute) ----- */
+/* ----- Share a gallery photo -----
+   Same glass-card pattern as SubmitSection, parked between the infinite
+   canvas and the crew so a visitor who just dragged the wall can contribute
+   without scrolling to the hackathon form further down. Opens gallery_photo.yaml;
+   the image itself has to be attached on GitHub (query params can't carry files). */
+
+   type GalleryShareState = "idle" | "ready" | "opened" | "blocked";
+
+   export function GallerySubmitSection() {
+     const [hackathon, setHackathon] = useState("");
+     const [credit, setCredit] = useState("");
+     const [state, setState] = useState<GalleryShareState>("idle");
+   
+     const trimmed = hackathon.trim();
+   
+     return (
+       <section
+         id="share-photo"
+         tabIndex={-1}
+         style={{ scrollMarginTop: "var(--nav-pill-bottom, 4.875rem)" }}
+         className="mt-10 p-2 focus:outline-none"
+       >
+         <div className="shell flex min-h-[60vh] items-center justify-center bg-ink px-5 py-14 sm:px-10">
+           <div className="glass w-full max-w-2xl rounded-[2.5rem] p-8 sm:p-12">
+             <div className="kicker text-center text-coral">
+               The community · Share a moment
+             </div>
+             <h2 className="display mt-3 text-center text-[clamp(1.5rem,3.4vw,2.6rem)] text-paper">
+               Add your photo
+               <br />
+               to the wall
+             </h2>
+             <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-paper/60">
+               Went to a hackathon you found here? Drop the name, open the issue,
+               and attach a JPG or PNG (max 5 MB). A maintainer approves it before
+               it lands on the canvas.
+             </p>
+   
+             <form
+               className="mt-8 flex flex-col gap-4"
+               onSubmit={(e) => {
+                 e.preventDefault();
+                 const url = submitGalleryPhotoUrl({
+                   hackathon: trimmed,
+                   credit: credit.trim() || undefined,
+                 });
+                 // Same as SubmitSection: open in a new tab from a user gesture.
+                 const win = window.open(url, "_blank");
+                 if (win) win.opener = null;
+                 setState(win ? "opened" : "blocked");
+               }}
+             >
+               <div className="flex flex-col gap-4 sm:flex-row">
+                 <label className="flex-1">
+                   <span className="kicker mb-2 block text-[9px] text-paper/50">
+                     Hackathon name
+                   </span>
+                   <input
+                     value={hackathon}
+                     onChange={(e) => {
+                       setHackathon(e.target.value);
+                       setState(e.target.value.trim() ? "ready" : "idle");
+                     }}
+                     placeholder="HackMIT 2027"
+                     maxLength={80}
+                     required
+                     className="w-full rounded-xl border border-white/15 bg-ink-deep/40 px-4 py-3.5 text-sm text-paper outline-none backdrop-blur transition placeholder:text-paper/30 focus:border-coral"
+                   />
+                 </label>
+                 <label className="flex-1">
+                   <span className="kicker mb-2 block text-[9px] text-paper/50">
+                     Your name (optional)
+                   </span>
+                   <input
+                     value={credit}
+                     onChange={(e) => setCredit(e.target.value)}
+                     placeholder="How should we credit you?"
+                     maxLength={80}
+                     className="w-full rounded-xl border border-white/15 bg-ink-deep/40 px-4 py-3.5 text-sm text-paper outline-none backdrop-blur transition placeholder:text-paper/30 focus:border-coral"
+                   />
+                 </label>
+               </div>
+               <button
+                 type="submit"
+                 className="mt-2 rounded-full bg-paper py-4 font-mono text-[12px] font-bold tracking-[0.2em] text-ink transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+               >
+                 SHARE VIA GITHUB ↗
+               </button>
+             </form>
+   
+             <div className="kicker mt-6 text-center text-[9px] text-paper/35">
+               {state === "opened" &&
+                 "Issue opened — attach your JPG or PNG there (max 5 MB)."}
+               {state === "blocked" &&
+                 "Popup blocked. Allow popups for this site, then try again."}
+               {state === "ready" &&
+                 "Opens a prefilled photo issue — attach the image on GitHub."}
+               {state === "idle" &&
+                 "Same engine as hackathon submit — opens a prefilled GitHub issue"}
+             </div>
+           </div>
+         </div>
+       </section>
+     );
+   }
+
+/* ----- Submit a hackathon (Contribute) ----- */
 
 export function SubmitSection() {
   const [name, setName] = useState("");
@@ -404,7 +510,7 @@ export function SubmitSection() {
       <div className="shell flex min-h-[70vh] items-center justify-center bg-ink px-5 py-16 sm:px-10">
         <div className="glass w-full max-w-2xl rounded-[2.5rem] p-8 sm:p-12">
           <div className="kicker text-center text-coral">
-            Pillar 04 · Contribute
+            Contribute
           </div>
           <h2 className="display mt-3 text-center text-[clamp(1.5rem,3.4vw,2.6rem)] text-paper">
             Add a hackathon
