@@ -691,7 +691,7 @@ function OfferCard() {
           </li>
         ))}
       </ul>
-      <div className="mt-8 grid grid-cols-2 gap-6 border-t border-white/8 pt-7">
+      <div className="mt-8 grid grid-cols-2 gap-6 border-t border-white/8 pt-7 sm:grid-cols-3">
         <FooterCol
           title="Explore"
           links={[
@@ -708,6 +708,14 @@ function OfferCard() {
             ["listings.json", `${REPO_URL}/blob/main/.github/scripts/listings.json`],
             ["Contribute", `${REPO_URL}/blob/main/CONTRIBUTING.md`],
             ["Star us ★", REPO_URL],
+          ]}
+        />
+        <FooterCol
+          title="Legal"
+          links={[
+            ["Privacy", "/privacy"],
+            ["Terms of use", "/terms"],
+            ["MIT license", `${REPO_URL}/blob/main/LICENSE`],
           ]}
         />
       </div>
