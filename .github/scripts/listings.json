@@ -805,14 +805,16 @@
     ],
     "format": "Virtual",
     "prize": "Swag + prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782568800,
-    "date_updated": 1786253991,
+    "date_updated": 1786719172,
     "source": "Jose-Gael-Cruz-Lopez",
     "startDate": "2026-08-07",
-    "endDate": "2026-08-13"
+    "endDate": "2026-08-13",
+    "date_closed": "2026-08-14",
+    "archive_note": "Auto-archived 2026-08-14 \u2014 event ended 2026-08-13"
   },
   {
     "id": "421c6652-25a9-42c9-9ac9-5396f32396f5",

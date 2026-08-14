@@ -75,7 +75,6 @@ Hackathons are the fastest way to build something real, meet your future team, a
 <!-- HACKATHONS_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |
-| 🔥 **[CLOSING SOON]** | Major League Hacking | Global Hack Week: Agents — Aug 7–13, 2026 | Virtual | Online | Swag + prizes | — | <a href="https://ghw.mlh.io/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 27, 2026 |
 | 🔥 **[CLOSING SOON]** | CS Girlies | CS Girlies Annual Hackathon - Technology For Wellness — Aug 14 – Aug 16, 2026 | Virtual | Online | $5,000 in Prizes | — | <a href="https://cs-girlies-wellness-hackathon.devpost.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 03, 2026 |
 | 🔥 **[CLOSING SOON]** | Arm | Arm Create: AI Optimization Challenge — Jun 4 – Aug 14, 2026 | Virtual | Online | $8,000 | Aug 14, 2026 | <a href="https://arm-ai-optimization-challenge.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jun 26, 2026 |
 | 🔥 **[CLOSING SOON]** | OregonHacks | OregonHacks 2026 | Virtual | Online | $100+ in prizes | — | <a href="https://www.oregonhacks.com"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 30, 2026 |

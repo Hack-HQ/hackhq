@@ -34,6 +34,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Major League Hacking | Midnight Virtual Hackathon — Jul 17–19, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | Hack the 6ix | Hack the 6ix 2026 — Jul 17–19, 2026 | In-Person | Toronto, ON, Canada | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | Hexafalls | Hexafalls 2 — Jul 24–26, 2026 | In-Person | Kolkata, India | :lock: | Jun 27, 2026 |
+| 🔒 **[CLOSED]** | Major League Hacking | Global Hack Week: Agents — Aug 7–13, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | Devpost | H0: Hack the Zero Stack with Vercel v0 and AWS Databases — May 27 – Jun 29, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | Qwen Cloud | Global AI Hackathon Series with Qwen Cloud — May 26 – Jul 20, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | UiPath | UiPath AgentHack — May 15 – Jun 29, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
