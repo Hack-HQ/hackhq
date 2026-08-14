@@ -47,7 +47,7 @@ export default function PrivacyPage() {
         <LegalList
           items={[
             "We never sell, rent, or trade your data. There are no ads and no advertising trackers.",
-            "We set no analytics or advertising cookies. The only cookies come from Clerk, our sign-in provider, and exist purely to run sessions.",
+            "We set no analytics or advertising cookies. The only cookies set on our behalf come from Clerk, our sign-in provider, and exist purely to run sessions. Embedded third parties are a separate story: Spotify's player can set its own cookies and Mapbox's map library stores an anonymous ID in your browser - both spelled out below.",
             "Your application tracker lives in your own browser unless you sign in - then it syncs to your account.",
             "Product analytics is off by default. When enabled, it is cookieless and anonymous, and it respects Do Not Track and Global Privacy Control.",
             <>
@@ -81,8 +81,23 @@ export default function PrivacyPage() {
         <p>
           The 3D globe renders map tiles from Mapbox. While it is on screen,
           your browser requests tiles directly from Mapbox servers, which see
-          your IP address and user agent, as with any map on the web. The
-          hackathon pins themselves are our own public listing data.
+          your IP address and user agent, as with any map on the web. On top of
+          that, Mapbox&rsquo;s map library sends its default usage telemetry to
+          events.mapbox.com and stores a persistent anonymous identifier in
+          your browser&rsquo;s localStorage (under mapbox.eventData keys) to go
+          with it. That identifier is not tied to your name or account, and
+          clearing this site&rsquo;s data removes it. The hackathon pins
+          themselves are our own public listing data.
+        </p>
+        <LegalLabel>Sign-in plumbing</LegalLabel>
+        <p>
+          On deployments where sign-in is configured (the live site is one),
+          Clerk&rsquo;s script loads and talks to Clerk&rsquo;s servers on
+          every page view - for every visitor, signed in or not. So
+          even a plain visit sends your IP address and user agent to Clerk,
+          and Clerk sets a device cookie (__client_uat) whether or not you
+          ever sign in. What Clerk stores about you once you do sign in is
+          covered in the accounts section below.
         </p>
         <LegalLabel>Error monitoring</LegalLabel>
         <p>
@@ -100,8 +115,11 @@ export default function PrivacyPage() {
           device (memory-only, so nothing survives a reload), no user profiles
           are ever created, and it records exactly three things - page views,
           clicks on a listing&rsquo;s register link, and clicks on a globe
-          pin. If your browser sends Do Not Track or Global Privacy Control,
-          the analytics script is never even downloaded.
+          pin. Like any server on the receiving end of a request,
+          PostHog&rsquo;s servers see your IP address when those events
+          arrive; the events themselves carry no identifier. If your browser
+          sends Do Not Track or Global Privacy Control, the analytics script
+          is never even downloaded.
         </p>
       </LegalSection>
 
@@ -130,7 +148,8 @@ export default function PrivacyPage() {
           When you are signed in, your tracker syncs to your account so it
           follows you across devices. What we store per saved hackathon is
           deliberately minimal: your account ID, the hackathon&rsquo;s ID, the
-          stage you put it in, and whether you marked it a win. That is the
+          stage you put it in, whether you marked it a win, and two timestamps
+          recording when the row was created and last changed. That is the
           whole row. It lives in our Supabase database, is only ever queried
           by your own account, and on first sign-in your browser-local tracker
           is offered to your account once so nothing you saved gets lost.
@@ -139,19 +158,24 @@ export default function PrivacyPage() {
 
       <LegalSection index={4} kicker="Music" title="The record player">
         <p>
-          Hack Radio plays only music you load yourself. On large screens the
-          home page loads Spotify&rsquo;s embed script to power the disc, which
-          means your browser talks to open.spotify.com. The actual player is
-          created only when you paste a Spotify link - from that point the
-          embed runs under Spotify&rsquo;s own privacy policy and may set its
-          own cookies, and signing in to Spotify there is between you and
-          Spotify.
+          Hack Radio plays only music you load yourself, but its plumbing
+          loads with the page. Every visit to the home page, on any screen
+          size, loads Spotify&rsquo;s embed script - the player is only
+          visible on large screens, but the script loads regardless. That
+          means your browser talks to open.spotify.com as soon as the page
+          opens, before you touch anything, and that request alone can carry
+          and set Spotify&rsquo;s cookies. The actual player is created only
+          when you paste a Spotify link; the embed runs under Spotify&rsquo;s
+          own privacy policy, and signing in to Spotify there is between you
+          and Spotify.
         </p>
         <p>
           The disc&rsquo;s spinning animation comes from a vendored Framer
           component, which fetches one silenced demo audio file from
-          Framer&rsquo;s CDN. It is never audible and nothing about you is
-          sent beyond the request itself.
+          Framer&rsquo;s CDN (framerusercontent.com) on every home page
+          visit. It is never audible, and the request - like any web request
+          - shows Framer&rsquo;s CDN your IP address and user agent, nothing
+          more.
         </p>
       </LegalSection>
 
@@ -179,12 +203,12 @@ export default function PrivacyPage() {
             {
               name: "Mapbox",
               when: "While the globe is on screen",
-              role: "Serves the map tiles behind the 3D globe. Sees the tile requests your browser makes.",
+              role: "Serves the map tiles behind the 3D globe and receives its library's default usage telemetry at events.mapbox.com, keyed to an anonymous identifier stored in your browser's localStorage.",
             },
             {
               name: "Clerk",
-              when: "Sign-in and signed-in sessions",
-              role: "Manages accounts and session cookies. Holds your email, name, and sign-in method.",
+              when: "Every visit, plus sign-in",
+              role: "Its script loads and contacts Clerk's servers on every page view, and it sets a device cookie even for signed-out visitors. Once you sign in, it manages your account and session cookies and holds your email, name, and sign-in method.",
             },
             {
               name: "Supabase",
@@ -194,12 +218,17 @@ export default function PrivacyPage() {
             {
               name: "PostHog",
               when: "Only if analytics is enabled",
-              role: "Receives anonymous, cookieless events: page views and two product clicks. Honors DNT and Global Privacy Control.",
+              role: "Receives anonymous, cookieless events: page views and two product clicks. Sees the sending IP address at ingestion, like any server. Honors DNT and Global Privacy Control.",
             },
             {
               name: "Spotify",
-              when: "Home page / when you load music",
-              role: "Provides the embed behind Hack Radio. Sets its own cookies once you load a link; governed by Spotify's policies.",
+              when: "Every home page visit",
+              role: "Provides the embed behind Hack Radio. Its script loads with the home page on every screen size and can set Spotify's cookies from that first request; the player itself runs only on links you paste, under Spotify's policies.",
+            },
+            {
+              name: "Framer",
+              when: "Every home page visit",
+              role: "Its CDN (framerusercontent.com) serves the silenced demo audio behind the disc animation. Sees the request's IP address and user agent, nothing more.",
             },
             {
               name: "GitHub",
@@ -217,7 +246,7 @@ export default function PrivacyPage() {
       >
         <LegalList
           items={[
-            "Browser-local tracker: clear this site's data in your browser and it is gone. It was never on our servers.",
+            "Browser-local tracker: clear this site's data in your browser and it is gone. It was never on our servers. The same clearing also removes Mapbox's anonymous identifier.",
             <>
               Account and synced tracker: email <ContactLink /> from the
               address on your account and we will delete your account records

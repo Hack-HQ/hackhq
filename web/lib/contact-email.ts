@@ -1,4 +1,4 @@
-const CONTACT_EMAIL = "hackheadquarters@gmail.com";
+export const CONTACT_EMAIL = "hackheadquarters@gmail.com";
 
 /** Stable, filterable prefix: a Gmail filter on subject:"[HackHQ request]"
     routes every submission into the HackHQ_Website_Requests label without

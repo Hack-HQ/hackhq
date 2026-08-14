@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { CONTACT_EMAIL } from "@/lib/contact-email";
+
 /* ---------------------------------------------------------------------------
    Shared building blocks for the legal pages (/privacy and /terms).
 
@@ -126,15 +128,15 @@ export function LegalRows({
   );
 }
 
-export const CONTACT_ADDRESS = "hackheadquarters@gmail.com";
-
+/** Single-sourced from lib/contact-email so the legal pages can never drift
+    from the address the rest of the site uses. */
 export function ContactLink() {
   return (
     <a
-      href={`mailto:${CONTACT_ADDRESS}`}
+      href={`mailto:${CONTACT_EMAIL}`}
       className="text-coral underline-offset-4 hover:underline"
     >
-      {CONTACT_ADDRESS}
+      {CONTACT_EMAIL}
     </a>
   );
 }
