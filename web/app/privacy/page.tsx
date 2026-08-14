@@ -66,10 +66,11 @@ export default function PrivacyPage() {
         </p>
         <LegalLabel>Hosting</LegalLabel>
         <p>
-          Our hosting provider (currently Vercel) processes standard request
-          metadata - your IP address, user agent, and the pages you request -
-          in short-lived server logs used to serve and secure the site. We do
-          not build profiles from these logs.
+          Our hosting providers (currently Vercel, with Cloudflare as a
+          build and deploy target) process standard request metadata - your
+          IP address, user agent, and the pages you request - in short-lived
+          server logs used to serve and secure the site. We do not build
+          profiles from these logs.
         </p>
         <LegalLabel>Fonts</LegalLabel>
         <p>
@@ -117,7 +118,8 @@ export default function PrivacyPage() {
           clicks on a listing&rsquo;s register link, and clicks on a globe
           pin. Like any server on the receiving end of a request,
           PostHog&rsquo;s servers see your IP address when those events
-          arrive; the events themselves carry no identifier. If your browser
+          arrive; events carry only a random identifier that resets every page
+          load and is never tied to you. If your browser
           sends Do Not Track or Global Privacy Control, the analytics script
           is never even downloaded.
         </p>
@@ -191,9 +193,9 @@ export default function PrivacyPage() {
         <LegalRows
           rows={[
             {
-              name: "Vercel",
+              name: "Vercel / Cloudflare",
               when: "Every visit",
-              role: "Hosts the site. Sees standard request logs (IP address, user agent).",
+              role: "Host the site. See standard request logs (IP address, user agent).",
             },
             {
               name: "Sentry",
