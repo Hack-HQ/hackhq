@@ -14,6 +14,7 @@ import {
   Developers,
   SubmitSection,
   Footer,
+  GallerySubmitSection,
 } from "./sections";
 import { ResourcesShowcase } from "./resources-showcase";
 import { GalleryCanvas } from "./gallery-canvas";
@@ -37,6 +38,7 @@ export function HomeClient({
         <ThemeMarquee hackathons={hackathons} />
         <ResourcesShowcase />
         <GalleryCanvas photos={galleryPhotos} />
+        <GallerySubmitSection />
         <Developers />
         <SubmitSection />
       </main>
