@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { buildContactMailto } from "@/lib/contact-email";
+import { buildRequestMailto, type RequestKind } from "@/lib/contact-email";
 import type { Hackathon, SiteStats } from "@/lib/types-hq";
 import { REPO_URL, submitIssueUrl, submitGalleryPhotoUrl } from "@/lib/types-hq";
 
@@ -575,7 +575,7 @@ export function SubmitSection() {
 /* ----- Footer / CTA -----
    "Let's build" contact panel: the HACKHQ wordmark stands in for the giant
    headline, a stacked pair of cards on the left (socials + what the product
-   does), and a contact form on the right that opens a prefilled GitHub issue -
+   does), and a bug/idea request form on the right that opens a prefilled email -
    the same "new surface on the same engine" move as SubmitSection. */
 
 export function Footer() {
@@ -719,9 +719,8 @@ const FIELD =
   "w-full rounded-2xl border border-white/10 bg-ink-deep/50 px-5 py-4 text-sm text-paper outline-none transition placeholder:text-paper/35 focus:border-coral";
 
 function ContactCard() {
+  const [kind, setKind] = useState<RequestKind>("idea");
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [org, setOrg] = useState("");
   const [message, setMessage] = useState("");
   const [website, setWebsite] = useState("");
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -729,10 +728,11 @@ function ContactCard() {
   return (
     <div className="flex flex-col rounded-[var(--card-radius)] border border-white/8 bg-ink-soft/70 px-7 py-8 sm:px-9">
       <h2 className="text-xl leading-tight text-paper sm:text-2xl">
-        Got a question, challenge, or idea?
+        Found a bug? Want something built?
       </h2>
       <p className="mt-2 text-sm text-paper/50">
-        Tell us what you&rsquo;re building - or what HackHQ is missing.
+        Tell us what broke, or what HackHQ should do next. Every request lands
+        straight in our inbox.
       </p>
 
       <form
@@ -741,40 +741,60 @@ function ContactCard() {
         onSubmit={(e) => {
           e.preventDefault();
           if (!hasInteracted || website) return;
-          window.location.href = buildContactMailto({ name, email, org, message });
+          window.location.href = buildRequestMailto({ kind, name, message });
         }}
       >
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your name"
-          aria-label="Your name"
-          required
-          className={FIELD}
-        />
-        <input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Your email"
-          aria-label="Your email"
-          type="email"
-          required
-          className={FIELD}
-        />
-        <input
-          value={org}
-          onChange={(e) => setOrg(e.target.value)}
-          placeholder="Your GitHub or org (optional)"
-          aria-label="Your GitHub or org"
-          className={FIELD}
-        />
+        {/* Which kind of request - drives the subject line the Gmail filter
+            sorts on, so it is a real field, not decoration. */}
+        <div
+          role="radiogroup"
+          aria-label="Request type"
+          className="flex gap-2"
+        >
+          {(
+            [
+              ["idea", "Feature idea"],
+              ["bug", "Bug report"],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              role="radio"
+              aria-checked={kind === value}
+              onClick={() => {
+                setKind(value);
+                setHasInteracted(true);
+              }}
+              className={`rounded-full border px-4 py-2 font-mono text-[10px] font-bold tracking-[0.15em] transition ${
+                kind === value
+                  ? "border-coral bg-coral text-ink"
+                  : "border-white/15 text-paper/60 hover:border-white/30"
+              }`}
+            >
+              {label.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Your message"
-          aria-label="Your message"
+          placeholder={
+            kind === "bug"
+              ? "What broke, and where? A screenshot helps - attach it in the email before sending."
+              : "What should HackHQ have that it doesn't yet?"
+          }
+          aria-label="Your request"
           required
           className={`${FIELD} min-h-[132px] flex-1 resize-none`}
+        />
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your name (we credit shipped ideas)"
+          aria-label="Your name"
+          className={FIELD}
         />
         <input
           value={website}
@@ -788,11 +808,12 @@ function ContactCard() {
 
         <div className="mt-1 flex items-center justify-between gap-4 rounded-2xl border border-white/8 px-5 py-4">
           <p className="text-xs italic leading-snug text-paper/45">
-            Sending opens your email app with a prefilled message.
+            Sending opens your email app with the request prefilled - attach
+            screenshots there before you hit send.
           </p>
           <button
             type="submit"
-            aria-label="Send message"
+            aria-label="Send request"
             disabled={!hasInteracted}
             className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-coral text-2xl text-ink transition hover:bg-coral-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50 disabled:cursor-not-allowed disabled:opacity-50"
           >
