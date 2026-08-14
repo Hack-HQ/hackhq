@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.12",
+    "@sentry/nextjs": "^10.70.0",
     "@supabase/supabase-js": "^2.110.8",
     "drizzle-orm": "^0.45.2",
     "framer-motion": "^11.18.2",

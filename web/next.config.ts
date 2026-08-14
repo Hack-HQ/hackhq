@@ -1,3 +1,4 @@
+import { withSentryConfig } from "@sentry/nextjs";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 
@@ -100,4 +101,9 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: "hackhq",
+  project: "javascript-nextjs",
+
+  silent: !process.env.CI,
+});
