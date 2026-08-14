@@ -8,16 +8,9 @@ import * as Sentry from "@sentry/nextjs";
 Sentry.init({
   dsn: "https://f889f4fff91466b19d305b5cbc7cbd51@o4511906995634176.ingest.us.sentry.io/4511907003301888",
 
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+  // Keep error monitoring, but disable performance tracing for now.
+  tracesSampleRate: 0,
 
-  // Enable logs to be sent to Sentry
-  enableLogs: true,
-
-  dataCollection: {
-    // To disable sending user data and HTTP bodies, uncomment the lines below. For more info visit:
-    // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#dataCollection
-    // userInfo: false,
-    // httpBodies: [],
-  },
+  // Disable Sentry Logs for the initial Cloudflare deployment.
+  enableLogs: false,
 });
