@@ -1,9 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { analyticsEnabled, capture, trackingDeclined } from "./analytics";
+import {
+  analyticsEnabled,
+  capturePageview,
+  trackingDeclined,
+} from "./analytics";
 
-// Only the pure gate is tested: the posthog-js side of analytics.ts hides
-// behind a dynamic import that these paths must never reach, and asserting the
-// gate is exactly how we know it doesn't.
+// Only the pure gate is tested: the posthog-js side of analytics lives in
+// instrumentation-client.ts behind a dynamic import these paths must never
+// reach, and asserting the gate is exactly how we know it doesn't.
 
 describe("trackingDeclined", () => {
   it("honors Do Not Track", () => {
@@ -26,7 +30,7 @@ describe("trackingDeclined", () => {
 });
 
 describe("analyticsEnabled", () => {
-  it("requires a PostHog key", () => {
+  it("requires a PostHog token", () => {
     expect(analyticsEnabled(undefined, {})).toBe(false);
     expect(analyticsEnabled("", {})).toBe(false);
   });
@@ -36,16 +40,14 @@ describe("analyticsEnabled", () => {
     expect(analyticsEnabled("phc_test", { globalPrivacyControl: true })).toBe(false);
   });
 
-  it("enables only with a key and no opt-out signal", () => {
+  it("enables only with a token and no opt-out signal", () => {
     expect(analyticsEnabled("phc_test", {})).toBe(true);
     expect(analyticsEnabled("phc_test", { doNotTrack: "0" })).toBe(true);
   });
 });
 
-describe("capture", () => {
-  it("is a safe no-op without a browser environment", () => {
-    // Vitest runs in Node (no `window`), so the client gate resolves to null;
-    // capture must swallow that instead of throwing or importing posthog-js.
-    expect(() => capture("register_click", { id: "x" })).not.toThrow();
+describe("capturePageview", () => {
+  it("is a safe no-op without a browser PostHog client", () => {
+    expect(() => capturePageview()).not.toThrow();
   });
 });

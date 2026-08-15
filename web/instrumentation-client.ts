@@ -1,31 +1,9 @@
 import * as Sentry from "@sentry/nextjs";
-import posthog from "posthog-js";
-
-const posthogProjectToken = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN;
-const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST;
-
-if (!posthogProjectToken || !posthogHost) {
-  if (process.env.NODE_ENV === "development") {
-    const missingVariable = posthogProjectToken
-      ? "NEXT_PUBLIC_POSTHOG_HOST"
-      : "NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN";
-
-    throw new Error(
-      `${missingVariable} variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once ${missingVariable} is configured`,
-    );
-  }
-} else {
-  posthog.init(posthogProjectToken, {
-    api_host: posthogHost,
-    defaults: "2026-01-30",
-    capture_exceptions: {
-      capture_unhandled_errors: true,
-      capture_unhandled_rejections: true,
-      capture_console_errors: false,
-    },
-    debug: process.env.NODE_ENV === "development",
-  });
-}
+import {
+  analyticsEnabled,
+  posthogHost,
+  posthogProjectToken,
+} from "@/lib/analytics";
 
 Sentry.init({
   dsn: "https://f889f4fff91466b19d305b5cbc7cbd51@o4511906995634176.ingest.us.sentry.io/4511907003301888",
@@ -44,3 +22,40 @@ Sentry.init({
   integrations: (defaults) =>
     defaults.filter((integration) => integration.name !== "BrowserSession"),
 });
+
+// PostHog Web Analytics. Dynamic import + the privacy gate keep posthog-js
+// out of the download when analytics is off or the visitor opted out, and
+// this file is a client-only Next.js entry so the package is not traced into
+// the Cloudflare Worker.
+const posthogToken = posthogProjectToken();
+const nav = navigator as Navigator & { globalPrivacyControl?: boolean };
+
+if (analyticsEnabled(posthogToken, nav)) {
+  void import("posthog-js").then(({ default: posthog }) => {
+    posthog.init(posthogToken!, {
+      api_host: posthogHost(),
+      defaults: "2026-01-30",
+      // Cookieless / anonymous Web Analytics.
+      persistence: "memory",
+      person_profiles: "never",
+      // App Router SPA navigations are captured from components/analytics.tsx
+      // via usePathname. Automatic pageviews would double-count those.
+      capture_pageview: false,
+      capture_pageleave: true,
+      autocapture: false,
+      capture_dead_clicks: false,
+      capture_heatmaps: false,
+      capture_performance: false,
+      capture_exceptions: false,
+      disable_session_recording: true,
+      disable_surveys: true,
+      respect_dnt: true,
+      // No /flags round-trip (feature flags, experiments, remote session
+      // recording / surveys config) and no lazily-fetched extension scripts.
+      advanced_disable_flags: true,
+      disable_external_dependency_loading: true,
+    });
+    window.posthog = posthog;
+    window.dispatchEvent(new Event("hackhq:posthog-ready"));
+  });
+}
