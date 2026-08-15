@@ -8,7 +8,6 @@ import {
   eventDateDisplay,
   type Hackathon,
 } from "@/lib/types-hq";
-import posthog from "posthog-js";
 import { safeHttpUrl } from "@/lib/url";
 import { useDialogDismiss } from "./use-dialog-dismiss";
 import { useTracker } from "./store";
@@ -142,12 +141,6 @@ function ActionButton({ hackathon }: { hackathon: Hackathon }) {
       href={safeHttpUrl(hackathon.url)}
       target="_blank"
       rel="noreferrer"
-      onClick={() =>
-        posthog.capture("register_click", {
-          hackathon_id: hackathon.id,
-          source: "globe_detail_drawer",
-        })
-      }
       className={`block flex-1 rounded-full px-6 py-4 text-center font-mono text-[12px] font-bold tracking-[0.18em] transition focus:outline-none focus:ring-2 ${
         isRegister
           ? "bg-register text-paper hover:bg-register/85 focus:ring-register"
@@ -168,17 +161,9 @@ function SaveHeart({ hackathon }: { hackathon: Hackathon }) {
       onClick={() => {
         if (tracked) {
           remove(hackathon.id);
-          posthog.capture("hackathon_removed", {
-            hackathon_id: hackathon.id,
-            source: "globe_detail_drawer",
-          });
           return;
         }
         save(hackathon.id);
-        posthog.capture("hackathon_saved", {
-          hackathon_id: hackathon.id,
-          source: "globe_detail_drawer",
-        });
       }}
       aria-label={tracked ? "Remove from tracker" : "Save to tracker"}
       title={tracked ? "Remove from My HackHQ" : "Save to My HackHQ"}

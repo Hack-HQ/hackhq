@@ -13,7 +13,6 @@ import {
   type DeckFormatFilter,
   type DeckStatusFilter,
 } from "@/lib/deck-order";
-import posthog from "posthog-js";
 import { safeHttpUrl } from "@/lib/url";
 import { useSelection, useTracker } from "./store";
 import { TrophyBadge } from "./trophy";
@@ -156,16 +155,8 @@ function SaveHeart({ h, dark }: { h: Hackathon; dark?: boolean }) {
         e.stopPropagation();
         if (tracked) {
           remove(h.id);
-          posthog.capture("hackathon_removed", {
-            hackathon_id: h.id,
-            source: "deck",
-          });
         } else {
           save(h.id);
-          posthog.capture("hackathon_saved", {
-            hackathon_id: h.id,
-            source: "deck",
-          });
         }
       }}
       aria-label={tracked ? "Remove from tracker" : "Save to tracker"}
@@ -276,10 +267,6 @@ function HackRow({ h }: { h: Hackathon }) {
         rel="noreferrer"
         onClick={(e) => {
           e.stopPropagation();
-          posthog.capture("register_click", {
-            hackathon_id: h.id,
-            source: "deck",
-          });
         }}
         className="hidden rounded-full bg-register px-4 py-2 font-mono text-[9px] font-bold tracking-[0.15em] text-white transition hover:brightness-110 sm:block"
       >

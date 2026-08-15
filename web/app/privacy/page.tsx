@@ -110,18 +110,17 @@ export default function PrivacyPage() {
         </p>
         <LegalLabel>Analytics, only when enabled</LegalLabel>
         <p>
-          The site ships with optional PostHog analytics that is off unless a
-          deployment explicitly enables it. When it is enabled, it is
+          The site ships with optional PostHog web analytics that is off unless
+          a deployment explicitly enables it. When it is enabled, it is
           cookieless and anonymous by construction: nothing is stored on your
           device (memory-only, so nothing survives a reload), no user profiles
-          are ever created, and it records exactly three things - page views,
-          clicks on a listing&rsquo;s register link, and clicks on a globe
-          pin. Like any server on the receiving end of a request,
-          PostHog&rsquo;s servers see your IP address when those events
-          arrive; events carry only a random identifier that resets every page
-          load and is never tied to you. If your browser
-          sends Do Not Track or Global Privacy Control, the analytics script
-          is never even downloaded.
+          are ever created, and it records page views for the initial load and
+          in-app navigations. Like any server on the receiving end of a
+          request, PostHog&rsquo;s servers see your IP address when those
+          events arrive; events carry only a random identifier that resets
+          every page load and is never tied to you. If your browser sends Do
+          Not Track or Global Privacy Control, the analytics script is never
+          even downloaded.
         </p>
       </LegalSection>
 
@@ -220,7 +219,7 @@ export default function PrivacyPage() {
             {
               name: "PostHog",
               when: "Only if analytics is enabled",
-              role: "Receives anonymous, cookieless events: page views and two product clicks. Sees the sending IP address at ingestion, like any server. Honors DNT and Global Privacy Control.",
+              role: "Receives anonymous, cookieless page view events. Sees the sending IP address at ingestion, like any server. Honors DNT and Global Privacy Control.",
             },
             {
               name: "Spotify",
