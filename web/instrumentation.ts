@@ -1,7 +1,4 @@
-// Loads the server/edge Sentry configs. This was an empty stub, which meant
-// sentry.server.config.ts and sentry.edge.config.ts were never imported -
-// only browser errors reported, and server-side crashes vanished silently.
-// This is the canonical @sentry/nextjs wiring from the official docs.
-
-
+// No instrumentation needed for this project.
+// We're using Sentry for client-side only due to Cloudflare's free plan size limitations.
+// This is a placeholder for the future when we need to add instrumentation.
 export async function register() {}
