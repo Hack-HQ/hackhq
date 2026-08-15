@@ -40,6 +40,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | UiPath | UiPath AgentHack — May 15 – Jun 29, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | Slack | Slack Agent Builder Challenge — May 20 – Jul 13, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | Reddit | Reddit's Games with a Hook Hackathon — Jun 17 – Jul 15, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
+| 🔒 **[CLOSED]** | Arm | Arm Create: AI Optimization Challenge — Jun 4 – Aug 14, 2026 | Virtual | Online | :lock: | Jun 26, 2026 |
 | 🔒 **[CLOSED]** | Agentic AI Build Week | Agentic AI Build Week 2026 — Jun 9 – Jul 11, 2026 | In-Person | Ho Chi Minh City, Vietnam | :lock: | Jun 26, 2026 |
 | 🔒 **[CLOSED]** | Backblaze | Backblaze Generative Media Hackathon: Build with Genblaze on B2 — Jun 22 – Aug 3, 2026 | Virtual | Online | :lock: | Jun 26, 2026 |
 <!-- ARCHIVE_TABLE_END -->
