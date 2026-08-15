@@ -7,49 +7,91 @@
    request body. The id always comes from the Clerk session, resolved in the
    route handler.
 
-   ## Why the service role, and what still guards the rows
+   ## Two modes, two enforcement points
 
-   The client is built with the service role key, which bypasses RLS. Ownership
-   is therefore enforced here, by the `.eq("user_id", userId)` on every read and
-   delete, by writing `user_id` explicitly on every insert, and by passing it as
-   `p_user_id` to the upsert function - which stamps it onto the row rather than
-   taking the caller's word for it.
+   TOKEN MODE (preferred) - active when SUPABASE_ANON_KEY is set. The client
+   authenticates every request with the caller's own Clerk JWT (the "supabase"
+   template), so queries run as the `authenticated` role and Postgres RLS is
+   what enforces row ownership: the policies on user_hackathons compare
+   `auth.jwt() ->> 'sub'` to user_id, and public.upsert_tracker_row is
+   SECURITY INVOKER so the RPC inherits the same policies. A query that
+   forgot its filter would return or touch nothing it should not - the
+   database refuses, not this file.
 
-   The RLS policies in the migration are not redundant. They mean `anon` and
-   `authenticated` cannot touch this table at all, so nothing reachable with a
-   publishable key can read one user's tracker - and they are what a future
-   browser-direct path would run under. The trade-off of the service role is
-   that a missing filter in this file would not be caught by the database, which
-   is why the surface is kept this small and why `userId` is a required
-   parameter rather than an option on every function below.
+   SERVICE MODE (legacy fallback) - active when only SUPABASE_SERVICE_ROLE_KEY
+   is set. The service role bypasses RLS, so ownership is enforced here in the
+   app layer instead: by the `.eq("user_id", userId)` on every read and delete,
+   by writing user_id explicitly on every insert, and by passing it as
+   p_user_id to the upsert function. This keeps production working until the
+   external configuration for token mode (Clerk JWT template plus Supabase
+   third-party auth) lands; see web/README.md for the flip procedure.
 
-   Upgrade path: Clerk's native Supabase integration lets the browser's own
-   session token satisfy those policies directly, moving enforcement back into
-   Postgres. That needs a trust relationship configured in both dashboards, so
-   it is a follow-up rather than a prerequisite for shipping this.
+   The user_id filters and stamping stay in BOTH modes on purpose. In token
+   mode they are belt and braces rather than load-bearing - RLS is the
+   guarantee - but keeping them means a misconfigured deployment degrades to
+   the service-mode guarantee instead of to nothing, and the queries document
+   their own scope.
 --------------------------------------------------------------------------- */
 
 import "server-only";
+import { auth } from "@clerk/nextjs/server";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Stage, TrackerEntry } from "./tracker";
 import { parseTrackerEntries } from "./tracker";
 
 const TABLE = "user_hackathons";
 
+/**
+ * The caller's Clerk JWT for Supabase, fetched fresh per request. auth() reads
+ * the request's async context, so even though the client below is a
+ * module-level singleton, this resolves to whoever is making the CURRENT
+ * request - never a token cached from an earlier one.
+ *
+ * A null token is a hard error, not a cue to fall back to the service role:
+ * falling back would silently bypass RLS and defeat the reason token mode
+ * exists. It means either the Clerk JWT template named "supabase" has not been
+ * created, or a code path called the store without a signed-in user.
+ */
+async function clerkSupabaseToken(): Promise<string> {
+  const { getToken } = await auth();
+  const token = await getToken({ template: "supabase" });
+  if (!token) {
+    throw new Error(
+      'Tracker sync is in token mode (SUPABASE_ANON_KEY is set) but Clerk returned no token for the "supabase" JWT template. ' +
+        'Either create that template in the Clerk dashboard (with {"role":"authenticated"}) or this call happened without a signed-in user. ' +
+        "Refusing to fall back to the service role key, which would bypass row level security.",
+    );
+  }
+  return token;
+}
+
 let cached: SupabaseClient | null = null;
 
 function client(): SupabaseClient {
   if (cached) return cached;
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) {
+  const anonKey = process.env.SUPABASE_ANON_KEY;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || (!anonKey && !serviceKey)) {
     throw new Error("Supabase is not configured for tracker sync");
   }
-  // No session persistence or refresh: this runs per request on the server and
-  // authenticates with a static key, so the auth machinery has nothing to do.
-  cached = createClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
+  // No session persistence or refresh in either mode: this runs per request on
+  // the server, so the browser-oriented auth machinery has nothing to do. In
+  // token mode supabase-js ignores these auth options entirely (the accessToken
+  // option replaces its auth client), but passing them keeps the two branches
+  // symmetric and harmless.
+  const options = { auth: { persistSession: false, autoRefreshToken: false } };
+  // Token mode wins when both keys are present, so setting SUPABASE_ANON_KEY is
+  // sufficient to flip enforcement into Postgres; removing the service key can
+  // follow once the flip is verified.
+  cached = anonKey
+    ? createClient(url, anonKey, {
+        ...options,
+        // Runs on every request the client makes, inside the route handler's
+        // async context, so the singleton client is still per-caller.
+        accessToken: clerkSupabaseToken,
+      })
+    : createClient(url, serviceKey as string, options);
   return cached;
 }
 
@@ -84,7 +126,7 @@ export async function upsertTrackerRow(
   // One statement rather than read-merge-write. Reading the row here and
   // merging the patch in JS left a window where two concurrent PUTs for the
   // same (user, hackathon) both read the same snapshot and the second write
-  // clobbered the first — losing exactly the field the other request was
+  // clobbered the first - losing exactly the field the other request was
   // preserving. public.upsert_tracker_row does the coalesce inside the same
   // ON CONFLICT DO UPDATE that writes, so there is nothing to interleave with.
   // A null argument means "leave that column at its stored value", which is how

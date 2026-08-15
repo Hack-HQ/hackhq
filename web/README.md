@@ -194,7 +194,8 @@ Copy `.env.example` to `.env.local` (gitignored) and set the values you need.
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For auth | `app/layout.tsx`, `app/my/page.tsx`, `middleware.ts` | Site runs without Clerk; `/my` shows setup instructions and `/auth/*` redirects to `/my` |
 | `CLERK_SECRET_KEY` | For auth | `app/my/page.tsx`, `middleware.ts` | Same as above — both Clerk keys are needed together |
 | `SUPABASE_URL` | For tracker sync | `lib/tracker-store.ts` | Tracker stays browser-local; `/api/tracker` reports `synced: false` |
-| `SUPABASE_SERVICE_ROLE_KEY` | For tracker sync | `lib/tracker-store.ts` | Same as above — both Supabase values are needed together, **and** Clerk must be configured or there is no user to attribute a row to |
+| `SUPABASE_ANON_KEY` | For tracker sync (token mode) | `lib/tracker-store.ts` | Tracker sync falls back to service mode if the service role key is set, otherwise stays browser-local. See [Tracker sync modes](#tracker-sync-modes) |
+| `SUPABASE_SERVICE_ROLE_KEY` | For tracker sync (service mode) | `lib/tracker-store.ts` | Fine once token mode is live; without either key the tracker stays browser-local. Clerk must be configured in every case or there is no user to attribute a row to |
 | `DATABASE_URL` | For DB scripts | `drizzle.config.ts` | `npm run db:*` commands fail fast before touching Supabase |
 | `NEXT_PUBLIC_POSTHOG_KEY` | No | `lib/analytics.ts` | Analytics is fully off — posthog-js is never downloaded |
 | `NEXT_PUBLIC_POSTHOG_HOST` | No | `lib/analytics.ts` | Defaults to `https://us.i.posthog.com` |
@@ -212,6 +213,41 @@ Without them, the tracker still works locally; nothing is persisted server-side.
 
 To finish Clerk setup in the dashboard, enable Google and GitHub under social
 connections, and enable email/password under email authentication.
+
+### Tracker sync modes
+
+`lib/tracker-store.ts` (behind `/api/tracker`) talks to Supabase in one of two
+modes, chosen by which key is present:
+
+- **Token mode** (preferred, `SUPABASE_ANON_KEY`): every request carries the
+  signed-in caller's Clerk JWT, so queries run as Supabase's `authenticated`
+  role and the RLS policies on `public.user_hackathons` (migration
+  `20260725154500`) enforce row ownership **in Postgres**. The
+  `upsert_tracker_row` RPC is `SECURITY INVOKER`, so it inherits the same
+  policies. A missing Clerk token is a hard error, never a fallback to the
+  service role.
+- **Service mode** (legacy, `SUPABASE_SERVICE_ROLE_KEY` only): the service role
+  bypasses RLS, so ownership is enforced **in app code** by the
+  `.eq("user_id", ...)` filters and explicit `user_id` stamping in
+  `lib/tracker-store.ts`. Those filters stay in token mode too, as a
+  belt-and-braces layer under RLS.
+
+Flipping a deployment to token mode takes three steps (issue
+[#235](https://github.com/Hack-HQ/hackhq/issues/235)):
+
+1. **Clerk dashboard**: create a JWT template named `supabase` whose claims
+   include `{"role": "authenticated"}`.
+2. **Supabase dashboard**: register Clerk as a third-party auth provider
+   (Authentication -> Sign In / Up -> Third Party Auth), so Supabase accepts
+   Clerk-issued JWTs.
+3. **Runtime env**: set `SUPABASE_ANON_KEY` to the publishable key from
+   Project Settings -> API. Token mode wins whenever it is set, so the service
+   role key does not need to be removed for the flip itself.
+
+Once token mode is verified in production, `SUPABASE_SERVICE_ROLE_KEY` can be
+removed from the runtime environment entirely: `lib/tracker-store.ts` is the
+only runtime code that reads it (the only other mentions in the repo are
+`lib/env.ts` reporting and these docs), so nothing else breaks without it.
 
 ## Analytics
 
@@ -289,8 +325,9 @@ are server-only and must never gain a `NEXT_PUBLIC_` prefix.
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | Build, public | Globe renders a placeholder without it |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Build, public | Both Clerk values or neither |
 | `CLERK_SECRET_KEY` | Runtime, secret | Both Clerk values or neither |
-| `SUPABASE_URL` | Runtime, secret | Both Supabase values or neither, **and** Clerk configured |
-| `SUPABASE_SERVICE_ROLE_KEY` | Runtime, secret | Bypasses RLS — see [#235](https://github.com/Hack-HQ/hackhq/issues/235) |
+| `SUPABASE_URL` | Runtime, secret | URL plus at least one Supabase key, **and** Clerk configured |
+| `SUPABASE_ANON_KEY` | Runtime, secret | Token mode: RLS enforces ownership in Postgres. See [Tracker sync modes](#tracker-sync-modes) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Runtime, secret | Service mode only; bypasses RLS ([#235](https://github.com/Hack-HQ/hackhq/issues/235)). Ignored when the anon key is set, removable once token mode is verified |
 
 Every one is optional and degrades gracefully: without Mapbox the globe shows a
 placeholder, without Clerk the tracker stays browser-local, without Supabase it
