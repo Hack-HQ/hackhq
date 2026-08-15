@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { Hackathon } from "@/lib/types-hq";
 import { STATE_META, countdown } from "@/lib/types-hq";
 import { countKnownTracked } from "@/lib/tracker-utils";
+import posthog from "posthog-js";
 import { safeHttpUrl } from "@/lib/url";
 import { STAGES, useSelection, useTracker, type Stage } from "./store";
 import { TrophyBadge, WinToggle } from "./trophy";
@@ -75,7 +76,14 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
               }}
               onDragLeave={() => setOverStage(null)}
               onDrop={() => {
-                if (dragId) move(dragId, col.id);
+                if (dragId) {
+                  move(dragId, col.id);
+                  posthog.capture("tracker_stage_changed", {
+                    hackathon_id: dragId,
+                    stage: col.id,
+                    source: "drag_and_drop",
+                  });
+                }
                 setDragId(null);
                 setOverStage(null);
               }}
@@ -112,9 +120,28 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
                       setOverStage(null);
                     }}
                     onOpen={() => setSelected(h)}
-                    onRemove={() => remove(h.id)}
-                    onMoveStage={(stage) => move(h.id, stage)}
-                    onToggleWin={() => toggleWin(h.id)}
+                    onRemove={() => {
+                      remove(h.id);
+                      posthog.capture("hackathon_removed", {
+                        hackathon_id: h.id,
+                        source: "tracker",
+                      });
+                    }}
+                    onMoveStage={(stage) => {
+                      move(h.id, stage);
+                      posthog.capture("tracker_stage_changed", {
+                        hackathon_id: h.id,
+                        stage,
+                        source: "stage_control",
+                      });
+                    }}
+                    onToggleWin={() => {
+                      toggleWin(h.id);
+                      posthog.capture("hackathon_win_toggled", {
+                        hackathon_id: h.id,
+                        is_win: !hasWin(h.id),
+                      });
+                    }}
                   />
                 ))}
                 {col.items.length === 0 && (
@@ -152,6 +179,12 @@ export function Tracker({ hackathons }: { hackathons: Hackathon[] }) {
               href={safeHttpUrl(urgent.url)}
               target="_blank"
               rel="noreferrer"
+              onClick={() =>
+                posthog.capture("register_click", {
+                  hackathon_id: urgent.id,
+                  source: "deadline_radar",
+                })
+              }
               className="shrink-0 rounded-full bg-coral px-6 py-3 text-center font-mono text-[11px] font-bold tracking-[0.15em] text-paper transition hover:bg-coral-bright"
             >
               FINISH APPLICATION →

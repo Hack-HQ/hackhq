@@ -7,7 +7,7 @@ import {
   deadlineDisplay,
   eventDateDisplay,
 } from "@/lib/types-hq";
-import { capture } from "@/lib/analytics";
+import posthog from "posthog-js";
 import { lockScroll } from "@/lib/scroll-lock";
 import { safeHttpUrl } from "@/lib/url";
 import { useSelection, useTracker } from "./store";
@@ -190,9 +190,8 @@ export function DetailModal() {
               target="_blank"
               rel="noreferrer"
               onClick={() =>
-                capture("register_click", {
-                  id: h.id,
-                  title: h.title,
+                posthog.capture("register_click", {
+                  hackathon_id: h.id,
                   source: "detail_modal",
                 })
               }
@@ -201,7 +200,21 @@ export function DetailModal() {
               {h.state === "opens_soon" ? "VISIT WEBSITE ↗" : "REGISTER ↗"}
             </a>
             <button
-              onClick={() => (tracked ? remove(h.id) : save(h.id))}
+              onClick={() => {
+                if (tracked) {
+                  remove(h.id);
+                  posthog.capture("hackathon_removed", {
+                    hackathon_id: h.id,
+                    source: "detail_modal",
+                  });
+                  return;
+                }
+                save(h.id);
+                posthog.capture("hackathon_saved", {
+                  hackathon_id: h.id,
+                  source: "detail_modal",
+                });
+              }}
               className={`rounded-full border px-7 py-4 font-mono text-[12px] tracking-[0.18em] transition ${
                 tracked
                   ? "border-coral bg-coral/15 text-coral"

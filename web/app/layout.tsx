@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { Syncopate, Inter, Space_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { isClerkConfigured, validateEnv } from "@/lib/env";
-import { Analytics } from "@/components/analytics";
+import { Analytics, PostHogIdentity } from "@/components/analytics";
 import "./globals.css";
 
 // Validate/log environment configuration once when the server boots.
@@ -50,9 +50,7 @@ export default function RootLayout({
     >
       <body className="min-h-full" suppressHydrationWarning>
         {children}
-        {/* Cookieless pageview tracking; renders nothing and is a no-op unless
-            NEXT_PUBLIC_POSTHOG_KEY is set (see lib/analytics.ts). Suspense
-            because usePathname inside can suspend on dynamic routes. */}
+        {/* Suspense because usePathname inside can suspend on dynamic routes. */}
         <Suspense fallback={null}>
           <Analytics />
         </Suspense>
@@ -67,7 +65,10 @@ export default function RootLayout({
   // Now all surfaces agree: a half-configured deploy runs consistently in open
   // mode (and /auth redirects to /my rather than rendering a dead form).
   return isClerkConfigured() ? (
-    <ClerkProvider>{page}</ClerkProvider>
+    <ClerkProvider>
+      <PostHogIdentity />
+      {page}
+    </ClerkProvider>
   ) : (
     page
   );
