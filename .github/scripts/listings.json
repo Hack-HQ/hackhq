@@ -237,14 +237,16 @@
     ],
     "format": "Virtual",
     "prize": "$5,000 in Prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1783105200,
-    "date_updated": 1786253991,
+    "date_updated": 1786976944,
     "source": "akeight",
     "startDate": "2026-08-14",
-    "endDate": "2026-08-16"
+    "endDate": "2026-08-16",
+    "date_closed": "2026-08-17",
+    "archive_note": "Auto-archived 2026-08-17 \u2014 event ended 2026-08-16"
   },
   {
     "company_name": "DataHub",
@@ -1082,15 +1084,17 @@
     ],
     "format": "Virtual",
     "prize": "$800+ in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "deadline": "2026-08-16",
     "startDate": "2026-08-14",
     "endDate": "2026-08-16",
     "date_posted": 1786343222,
-    "date_updated": 1786343222,
-    "source": "akeight"
+    "date_updated": 1786976944,
+    "source": "akeight",
+    "date_closed": "2026-08-17",
+    "archive_note": "Auto-archived 2026-08-17 \u2014 deadline passed 2026-08-16"
   },
   {
     "id": "4f232f08-b904-4d75-a0e2-a31c2b247a5b",
