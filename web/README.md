@@ -184,6 +184,26 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+### One-time: install the git hooks
+
+Run once per clone, from anywhere in the repo:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+`.githooks/pre-commit` refuses to commit any `.env` / `.env.*` file except
+`.env.example`. Without this config, git ignores the directory entirely. If the
+hook does not fire, it needs the executable bit
+(`chmod +x .githooks/pre-commit`).
+
+It is a convenience, not the enforcement: `.github/workflows/secrets-guard.yml`
+applies the same rule to the pushed commits, plus a gitleaks scan of the full
+history, so `--no-verify` does not get a secret onto `main`. If something does
+leak, follow
+[`docs/runbooks/rotate-credentials.md`](../docs/runbooks/rotate-credentials.md) —
+deleting the file in a later commit is not a fix.
+
 ## Environment variables
 
 Copy `.env.example` to `.env.local` (gitignored) and set the values you need.
@@ -328,6 +348,7 @@ are server-only and must never gain a `NEXT_PUBLIC_` prefix.
 | `SUPABASE_URL` | Runtime, secret | URL plus at least one Supabase key, **and** Clerk configured |
 | `SUPABASE_ANON_KEY` | Runtime, secret | Token mode: RLS enforces ownership in Postgres. See [Tracker sync modes](#tracker-sync-modes) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Runtime, secret | Service mode only; bypasses RLS ([#235](https://github.com/Hack-HQ/hackhq/issues/235)). Ignored when the anon key is set, removable once token mode is verified |
+| `DATABASE_URL` (alias `SUPABASE_DATABASE_URL`) | Runtime, secret | Highest-risk value in the repo, and the one most often left out of a table like this. A Postgres connection string embeds the database password and connects as the table owner, so **RLS does not apply to it at all** — it reads and writes every row of `public.user_hackathons` regardless of policy. Only needed wherever `npm run db:*` runs, which is normally a laptop rather than the Vercel project; leave it unset here unless something actually needs it. Rotation: [`docs/runbooks/rotate-credentials.md`](../docs/runbooks/rotate-credentials.md) |
 
 Every one is optional and degrades gracefully: without Mapbox the globe shows a
 placeholder, without Clerk the tracker stays browser-local, without Supabase it
