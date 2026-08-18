@@ -1,0 +1,74 @@
+# Refuse committed gallery photos that carry identifying camera metadata.
+#
+# gallery_approved.py re-encodes every image it accepts through Pillow, so the
+# bot path is already clean by construction. This job covers the other paths -
+# a human PR that drags a photo into assets/gallery/, or a direct push - where
+# nothing re-encodes anything. GPS coordinates place the photographer, and
+# Artist names them; both are the point of this check. Benign tags (dimensions,
+# orientation) are left alone, so this fails only on a real disclosure.
+name: Image Hygiene
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/gallery/**'
+  pull_request:
+    paths:
+      - 'assets/gallery/**'
+
+permissions:
+  contents: read
+
+jobs:
+  gallery-metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+      - run: pip install -r .github/scripts/requirements.txt
+      - name: Fail on GPS or Artist metadata
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+
+          from PIL import Image
+
+          GPS_IFD = 0x8825  # GPSInfo pointer - where the photo was taken
+          ARTIST = 0x013B  # Artist - who took it
+
+          failures = []
+          checked = 0
+          for path in sorted(Path("assets/gallery").rglob("*")):
+              if not path.is_file():
+                  continue
+              if path.suffix.lower() not in {".jpg", ".jpeg", ".png"}:
+                  continue
+              checked += 1
+              try:
+                  with Image.open(path) as image:
+                      exif = image.getexif()
+                      gps = exif.get_ifd(GPS_IFD)
+                      artist = str(exif.get(ARTIST) or "").strip()
+              except Exception as exc:  # an unreadable image cannot be cleared
+                  failures.append(f"{path}: could not be read as an image ({exc})")
+                  continue
+              found = [name for name, hit in (("GPS", gps), ("Artist", artist)) if hit]
+              if found:
+                  failures.append(f"{path}: carries {' and '.join(found)} metadata")
+
+          for line in failures:
+              print(f"::error::{line}")
+          if failures:
+              print(
+                  "Strip the metadata before committing, e.g. "
+                  "python -c \"from PIL import Image; im=Image.open('f.jpg'); "
+                  "im.save('f.jpg', quality=95, optimize=True)\""
+              )
+              sys.exit(1)
+          print(f"Checked {checked} gallery image(s): no GPS or Artist metadata.")
+          PY

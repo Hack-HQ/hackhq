@@ -1,20 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  packGalleryTiles,
-  type GalleryPhoto,
-  type GalleryTileItem,
-} from "@/lib/gallery";
+import { useEffect, useRef, useState } from "react";
+import type { GalleryTileItem, PackedGallery } from "@/lib/gallery";
 import { submitGalleryPhotoUrl } from "@/lib/types-hq";
 
 /* Infinite draggable canvas of the community's hackathon photos.
 
-   Photos come from gallery.json (via loadGalleryPhotos on the server). They
-   pack into one seamless tile - the hand-tuned 6×6 slot template, stacked
-   vertically when there are more than eight photos - which is repeated across
-   a grid large enough to cover the viewport plus a margin. The pan offset is
-   wrapped modulo the tile period, so the pattern repeats forever.
+   Photos come from gallery.json (via loadGalleryPhotos on the server), and the
+   server also runs packGalleryTiles and hands the packed result down. That is
+   deliberate: GalleryPhoto carries the submitter's credit name and credit URL,
+   so a GalleryPhoto[] prop would serialize both into the flight payload even
+   though nothing here renders them.
+
+   The pack is one seamless tile - the hand-tuned 6×6 slot template, stacked
+   vertically when there are more than eight photos - repeated across a grid
+   large enough to cover the viewport plus a margin. The pan offset is wrapped
+   modulo the tile period, so the pattern repeats forever.
 
    Photo submission is handled on GitHub rather than by an on-site form: the
    image itself can't ride along in issue query params, so a form here could
@@ -70,8 +71,7 @@ function Tile({
   );
 }
 
-export function GalleryCanvas({ photos }: { photos: GalleryPhoto[] }) {
-  const packed = useMemo(() => packGalleryTiles(photos), [photos]);
+export function GalleryCanvas({ gallery: packed }: { gallery: PackedGallery }) {
   const tileW = packed.cols * CW + (packed.cols - 1) * G;
   const tileH = packed.rows * CW + (packed.rows - 1) * G;
   const periodX = tileW + G;

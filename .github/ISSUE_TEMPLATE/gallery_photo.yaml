@@ -55,3 +55,24 @@ body:
       placeholder: ex. https://www.linkedin.com/in/josegaelcruz
     validations:
       required: false
+
+  - type: dropdown
+    id: attribution
+    attributes:
+      label: Attribution
+      description: |
+        Whoever is credited is named publicly: in the gallery.json entry, in the
+        photo's committed filename, and in the comment that closes this issue.
+        - Credit the name above - uses the "Credit name" field. If you left it
+          blank, your GitHub username is used instead.
+        - GitHub username - credits your @handle even if you typed a name.
+        - No attribution - the photo is committed with no credit, no credit link,
+          and a filename that does not mention you.
+      multiple: false
+      default: 0
+      options:
+        - "Credit the name above (blank name = my GitHub username)"
+        - "GitHub username - credit my @handle"
+        - "No attribution - do not name me anywhere"
+    validations:
+      required: true

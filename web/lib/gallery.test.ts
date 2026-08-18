@@ -117,3 +117,60 @@ describe("packGalleryTiles", () => {
     }
   });
 });
+
+/* A gallery.json row from a submitter who asked to be credited. Note the image
+   path deliberately spells no form of "credit": the assertions below search the
+   serialized payload for that substring, and a filename would answer for it. */
+const CREDITED_ROW = {
+  image: "assets/gallery/hackmit-2026-a.jpg",
+  hackathon: "HackMIT 2026",
+  caption: "Demoing at 3am",
+  credit: "Ada Lovelace",
+  credit_url: "https://example.com/ada",
+};
+
+describe("the gallery value that crosses into the client canvas", () => {
+  it("still carries credit through the parse", () => {
+    // Half the guarantee, kept deliberately separate from the half below:
+    // attribution is not dropped. The site promises to show photos "with the
+    // credit you provide" (app/terms/page.tsx), and the README collage renders
+    // it, so parseGalleryPhotos must keep both fields.
+    const [parsed] = parseGalleryPhotos([CREDITED_ROW]);
+    expect(parsed?.credit).toBe("Ada Lovelace");
+    expect(parsed?.creditUrl).toBe("https://example.com/ada");
+  });
+
+  it("keeps credit out of the packed payload the browser receives", () => {
+    // The other half. app/page.tsx packs on the server and hands HomeClient
+    // this PackedGallery rather than the photos, so this object is what React
+    // serializes into the RSC flight payload every visitor downloads. Assert on
+    // the serialization, because that is the thing that leaks.
+    const wire = JSON.stringify(packGalleryTiles(parseGalleryPhotos([CREDITED_ROW])));
+    expect(wire).not.toContain("credit");
+    expect(wire).not.toContain("creditUrl");
+    expect(wire).not.toContain("credit_url");
+    expect(wire).not.toContain("Ada Lovelace");
+    expect(wire).not.toContain("example.com/ada");
+    // …and the tiles really were built from that photo, so the check above is
+    // not passing on an empty pack.
+    expect(wire).toContain("/repo-assets/gallery/hackmit-2026-a.jpg");
+  });
+
+  it("projects a tile to exactly the fields the canvas draws", () => {
+    // Pins the projection rather than today's field names: the next optional
+    // field added to GalleryPhoto fails here instead of quietly riding along.
+    const packed = packGalleryTiles(parseGalleryPhotos([CREDITED_ROW]));
+    expect(packed.items.length).toBeGreaterThan(0);
+    for (const item of packed.items) {
+      expect(Object.keys(item).sort()).toEqual([
+        "alt",
+        "col",
+        "colSpan",
+        "key",
+        "row",
+        "rowSpan",
+        "src",
+      ]);
+    }
+  });
+});
