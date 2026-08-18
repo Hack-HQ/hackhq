@@ -10,6 +10,10 @@ on:
       # gate their commits (#112). Without this path it would not run on the very
       # PRs that change those workflows - exactly when it needs to.
       - '.github/workflows/**'
+      # The scripts job also runs test_schema_drift.py, which compares
+      # supabase/migrations/ against web/db/schema.ts. Without this path a
+      # migration-only PR would skip the very check that covers it.
+      - 'supabase/**'
   pull_request:
     paths:
       - 'web/**'
@@ -18,6 +22,10 @@ on:
       # gate their commits (#112). Without this path it would not run on the very
       # PRs that change those workflows - exactly when it needs to.
       - '.github/workflows/**'
+      # The scripts job also runs test_schema_drift.py, which compares
+      # supabase/migrations/ against web/db/schema.ts. Without this path a
+      # migration-only PR would skip the very check that covers it.
+      - 'supabase/**'
 
 permissions:
   contents: read
