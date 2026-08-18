@@ -17,9 +17,14 @@
 --------------------------------------------------------------------------- */
 
 import { auth } from "@clerk/nextjs/server";
+import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
 import { isTrackerSyncConfigured } from "@/lib/env";
 import { isHackathonId, isStage, parseTrackerEntries } from "@/lib/tracker";
+import {
+  TrackerStoreError,
+  trackerFailureResponse,
+} from "@/lib/tracker-errors";
 import {
   deleteTrackerRow,
   importTrackerRows,
@@ -53,13 +58,35 @@ async function resolveUser(): Promise<
 }
 
 /**
- * Log the real cause server-side, tell the client only that it failed. Supabase
+ * Log the real cause server-side, tell the client only what it needs. Supabase
  * error messages can name columns and constraints, which is not something to
- * hand back over the wire.
+ * hand back over the wire, so the body carries a stable code from our own
+ * vocabulary instead of the driver's text.
+ *
+ * Schema drift is separated out by lib/tracker-errors: an unapplied migration
+ * answers 503 rather than 500, because the request was fine and the deployment
+ * is not. It is also the failure mode that was invisible before - the RPC
+ * `upsert_tracker_row` is applied by hand (#254), and until it exists every PUT
+ * failed as an opaque 500 that nothing alerted on. Reporting to Sentry is
+ * unconditional and tagged, so the missing-function case is one query away
+ * rather than buried in request logs.
  */
 function serverError(operation: string, error: unknown): NextResponse {
   console.error(`[api/tracker] ${operation} failed:`, error);
-  return NextResponse.json({ error: "Tracker sync failed" }, { status: 500 });
+
+  const pgCode = error instanceof TrackerStoreError ? error.code : undefined;
+  Sentry.captureException(error, {
+    tags: {
+      tracker_operation: operation,
+      // The driver's code, kept out of the response body but essential for
+      // telling PGRST202 (migration missing) from a real query fault.
+      pg_code: pgCode ?? "none",
+      ...(operation === "upsert" ? { rpc: "upsert_tracker_row" } : {}),
+    },
+  });
+
+  const { status, body } = trackerFailureResponse(error);
+  return NextResponse.json(body, { status });
 }
 
 export async function GET() {

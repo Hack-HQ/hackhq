@@ -38,6 +38,7 @@ import { auth } from "@clerk/nextjs/server";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Stage, TrackerEntry } from "./tracker";
 import { parseTrackerEntries } from "./tracker";
+import { trackerStoreError } from "./tracker-errors";
 
 const TABLE = "user_hackathons";
 
@@ -101,7 +102,7 @@ export async function listTracker(userId: string): Promise<TrackerEntry[]> {
     .from(TABLE)
     .select("hackathon_id, stage, is_win")
     .eq("user_id", userId);
-  if (error) throw new Error(error.message);
+  if (error) throw trackerStoreError("list", error);
 
   return parseTrackerEntries(
     (data ?? []).map((row) => ({
@@ -137,7 +138,7 @@ export async function upsertTrackerRow(
     p_stage: patch.stage ?? null,
     p_is_win: patch.isWin ?? null,
   });
-  if (error) throw new Error(error.message);
+  if (error) throw trackerStoreError("upsert", error);
 
   // `returns table (...)` arrives as a one-row array. Fall back to the patch if
   // a client ever hands back a bare object instead, so the caller still gets
@@ -162,7 +163,7 @@ export async function deleteTrackerRow(
     .delete()
     .eq("user_id", userId)
     .eq("hackathon_id", hackathonId);
-  if (error) throw new Error(error.message);
+  if (error) throw trackerStoreError("delete", error);
 }
 
 /**
@@ -187,5 +188,5 @@ export async function importTrackerRows(
       })),
       { onConflict: "user_id,hackathon_id", ignoreDuplicates: true },
     );
-  if (error) throw new Error(error.message);
+  if (error) throw trackerStoreError("import", error);
 }
