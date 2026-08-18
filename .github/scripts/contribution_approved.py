@@ -125,13 +125,10 @@ def handle_new_opportunity(data, username, is_quick_add=False):
     listings.append(new_listing)
     util.save_listings_to_json(listings)
 
-    # Set outputs
+    # Set outputs. Authorship deliberately absent: the commit is the bot's, and
+    # the submitter is credited by the Co-authored-by trailer main() emits plus
+    # the `source` field above. See util.coauthor_trailer.
     util.set_output("commit_message", f"Add {company_name} - {title}")
-    util.set_output("contributor_name", username)
-    # Validate the contributor-supplied email before it reaches `git config`;
-    # fall back to the bot address if it isn't a clean single-line address.
-    email = get_first(data, "email_associated_with_your_github_account_(optional)")
-    util.set_output("contributor_email", email if util.is_valid_email(email) else "actions@github.com")
 
     print(f"Successfully added: {company_name} - {title}")
 
@@ -173,8 +170,6 @@ def handle_close_opportunity(data, username):
     util.save_listings_to_json(listings)
 
     util.set_output("commit_message", f"Close {company_name} - {title}")
-    util.set_output("contributor_name", username)
-    util.set_output("contributor_email", "actions@github.com")
 
     print(f"Successfully closed: {company_name} - {title}")
 
@@ -190,7 +185,8 @@ def main():
     issue = event.get("issue", {})
     body = issue.get("body", "")
     labels = [l.get("name", "") for l in issue.get("labels", [])]
-    username = issue.get("user", {}).get("login", "unknown")
+    user = issue.get("user", {})
+    username = user.get("login", "unknown")
 
     # Parse the issue body
     data = util.parse_issue_body(body)
@@ -205,6 +201,11 @@ def main():
         handle_close_opportunity(data, username)
     else:
         util.fail(f"Unknown issue type. Labels: {labels}")
+
+    # After dispatch: a run that failed validation called util.fail and exited,
+    # so there is no commit to attribute. Emitted here rather than inside the
+    # handlers because it describes the actor, not the listing.
+    util.set_output("coauthor_trailer", util.coauthor_trailer(user))
 
 
 if __name__ == "__main__":

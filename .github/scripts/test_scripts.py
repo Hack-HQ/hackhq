@@ -45,14 +45,57 @@ class SanitizeField(unittest.TestCase):
         self.assertEqual(len(util.sanitize_field("a" * 500, max_len=10)), 10)
 
 
-class Email(unittest.TestCase):
-    def test_valid(self):
-        self.assertTrue(util.is_valid_email("me@example.com"))
+class CoauthorTrailer(unittest.TestCase):
+    """The replacement for the contributor-supplied email field.
 
-    def test_invalid(self):
-        self.assertFalse(util.is_valid_email("me@example.com\nx"))
-        self.assertFalse(util.is_valid_email("not-an-email"))
-        self.assertFalse(util.is_valid_email(""))
+    The old field was typed into a public issue and became a commit's author, so
+    anyone could credit a third party's contribution graph. These assertions pin
+    the two properties that fix buys: the address is derived from the
+    authenticated actor, and anything short of a provable actor yields no
+    trailer at all rather than a guess.
+    """
+
+    def test_builds_the_noreply_address_from_id_and_login(self):
+        self.assertEqual(
+            util.coauthor_trailer({"login": "octocat", "id": 583231}),
+            "Co-authored-by: octocat <583231+octocat@users.noreply.github.com>",
+        )
+
+    def test_no_trailer_without_a_provable_actor(self):
+        # Missing either half, the wrong types, or no actor at all: the commit is
+        # the bot's alone rather than credited to a guess.
+        for user in (
+            {},
+            None,
+            "octocat",
+            {"login": "octocat"},
+            {"id": 583231},
+            {"login": "", "id": 583231},
+            {"login": "octocat", "id": None},
+            {"login": "octocat", "id": "583231"},
+            {"login": "octocat", "id": True},
+        ):
+            self.assertEqual(util.coauthor_trailer(user), "", msg=repr(user))
+
+    def test_rejects_a_login_that_is_not_a_github_login(self):
+        # A real login is [A-Za-z0-9-] and cannot start or end with a hyphen.
+        # Nothing else reaches the trailer, so an injected address, an extra
+        # trailer line, or shell metacharacters cannot be smuggled through.
+        for login in (
+            "octo cat",
+            "-octocat",
+            "octocat-",
+            "octo@cat",
+            "octocat>",
+            "a\nCo-authored-by: victim <victim@example.com>",
+        ):
+            self.assertEqual(
+                util.coauthor_trailer({"login": login, "id": 1}), "", msg=login
+            )
+
+    def test_the_email_validator_is_gone(self):
+        # It only ever guarded the removed field, and syntax was never ownership.
+        self.assertFalse(hasattr(util, "is_valid_email"))
 
 
 class EscapeAttr(unittest.TestCase):

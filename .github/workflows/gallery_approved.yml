@@ -50,23 +50,30 @@ jobs:
       - name: Rebuild README gallery
         run: python .github/scripts/generate_gallery.py
 
+      # Bot-authored, like every other committing workflow here. Previously this
+      # took user.name from the submitter's GitHub login; the address was already
+      # the bot's, but the author line still carried a person's handle.
       - name: Configure Git
-        env:
-          CONTRIBUTOR_NAME: ${{ steps.process.outputs.contributor_name }}
-          CONTRIBUTOR_EMAIL: ${{ steps.process.outputs.contributor_email }}
         run: |
-          git config user.name "$CONTRIBUTOR_NAME"
-          git config user.email "$CONTRIBUTOR_EMAIL"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit and push changes
         env:
           COMMIT_MSG: ${{ steps.process.outputs.commit_message }}
+          # Empty when the submitter chose "no attribution" on the issue form, so
+          # the commit history is one more place that choice is honoured.
+          COAUTHOR_TRAILER: ${{ steps.process.outputs.coauthor_trailer }}
         run: |
           git add .github/scripts/gallery.json assets/gallery README.md
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "$COMMIT_MSG"
+            if [ -n "$COAUTHOR_TRAILER" ]; then
+              git commit -m "$COMMIT_MSG" -m "$COAUTHOR_TRAILER"
+            else
+              git commit -m "$COMMIT_MSG"
+            fi
           fi
           ok=false
           for i in 1 2 3; do

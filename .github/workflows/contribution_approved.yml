@@ -52,23 +52,36 @@ jobs:
         id: geo
         run: python .github/scripts/check_geo_coverage.py
 
+      # The bot authors the commit, matching auto_extract.yml, closing_soon.yml,
+      # gallery.yml and update_readmes.yml. This step used to set user.name and
+      # user.email from the issue form, so a contributor-typed address became the
+      # permanent author of a commit on main - and on `vercel`, which
+      # mirror_production_branch.yml force-pushes from main. Validation was
+      # syntax-only, so the address did not have to belong to the submitter.
       - name: Configure Git
-        env:
-          CONTRIBUTOR_NAME: ${{ steps.process.outputs.contributor_name }}
-          CONTRIBUTOR_EMAIL: ${{ steps.process.outputs.contributor_email }}
         run: |
-          git config user.name "$CONTRIBUTOR_NAME"
-          git config user.email "$CONTRIBUTOR_EMAIL"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit and push changes
         env:
           COMMIT_MSG: ${{ steps.process.outputs.commit_message }}
+          # `<id>+<login>@users.noreply.github.com`, built from the authenticated
+          # actor rather than from typed text, so the credit cannot be aimed at
+          # someone else. Empty when the actor could not be established.
+          COAUTHOR_TRAILER: ${{ steps.process.outputs.coauthor_trailer }}
         run: |
           git add .github/scripts/listings.json README.md assets/hackathons-banner.svg
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "$COMMIT_MSG"
+            # Separate -m so the trailer lands in its own paragraph, which is
+            # where git interprets trailers. No trailer, no empty paragraph.
+            if [ -n "$COAUTHOR_TRAILER" ]; then
+              git commit -m "$COMMIT_MSG" -m "$COAUTHOR_TRAILER"
+            else
+              git commit -m "$COMMIT_MSG"
+            fi
           fi
           # Rebase and retry push up to 3 times
           ok=false

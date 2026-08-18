@@ -107,18 +107,6 @@ body:
     validations:
       required: false
 
-  - type: input
-    id: email
-    attributes:
-      label: Email associated with your GitHub account (Optional)
-      description: |
-        If you would like to be credited as the contributor when the GitHub Action
-        commits your contribution, please provide your email. If left blank, the
-        contribution will be attributed to actions@github.com.
-      placeholder: ex. yourname@email.com
-    validations:
-      required: false
-
   - type: textarea
     id: notes
     attributes:

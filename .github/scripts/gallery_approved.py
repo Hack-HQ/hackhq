@@ -155,7 +155,8 @@ def main() -> None:
     issue = event.get("issue", {})
     body = issue.get("body") or ""
     labels = [l.get("name", "") for l in issue.get("labels", [])]
-    username = issue.get("user", {}).get("login", "unknown")
+    user = issue.get("user", {})
+    username = user.get("login", "unknown")
 
     if "gallery" not in labels:
         util.fail(f"Not a gallery issue. Labels: {labels}")
@@ -214,8 +215,14 @@ def main() -> None:
     save_gallery(entries)
 
     util.set_output("commit_message", f"Add gallery photo: {hackathon}")
-    util.set_output("contributor_name", username)
-    util.set_output("contributor_email", "actions@github.com")
+    # A fourth sink for the submitter's name, and it obeys the same choice: a
+    # Co-authored-by trailer would name them in the commit history, which is
+    # precisely what "no attribution" asks us not to do. `credit` is empty only
+    # on that branch (a blank typed name falls back to the login), so it is the
+    # right thing to gate on.
+    util.set_output(
+        "coauthor_trailer", util.coauthor_trailer(user) if credit else ""
+    )
     util.set_output("image_path", rel_path)
 
     print(f"Successfully added gallery photo: {rel_path}")
