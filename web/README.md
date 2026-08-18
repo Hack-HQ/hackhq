@@ -17,10 +17,19 @@ deck, and member tracker, plus a legacy searchable directory at `/hackathons`.
 
 ## How it works
 
-This app does **not query a database at runtime**. Listing data lives in the repo
-and is read from disk when pages are generated. Supabase is maintained as a
-Postgres mirror for backend/API work; its schema lives in `db/schema.ts` and is
-managed with Drizzle.
+Page content is not fetched from a database at runtime. Listing data lives in the
+repo and is read from disk when pages are generated, which is why the globe, the
+deck and `/hackathons` render with no database configured at all.
+
+There is one exception, and it is a real one: the signed-in tracker.
+`/api/tracker` reads and writes `public.user_hackathons` in Supabase on every
+request — see [Tracker sync modes](#tracker-sync-modes) below. Without Clerk or
+without Supabase it degrades to browser-local storage, so a deployment with
+neither genuinely has no runtime database; a configured one does.
+
+The schema's source of truth is `supabase/migrations/`, not Drizzle. `db/schema.ts`
+mirrors it for types only and is not a migration authority — see
+[Supabase schema](#supabase-schema).
 
 ### Data sources
 

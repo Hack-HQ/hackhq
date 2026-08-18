@@ -12,6 +12,12 @@ Spotted a hackathon, a wrong deadline, or a page that needs verifying? Open an i
 **2. Work on the software — invited developers.**
 Building the site, the automation scripts, and fixing bugs is done by developers we invite to the repo. Those issues carry labels like `frontend`, `backend`, `infra`, `security`, and `bug`, and are locked to collaborators. Not on the dev team yet? You can still propose code by **forking the repo and opening a pull request** — a maintainer reviews it. Want to join the team? Add a few hackathons first, then reach out to a maintainer.
 
+**Found a security problem?** Do not open an issue for it. The `security` label
+above is for maintainer triage of work we already know about, not a reporting
+channel. Report it privately instead — [`SECURITY.md`](SECURITY.md) has the two
+routes (GitHub Private Vulnerability Reporting, or email), what to expect from
+us, and a safe-harbour statement for good-faith research.
+
 ## How to Add a Hackathon
 
 ### Just Paste the Link! (Recommended)
