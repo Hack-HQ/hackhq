@@ -50,21 +50,32 @@ $$;
 -- role, not an API surface a browser can reach.
 
 -- ---------------------------------------------------------------------------
--- Verification. Run after applying; on PG17+ both queries must return no rows.
+-- Verification. Run after applying; on PG17+ every row must read false.
 -- ---------------------------------------------------------------------------
 --
---   select grantee, table_name, privilege_type
---   from information_schema.role_table_grants
---   where table_schema = 'public'
---     and table_name in ('hackathons', 'user_hackathons')
---     and grantee in ('anon', 'authenticated')
---     and privilege_type = 'MAINTAIN';
---   -- expect 0 rows
+-- Use has_table_privilege, NOT information_schema. This was a real trap, caught
+-- only because the pre-state was checked as well as the post-state:
+-- information_schema.role_table_grants does not report MAINTAIN at all - those
+-- views are defined by the SQL standard and MAINTAIN is a PostgreSQL extension -
+-- so a MAINTAIN query against them returns zero rows whether the privilege is
+-- held or not, and reads as a pass either way. Measured on PG 18.4: with the
+-- grant in place, information_schema returned 0 rows while `relacl` showed
+-- `anon=m` and `authenticated=dm`.
+--
+--   select r as role, t as tbl, has_table_privilege(r, t, 'MAINTAIN') as held
+--   from unnest(array['anon','authenticated']) r,
+--        unnest(array['public.hackathons','public.user_hackathons']) t
+--   order by 1, 2;
+--   -- expect held = false for all four rows
 --
 --   select relname, relacl from pg_class
---   where relname in ('hackathons', 'user_hackathons')
---     and relacl::text ~ '(anon|authenticated)[^,]*m';
---   -- expect 0 rows. The ACL letter for MAINTAIN is 'm'.
+--   where relname in ('hackathons', 'user_hackathons') order by relname;
+--   -- No 'm' in any anon= or authenticated= entry. The ACL letter for MAINTAIN
+--   -- is 'm'. Observed after applying, on a full replay:
+--   --   hackathons      -> {postgres=arwdDxtm/postgres,authenticated=d/postgres,
+--   --                       service_role=arwdDxtm/postgres}
+--   --   user_hackathons -> {postgres=arwdDxtm/postgres,authenticated=rd/postgres,
+--   --                       service_role=arwdDxtm/postgres}
 --
 -- rollback:
 --   do $$
