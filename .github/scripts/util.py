@@ -272,15 +272,40 @@ def sanitize_field(value, max_len=200):
     return text
 
 
-_EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$")
+def coauthor_trailer(user):
+    """A `Co-authored-by:` line for the account that filed the issue, or "".
 
+    This replaces the old contributor-supplied email field. That field was typed
+    into a public issue and fed straight to `git config user.email`, so the
+    address became the permanent author of a commit on main. `is_valid_email`
+    checked syntax and nothing else, which is not ownership: anyone could type a
+    third party's address and have the commit credited to that person's GitHub
+    contribution graph, on two branches (mirror_production_branch.yml mirrors
+    main onto `vercel`).
 
-def is_valid_email(email):
-    """Return True for a syntactically valid, single-line email address."""
-    if not isinstance(email, str):
-        return False
-    email = email.strip()
-    return len(email) <= 254 and bool(_EMAIL_RE.match(email))
+    The `<numeric-id>+<login>@users.noreply.github.com` form cannot be forged
+    that way, because both halves come from the authenticated actor in the event
+    payload rather than from anything the submitter wrote. GitHub resolves it to
+    that account without ever exposing a real mailbox.
+
+    Returns "" when either half is missing, so a caller that cannot prove who
+    the actor is simply gets no trailer - the commit is then the bot's alone.
+    """
+    if not isinstance(user, dict):
+        return ""
+    login = sanitize_field(user.get("login"), max_len=39)
+    user_id = user.get("id")
+    # A login is [A-Za-z0-9-] and an id is an int, so neither can carry a
+    # newline into $GITHUB_OUTPUT. Both are checked anyway: set_output writes
+    # whatever it is handed, and its safety has always rested on its callers.
+    if not login or not isinstance(user_id, int) or isinstance(user_id, bool):
+        return ""
+    if not re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?", login):
+        return ""
+    return (
+        f"Co-authored-by: {login} "
+        f"<{user_id}+{login}@users.noreply.github.com>"
+    )
 
 
 def format_link(url):

@@ -655,12 +655,11 @@ def main():
     listings.append(new_listing)
     util.save_listings_to_json(listings)
 
-    # Set outputs
+    # Set outputs. No contributor_name/contributor_email: auto_extract.yml has
+    # always hardcoded the bot identity, so those two outputs were never read.
     company = new_listing["company_name"]
     title = new_listing["title"]
     util.set_output("commit_message", f"Add {company} - {title}")
-    util.set_output("contributor_name", username)
-    util.set_output("contributor_email", "actions@github.com")
     util.set_output("extracted_data", json.dumps(extracted))
     if warning_msg:
         util.set_output("warning", warning_msg)
