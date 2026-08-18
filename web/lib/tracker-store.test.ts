@@ -90,6 +90,7 @@ const ENV_KEYS = [
   "SUPABASE_URL",
   "SUPABASE_SERVICE_ROLE_KEY",
   "SUPABASE_ANON_KEY",
+  "SUPABASE_TRACKER_REQUIRE_RLS",
 ] as const;
 
 const URL = "https://example.supabase.co";
@@ -226,6 +227,58 @@ describe("client construction", () => {
       "Supabase is not configured for tracker sync",
     );
     expect(createClientCalls).toHaveLength(0);
+  });
+
+  /**
+   * SUPABASE_TRACKER_REQUIRE_RLS is the flip's verification switch: set it in a
+   * preview and the tracker either keeps working, proving token mode is really
+   * live, or it refuses. What it must never do is quietly serve the request
+   * under the service role, because that is the arrangement it exists to rule
+   * out. Env-only, so the rollback is unsetting it - no code redeploy (#235).
+   */
+  it("refuses to serve service mode when RLS is required", async () => {
+    const store = await loadStore({
+      ...SERVICE_ENV,
+      SUPABASE_TRACKER_REQUIRE_RLS: "1",
+    });
+    // Two substrings rather than one dot-all regex: this tsconfig predates the
+    // `s` flag, and asserting both halves is stricter anyway - the message has
+    // to name the switch AND the missing key to be actionable.
+    const rejects = expect(store.listTracker(USER)).rejects;
+    await rejects.toThrow("SUPABASE_TRACKER_REQUIRE_RLS is set");
+    await expect(store.listTracker(USER)).rejects.toThrow(
+      "SUPABASE_ANON_KEY is not configured",
+    );
+    // Fails closed: no client is built at all, so no query can reach the
+    // RLS-bypassing key even by accident.
+    expect(createClientCalls).toHaveLength(0);
+  });
+
+  it("serves token mode normally when RLS is required", async () => {
+    const store = await loadStore({
+      ...TOKEN_ENV,
+      SUPABASE_TRACKER_REQUIRE_RLS: "1",
+    });
+    await store.listTracker(USER);
+    expect(clientArgs().key).toBe("anon-key");
+  });
+
+  it("accepts either truthy spelling of the switch", async () => {
+    for (const raw of ["1", "true", "TRUE"]) {
+      const store = await loadStore({
+        ...SERVICE_ENV,
+        SUPABASE_TRACKER_REQUIRE_RLS: raw,
+      });
+      await expect(store.listTracker(USER)).rejects.toThrow(
+        "SUPABASE_TRACKER_REQUIRE_RLS is set",
+      );
+    }
+  });
+
+  it("is off by default, so an unset switch keeps service mode working", async () => {
+    const store = await loadStore(SERVICE_ENV);
+    await store.listTracker(USER);
+    expect(clientArgs().key).toBe("service-role-key");
   });
 });
 

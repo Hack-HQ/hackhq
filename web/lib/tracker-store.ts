@@ -38,6 +38,7 @@ import { auth } from "@clerk/nextjs/server";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Stage, TrackerEntry } from "./tracker";
 import { parseTrackerEntries } from "./tracker";
+import { requiresTrackerRls } from "./env";
 import { trackerStoreError } from "./tracker-errors";
 
 const TABLE = "user_hackathons";
@@ -85,6 +86,20 @@ function client(): SupabaseClient {
   // Token mode wins when both keys are present, so setting SUPABASE_ANON_KEY is
   // sufficient to flip enforcement into Postgres; removing the service key can
   // follow once the flip is verified.
+  if (!anonKey && requiresTrackerRls()) {
+    // Fail closed rather than degrade. Reached only when someone has explicitly
+    // asked for database-enforced ownership (SUPABASE_TRACKER_REQUIRE_RLS) and
+    // the deployment cannot provide it, which means the flip is half-done: the
+    // switch is on but SUPABASE_ANON_KEY is missing. Serving the request anyway
+    // would quietly hand tenancy back to the app layer, which is the exact
+    // thing the switch exists to rule out.
+    throw new Error(
+      "SUPABASE_TRACKER_REQUIRE_RLS is set, so tracker sync must run in token mode, " +
+        "but SUPABASE_ANON_KEY is not configured - only the service role key is, and it " +
+        "bypasses row level security. Set SUPABASE_ANON_KEY, or unset " +
+        "SUPABASE_TRACKER_REQUIRE_RLS to accept app-layer enforcement (#235).",
+    );
+  }
   cached = anonKey
     ? createClient(url, anonKey, {
         ...options,

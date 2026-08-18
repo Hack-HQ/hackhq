@@ -250,6 +250,7 @@ Copy `.env.example` to `.env.local` (gitignored) and set the values you need.
 | `SUPABASE_URL` | For tracker sync | `lib/tracker-store.ts` | Tracker stays browser-local; `/api/tracker` reports `synced: false` |
 | `SUPABASE_ANON_KEY` | For tracker sync (token mode) | `lib/tracker-store.ts` | Tracker sync falls back to service mode if the service role key is set, otherwise stays browser-local. See [Tracker sync modes](#tracker-sync-modes) |
 | `SUPABASE_SERVICE_ROLE_KEY` | For tracker sync (service mode) | `lib/tracker-store.ts` | Fine once token mode is live; without either key the tracker stays browser-local. Clerk must be configured in every case or there is no user to attribute a row to |
+| `SUPABASE_TRACKER_REQUIRE_RLS` | No | `lib/env.ts`, `lib/tracker-store.ts` | Set to `1` and tracker sync refuses service mode instead of falling back to the RLS-bypassing key. The flip's verification switch — see [`docs/runbooks/flip-token-mode.md`](../docs/runbooks/flip-token-mode.md) |
 | `DATABASE_URL` | For DB scripts | `drizzle.config.ts` | `npm run db:*` commands fail fast before touching Supabase |
 | `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | No | `instrumentation-client.ts` | Analytics is fully off — posthog-js is never downloaded |
 | `NEXT_PUBLIC_POSTHOG_KEY` | No | `lib/analytics.ts` | Legacy alias for `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` |
@@ -382,6 +383,7 @@ are server-only and must never gain a `NEXT_PUBLIC_` prefix.
 | `SUPABASE_URL` | Runtime, secret | URL plus at least one Supabase key, **and** Clerk configured |
 | `SUPABASE_ANON_KEY` | Runtime, secret | Token mode: RLS enforces ownership in Postgres. See [Tracker sync modes](#tracker-sync-modes) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Runtime, secret | Service mode only; bypasses RLS ([#235](https://github.com/Hack-HQ/hackhq/issues/235)). Ignored when the anon key is set, removable once token mode is verified |
+| `SUPABASE_TRACKER_REQUIRE_RLS` | Runtime, not a secret | `1` makes a deployment that cannot run in token mode refuse tracker traffic rather than degrade to app-layer enforcement. Off by default; setting it before the Clerk template and Supabase third-party auth exist takes the tracker down. Env-only rollback: unset it. [Runbook](../docs/runbooks/flip-token-mode.md) |
 | `DATABASE_URL` (alias `SUPABASE_DATABASE_URL`) | Runtime, secret | Highest-risk value in the repo, and the one most often left out of a table like this. A Postgres connection string embeds the database password and connects as the table owner, so **RLS does not apply to it at all** — it reads and writes every row of `public.user_hackathons` regardless of policy. Only needed wherever `npm run db:*` runs, which is normally a laptop rather than the Vercel project; leave it unset here unless something actually needs it. Rotation: [`docs/runbooks/rotate-credentials.md`](../docs/runbooks/rotate-credentials.md) |
 
 Every one is optional and degrades gracefully: without Mapbox the globe shows a
