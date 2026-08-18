@@ -10,15 +10,51 @@
 -- (user, hackathon): which stage it sits in, and whether the user won it (#226).
 --
 -- `user_id` is the Clerk `sub`, matching the `submitted_by` convention on
--- public.hackathons. It defaults from the JWT rather than being sent by the
--- client, so a caller cannot write a row owned by someone else even before the
--- policies below are consulted.
+-- public.hackathons. `default auth.jwt() ->> 'sub'` fills it only when the
+-- client omits the column — that is the only case a DEFAULT is ever consulted —
+-- so it is a convenience, NOT an ownership control. What refuses a row owned by
+-- someone else is the `with check` on the "insert own tracker" and "update own
+-- tracker" policies below and, since 20260818013000, the BEFORE INSERT OR UPDATE
+-- trigger `public.force_tracker_owner` that runs ahead of them — for callers who
+-- carry a JWT at all. See the NOTE at the end of this header.
 --
 -- Deliberately NO foreign key to public.hackathons. That table is a mirror the
 -- hourly sync can leave up to an hour behind .github/scripts/listings.json,
 -- which is what the app actually renders from — an FK would reject a save for
 -- any listing added since the last sync. The id is validated in the app layer
 -- against the live listing set instead.
+--
+-- NOTE: the paragraph above used to read "It defaults from the JWT rather than
+-- being sent by the client, so a caller cannot write a row owned by someone else
+-- even before the policies below are consulted." That was wrong about the
+-- mechanism. A DEFAULT is consulted only when the column is OMITTED, and the
+-- `grant select, insert, update, delete ... to authenticated` below is a TABLE
+-- level grant, which implies every column — so a caller who names `user_id`
+-- explicitly never reaches the default and writes whatever it sent. Verified
+-- under token mode rather than reasoned about: the only thing that actually
+-- refused a forged owner was the `with check` on the insert and update policies,
+-- which fails the write with "new row violates row-level security policy for
+-- table user_hackathons". So the policies were not the second line of defence
+-- this comment implied they were behind — they were the single point of failure.
+-- Loosen one and mis-owned rows become writable with nothing behind it.
+--
+-- 20260818013000_force_tracker_owner_and_column_grants.sql adds the pre-policy
+-- layer the old comment claimed already existed: a BEFORE INSERT OR UPDATE
+-- trigger (`public.force_tracker_owner`) that fills `user_id` when it is omitted
+-- or null and raises SQLSTATE 42501 on a mismatch rather than silently
+-- rewriting it, plus column-level write grants that drop `user_id` from the
+-- UPDATE list entirely, so an existing row cannot be re-owned at all. Read that
+-- exactly as narrowly as it is written: the trigger keys on the request's JWT,
+-- and `service_role` and `postgres` carry none, so for those roles it is a
+-- no-op. In service-role mode — how the app runs today — the cross-tenant
+-- boundary is still the four `.eq("user_id", ...)` filters in
+-- web/lib/tracker-store.ts (#235), not the database.
+--
+-- That correction lives only in this file, and unlike the comparable note in
+-- 20260722144205_add_deck_columns.sql there is no recorded statement here for it
+-- to diverge from: this migration was hand-applied through the SQL Editor (see
+-- the top of this header), so `supabase_migrations.schema_migrations` holds
+-- nothing for it and this file is the only artefact. The SQL below is unchanged.
 
 create table if not exists public.user_hackathons (
   user_id      text        not null default auth.jwt() ->> 'sub',
