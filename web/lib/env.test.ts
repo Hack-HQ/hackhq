@@ -6,6 +6,7 @@ const KEYS = [
   "SUPABASE_URL",
   "SUPABASE_SERVICE_ROLE_KEY",
   "SUPABASE_ANON_KEY",
+  "SUPABASE_TRACKER_REQUIRE_RLS",
 ] as const;
 
 /**
@@ -64,6 +65,83 @@ describe("isTrackerSyncConfigured", () => {
       SUPABASE_ANON_KEY: "anon-key",
     });
     expect(isTrackerSyncConfigured()).toBe(true);
+  });
+});
+
+/**
+ * Which enforcement model is live was previously unanswerable from outside the
+ * process: SUPABASE_ANON_KEY decides it, the value is server-only, and nothing
+ * reported the outcome. route.ts tags every tracker error in Sentry with this,
+ * so the tag is only worth having if the function is right (#235).
+ */
+describe("trackerMode", () => {
+  it("is 'token' when the anon key is set — RLS is the enforcement point", async () => {
+    const { trackerMode } = await loadEnv({
+      ...CLERK,
+      ...SUPABASE,
+      SUPABASE_ANON_KEY: "anon",
+    });
+    expect(trackerMode()).toBe("token");
+  });
+
+  it("is 'service' with only the service role key — ownership rests on app code", async () => {
+    const { trackerMode } = await loadEnv({ ...CLERK, ...SUPABASE });
+    expect(trackerMode()).toBe("service");
+  });
+
+  it("prefers token when both keys are set, matching tracker-store", async () => {
+    const { trackerMode } = await loadEnv({
+      ...CLERK,
+      ...SUPABASE,
+      SUPABASE_ANON_KEY: "anon",
+    });
+    expect(trackerMode()).toBe("token");
+  });
+
+  it("is 'off' when sync is not configured, so the tag never implies a database", async () => {
+    const { trackerMode } = await loadEnv(CLERK);
+    expect(trackerMode()).toBe("off");
+  });
+
+  it("is 'off' without Clerk even with both Supabase keys", async () => {
+    // There would be no user to attribute a row to, so nothing is enforced
+    // either way — reporting "service" here would overstate what is running.
+    const { trackerMode } = await loadEnv({
+      ...SUPABASE,
+      SUPABASE_ANON_KEY: "anon",
+    });
+    expect(trackerMode()).toBe("off");
+  });
+});
+
+describe("requiresTrackerRls", () => {
+  it("is off unless explicitly set, so the switch cannot take a deploy down by default", async () => {
+    const { requiresTrackerRls } = await loadEnv({ ...CLERK, ...SUPABASE });
+    expect(requiresTrackerRls()).toBe(false);
+  });
+
+  it("accepts 1 and true in either case", async () => {
+    for (const raw of ["1", "true", "TRUE", "True"]) {
+      const { requiresTrackerRls } = await loadEnv({
+        ...CLERK,
+        ...SUPABASE,
+        SUPABASE_TRACKER_REQUIRE_RLS: raw,
+      });
+      expect(requiresTrackerRls(), raw).toBe(true);
+    }
+  });
+
+  it("ignores anything else rather than guessing", async () => {
+    // A half-understood value must not silently arm a switch that refuses
+    // traffic; "0"/"no"/"" all mean off.
+    for (const raw of ["0", "no", "off", "yes", ""]) {
+      const { requiresTrackerRls } = await loadEnv({
+        ...CLERK,
+        ...SUPABASE,
+        SUPABASE_TRACKER_REQUIRE_RLS: raw,
+      });
+      expect(requiresTrackerRls(), raw).toBe(false);
+    }
   });
 });
 

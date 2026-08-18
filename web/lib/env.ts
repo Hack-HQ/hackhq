@@ -46,6 +46,41 @@ export function isTrackerSyncConfigured(): boolean {
   );
 }
 
+/**
+ * Which enforcement model tracker writes are actually running under. Exists
+ * because the repo could not answer that question: `SUPABASE_ANON_KEY` decides
+ * it, the value is server-only, and nothing reported the outcome. #235 is the
+ * work of moving from "service" to "token", and a claim about where row
+ * ownership is enforced is only checkable if the live mode is observable.
+ *
+ *   "off"     - tracker sync is not configured; rows stay in the browser.
+ *   "token"   - the caller's Clerk JWT authenticates each request, so Postgres
+ *               RLS is the enforcement point.
+ *   "service" - the service role key, which bypasses RLS. Ownership rests on
+ *               the user_id filters in lib/tracker-store.ts.
+ */
+export function trackerMode(): "off" | "token" | "service" {
+  if (!isTrackerSyncConfigured()) return "off";
+  return process.env.SUPABASE_ANON_KEY ? "token" : "service";
+}
+
+/**
+ * Opt-in refusal to serve tracker traffic in service mode.
+ *
+ * This is the flip's verification switch and its kill switch. Set it in a
+ * preview deployment and the tracker either keeps working - which proves token
+ * mode is genuinely live, Clerk template and Supabase third-party auth included
+ * - or it fails loudly instead of silently falling back to the RLS-bypassing
+ * key. Unsetting it is an env-only rollback that needs no redeploy of code.
+ *
+ * Deliberately not the default: turning it on before the external
+ * configuration exists would take the tracker down.
+ */
+export function requiresTrackerRls(): boolean {
+  const raw = process.env.SUPABASE_TRACKER_REQUIRE_RLS;
+  return raw === "1" || raw?.toLowerCase() === "true";
+}
+
 function availability(...flags: boolean[]): Availability {
   if (flags.every(Boolean)) return "enabled";
   if (flags.every((f) => !f)) return "disabled";

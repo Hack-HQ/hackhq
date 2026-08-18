@@ -146,15 +146,30 @@ export default function PrivacyPage() {
           session alive. That means the site is not cookie-free once sign-in
           is in play; those cookies are strictly functional.
         </p>
+        {/*
+          "is only ever queried by your own account" used to end this paragraph.
+          It described a database-level guarantee the live configuration does not
+          provide: tracker writes currently run under Supabase's service role,
+          which bypasses row level security, so the scoping is done by our own
+          query filters rather than enforced by Postgres (#235). The wording
+          below is true of both that arrangement and the one replacing it, and it
+          does not claim the stronger thing until the stronger thing is live.
+
+          This copy is load-bearing. If the enforcement point changes, this
+          paragraph changes with it - see the promise at the top of this page.
+        */}
         <p>
           When you are signed in, your tracker syncs to your account so it
           follows you across devices. What we store per saved hackathon is
           deliberately minimal: your account ID, the hackathon&rsquo;s ID, the
           stage you put it in, whether you marked it a win, and two timestamps
           recording when the row was created and last changed. That is the
-          whole row. It lives in our Supabase database, is only ever queried
-          by your own account, and on first sign-in your browser-local tracker
-          is offered to your account once so nothing you saved gets lost.
+          whole row. It lives in our Supabase database, every read and write we
+          make against it is scoped to your account, and on first sign-in your
+          browser-local tracker is offered to your account once so nothing you
+          saved gets lost. We are in the middle of moving that scoping into the
+          database itself, so it is enforced by Postgres rather than only by our
+          code.
         </p>
       </LegalSection>
 
