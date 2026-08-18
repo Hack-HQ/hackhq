@@ -1,0 +1,61 @@
+#!/bin/sh
+# Refuse to commit an env file. Install with:
+#
+#     git config core.hooksPath .githooks
+#
+# and make sure this file is executable (`chmod +x .githooks/pre-commit`).
+#
+# Why a hook when .gitignore already lists `.env` and `.env.*`? Because ignore
+# rules only stop a file being picked up *implicitly*. `git add -f`, an editor's
+# "stage all", and a `git add` of an already-tracked path all sail straight past
+# them — and the value at risk here is a Supabase service_role key that bypasses
+# every RLS policy in supabase/migrations/ and does not expire until ~2099
+# (docs/runbooks/rotate-credentials.md). One commit to this public repo is a
+# permanent compromise, so the second line of defence is worth having.
+#
+# This hook is advisory by nature: `git commit --no-verify` skips it, and a fresh
+# clone has no hooksPath configured. The authoritative copy of the same rule is
+# the `env-files` job in .github/workflows/secrets-guard.yml, which reads the
+# pushed commits rather than the local index and therefore cannot be bypassed.
+#
+# Deliberately dependency-free POSIX sh: it must run before `npm ci`, on a
+# machine with no node and no python, inside whatever shell git hands it.
+
+# `-z` keeps paths NUL-separated, so git does not quote or backslash-escape
+# unusual names — a quoted path would defeat the basename comparison below.
+# A failure here blocks the commit rather than waving it through.
+staged=$(git diff --cached --name-only --diff-filter=ACMR -z | tr '\0' '\n') || exit 1
+
+# The scan runs in this shell, fed by a heredoc rather than a pipe, so that
+# `offenders` survives the loop. It is deliberately not wrapped in `$(...)`:
+# bash 3.2 — still /bin/sh on macOS — mis-parses a `case` arm's `)` as the end of
+# a command substitution.
+nl='
+'
+offenders=
+while IFS= read -r path; do
+	[ -n "$path" ] || continue
+	# Match on the basename, so nested paths like web/.env.local are caught
+	# too. `.env.example` is the one tracked template and must stay tracked;
+	# note that it also matches `.env.*`, hence the explicit first arm.
+	case "${path##*/}" in
+	.env.example) ;;
+	.env | .env.*) offenders="${offenders}${path}${nl}" ;;
+	esac
+done <<EOF
+$staged
+EOF
+
+[ -n "$offenders" ] || exit 0
+
+{
+	echo "pre-commit: refusing to commit env file(s):"
+	printf '%s' "$offenders" | sed 's/^/  /'
+	echo
+	echo "Real values belong in web/.env.local, which is gitignored. Only"
+	echo ".env.example (all values empty) is tracked. To unstage:"
+	# Quoted, because a path with a space in it must survive a copy-paste.
+	printf '%s' "$offenders" | sed 's/.*/  git rm --cached "&"/'
+} >&2
+
+exit 1
