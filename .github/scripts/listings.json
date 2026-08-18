@@ -1046,14 +1046,16 @@
     ],
     "format": "Virtual",
     "prize": "$100+ in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1785477682,
-    "date_updated": 1785477682,
+    "date_updated": 1787063688,
     "source": "akeight",
     "startDate": "2026-08-15",
-    "endDate": "2026-08-17"
+    "endDate": "2026-08-17",
+    "date_closed": "2026-08-18",
+    "archive_note": "Auto-archived 2026-08-18 \u2014 event ended 2026-08-17"
   },
   {
     "id": "898ed659-c32d-4146-98df-b56f02ede941",
@@ -1631,12 +1633,14 @@
     ],
     "format": "Virtual",
     "prize": "$2,000,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782561600,
-    "date_updated": 1782561600,
+    "date_updated": 1787063688,
     "source": "devpost",
-    "deadline": "2026-08-17"
+    "deadline": "2026-08-17",
+    "date_closed": "2026-08-18",
+    "archive_note": "Auto-archived 2026-08-18 \u2014 deadline passed 2026-08-17"
   }
 ]
