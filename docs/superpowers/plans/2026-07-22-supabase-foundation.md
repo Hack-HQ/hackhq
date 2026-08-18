@@ -19,7 +19,7 @@ This is **plan 1 of 4** for `docs/superpowers/specs/2026-07-22-deck-table-redesi
 
 ## Global Constraints
 
-- Supabase project id: `gvdhwygerbsuojwpnsgq` (org `atvjoxcqenrldzrzodsu`). Verify with `list_projects` before any write — the connector is account-scoped, so confirm it is pointed here before applying anything.
+- Supabase project: the ref in `$SUPABASE_PROJECT_REF`, the org in `$SUPABASE_ORG_ID`. Both come from a maintainer's shell or the dashboard URL and are deliberately not written down here, because this is a public repository. Verify with `list_projects` before any write — the connector is account-scoped, so confirm it is pointed here before applying anything.
 - Table: `public.hackathons`, primary key `id` (uuid). 32 rows at time of writing; `listings.json` holds 79.
 - `host` is `company_name` renamed. Do not rename it.
 - `startDate` / `endDate` already exist and are **camelCase**. Do not rename them; `seed_supabase.py` would break.
@@ -62,12 +62,12 @@ The table was created by hand, and Supabase's migration history was empty when t
 
 - [ ] **Step 1: Confirm you are on the right Supabase account**
 
-Call `list_projects`. Expected: exactly one project named `HackHQ`, id `gvdhwygerbsuojwpnsgq`.
-If it returns anything other than exactly that one project, stop — the connector is pointed at the wrong account, and nothing here should be applied to it.
+Call `list_projects`. Expected: exactly one project named `HackHQ`, whose id equals `$SUPABASE_PROJECT_REF`.
+If it returns anything other than exactly that one project, or the id does not equal that value, stop — the connector is pointed at the wrong account, and nothing here should be applied to it. The comparison IS this step; do not skip it because the literal is no longer inline.
 
 - [ ] **Step 2: Check the migration history**
 
-Call `list_migrations` with `project_id: gvdhwygerbsuojwpnsgq`.
+Call `list_migrations` with `project_id: <SUPABASE_PROJECT_REF>`.
 
 Against a project this plan has never run on, expect `{"migrations":[]}` — the
 schema was applied by hand and nothing was tracked.
@@ -120,7 +120,7 @@ alter table public.hackathons enable row level security;
 
 - [ ] **Step 4: Apply it**
 
-Use `apply_migration` with `project_id: gvdhwygerbsuojwpnsgq`, `name: baseline_hackathons`, and the SQL above.
+Use `apply_migration` with `project_id: <SUPABASE_PROJECT_REF>`, `name: baseline_hackathons`, and the SQL above.
 
 - [ ] **Step 5: Verify it recorded and changed nothing**
 

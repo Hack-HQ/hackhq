@@ -716,6 +716,9 @@ function OfferCard() {
             ["Privacy", "/privacy"],
             ["Terms of use", "/terms"],
             ["MIT license", `${REPO_URL}/blob/main/LICENSE`],
+            // Reporting route, not a legal document, but this is the column a
+            // reader scans for "how do I tell them something serious".
+            ["Report a vulnerability", `${REPO_URL}/blob/main/SECURITY.md`],
           ]}
         />
       </div>
