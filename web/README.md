@@ -37,22 +37,56 @@ README table between `<!-- HACKATHONS_TABLE_START -->` and
 
 ### Supabase schema
 
-Drizzle is configured in `drizzle.config.ts` and reads the HackHQ table schema
-from `db/schema.ts`. Use `DATABASE_URL` (or `SUPABASE_DATABASE_URL`) with the
-Supabase Postgres connection string when running database commands:
+`supabase/migrations/` is the **single source of truth** for this database. Those
+files are what has actually been applied, and they carry the parts Drizzle cannot
+represent at all: row level security, the column-level `GRANT`s that withhold
+`submitted_by` from `anon` and `authenticated`, the two `BEFORE UPDATE` triggers,
+and the `auth.jwt()` default on `user_hackathons.user_id`.
+
+`db/schema.ts` is **types only — not a migration authority**. It is the shape the
+app compiles against, annotated column by column with the migration that defines
+it. Schema changes are written as SQL in `supabase/migrations/` and applied by
+hand through the Supabase SQL Editor (this repo has no Supabase CLI and no MCP
+configured). The procedure, including the snapshot to take first and the
+self-aborting invariant to wrap the apply in, is
+[`docs/runbooks/apply-migration.md`](../docs/runbooks/apply-migration.md).
+
+Two Drizzle scripts remain, and both only *read* the live database. Each needs
+`DATABASE_URL` (or `SUPABASE_DATABASE_URL`) set to the Supabase Postgres
+connection string:
 
 ```bash
-npm run db:generate
-npm run db:migrate
-npm run db:push
-npm run db:studio
+npm run db:pull    # introspect the live schema
+npm run db:studio  # browse it
 ```
 
-The current Supabase mirror is still seeded by
-[`../.github/scripts/seed_supabase.py`](../.github/scripts/seed_supabase.py).
-Run `npm run db:migrate` once before syncing event-date fields into an existing
-Supabase project. The SQL for that first migration lives at
-`drizzle/0000_add_hackathon_event_dates.sql`.
+`db:push`, `db:generate` and `db:migrate` are gone on purpose. A migration
+generated from `db/schema.ts` models no RLS, no grants and no triggers, so
+applying one does not just miss the security model — it deletes it. Dropping
+`origin` or `submitted_by` cascades all four policies on `public.hackathons`,
+while `ENABLE ROW LEVEL SECURITY` survives, and a table with RLS on and no
+policies is default deny: the site reads nothing and the hourly sync writes
+nothing.
+
+Two Drizzle artefacts are superseded and should not be trusted:
+
+- `drizzle/0000_add_hackathon_event_dates.sql` — its `startDate`/`endDate`
+  columns are already in the Supabase baseline at
+  `../supabase/migrations/20260722141955_baseline_hackathons.sql:27-28`. There is
+  nothing left for it to add, and it was never part of the applied chain.
+- `drizzle/meta/0000_snapshot.json` — it describes only `public.hackathons`,
+  records `"isRLSEnabled": false` with an empty `policies` map, and does not
+  mention `user_hackathons` at all. It is the leftover state file of that one
+  generated migration, not a description of the database.
+
+`.github/scripts/test_schema_drift.py` fails CI when `db/schema.ts` and
+`supabase/migrations/` stop agreeing, so the types cannot quietly rot away from
+the SQL that defines them.
+
+The Supabase mirror is still seeded by
+[`../.github/scripts/seed_supabase.py`](../.github/scripts/seed_supabase.py) on
+an hourly cron; see `../supabase/migrations/README.md` for the two write paths
+and why the sync never re-owns a user's row.
 
 ### Putting a listing on the globe
 
