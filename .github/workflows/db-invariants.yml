@@ -1,0 +1,123 @@
+# .github/workflows/db-invariants.yml
+name: DB invariants
+
+# Two jobs in one, and both halves matter.
+#
+# 1. Replay. supabase/migrations/README.md:51-59 says the chain is replayable
+#    onto a fresh database and tells a future maintainer to do exactly that
+#    before letting a CLI near production. Nothing has ever checked it. Three
+#    committed files diverge from their recorded statements for no other reason
+#    than to make the replay work (README:36-42), which is a claim about a thing
+#    that was never run. This runs it, on every PR that touches supabase/.
+#
+# 2. Invariants. supabase/tests/10_invariants.sql asserts the privilege and
+#    policy decisions the migrations make. Almost none of them is reachable in
+#    production today: the web app uses the service-role key, service_role
+#    bypasses RLS, so no policy on public.user_hackathons is consulted and no
+#    column grant on it binds. The moment SUPABASE_ANON_KEY is set for #235 all
+#    of it becomes load-bearing at once. Until then this workflow is the only
+#    thing that can tell a real revoke from one that reports success and changes
+#    nothing - four migrations on this branch did the latter
+#    (20260722192614:16-19).
+#
+# No Supabase project, no credentials, no network. The chain's only external
+# dependencies are the three API roles, auth.jwt() and gen_random_uuid(), and
+# supabase/tests/00_bootstrap.sql stands up the first two while the third is
+# built into PostgreSQL 13+. That is why this can run against a stock postgres
+# service container even though this repo has no Supabase CLI configured
+# (supabase/migrations/README.md:6-15).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/**'
+      - '.github/workflows/db-invariants.yml'
+  pull_request:
+    paths:
+      # Any migration, and the suite itself. A migration-only PR is precisely
+      # the one that must not skip this.
+      - 'supabase/**'
+      - '.github/workflows/db-invariants.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  invariants:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        # Pinned by tag, not by digest: no image digest is established anywhere
+        # in this repo, and inventing one would pin to something unverified.
+        # Major version 18 is pinned deliberately - the suite reasons about
+        # catalogue details that move between majors (pg_trigger.tgtype bit
+        # layout, MAINTAIN in `grant all` from 17 on), and it was developed and
+        # verified against 18.4.
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hackhq_test
+        ports:
+          - 5432:5432
+        # Without a health check the first psql races the container's own
+        # initdb, which fails intermittently rather than never.
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # Superuser, and that is a requirement rather than convenience:
+      # information_schema hides grants made to roles the caller is not a member
+      # of, and 10_invariants.sql becomes each API role with SET ROLE. A
+      # non-superuser run would pass vacuously. 00_bootstrap.sql's ALTER DEFAULT
+      # PRIVILEGES also attaches to whoever runs it, so bootstrap, migrations and
+      # assertions must all run as the same role.
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: hackhq_test
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      # The runner image ships the postgres client, so no install step. Print the
+      # server version because the suite's expectations are version-sensitive.
+      - name: Show server version
+        run: psql -v ON_ERROR_STOP=1 -c 'select version();'
+
+      - name: Bootstrap the Supabase-shaped prerequisites
+        run: psql -v ON_ERROR_STOP=1 -f supabase/tests/00_bootstrap.sql
+
+      - name: Replay every migration in apply order
+        # Filename order is apply order - the timestamp prefix exists for exactly
+        # that (supabase/migrations/README.md:27-28). `sort` explicitly rather
+        # than relying on the shell glob's locale-dependent ordering.
+        #
+        # ON_ERROR_STOP on every file, so the first migration that cannot replay
+        # onto a bare database fails the job at that file instead of cascading.
+        run: |
+          set -euo pipefail
+          for f in $(ls supabase/migrations/*.sql | sort); do
+            echo "::group::$f"
+            psql -v ON_ERROR_STOP=1 -f "$f"
+            echo "::endgroup::"
+          done
+
+      - name: Assert the RLS and grant invariants
+        # Piped through grep on purpose. Every assertion in the suite is a
+        # negative of the form "this privilege is absent", so a file that
+        # silently stopped executing part way through would satisfy every
+        # assertion it never reached and psql would still exit 0. The closing
+        # notice is emitted by the last line of the file and nowhere else, so
+        # requiring it is what makes a green run mean "all of it ran".
+        run: |
+          set -euo pipefail
+          psql -v ON_ERROR_STOP=1 -f supabase/tests/10_invariants.sql 2>&1 \
+            | tee /tmp/invariants.log
+          grep -q 'all invariants hold' /tmp/invariants.log
