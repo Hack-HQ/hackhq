@@ -167,14 +167,16 @@
     ],
     "format": "Virtual",
     "prize": "$8,750",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "source": "devpost",
     "deadline": "2026-08-18",
     "id": "aa0347df-a7fe-4f3c-818e-7423e8c96f1a",
     "date_posted": 1783814700,
-    "date_updated": 1783814700
+    "date_updated": 1787150099,
+    "date_closed": "2026-08-19",
+    "archive_note": "Auto-archived 2026-08-19 \u2014 deadline passed 2026-08-18"
   },
   {
     "id": "e7bd9721-b790-4110-9afd-a42e8aa6dc0a",
