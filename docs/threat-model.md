@@ -212,4 +212,5 @@ Recorded rather than hidden. Each is tracked.
 | No rate limiting on `/api/tracker` | Bounded by `MAX_IMPORT_ENTRIES` on the import path only |
 | Tracker rows accept any well-formed UUID, so a caller can store ids for listings that do not exist | Confined to the caller's own rows; the existence check exists in `web/lib/tracker.ts` but is not wired into the route |
 | The Mapbox token is public by necessity and billable | Mitigation is a URL restriction on the Mapbox side, not in code |
-| Authentication hardening lives in the Clerk dashboard, not here | Tracked outside this repository; there is no in-repo auth surface to patch |
+| Authentication hardening lives in the Clerk dashboard, not here | Tracked in a private GitHub security advisory, not in this file — there is no in-repo auth surface to patch, and the detail does not belong in a public document |
+| Token-mode flip blocked: Clerk is not registered as a Supabase third-party auth provider (verified 2026-08-18) | Issue #235; see [`docs/runbooks/flip-token-mode.md`](runbooks/flip-token-mode.md). Until it is, the tenant boundary stays application-layer |
