@@ -24,18 +24,22 @@ failure modes are all external.
 ## Why this is not just "set the env var"
 
 Three things live outside this repo, and the flip is broken until all three are
-true. A repository audit cannot confirm any of them.
+true. Artefact 1 *is* checkable without a dashboard, via the authenticated
+Supabase CLI's Management API token; artefacts 2 and 3 are not, and stay with the
+maintainer.
 
 | # | Artefact | Where to look | Failure if missing |
 | --- | --- | --- | --- |
-| 1 | Clerk registered as a third-party auth provider | Supabase dashboard → Authentication → Sign In / Up → Third Party Auth | Supabase rejects the JWT; every tracker request 500s |
+| 1 | Clerk registered as a third-party auth provider | `GET /v1/projects/<ref>/config/auth/third-party-auth` — a non-empty list. Dashboard equivalent: Authentication → Sign In / Up → Third Party Auth | Supabase rejects the JWT; every tracker request 500s |
 | 2 | A Clerk JWT template named `supabase` carrying `{"role":"authenticated"}` | Clerk dashboard → Configure → JWT Templates | `getToken({ template: "supabase" })` returns null; the store throws by design rather than falling back |
-| 3 | `SUPABASE_ANON_KEY` in the runtime environment | Vercel / Cloudflare project settings | Service mode stays selected and nothing changes |
+| 3 | `SUPABASE_ANON_KEY` in the runtime environment | Vercel project settings | Service mode stays selected and nothing changes |
 
-`docs/superpowers/plans/2026-07-22-supabase-foundation.md` still records that
-artefact 1 was **not** configured. Do not edit that line on the strength of an
-assumption — correct it in the same change that demonstrates the flip, and
-attach the evidence.
+**Artefact 1 was verified ABSENT on 2026-08-18.** The integrations list came back
+empty, and the full auth config carried no JWKS, issuer or third-party field and
+never mentioned Clerk. So the flip is not merely unverified, it is not currently
+possible, and `plans/…`'s "Clerk third-party auth is not configured" line is
+accurate rather than stale. Re-check before starting, and do not correct that
+line until the integration list is non-empty.
 
 ## Step 1 — land the database work first
 
@@ -132,8 +136,16 @@ rollback.
   guarantee and the paragraph should say so. There is a comment in that file
   recording exactly this, and the page's own promise is that it changes when the
   code does.
-- **Correct the plan.** Update the stale "Clerk third-party auth is not
-  configured" line, with the evidence.
+- **Correct the plan — but only once artefact 1 is genuinely true.** The line in
+  `docs/superpowers/plans/2026-07-22-supabase-foundation.md` reading "Clerk
+  third-party auth is not configured" was **verified accurate** on 2026-08-18
+  against the linked project's Management API: `GET
+  /v1/projects/<ref>/config/auth/third-party-auth` returned an empty list, and
+  `GET /v1/projects/<ref>/config/auth` contained no JWKS, issuer or third-party
+  field and never mentioned Clerk. So it is not stale, and correcting it before
+  the provider is actually registered would put a false claim about production
+  into the repository. Re-run those two reads, confirm a non-empty integration
+  list, and only then update the line — citing the evidence.
 - **Then, and only then, consider removing `SUPABASE_SERVICE_ROLE_KEY`** from the
   runtime environment. `tracker-store.ts` is the only runtime code that reads it.
   Note it is a *different* variable from `SUPABASE_SERVICE_KEY`, the GitHub

@@ -51,8 +51,8 @@ merge logic beyond this.
 
 ## Current state of the database
 
-> **Point-in-time snapshot — superseded.** Taken against project
-> `gvdhwygerbsuojwpnsgq` (org `atvjoxcqenrldzrzodsu`) on 2026-07-22, *before any
+> **Point-in-time snapshot — superseded.** Taken against the HackHQ Supabase
+> project (ref and org redacted; this is a public repository) on 2026-07-22, *before any
 > migration ran*. It is kept because it is what motivated the phases below, not
 > because it is current. `supabase/migrations/` is the authority on the schema as
 > it stands; `list_migrations` is the authority on what has been applied.
