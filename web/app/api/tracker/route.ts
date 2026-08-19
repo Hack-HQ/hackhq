@@ -19,7 +19,7 @@
 import { auth } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
-import { isTrackerSyncConfigured } from "@/lib/env";
+import { isTrackerSyncConfigured, trackerMode } from "@/lib/env";
 import { isHackathonId, isStage, parseTrackerEntries } from "@/lib/tracker";
 import {
   TrackerStoreError,
@@ -81,6 +81,12 @@ function serverError(operation: string, error: unknown): NextResponse {
       // The driver's code, kept out of the response body but essential for
       // telling PGRST202 (migration missing) from a real query fault.
       pg_code: pgCode ?? "none",
+      // Which enforcement model produced this failure. In service mode row
+      // ownership rests on the user_id filters in lib/tracker-store.ts; in token
+      // mode Postgres RLS is the guarantee. #235 is the move from the first to
+      // the second, and without this tag a Sentry event cannot say which one was
+      // live when it happened.
+      tracker_mode: trackerMode(),
       ...(operation === "upsert" ? { rpc: "upsert_tracker_row" } : {}),
     },
   });
