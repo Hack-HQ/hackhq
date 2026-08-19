@@ -1,0 +1,93 @@
+# Gitleaks configuration for the whole repo (root config, picked up automatically
+# by `gitleaks git .` / `gitleaks dir .`).
+#
+# The scan itself is the point: this repo is public, and its runtime reads a
+# Supabase service_role key whose token expiry is ~2099 — a single accidental
+# commit is a permanent compromise until someone rotates it (see
+# docs/runbooks/rotate-credentials.md). `.github/workflows/secrets-guard.yml`
+# runs the scan over the full history on every push and pull request.
+#
+# Everything below is *allowlisting*, and allowlisting is the dangerous half of a
+# secret scanner: an entry that is one character too broad silently turns the job
+# green forever. So every entry here is scoped by path AND by content (and by
+# rule id where the rule is known), each with the reason it is a false positive.
+#
+# Verified against gitleaks 8.30.1 (`gitleaks git .` over all 570 commits at
+# c11e036): the default ruleset reports **no** findings in this repo's history
+# today. These entries are therefore pre-declared rather than currently load-
+# bearing. They stay because the alternative failure mode is worse: when a
+# gitleaks bump adds a rule that flags one of these known-benign strings, the
+# tempting fix is to delete the scan or add a blanket allowlist. Better to have
+# the narrow, reasoned entry already written down.
+title = "HackHQ"
+
+# `condition`, `regexTarget` and `targetRules` on a global `[[allowlists]]` block
+# all require a reasonably modern gitleaks; fail loudly rather than silently
+# ignoring the scoping keys and applying each allowlist far too broadly.
+minVersion = "8.30.1"
+
+[extend]
+# Start from the upstream ruleset and only ever subtract from it here. Never
+# replace it: a hand-rolled rule list is a list of the secrets we thought of.
+useDefault = true
+
+# `.env.example` is deliberately NOT allowlisted as a path. It is the one tracked
+# env file, so it is exactly where a real value gets pasted by accident, and it
+# must keep being scanned. Only the *empty* assignment below is excused.
+
+# ---------------------------------------------------------------------------
+# Unit-test fixtures. tracker-store.test.ts and env.test.ts stub the Supabase
+# client and assert which key the store hands it, so they must name a key value.
+# The values are the literal words "service-role-key" / "service-role" — no
+# entropy, no project, nothing to revoke. Scoped to those two files and to that
+# exact value, so a real key pasted into a test is still a finding.
+[[allowlists]]
+description = "placeholder key values in the tracker/env unit tests (d6b1add)"
+condition = "AND"
+paths = ['''^web/lib/(tracker-store|env)\.test\.ts$''']
+regexes = ['''^service-role(-key)?$''']
+
+# ---------------------------------------------------------------------------
+# `SUPABASE_SERVICE_ROLE_KEY=` with nothing after the `=`. That is the template
+# form in .env.example (every value in that file is empty on purpose) and the
+# documented "unset it" state. The line regex requires end-of-line right after
+# the `=`, so `SUPABASE_SERVICE_ROLE_KEY=eyJ...` does not match and is reported.
+[[allowlists]]
+description = "empty SUPABASE_SERVICE_ROLE_KEY assignment in the env template (a7a8bf3)"
+condition = "AND"
+paths = ['''^web/\.env\.example$''']
+regexTarget = "line"
+regexes = ['''^SUPABASE_SERVICE_ROLE_KEY=[[:space:]]*$''']
+
+# ---------------------------------------------------------------------------
+# npm lockfile integrity digests need no entry here, and adding one would be
+# dead config. The upstream default config already allowlists
+# `package-lock.json` wholesale for every rule (config/gitleaks.toml:37 at
+# v8.30.1), so a narrower entry could never change an outcome. Recording the
+# reasoning anyway, because the two historical `eyJ` hits people find when they
+# grep the history look alarming: commits 01cba67 and e9a0309 carry
+# `"integrity": "sha512-V7Qr52IhZmdKPVr+Vtw8o+WLsQJYCTd8loIfpDaMRWGUZfBOYEJeyJIkqGID..."`.
+# That is base64 of a tarball hash which happens to contain the substring `eyJ`;
+# it has no `.` separators, so it is not a JWT and never was.
+#
+# The flip side is real and deliberate: a genuine secret pasted into
+# package-lock.json is invisible to this scan. Fixing that would mean overriding
+# upstream's global allowlist, which `[extend]` cannot do subtractively.
+
+# ---------------------------------------------------------------------------
+# Sentry DSNs in the three Sentry init files. A DSN is a public, write-only
+# ingest endpoint: it can submit events to the project and read nothing back, it
+# ships to the browser inside the client bundle by design, and Sentry's own docs
+# treat it as public. Rotating it would be busywork. Scoped by rule id
+# (generic-api-key is the only default rule whose entropy heuristic can reach
+# the 32-hex public key in a DSN), by the three file paths, and to a line that is
+# literally a `dsn:` assignment pointing at *.ingest.*.sentry.io — so a real
+# Sentry auth token (`sntrys_`/`sntryu_`, caught by the sentry-* rules) in the
+# same file is untouched by this entry.
+[[allowlists]]
+description = "public write-only Sentry DSNs in the Sentry init files"
+condition = "AND"
+targetRules = ["generic-api-key"]
+paths = ['''^web/(instrumentation-client|sentry\.(server|edge)\.config)\.ts$''']
+regexTarget = "line"
+regexes = ['''^[[:space:]]*dsn:[[:space:]]*"https://[0-9a-f]+@o[0-9]+\.ingest\.[a-z]{2}\.sentry\.io/[0-9]+",?$''']
