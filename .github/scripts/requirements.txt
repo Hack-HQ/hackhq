@@ -4,3 +4,7 @@ beautifulsoup4==4.12.3
 openai==1.54.4
 # openai 1.54 passes `proxies=` to httpx; httpx 0.28 removed that argument.
 httpx==0.27.2
+# gallery_approved.py re-encodes every accepted photo through Pillow so camera
+# EXIF (GPS, owner name, serial) never reaches assets/gallery/; image-hygiene.yml
+# uses it to re-check what is already committed.
+Pillow==12.3.0

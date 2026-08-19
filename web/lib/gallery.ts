@@ -125,6 +125,12 @@ export function loadGalleryPhotos(): GalleryPhoto[] {
  * Map photos onto stacked copies of SLOT_TEMPLATE. One stack when there are at
  * most 8 photos; ceil(N/8) stacks otherwise. Empty input yields an empty pack
  * (the canvas shows a CTA-only empty state).
+ *
+ * Called on the server (app/page.tsx), and the PackedGallery — not the photos —
+ * is what crosses into the client canvas. The projection is the privacy
+ * boundary: GalleryPhoto keeps `credit`/`creditUrl` (they belong in gallery.json
+ * and in the README collage), a GalleryTileItem deliberately does not, so the
+ * submitter's name and profile link never reach the browser payload.
  */
 export function packGalleryTiles(photos: GalleryPhoto[]): PackedGallery {
   if (photos.length === 0) {

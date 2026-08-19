@@ -3,9 +3,10 @@
 Process an approved "Share a Hackathon Photo" issue.
 
 On `approved` + `gallery` labels:
-  1. Parse the issue form fields (hackathon, caption, credit, …).
+  1. Parse the issue form fields (hackathon, caption, attribution, credit, …).
   2. Find the first attached image URL in the photo field (or whole body).
-  3. Download it via auto_extract.safe_get (SSRF-guarded), validate type/size.
+  3. Download it via auto_extract.safe_get (SSRF-guarded), validate type/size,
+     and re-encode it through Pillow so no camera metadata is committed.
   4. Write assets/gallery/<slug>.jpg|.png and append .github/scripts/gallery.json.
 
 The README collage is rebuilt by the caller (generate_gallery.py) in the same
@@ -14,12 +15,15 @@ job — a GITHUB_TOKEN push would not trigger gallery.yml.
 
 from __future__ import annotations
 
+import io
 import json
 import os
 import re
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
+
+from PIL import Image, ImageOps
 
 import util
 from auto_extract import safe_get
@@ -47,6 +51,11 @@ PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 GALLERY_JSON = Path(".github/scripts/gallery.json")
 GALLERY_DIR = Path("assets/gallery")
 
+# The attribution dropdown on gallery_photo.yaml, matched on its leading words
+# so the option text can be reworded without breaking the parse.
+ATTRIBUTION_NONE = "no attribution"
+ATTRIBUTION_LOGIN = "github username"
+
 
 def get_first(data, *keys):
     for key in keys:
@@ -62,6 +71,26 @@ def get_first(data, *keys):
 def slugify(text: str, max_len: int = 48) -> str:
     slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
     return (slug or "photo")[:max_len].strip("-") or "photo"
+
+
+def resolve_credit(choice: str, typed_name: str, username: str) -> str:
+    """Decide who gets named, or return "" for no attribution at all.
+
+    Three sinks consume this one string: the committed filename, the gallery.json
+    entry, and — through the filename — the comment the workflow posts as it
+    closes the issue. So "" has to mean "name them nowhere", not "fall back to
+    the GitHub login": that silent fallback is what the form never disclosed.
+
+    An empty choice keeps the historical behaviour on purpose. Issues opened
+    before the dropdown existed, and bodies a maintainer edited by hand, still
+    mean what they meant when they were written.
+    """
+    lowered = choice.strip().lower()
+    if lowered.startswith(ATTRIBUTION_NONE):
+        return ""
+    if lowered.startswith(ATTRIBUTION_LOGIN):
+        return username
+    return typed_name or username
 
 
 def extract_image_url(text: str) -> str:
@@ -85,6 +114,48 @@ def detect_image_type(data: bytes) -> str:
     if data.startswith(PNG_MAGIC):
         return "png"
     return ""
+
+
+def strip_image_metadata(data: bytes, ext: str) -> bytes:
+    """Re-encode so no EXIF/XMP block from the submitter's camera is committed.
+
+    The attachment used to be written to disk byte-for-byte, which published
+    whatever the camera wrote into it: GPS coordinates of the venue, the owner's
+    name, a body serial number. Pillow encodes from decoded pixels plus only the
+    metadata it is explicitly handed, and it is handed none, so the round-trip
+    *is* the strip — no allowlist of tags to keep in sync.
+
+    It also fails closed. The magic-byte sniff only looks at the first few bytes,
+    so anything that will not actually decode is refused here rather than
+    committed raw.
+    """
+    try:
+        with Image.open(io.BytesIO(data)) as opened:
+            opened.load()
+            # Orientation is stored in the EXIF we are about to drop, so bake the
+            # rotation into the pixels or portrait photos land sideways.
+            image = ImageOps.exif_transpose(opened)
+            out = io.BytesIO()
+            if ext == "jpg":
+                # Grayscale stays grayscale; anything with alpha or a palette has
+                # to become RGB before JPEG will take it.
+                if image.mode not in ("RGB", "L"):
+                    image = image.convert("RGB")
+                image.save(out, format="JPEG", quality=95, optimize=True)
+            else:
+                image.save(out, format="PNG", optimize=True)
+    except Exception as exc:  # noqa: BLE001 — any decode/encode failure is a refusal
+        util.fail(f"Could not read the attached image as a JPG or PNG: {exc}")
+
+    stripped = out.getvalue()
+    if detect_image_type(stripped) != ext:
+        util.fail("Re-encoded image did not keep its original format")
+    if len(stripped) > MAX_BYTES:
+        util.fail(
+            f"Image exceeds {MAX_BYTES // (1024 * 1024)} MB limit after "
+            f"metadata removal — please re-export it a little smaller"
+        )
+    return stripped
 
 
 def load_gallery() -> list:
@@ -142,7 +213,9 @@ def download_image(url: str) -> tuple[bytes, str]:
     ext = detect_image_type(data)
     if not ext:
         util.fail("Only JPG and PNG images are accepted")
-    return data, ext
+    # Unconditional: the caller never sees the bytes as they arrived, so there is
+    # no path where an un-stripped attachment reaches assets/gallery/.
+    return strip_image_metadata(data, ext), ext
 
 
 def main() -> None:
@@ -169,13 +242,22 @@ def main() -> None:
         util.fail("Missing required field: Which hackathon?")
 
     caption = util.sanitize_field(get_first(data, "caption_(optional)", "caption"))
-    credit = util.sanitize_field(
-        get_first(data, "credit_name_(optional)", "credit_name", "credit")
-    ) or username
+    # sanitize_field first, then resolve: the dropdown text reaches set_output
+    # only through the filename, and set_output writes `name=value` lines with no
+    # escaping of its own, so newline-stripping has to happen upstream of it.
+    credit = resolve_credit(
+        util.sanitize_field(get_first(data, "attribution")),
+        util.sanitize_field(
+            get_first(data, "credit_name_(optional)", "credit_name", "credit")
+        ),
+        username,
+    )
     credit_url_raw = get_first(
         data, "link_to_credit_(optional)", "link_to_credit", "credit_url"
     )
-    credit_url = util.clean_url(credit_url_raw) if credit_url_raw else ""
+    # No attribution means no link either — a profile URL names its owner just as
+    # plainly as the name does.
+    credit_url = util.clean_url(credit_url_raw) if credit_url_raw and credit else ""
 
     # Prefer the dedicated photo field; fall back to scanning the whole body
     # (GitHub sometimes places the attachment outside the form section).
@@ -190,7 +272,13 @@ def main() -> None:
     image_bytes, ext = download_image(image_url)
 
     GALLERY_DIR.mkdir(parents=True, exist_ok=True)
-    base = f"{slugify(hackathon)}-{slugify(credit, 24)}"
+    # An uncredited photo gets no credit component in its filename: the workflow
+    # echoes the committed path back into the comment that closes the issue, so a
+    # name here would out the submitter there too. unique_filename still
+    # guarantees a free path (hackathon slug, then -2… -49).
+    base = slugify(hackathon)
+    if credit:
+        base = f"{base}-{slugify(credit, 24)}"
     filename = unique_filename(base, ext)
     rel_path = f"assets/gallery/{filename}"
     (GALLERY_DIR / filename).write_bytes(image_bytes)
