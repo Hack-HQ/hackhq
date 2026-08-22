@@ -1287,15 +1287,17 @@
     ],
     "format": "Virtual",
     "prize": "$12,000 pool",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1785205219,
-    "date_updated": 1785980875,
+    "date_updated": 1787408521,
     "source": "akeight",
     "startDate": "2026-07-20",
     "endDate": "2026-08-21",
-    "deadline": "2026-08-21"
+    "deadline": "2026-08-21",
+    "date_closed": "2026-08-22",
+    "archive_note": "Auto-archived 2026-08-22 \u2014 deadline passed 2026-08-21"
   },
   {
     "id": "7f7e5157-6738-420b-841d-a1b019b14000",
