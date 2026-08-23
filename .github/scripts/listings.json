@@ -1110,14 +1110,16 @@
     ],
     "format": "Virtual",
     "prize": "Recognition, certificates, Discord roles, and featured placements for standout projects and participants.",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1785476343,
-    "date_updated": 1785476343,
+    "date_updated": 1787495050,
     "source": "akeight",
     "startDate": "2026-08-15",
-    "endDate": "2026-08-22"
+    "endDate": "2026-08-22",
+    "date_closed": "2026-08-23",
+    "archive_note": "Auto-archived 2026-08-23 \u2014 event ended 2026-08-22"
   },
   {
     "company_name": "Purdue",
