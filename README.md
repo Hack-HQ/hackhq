@@ -75,7 +75,6 @@ Hackathons are the fastest way to build something real, meet your future team, a
 <!-- HACKATHONS_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |
-| 🔥 **[CLOSING SOON]** | Africa Deep Tech Foundation | Africa Deep Tech Challenge 2026 — The Laptop LLM Challenge | Virtual | Online | $16,500 | Aug 24, 2026 | <a href="https://adtc-2026.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 11, 2026 |
 | 🔥 **[CLOSING SOON]** | IBM | IBM Dev Day: Bob in Action + Hackathon — Aug 27–30, 2026 | Virtual | Online | $2,000 grand prize + IBM TechXchange 2026 passes (top 50 teams) | — | <a href="https://ibmdevday-bob.bemyapp.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Aug 09, 2026 |
 | 🔥 **[CLOSING SOON]** | Pasteur Labs | Tesseract Hackathon 2026 | Virtual | Online | $20,000 prize pool | Aug 31, 2026 | <a href="https://pasteurlabs.ai/tesseract-hackathon-2026/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Aug 05, 2026 |
 | 🔥 **[CLOSING SOON]** | OneAquaHealth | OneAquaHealth IEEE Global Hackathon — Sep 16–30, 2026 | Virtual | Online | $3,000 | Aug 31, 2026 | <a href="https://oneaquahealth-ieee-hackathon.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Jul 11, 2026 |
