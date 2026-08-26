@@ -17,12 +17,10 @@
 --------------------------------------------------------------------------- */
 
 import { auth } from "@clerk/nextjs/server";
-import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
-import { isTrackerSyncConfigured, trackerMode } from "@/lib/env";
+import { isTrackerSyncConfigured } from "@/lib/env";
 import { isHackathonId, isStage, parseTrackerEntries } from "@/lib/tracker";
 import {
-  TrackerStoreError,
   trackerFailureResponse,
 } from "@/lib/tracker-errors";
 import {
@@ -73,23 +71,6 @@ async function resolveUser(): Promise<
  */
 function serverError(operation: string, error: unknown): NextResponse {
   console.error(`[api/tracker] ${operation} failed:`, error);
-
-  const pgCode = error instanceof TrackerStoreError ? error.code : undefined;
-  Sentry.captureException(error, {
-    tags: {
-      tracker_operation: operation,
-      // The driver's code, kept out of the response body but essential for
-      // telling PGRST202 (migration missing) from a real query fault.
-      pg_code: pgCode ?? "none",
-      // Which enforcement model produced this failure. In service mode row
-      // ownership rests on the user_id filters in lib/tracker-store.ts; in token
-      // mode Postgres RLS is the guarantee. #235 is the move from the first to
-      // the second, and without this tag a Sentry event cannot say which one was
-      // live when it happened.
-      tracker_mode: trackerMode(),
-      ...(operation === "upsert" ? { rpc: "upsert_tracker_row" } : {}),
-    },
-  });
 
   const { status, body } = trackerFailureResponse(error);
   return NextResponse.json(body, { status });
