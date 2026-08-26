@@ -20,8 +20,8 @@ import { isClerkConfigured } from "@/lib/env";
 // An earlier revision moved this to `proxy.ts`, on the understanding that Clerk
 // pulled Node built-ins (#crypto, #safe-node-apis) that Edge rejects. With
 // @clerk/nextjs 7.6.0 that is no longer so: `main` carries this file as Edge
-// middleware and both hosts build it green — Workers Builds and Vercel alike.
-// Verify with a Vercel build before reintroducing the rename.
+// middleware and Workers Builds compiles it. If you hit that error again, pin
+// the Clerk version in the fix rather than renaming the file.
 //
 // Clerk only takes over once its keys exist — until then the site runs exactly
 // as before (the /my hub shows setup instructions instead).

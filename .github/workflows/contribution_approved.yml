@@ -55,9 +55,8 @@ jobs:
       # The bot authors the commit, matching auto_extract.yml, closing_soon.yml,
       # gallery.yml and update_readmes.yml. This step used to set user.name and
       # user.email from the issue form, so a contributor-typed address became the
-      # permanent author of a commit on main - and on `vercel`, which
-      # mirror_production_branch.yml force-pushes from main. Validation was
-      # syntax-only, so the address did not have to belong to the submitter.
+      # permanent author of a commit on main. Validation was syntax-only, so the
+      # address did not have to belong to the submitter.
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
