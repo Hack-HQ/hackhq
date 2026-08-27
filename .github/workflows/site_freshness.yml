@@ -1,0 +1,82 @@
+# .github/workflows/site_freshness.yml
+name: Site freshness
+
+# Does the live site actually show every hackathon in the repo?
+#
+# Nothing answered that question before, which is why it was reported by a
+# person rather than by CI: a hackathon added after the last deploy is invisible
+# to visitors while `listings.json`, the README table, Supabase and every
+# existing check all agree that it exists. Green CI, correct data, missing
+# hackathon.
+#
+# This is an end-to-end check against the real public site, not an inspection of
+# a build, so it catches every cause of that symptom rather than the one we
+# happened to predict: no deploy ran, a deploy failed, a deploy shipped from a
+# stale checkout, or the Worker was rolled back.
+#
+# Why the schedule is the real trigger:
+#   Every automated edit to listings.json is pushed to main with the default
+#   GITHUB_TOKEN, and GitHub starts no workflow run for such a push - the same
+#   gap sync_supabase.yml documents and test_workflows.py pins down. The push
+#   trigger below fires for human commits only.
+#
+# Runs at :37, after deploy.yml's :00 and :30 sweeps have had time to finish, so
+# a normal add-then-deploy cycle is never reported as stale.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/listings.json'
+      - '.github/scripts/check_site_freshness.py'
+      - '.github/workflows/site_freshness.yml'
+  schedule:
+    - cron: '37 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-freshness
+  cancel-in-progress: true
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+      - run: pip install -r .github/scripts/requirements.txt
+
+      # Fails the job when the site is behind the repo. That is the point: this
+      # workflow exists to convert a silent, visitor-facing problem into a red
+      # run someone gets notified about. The script's output names the missing
+      # hackathons and how to ship them.
+      - name: Check every listing is live
+        id: check
+        run: python .github/scripts/check_site_freshness.py
+
+      # Also written to the run summary, so the answer is visible without
+      # opening logs.
+      - name: Report
+        if: always()
+        env:
+          SUMMARY: ${{ steps.check.outputs.summary }}
+          STALE: ${{ steps.check.outputs.stale }}
+        run: |
+          set -eu
+          if [ "${STALE:-}" = "true" ]; then
+            {
+              echo "## Site is behind the repository"
+              echo
+              echo '```'
+              printf '%s\n' "$SUMMARY"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## Site is up to date with listings.json" >> "$GITHUB_STEP_SUMMARY"
+          fi
