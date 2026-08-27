@@ -5,7 +5,6 @@ import type { Hackathon, SiteStats } from "@/lib/types-hq";
 import { HQProvider } from "./store";
 import { NavPill } from "./nav";
 import { Preloader } from "./preloader";
-import { DiscPlayer } from "./disc-player";
 import { GlobeHero } from "./globe-hero";
 import { DetailModal } from "./detail-modal";
 import {
@@ -43,7 +42,6 @@ export function HomeClient({
         <SubmitSection />
       </main>
       <Footer />
-      <DiscPlayer />
       <DetailModal />
     </HQProvider>
   );

@@ -114,7 +114,6 @@ export default function TermsPage() {
         <LegalList
           items={[
             "The HackHQ source code is open source under the MIT license - use it, fork it, build on it.",
-            "Vendored third-party assets in the repo (for example the Framer disc-player module) remain under their original terms and are not covered by our MIT grant.",
             "The HackHQ name, wordmark, and site content (copy, imagery, design) are reserved. Open-source code does not mean open-season branding: do not pass your project off as HackHQ.",
             "Hackathon names and logos in listings belong to their organizers and appear for identification only.",
           ]}
@@ -129,7 +128,7 @@ export default function TermsPage() {
         <p>
           HackHQ links out constantly - to organizers&rsquo; registration
           pages, resources, and the GitHub repo - and embeds third-party
-          services such as Mapbox tiles and the Spotify player. Those sites
+          services such as Mapbox tiles. Those sites
           and services are not ours: we do not control them, do not endorse
           them, and are not responsible for their content, terms, or privacy
           practices. Your use of them is governed by their own terms.

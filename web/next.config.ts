@@ -93,11 +93,6 @@ const nextConfig: NextConfig = {
     // lib/generated/ first), and Turbopack does not resolve files outside the
     // root, so this makes that invariant enforced rather than incidental.
     root: dirname(fileURLToPath(import.meta.url)),
-    resolveAlias: {
-      // Vendored Framer modules (components/vendor/*) import "framer" for
-      // design-tool APIs; route that package to a tiny local shim.
-      framer: "./components/vendor/framer-shim.ts",
-    },
   },
 };
 

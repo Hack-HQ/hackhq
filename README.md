@@ -157,9 +157,7 @@ We welcome contributions from anyone. If you know of a hackathon that isn't list
 
 ## License
 
-[MIT](LICENSE) — use it, fork it, build on it. Vendored third-party assets
-(e.g. the Framer disc-player module in `web/components/vendor/`) remain under
-their original terms.
+[MIT](LICENSE) — use it, fork it, build on it.
 
 ---
 

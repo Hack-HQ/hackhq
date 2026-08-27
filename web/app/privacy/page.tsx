@@ -47,7 +47,7 @@ export default function PrivacyPage() {
         <LegalList
           items={[
             "We never sell, rent, or trade your data. There are no ads and no advertising trackers.",
-            "We set no analytics or advertising cookies. The only cookies set on our behalf come from Clerk, our sign-in provider, and exist purely to run sessions. Embedded third parties are a separate story: Spotify's player can set its own cookies and Mapbox's map library stores an anonymous ID in your browser - both spelled out below.",
+            "We set no analytics or advertising cookies. The only cookies set on our behalf come from Clerk, our sign-in provider, and exist purely to run sessions. Embedded third parties are a separate story: Mapbox's map library stores an anonymous ID in your browser - spelled out below.",
             "Your application tracker lives in your own browser unless you sign in - then it syncs to your account.",
             "Product analytics is off by default. When enabled, it is cookieless and anonymous, and it respects Do Not Track and Global Privacy Control.",
             <>
@@ -171,31 +171,8 @@ export default function PrivacyPage() {
         </p>
       </LegalSection>
 
-      <LegalSection index={4} kicker="Music" title="The record player">
-        <p>
-          Hack Radio plays only music you load yourself, but its plumbing
-          loads with the page. Every visit to the home page, on any screen
-          size, loads Spotify&rsquo;s embed script - the player is only
-          visible on large screens, but the script loads regardless. That
-          means your browser talks to open.spotify.com as soon as the page
-          opens, before you touch anything, and that request alone can carry
-          and set Spotify&rsquo;s cookies. The actual player is created only
-          when you paste a Spotify link; the embed runs under Spotify&rsquo;s
-          own privacy policy, and signing in to Spotify there is between you
-          and Spotify.
-        </p>
-        <p>
-          The disc&rsquo;s spinning animation comes from a vendored Framer
-          component, which fetches one silenced demo audio file from
-          Framer&rsquo;s CDN (framerusercontent.com) on every home page
-          visit. It is never audible, and the request - like any web request
-          - shows Framer&rsquo;s CDN your IP address and user agent, nothing
-          more.
-        </p>
-      </LegalSection>
-
       <LegalSection
-        index={5}
+        index={4}
         kicker="Third parties"
         title="Everyone involved, by name"
       >
@@ -236,16 +213,6 @@ export default function PrivacyPage() {
               role: "Receives anonymous, cookieless page view events. Sees the sending IP address at ingestion, like any server. Honors DNT and Global Privacy Control.",
             },
             {
-              name: "Spotify",
-              when: "Every home page visit",
-              role: "Provides the embed behind Hack Radio. Its script loads with the home page on every screen size and can set Spotify's cookies from that first request; the player itself runs only on links you paste, under Spotify's policies.",
-            },
-            {
-              name: "Framer",
-              when: "Every home page visit",
-              role: "Its CDN (framerusercontent.com) serves the silenced demo audio behind the disc animation. Sees the request's IP address and user agent, nothing more.",
-            },
-            {
               name: "GitHub",
               when: "When you submit or contribute",
               role: "Hosts the open-source repo. Listing submissions and gallery photos are public GitHub issues under your GitHub account.",
@@ -255,7 +222,7 @@ export default function PrivacyPage() {
       </LegalSection>
 
       <LegalSection
-        index={6}
+        index={5}
         kicker="Your data"
         title="Control and deletion"
       >
@@ -279,7 +246,7 @@ export default function PrivacyPage() {
         </LegalCallout>
       </LegalSection>
 
-      <LegalSection index={7} kicker="The fine print" title="The rest of it">
+      <LegalSection index={6} kicker="The fine print" title="The rest of it">
         <LegalLabel>Children</LegalLabel>
         <p>
           HackHQ is a general-audience site aimed at hackathon builders and is
