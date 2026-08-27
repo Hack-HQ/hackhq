@@ -280,8 +280,7 @@ def coauthor_trailer(user):
     address became the permanent author of a commit on main. `is_valid_email`
     checked syntax and nothing else, which is not ownership: anyone could type a
     third party's address and have the commit credited to that person's GitHub
-    contribution graph, on two branches (mirror_production_branch.yml mirrors
-    main onto `vercel`).
+    contribution graph.
 
     The `<numeric-id>+<login>@users.noreply.github.com` form cannot be forged
     that way, because both halves come from the authenticated actor in the event

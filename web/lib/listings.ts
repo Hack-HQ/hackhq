@@ -7,7 +7,7 @@
  *
  * The listings file is copied into lib/generated/listings.json at build time
  * (scripts/prepare-repo-data.mjs) and imported here, so no disk read happens at
- * request time — it deploys unchanged to Cloudflare Workers, Vercel, or Node.
+ * request time — it deploys unchanged to Cloudflare Workers or Node.
  */
 
 import listingsData from "./generated/listings.json";

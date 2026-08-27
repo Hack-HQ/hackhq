@@ -366,8 +366,8 @@ between deploys; it does not fetch new content. See [Render model](#render-model
 
 ## Deployment
 
-Production target: **Vercel** (issue #223), deploying from `main` via the Vercel
-Git integration. There is no deploy workflow in `.github/workflows/` — the
+Production target: **Cloudflare Workers**, deploying from `main` via Workers
+Builds. There is no deploy workflow in `.github/workflows/` — the Git
 integration *is* the pipeline, and it is what makes the listing automation work:
 `closing_soon`, `auto_extract`, `contribution_approved`, `update_readmes` and the
 gallery workflows all push commits to `main`, and because listing data is frozen
@@ -376,13 +376,17 @@ pushes only reaches users because it triggers a rebuild.
 
 That coupling is the thing to protect. **Production must deploy from `main`.**
 Pointing it at a long-lived branch silently strips the site of every automated
-listing update, because those commits land on `main` and nowhere else.
+listing update, because those commits land on `main` and nowhere else. Do not
+enable Workers Builds for non-production branches unless you want preview
+versions; a second long-lived branch must never run `wrangler deploy`.
 
 ### Environment variables in production
 
-Set these in the Vercel project (Settings → Environment Variables). The
-`NEXT_PUBLIC_*` values are inlined into the client bundle at build time; the rest
-are server-only and must never gain a `NEXT_PUBLIC_` prefix.
+Set these on the `hackhq` Worker. The `NEXT_PUBLIC_*` values are inlined into
+the client bundle at build time (Settings → Build → Variables and secrets);
+the rest are server-only runtime secrets (Settings → Variables and Secrets)
+and must never gain a `NEXT_PUBLIC_` prefix. Pass `--keep-vars` on deploy so
+dashboard runtime vars are not wiped.
 
 | Variable | Scope | Notes |
 | -------- | ----- | ----- |
@@ -393,7 +397,7 @@ are server-only and must never gain a `NEXT_PUBLIC_` prefix.
 | `SUPABASE_ANON_KEY` | Runtime, secret | Token mode: RLS enforces ownership in Postgres. See [Tracker sync modes](#tracker-sync-modes) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Runtime, secret | Service mode only; bypasses RLS ([#235](https://github.com/Hack-HQ/hackhq/issues/235)). Ignored when the anon key is set, removable once token mode is verified |
 | `SUPABASE_TRACKER_REQUIRE_RLS` | Runtime, not a secret | `1` makes a deployment that cannot run in token mode refuse tracker traffic rather than degrade to app-layer enforcement. Off by default; setting it before the Clerk template and Supabase third-party auth exist takes the tracker down. Env-only rollback: unset it. [Runbook](../docs/runbooks/flip-token-mode.md) |
-| `DATABASE_URL` (alias `SUPABASE_DATABASE_URL`) | Runtime, secret | Highest-risk value in the repo, and the one most often left out of a table like this. A Postgres connection string embeds the database password and connects as the table owner, so **RLS does not apply to it at all** — it reads and writes every row of `public.user_hackathons` regardless of policy. Only needed wherever `npm run db:*` runs, which is normally a laptop rather than the Vercel project; leave it unset here unless something actually needs it. Rotation: [`docs/runbooks/rotate-credentials.md`](../docs/runbooks/rotate-credentials.md) |
+| `DATABASE_URL` (alias `SUPABASE_DATABASE_URL`) | Runtime, secret | Highest-risk value in the repo, and the one most often left out of a table like this. A Postgres connection string embeds the database password and connects as the table owner, so **RLS does not apply to it at all** — it reads and writes every row of `public.user_hackathons` regardless of policy. Only needed wherever `npm run db:*` runs, which is normally a laptop rather than the Worker; leave it unset here unless something actually needs it. Rotation: [`docs/runbooks/rotate-credentials.md`](../docs/runbooks/rotate-credentials.md) |
 
 Every one is optional and degrades gracefully: without Mapbox the globe shows a
 placeholder, without Clerk the tracker stays browser-local, without Supabase it
@@ -411,15 +415,14 @@ ERROR Node.js middleware is not currently supported. Consider switching to Edge 
 ```
 
 Edge is what `middleware.ts` compiles to, and `clerkMiddleware` runs there
-fine, so one file satisfies both hosts. Next prints a middleware→proxy
-deprecation warning; that is expected and stays until OpenNext supports Node
-proxy.
+fine. Next prints a middleware→proxy deprecation warning; that is expected
+and stays until OpenNext supports Node proxy.
 
 An earlier revision moved this to `proxy.ts` on the understanding that Clerk
 pulled Node built-ins (`#crypto`, `#safe-node-apis`) that Edge rejects with
 *"Edge Function is referencing unsupported modules"*. As of `@clerk/nextjs`
 7.6.0 that no longer happens: `main` carries the file as Edge middleware and
-**both** hosts build it green. If you hit that error again, pin the Clerk
+Workers Builds compiles it. If you hit that error again, pin the Clerk
 version in the fix rather than renaming the file — the rename breaks Cloudflare.
 
 **The middleware cannot simply be deleted** in favour of gating `/my` inside the
@@ -428,26 +431,28 @@ server-side caller — including `/api/tracker`, which the synced tracker depend
 on — fails with *"auth() was called but Clerk can't detect usage of
 clerkMiddleware()"*.
 
-### Both hosts build from `main`
+### Workers Builds from `main`
 
 `wrangler.jsonc`, `open-next.config.ts` and the `preview` / `deploy` /
 `cf-typegen` scripts are all live, not vestigial. The runtime work from #230
 stands — no request-time filesystem dependency — so the app builds and deploys
 for Workers.
 
-| | Vercel | Cloudflare Workers |
-| --- | --- | --- |
-| Trigger | Vercel Git integration | Workers Builds (Git integration) |
-| Branch | `main` | `main` |
-| Build | `next build` | `npx opennextjs-cloudflare build` |
-| Root | `web` | `/web` |
+| | Cloudflare Workers |
+| --- | --- |
+| Trigger | Workers Builds (Git integration) |
+| Branch | `main` |
+| Build | `npx opennextjs-cloudflare build` |
+| Deploy | `npx wrangler deploy --keep-vars` |
+| Root | `/web` |
 
-Both watch `main`, so any commit that lands there — a PR merge or a listing
-workflow's push — rebuilds both. Environment variables have to be set in **both**
-dashboards; on Cloudflare the `NEXT_PUBLIC_*` pair are *build* variables
-(Settings → Build → Variables and secrets) while the rest are runtime secrets
-(Settings → Variables & Secrets), because build variables are not readable at
-runtime.
+Any commit that lands on `main` — a PR merge or a listing workflow's push —
+rebuilds production. On Cloudflare the `NEXT_PUBLIC_*` pair are *build*
+variables (Settings → Build → Variables and secrets) while the rest are
+runtime secrets (Settings → Variables & Secrets), because build variables are
+not readable at runtime. Clerk middleware also reads the publishable key at
+request time, so `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` must be set in **both**
+places.
 
 ## Tech stack
 

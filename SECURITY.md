@@ -60,9 +60,9 @@ We will credit you in the advisory unless you would rather stay anonymous. We
 have no bug bounty and cannot pay for reports.
 
 Some of what runs HackHQ is not ours to fix: authentication is handled by Clerk,
-the database by Supabase, hosting by Vercel. If your finding is in one of those
-platforms rather than in this code, we will say so and help route it to that
-vendor's security team, and we will not disclose it on their behalf.
+the database by Supabase, hosting by Cloudflare. If your finding is in one of
+those platforms rather than in this code, we will say so and help route it to
+that vendor's security team, and we will not disclose it on their behalf.
 
 ## Safe harbour
 
@@ -79,7 +79,7 @@ research as authorised, if you act in good faith and:
 - **Do not modify or delete data that is not yours**, and do not use a finding to
   gain more access than the finding itself demonstrates.
 - **Give us a reasonable chance to fix it** before telling anyone else.
-- **Respect the platforms.** Testing against Clerk, Supabase or Vercel
+- **Respect the platforms.** Testing against Clerk, Supabase or Cloudflare
   infrastructure is governed by their policies, not ours, and we cannot grant you
   permission for it.
 

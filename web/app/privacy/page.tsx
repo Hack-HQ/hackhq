@@ -66,11 +66,10 @@ export default function PrivacyPage() {
         </p>
         <LegalLabel>Hosting</LegalLabel>
         <p>
-          Our hosting providers (currently Vercel, with Cloudflare as a
-          build and deploy target) process standard request metadata - your
-          IP address, user agent, and the pages you request - in short-lived
-          server logs used to serve and secure the site. We do not build
-          profiles from these logs.
+          Our hosting provider (Cloudflare Workers) processes standard
+          request metadata - your IP address, user agent, and the pages you
+          request - in short-lived server logs used to serve and secure the
+          site. We do not build profiles from these logs.
         </p>
         <LegalLabel>Fonts</LegalLabel>
         <p>
@@ -207,7 +206,7 @@ export default function PrivacyPage() {
         <LegalRows
           rows={[
             {
-              name: "Vercel / Cloudflare",
+              name: "Cloudflare",
               when: "Every visit",
               role: "Host the site. See standard request logs (IP address, user agent).",
             },

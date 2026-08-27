@@ -32,7 +32,7 @@ maintainer.
 | --- | --- | --- | --- |
 | 1 | Clerk registered as a third-party auth provider | `GET /v1/projects/<ref>/config/auth/third-party-auth` — a non-empty list. Dashboard equivalent: Authentication → Sign In / Up → Third Party Auth | Supabase rejects the JWT; every tracker request 500s |
 | 2 | A Clerk JWT template named `supabase` carrying `{"role":"authenticated"}` | Clerk dashboard → Configure → JWT Templates | `getToken({ template: "supabase" })` returns null; the store throws by design rather than falling back |
-| 3 | `SUPABASE_ANON_KEY` in the runtime environment | Vercel project settings | Service mode stays selected and nothing changes |
+| 3 | `SUPABASE_ANON_KEY` in the runtime environment | Cloudflare Worker runtime secrets | Service mode stays selected and nothing changes |
 
 **Artefact 1 was verified ABSENT on 2026-08-18.** The integrations list came back
 empty, and the full auth config carried no JWKS, issuer or third-party field and

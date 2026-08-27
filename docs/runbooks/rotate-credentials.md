@@ -17,7 +17,7 @@ Work down this list. **Any "maybe" is treated as a yes.**
 - **Chat and agent logs** — LLM transcripts, Slack/Discord threads, issue
   comments, PR descriptions, anything where someone pasted "my env file".
 - **CI logs** — GitHub Actions run logs (masking only covers values registered
-  as secrets, and only exact matches), Vercel and Cloudflare build logs, any
+  as secrets, and only exact matches), Cloudflare Workers Builds logs, any
   `env`/`printenv` debugging step. Logs are public on a public repo.
 - **Screenshots, screen recordings, and streams** — terminal panes, editor
   sidebars, browser devtools Network tab, dashboard pages.
@@ -40,7 +40,7 @@ credential that shares its rotation (see the JWT-secret note below).
 
 | Variable | Where it is set | Blast radius if leaked | Rotation | Verification |
 | -------- | --------------- | ---------------------- | -------- | ------------ |
-| `SUPABASE_SERVICE_ROLE_KEY` | Runtime env (Vercel project → Settings → Environment Variables; Cloudflare Workers vars). Locally `web/.env.local`. | **Total.** Bypasses RLS — see below. | Supabase dashboard → Project Settings → JWT Keys: rotate the JWT secret (this reissues `anon` *and* `service_role` together). Update the runtime env, redeploy, then update `SUPABASE_ANON_KEY` and the `SUPABASE_SERVICE_KEY` Actions secret in the same window. | Sign in, add a hackathon on `/my`, reload in a fresh session: the row comes back and `/api/tracker` does not report `synced: false`. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Runtime env (Cloudflare Worker → Settings → Variables and Secrets). Locally `web/.env.local`. | **Total.** Bypasses RLS — see below. | Supabase dashboard → Project Settings → JWT Keys: rotate the JWT secret (this reissues `anon` *and* `service_role` together). Update the runtime env, redeploy, then update `SUPABASE_ANON_KEY` and the `SUPABASE_SERVICE_KEY` Actions secret in the same window. | Sign in, add a hackathon on `/my`, reload in a fresh session: the row comes back and `/api/tracker` does not report `synced: false`. |
 | `SUPABASE_SERVICE_KEY` | **GitHub Actions secret** (repo → Settings → Secrets and variables → Actions). Read only by `.github/workflows/sync_supabase.yml:55` → `.github/scripts/seed_supabase.py`. | Same as above — it holds a `service_role` key too. | Same rotation as `SUPABASE_SERVICE_ROLE_KEY`; paste the new value into the Actions secret. | Run **Sync Supabase** via `workflow_dispatch` and confirm the seed step succeeds. |
 | `SUPABASE_ANON_KEY` | Runtime env; locally `web/.env.local`. | Low on its own: it identifies the project, it does not authenticate. Tracker writes in token mode are authorised by the caller's Clerk JWT and RLS. It does expose the project ref and whatever the `anon` role is granted. | Reissued by the same JWT-secret rotation as the service role key — they cannot be rotated independently. | `/my` still saves and reloads a tracker row for a signed-in user. |
 | `DATABASE_URL` (or its alias `SUPABASE_DATABASE_URL`) | Locally `web/.env.local` for `npm run db:*`. Not needed at runtime. | **Total, and worse than it looks.** The string embeds the Postgres password and connects as the table owner, so RLS does not apply at all: read, write, and DDL over every table including `public.user_hackathons`. | Supabase dashboard → Project Settings → Database → reset the database password, then update every consumer (local `.env.local`, any pooler string, any teammate's copy). | `npm run db:generate` (or `npm run db:studio`) connects without an auth error. |

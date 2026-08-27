@@ -5,7 +5,7 @@ enforced. Written so that a reviewer can check a claim against a specific file
 rather than take this document's word for it.
 
 Scope: this repository and the site it deploys. Authentication (Clerk), the
-database (Supabase) and hosting (Vercel) are third-party platforms — their
+database (Supabase) and hosting (Cloudflare) are third-party platforms — their
 internals are out of scope, but the boundaries we draw against them are in.
 
 ## Trust boundaries
