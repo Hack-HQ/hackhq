@@ -422,14 +422,16 @@
     ],
     "format": "Virtual",
     "prize": "Real prizes: Raspberry Pis, 3D printers, even a laptop",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1787858493,
-    "date_updated": 1787858493,
+    "date_updated": 1787873923,
     "source": "akeight",
     "startDate": "2023-06-01",
-    "endDate": "2023-09-30"
+    "endDate": "2023-09-30",
+    "date_closed": "2026-08-27",
+    "archive_note": "Auto-archived 2026-08-27 \u2014 event ended 2023-09-30"
   },
   {
     "id": "c12023ad-aab3-44e5-beb7-d0956ef987c2",
