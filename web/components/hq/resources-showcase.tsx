@@ -227,7 +227,7 @@ function PanelMedia({ s, active }: { s: Service; active: boolean }) {
         preload="none"
         aria-hidden
       >
-        <source src={s.videoUhd} type='video/mp4; codecs="av01.0.12M.10"' />
+        <source src={s.videoUhd} type='video/mp4; codecs="av01.0.08M.08"' />
         <source src={s.video} type="video/mp4" />
       </video>
     </div>

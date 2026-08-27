@@ -25,9 +25,14 @@ export function GlobeHero() {
             Firefox, Edge, Safari on M3+/A17+) pick the 4K UHD source; everyone
             else falls through to the original 1080p H.264. The codecs param on
             the first <source> is what makes non-AV1 browsers skip it without
-            fetching a byte. The 4K file is AV1 10-bit CRF 39 (18 MiB), sized to
-            stay under Cloudflare Workers' 25 MiB static-asset cap - the reason
-            the hero was 1080p-only in the first place (see b29f06f). */}
+            fetching a byte. The UHD file is 1440p AV1 *8-bit* (12 MiB). It
+            was 4K 10-bit, which froze: 10-bit AV1 has almost no hardware
+            decode support, so browsers advertised support, picked it, then
+            software-decoded 8.3 MP/frame and could not keep up. 8-bit at
+            1440p halves the pixel rate and restores the hardware path. Well
+            under Cloudflare Workers' 25 MiB static-asset cap - a separate
+            limit from the 3 MiB Worker *script* cap, which never bound this
+            (see b29f06f). */}
         <div className="absolute inset-0">
           <video
             ref={videoRef}
@@ -40,7 +45,7 @@ export function GlobeHero() {
           >
             <source
               src="/rednote-summit-opening-4k.mp4"
-              type='video/mp4; codecs="av01.0.12M.10"'
+              type='video/mp4; codecs="av01.0.12M.08"'
             />
             <source src="/rednote-summit-opening.mp4" type="video/mp4" />
           </video>
