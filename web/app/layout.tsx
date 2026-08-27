@@ -49,9 +49,16 @@ export const metadata: Metadata = {
   // effectively the landing page. Without these the site had zero og:* and
   // zero twitter:* tags and shared as a bare URL.
   //
-  // The images themselves are file-convention based: app/opengraph-image.png
-  // and app/twitter-image.png are picked up automatically, and Next emits their
-  // absolute URLs plus dimensions from metadataBase above.
+  // The image lives in public/ and is referenced explicitly, rather than using
+  // the app/opengraph-image.* file convention. That convention makes Next build
+  // a route handler with the image bundled *into the server handler* - the
+  // 535 KiB PNG pair pushed the Worker past Cloudflare's 3 MiB script cap and
+  // failed the deploy outright. As a static asset it is served by the ASSETS
+  // binding and costs the bundle nothing, which matters with ~190 KiB of
+  // headroom. metadataBase above makes the relative URL absolute.
+  //
+  // No twitter:image on purpose: X, Slack and Discord all fall back to og:image
+  // when it is absent, so a second copy would buy nothing.
   openGraph: {
     type: "website",
     url: SITE_URL,
@@ -59,6 +66,14 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION,
     locale: "en_US",
+    images: [
+      {
+        url: "/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "HackHQ - a living map of the hackathon world",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
