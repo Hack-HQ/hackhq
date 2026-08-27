@@ -31,10 +31,40 @@ const smono = Space_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hacking-hq.com";
+
+const TITLE = "HackHQ · A Living Map of the Hackathon World";
+const DESCRIPTION =
+  "Spin the globe, flip through the deck, track your applications. Every hackathon worth joining - in-person and virtual - on one living 3D map. Updated daily, open source.";
+
 export const metadata: Metadata = {
-  title: "HackHQ · A Living Map of the Hackathon World",
-  description:
-    "Spin the globe, flip through the deck, track your applications. Every hackathon worth joining - in-person and virtual - on one living 3D map. Updated daily, open source.",
+  // Required for og:image to resolve. Next emits image URLs relative to this;
+  // without it the tags carry a relative path, which every unfurler rejects, so
+  // a shared link renders with no preview at all.
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/" },
+  // HackHQ spreads through Discord servers and group chats, so the unfurl is
+  // effectively the landing page. Without these the site had zero og:* and
+  // zero twitter:* tags and shared as a bare URL.
+  //
+  // The images themselves are file-convention based: app/opengraph-image.png
+  // and app/twitter-image.png are picked up automatically, and Next emits their
+  // absolute URLs plus dimensions from metadataBase above.
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: "HackHQ",
+    title: TITLE,
+    description: DESCRIPTION,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({
