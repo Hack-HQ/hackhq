@@ -366,9 +366,18 @@ between deploys; it does not fetch new content. See [Render model](#render-model
 
 ## Deployment
 
-Production target: **Cloudflare Workers**, deploying from `main` via Workers
-Builds. There is no deploy workflow in `.github/workflows/` — the Git
-integration *is* the pipeline, and it is what makes the listing automation work:
+Production target: **Cloudflare Workers** — the `hackhq` Worker, serving
+`hacking-hq.com` through OpenNext. The pipeline is
+[`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml), which builds
+and deploys from `main`.
+
+> An earlier revision of this section said Workers Builds was the pipeline and
+> that no deploy workflow was needed. Workers Builds was never connected to this
+> repo, so nothing deployed automatically at all: production sat on a build from
+> 2026-08-18 for over a week while newer versions were uploaded and never
+> promoted. The workflow above is what actually ships now.
+
+That pipeline is what makes the listing automation reach users:
 `closing_soon`, `auto_extract`, `contribution_approved`, `update_readmes` and the
 gallery workflows all push commits to `main`, and because listing data is frozen
 into the bundle at build time (see [Render model](#render-model)), each of those
@@ -376,9 +385,43 @@ pushes only reaches users because it triggers a rebuild.
 
 That coupling is the thing to protect. **Production must deploy from `main`.**
 Pointing it at a long-lived branch silently strips the site of every automated
-listing update, because those commits land on `main` and nowhere else. Do not
-enable Workers Builds for non-production branches unless you want preview
-versions; a second long-lived branch must never run `wrangler deploy`.
+listing update, because those commits land on `main` and nowhere else.
+
+Three details of the workflow are load-bearing rather than incidental:
+
+- **The cron is the real trigger, not the push.** The listing bots push to
+  `main` with the default `GITHUB_TOKEN`, and GitHub starts no workflow run for
+  such a push — so `on: push` fires for human commits only. The half-hourly
+  sweep is what ships bot commits. Deleting it reintroduces the freeze.
+- **The `production` git tag is the workflow's memory of what is live.** The
+  sweep deploys only when `main` has moved past it, and only a green deploy
+  moves it. To force a redeploy of an unchanged `main`, run the workflow from
+  the Actions tab with **force** checked.
+- **Workers Builds stays disconnected on purpose.** Two pipelines deploying the
+  same Worker from the same branch would interleave versions with no way to tell
+  which is live, and only this workflow runs the credential preflight.
+
+Until `CLOUDFLARE_API_TOKEN` exists as a repository secret the workflow skips
+with a warning rather than failing, so production only changes when someone runs
+`npm run deploy` by hand.
+
+### Deploying by hand
+
+`npm run deploy` is the same command CI runs, but it builds *locally* — so it
+inlines whatever `NEXT_PUBLIC_*` values your shell and `.env.local` provide.
+Since `.env.local` normally holds a Clerk **development** instance, a hand deploy
+would ship `pk_test_` to browsers while the Worker keeps verifying with the live
+secret key: two Clerk instances, and no working sign-in. That is not
+hypothetical — it took the site down on 2026-08-26, and because `clerkMiddleware`
+runs on every route it was a total outage, not just broken sign-in.
+
+`predeploy` therefore runs
+[`scripts/preflight-deploy.mjs`](scripts/preflight-deploy.mjs), which resolves
+each value exactly the way `next build` will — `process.env` first, then
+`.env.production.local`, `.env.local`, `.env.production`, `.env` — and refuses to
+build if any is missing or is a development credential. Prefer the workflow; use
+`HACKHQ_ALLOW_NONPROD_DEPLOY=1` only for preview builds you do not intend to
+publish.
 
 ### Environment variables in production
 

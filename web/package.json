@@ -14,6 +14,8 @@
     "pretest": "node scripts/prepare-repo-data.mjs",
     "test": "vitest run",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "preflight": "node scripts/preflight-deploy.mjs",
+    "predeploy": "node scripts/preflight-deploy.mjs",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --keep-vars",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "db:pull": "drizzle-kit pull",

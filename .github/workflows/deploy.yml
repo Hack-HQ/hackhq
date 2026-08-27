@@ -1,0 +1,233 @@
+# .github/workflows/deploy.yml
+name: Deploy to Cloudflare
+
+# The pipeline that was missing.
+#
+# Production is a Cloudflare Worker (`hackhq`, serving hacking-hq.com through
+# OpenNext). Nothing ever deployed it automatically: Workers Builds is not
+# connected to this repo and there was no deploy workflow, so shipping meant
+# somebody running `npm run deploy` from a laptop. Between 2026-08-18 and
+# 2026-08-25 nobody did, and production sat on version 138 while six newer
+# versions were uploaded and never promoted.
+#
+# That matters more than a week of staleness, because of how this site is built:
+# listing data is frozen into the bundle at build time (web/README.md ->
+# Render model). Hourly ISR re-derives *deadline* state from the deployed
+# snapshot, which is why three of the four listings auto-closed during the freeze
+# corrected themselves and one - archived for "event ended" rather than a passed
+# deadline - stayed wrongly open. A newly *added* listing has no such fallback:
+# without a rebuild it never appears at all. The listing bots therefore only
+# reach users through this workflow.
+#
+# Why a schedule and not just `on: push`:
+#
+#   Every automated edit to listings.json is pushed to main with the default
+#   GITHUB_TOKEN, and GitHub deliberately starts no workflow run for such a
+#   push. The push trigger below fires for human commits only. Without the
+#   sweep, exactly the automated listing updates this workflow exists to ship
+#   would be the ones it never saw - the same gap sync_supabase.yml documents
+#   and test_workflows.py pins down.
+#
+# This replaces mirror_production_branch.yml, which force-pushed main onto a
+# `vercel` branch for a Vercel Git integration. Production is Cloudflare; that
+# mirror shipped nothing.
+
+on:
+  # Human pushes and merged PRs deploy immediately.
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      # The data the build freezes into the bundle. prepare-repo-data.mjs copies
+      # these three into web/lib/generated/ and the loaders import them.
+      - '.github/scripts/listings.json'
+      - '.github/scripts/geocodes.json'
+      - 'README.md'
+      # copy-repo-assets.mjs copies these into web/public/repo-assets/.
+      - 'assets/**'
+      - '.github/workflows/deploy.yml'
+  schedule:
+    # Every 30 minutes. This is the trigger the bot-written listing commits
+    # actually hit, and it inherits the cadence from the mirror workflow it
+    # replaces. A sweep that finds nothing new costs one checkout and exits
+    # before installing anything.
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Deploy even if main has not moved since the last deploy'
+        type: boolean
+        default: false
+
+permissions:
+  # Needed only to move the `production` tag, which is how this workflow
+  # remembers what it last shipped.
+  contents: write
+
+concurrency:
+  # Queue, never cancel. Cancelling between `opennextjs-cloudflare build` and
+  # the upload can leave a half-built .open-next directory behind; cancelling
+  # after the upload but before the tag move makes the next run redeploy the
+  # same commit. Neither is harmful, both are confusing, and the job is capped
+  # at 20 minutes so a queue cannot build up.
+  group: deploy-cloudflare
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          # Full history and tags: the gate below reads refs/tags/production.
+          fetch-depth: 0
+
+      # Deciding "has anything changed" from the git tag rather than from a
+      # file diff, because the question is not "did these paths change" but
+      # "is what is live already this commit". Only a successful deploy moves
+      # the tag, so a failed run leaves the work pending for the next sweep
+      # instead of marking it shipped.
+      - name: Has main moved since the last successful deploy?
+        id: gate
+        env:
+          FORCED: ${{ github.event_name == 'workflow_dispatch' && inputs.force }}
+          HAVE_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+        run: |
+          set -euo pipefail
+          head_sha=$(git rev-parse HEAD)
+          echo "head=$head_sha" >> "$GITHUB_OUTPUT"
+
+          # Skip loudly rather than fail. This workflow lands before the token
+          # does, and the schedule runs every 30 minutes - failing on each of
+          # those would be 48 red runs a day and a mailbox full of alerts, which
+          # trains everyone to ignore this workflow before it has ever worked.
+          # A warning annotation is visible in the Actions UI without that.
+          if [ "$HAVE_TOKEN" != "true" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN is not set, so nothing was deployed. \
+          Add it under Settings > Secrets and variables > Actions to turn on automated deploys. \
+          Until then production only changes when someone runs 'npm run deploy' by hand."
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$FORCED" = "true" ]; then
+            echo "forced dispatch - deploying $head_sha"
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if deployed=$(git rev-parse -q --verify refs/tags/production 2>/dev/null); then
+            deployed=$(git rev-parse "${deployed}^{commit}")
+            if [ "$deployed" = "$head_sha" ]; then
+              echo "production is already $head_sha - nothing to deploy"
+              echo "deploy=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "production is $deployed, main is $head_sha - deploying"
+          else
+            echo "no production tag yet - deploying $head_sha and creating it"
+          fi
+          echo "deploy=true" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        if: steps.gate.outputs.deploy == 'true'
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        if: steps.gate.outputs.deploy == 'true'
+        working-directory: web
+        run: npm ci
+
+      # The build-time preflight cannot see these: they live on the Worker, not
+      # in the build environment. Checked before the upload rather than after,
+      # because the failure mode is silence — none of these missing produces an
+      # error at runtime, only a quietly degraded site.
+      #
+      # NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is the trap, and it is already sprung.
+      # Next inlines it for the browser but *not* into the server bundle, so
+      # middleware.ts reads it from process.env at request time. It was a Worker
+      # secret on the live version 138 and is absent from the Worker today.
+      # Deploying without it makes isClerkConfigured() return false, which turns
+      # sign-in off and un-gates /my instead of failing.
+      - name: Verify the Worker's runtime secrets
+        if: steps.gate.outputs.deploy == 'true'
+        working-directory: web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          npx wrangler secret list --format json > secrets.json
+          node --input-type=module -e '
+            import { readFileSync } from "node:fs";
+            const have = new Set(
+              JSON.parse(readFileSync("secrets.json", "utf8")).map((s) => s.name),
+            );
+            const required = [
+              ["CLERK_SECRET_KEY", "sign-in stops working"],
+              ["NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", "middleware treats Clerk as unconfigured: sign-in switches off and /my stops being gated"],
+              ["SUPABASE_URL", "the tracker silently falls back to browser-local storage"],
+            ];
+            const missing = required.filter(([n]) => !have.has(n));
+            if (!have.has("SUPABASE_ANON_KEY") && !have.has("SUPABASE_SERVICE_ROLE_KEY")) {
+              missing.push([
+                "SUPABASE_ANON_KEY or SUPABASE_SERVICE_ROLE_KEY",
+                "the tracker silently falls back to browser-local storage",
+              ]);
+            }
+            if (missing.length === 0) {
+              console.log("[secrets] all runtime secrets present: " + [...have].sort().join(", "));
+              process.exit(0);
+            }
+            for (const [name, effect] of missing) {
+              console.log(`::error::Worker secret ${name} is missing - ${effect}`);
+            }
+            console.log(
+              "\nSet each with:  npx wrangler secret put <NAME>   (run from web/)\n" +
+              "A deploy never overwrites or deletes a secret, so this is a one-time step.",
+            );
+            process.exit(1);
+          '
+          rm -f secrets.json
+
+      # Build and upload in one step, because `npm run deploy` is also what a
+      # maintainer runs by hand — keeping CI on a different command is how the
+      # two quietly diverge. `predeploy` runs preflight-deploy.mjs first, which
+      # fails the job if any NEXT_PUBLIC_* value below is missing or is a
+      # development credential.
+      #
+      # Every NEXT_PUBLIC_* here is build-time: Next inlines it into the bundle.
+      # None of them is a Worker variable, and none should be set in the
+      # dashboard — see the comment block in web/wrangler.jsonc.
+      #
+      # The server-only secrets (CLERK_SECRET_KEY, SUPABASE_URL,
+      # SUPABASE_SERVICE_ROLE_KEY) are deliberately absent: they already live on
+      # the Worker as secrets, and a deploy never overwrites or deletes those.
+      - name: Build and deploy
+        if: steps.gate.outputs.deploy == 'true'
+        working-directory: web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
+          NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: ${{ secrets.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
+        run: npm run deploy
+
+      # Only after a green deploy. The tag is this workflow's memory of what is
+      # live, and the scheduled sweep reads it — writing it on failure would
+      # mark unshipped work as shipped and skip it forever.
+      - name: Record what was deployed
+        if: steps.gate.outputs.deploy == 'true'
+        env:
+          HEAD_SHA: ${{ steps.gate.outputs.head }}
+        run: |
+          set -euo pipefail
+          git tag -f production "$HEAD_SHA"
+          git push --force origin refs/tags/production:refs/tags/production
+          echo "production -> $HEAD_SHA"

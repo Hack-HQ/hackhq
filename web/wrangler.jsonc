@@ -13,7 +13,21 @@
   },
   "observability": {
     "enabled": true
-  }
+  },
+
+  // Do not delete dashboard-set plain-text variables on deploy.
+  //
+  // Wrangler's default is to wipe every var not listed in this file before
+  // applying the ones that are - and with no `vars` block here, that means
+  // deleting all of them. It already happened: version 143 (set in the
+  // dashboard) carried NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN and
+  // NEXT_PUBLIC_POSTHOG_HOST; version 144, uploaded by wrangler minutes later,
+  // carried neither, with nothing in the output saying so.
+  //
+  // The `deploy` script also passes --keep-vars. This is the same protection in
+  // config form, so it holds for a bare `wrangler deploy` too, not only for the
+  // npm script. Secrets were never at risk - a deploy never deletes those.
+  "keep_vars": true
   // Production values are injected outside version control:
   //   - NEXT_PUBLIC_* (Mapbox token, Clerk publishable key, repo slug): set as
   //     build env vars or add a top-level "vars" block here (they are public,
