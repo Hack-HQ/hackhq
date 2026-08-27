@@ -413,6 +413,25 @@
     "id": "0ef7e14a-5cc6-40ac-ba08-e0ccee428673"
   },
   {
+    "id": "2d2c9516-ea6c-4c12-a45a-4ba8dbd98150",
+    "company_name": "Hack Club",
+    "title": "Stardance",
+    "url": "https://stardance.hackclub.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "Real prizes: Raspberry Pis, 3D printers, even a laptop",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1787858493,
+    "date_updated": 1787858493,
+    "source": "akeight",
+    "startDate": "2023-06-01",
+    "endDate": "2023-09-30"
+  },
+  {
     "id": "c12023ad-aab3-44e5-beb7-d0956ef987c2",
     "company_name": "Hack the 6ix",
     "title": "Hack the 6ix 2026 \u2014 Jul 17\u201319, 2026",
