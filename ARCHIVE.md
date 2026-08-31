@@ -19,6 +19,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | ------ | ---- | --------- | ------ | -------- | ----------- | ----------- |
 | 🔒 **[CLOSED]** | Hack Club | Stardance | Virtual | Online | :lock: | Aug 27, 2026 |
 | 🔒 **[CLOSED]** | Peddie Computer Science Club | PeddieHacks 2026 — Aug 14–16, 2026 | Virtual | Online | :lock: | Aug 09, 2026 |
+| 🔒 **[CLOSED]** | IBM | IBM Dev Day: Bob in Action + Hackathon — Aug 27–30, 2026 | Virtual | Online | :lock: | Aug 09, 2026 |
 | 🔒 **[CLOSED]** | OregonHacks | OregonHacks 2026 | Virtual | Online | :lock: | Jul 30, 2026 |
 | 🔒 **[CLOSED]** | Pixel Forge | Pixel Forge AI Hackathon | Virtual | Online | :lock: | Jul 30, 2026 |
 | 🔒 **[CLOSED]** | Stellic | The Pathfinders Challenge | Virtual | Online | :lock: | Jul 27, 2026 |

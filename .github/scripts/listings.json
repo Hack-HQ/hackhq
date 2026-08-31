@@ -736,14 +736,16 @@
     ],
     "format": "Virtual",
     "prize": "$2,000 grand prize + IBM TechXchange 2026 passes (top 50 teams)",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "startDate": "2026-08-27",
     "endDate": "2026-08-30",
     "date_posted": 1786265703,
-    "date_updated": 1786265703,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "date_updated": 1788205883,
+    "source": "Jose-Gael-Cruz-Lopez",
+    "date_closed": "2026-08-31",
+    "archive_note": "Auto-archived 2026-08-31 \u2014 event ended 2026-08-30"
   },
   {
     "id": "b1b101f8-41a0-524e-8a3b-128f48c7450a",
