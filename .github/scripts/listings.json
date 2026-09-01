@@ -1019,14 +1019,16 @@
     ],
     "format": "Virtual",
     "prize": "$3,000",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "source": "devpost",
     "deadline": "2026-08-31",
     "id": "c7d0456c-ba85-4000-b89a-3e4fad723aaa",
     "date_posted": 1783793100,
-    "date_updated": 1783793100
+    "date_updated": 1788284398,
+    "date_closed": "2026-09-01",
+    "archive_note": "Auto-archived 2026-09-01 \u2014 deadline passed 2026-08-31"
   },
   {
     "id": "a3b17fc3-cd9e-4be5-ab6d-367bfd6c2d72",
@@ -1094,14 +1096,16 @@
     ],
     "format": "Virtual",
     "prize": "$20,000 prize pool",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1785945677,
-    "date_updated": 1785945677,
+    "date_updated": 1788284398,
     "source": "samalipio",
     "deadline": "2026-08-31",
-    "startDate": "2026-08-03"
+    "startDate": "2026-08-03",
+    "date_closed": "2026-09-01",
+    "archive_note": "Auto-archived 2026-09-01 \u2014 deadline passed 2026-08-31"
   },
   {
     "id": "c801890c-0461-5c2d-b2f6-9e302180451b",
