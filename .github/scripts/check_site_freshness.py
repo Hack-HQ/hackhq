@@ -406,6 +406,12 @@ def main():
     summary = "\n".join(lines)
     print(summary)
 
+    # A separate output for the one failure the workflow can act on by itself:
+    # a build from another pipeline sitting on top of the last good deploy is
+    # fixed by deploying again, so site_freshness.yml re-runs deploy.yml with
+    # force when this is true. Everything else needs a person.
+    emit_output("clerk_dev", "true" if verdict == "clerk_dev_instance" else "false")
+
     if not problems:
         emit_output("stale", "false")
         emit_output("summary", summary)

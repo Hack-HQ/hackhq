@@ -277,6 +277,29 @@ class DeployChaining(unittest.TestCase):
         self.assertIn("Deploy to Cloudflare", workflow_run_names(read("site_freshness.yml")))
         self.assertEqual("Deploy to Cloudflare", workflow_name(read("deploy.yml")))
 
+    def test_freshness_heals_a_development_build_by_redeploying(self):
+        """A build from another pipeline on production is the one failure the
+        check can fix itself: dispatch deploy.yml with force. That needs
+        `actions: write`, and must be gated on the script's clerk_dev output
+        rather than on any failure - a missing listing is not fixed by
+        redeploying the same commit."""
+        text = read("site_freshness.yml")
+        self.assertIn("actions: write", text)
+        self.assertIn("gh workflow run deploy.yml", text)
+        self.assertIn("-f force=true", text)
+        self.assertIn("steps.check.outputs.clerk_dev == 'true'", text)
+
+    def test_deploy_waits_for_a_competing_deploy_before_moving_the_tag(self):
+        """The 2026-09-02 race: this workflow's build passed verification and
+        was replaced 55 seconds later. The verification must look again after
+        a pause and compare the served build, before the tag moves."""
+        text = read("deploy.yml")
+        settle = text.find("settle=$HEAD_SHA")
+        tag = text.find("git tag -f production")
+        self.assertNotEqual(settle, -1, "deploy.yml no longer re-checks the live build after a pause")
+        self.assertLess(settle, tag)
+        self.assertIn("sleep 120", text)
+
     def test_supabase_sync_chains_on_the_listing_writers(self):
         """Only the workflows that can change listings.json; gallery commits
         never touch it, so syncing after them would be a wasted write."""

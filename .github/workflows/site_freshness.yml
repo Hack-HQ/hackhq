@@ -43,6 +43,9 @@ on:
 
 permissions:
   contents: read
+  # To re-run deploy.yml (workflow_dispatch) when another pipeline's build is
+  # found sitting on production - see the "Heal" step below.
+  actions: write
 
 concurrency:
   group: site-freshness
@@ -71,6 +74,23 @@ jobs:
       - name: Check every listing is live
         id: check
         run: python .github/scripts/check_site_freshness.py
+
+      # The one failure this workflow can fix on its own. A Clerk development
+      # build on production means a pipeline other than deploy.yml deployed this
+      # Worker (Cloudflare Workers Builds did so ~1 minute after every push to
+      # main until it was disconnected - web/README.md -> Deployment -> Workers
+      # Builds). Deploying again from deploy.yml puts the correct build back;
+      # the other pipeline only fires on a push, so this converges. The run
+      # still fails above, so the event is never silent - this only shortens
+      # how long visitors see the broken build. workflow_dispatch is one of the
+      # two events a GITHUB_TOKEN may start.
+      - name: Heal - redeploy over a development build
+        if: failure() && steps.check.outputs.clerk_dev == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run deploy.yml --ref main -f force=true
+          echo "::warning::Production was serving a Clerk development build; dispatched deploy.yml with force to replace it. Disconnect Cloudflare Workers Builds to stop this recurring (web/README.md -> Deployment)."
 
       # Also written to the run summary, so the answer is visible without
       # opening logs.

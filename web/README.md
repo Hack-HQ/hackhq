@@ -551,12 +551,17 @@ Cloudflare dashboard rather than in this repository. Either:
   variable to the production `pk_live_…` key, so a later re-enable cannot ship
   a dev build.
 
-Until that is done, every bot commit is followed within minutes by a dev-key
-build. `deploy.yml` now chains on the same bot workflows, and its post-deploy
-verification fails loudly — leaving the `production` tag where it was — if it
-finds the other pipeline's build live; the freshness check names the Clerk
-handshake for what it is. Do not re-enable automatic deployments from Workers
-Builds unless `deploy.yml` is retired at the same time — one pipeline, not two.
+Until that is done, every push to `main` is followed within a minute or two by
+a dev-key build — it happened again on 2026-09-02 07:33 UTC, 55 seconds after
+`deploy.yml` had verified its own build live. Three things now limit the
+damage: `deploy.yml` re-checks the served build two minutes after verifying
+and fails (leaving the `production` tag where it was) if the build changed
+underneath it; `site_freshness.yml` names the Clerk handshake for what it is;
+and when it finds one it re-runs `deploy.yml` with **force**, so production
+is put back within the hour while the run stays red. That is a tug of war,
+not a fix — the fix is the dashboard step above. Do not re-enable automatic
+deployments from Workers Builds unless `deploy.yml` is retired at the same
+time — one pipeline, not two.
 
 The local tooling for Cloudflare is live, not vestigial: `wrangler.jsonc`,
 `open-next.config.ts` and the `preview` / `deploy` / `cf-typegen` scripts are
