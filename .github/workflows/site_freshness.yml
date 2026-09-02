@@ -21,16 +21,26 @@ name: Site freshness
 #   - hourly, as a backstop for a Worker rolled back or deployed from outside
 #     CI (which is how a Clerk development build reached production for days
 #     in 2026-08, see check_site_freshness.py);
-#   - on human pushes to the files involved.
-#   A push made with the default GITHUB_TOKEN starts no workflow run, so the
-#   push trigger alone would never see bot-written listings - the same gap
-#   sync_supabase.yml documents and test_workflows.py pins down.
+#   - on a push that changes the checker itself, so a change to this check is
+#     exercised by the change that makes it.
+#
+# Deliberately NOT on a push that changes listings.json. That push also starts
+# deploy.yml, and this job finishes in ~20s while the deploy takes a minute or
+# more - so it would read the pre-deploy site and report every listing in the
+# push as missing. It did, on all three merges of 2026-09-02: red runs whose
+# own `workflow_run` counterpart, minutes later, was green. A check that cries
+# stale on every merge is a check people learn to ignore. The deploy-completion
+# trigger below covers exactly the same pushes, after the deploy that fixes
+# them.
+#
+# A push made with the default GITHUB_TOKEN starts no workflow run at all, so
+# the push trigger could never have covered bot-written listings anyway - the
+# same gap sync_supabase.yml documents and test_workflows.py pins down.
 
 on:
   push:
     branches: [main]
     paths:
-      - '.github/scripts/listings.json'
       - '.github/scripts/check_site_freshness.py'
       - '.github/workflows/site_freshness.yml'
   workflow_run:

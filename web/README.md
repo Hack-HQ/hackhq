@@ -551,17 +551,24 @@ Cloudflare dashboard rather than in this repository. Either:
   variable to the production `pk_live_…` key, so a later re-enable cannot ship
   a dev build.
 
-Until that is done, every push to `main` is followed within a minute or two by
-a dev-key build — it happened again on 2026-09-02 07:33 UTC, 55 seconds after
-`deploy.yml` had verified its own build live. Three things now limit the
-damage: `deploy.yml` re-checks the served build two minutes after verifying
-and fails (leaving the `production` tag where it was) if the build changed
-underneath it; `site_freshness.yml` names the Clerk handshake for what it is;
-and when it finds one it re-runs `deploy.yml` with **force**, so production
-is put back within the hour while the run stays red. That is a tug of war,
-not a fix — the fix is the dashboard step above. Do not re-enable automatic
-deployments from Workers Builds unless `deploy.yml` is retired at the same
-time — one pipeline, not two.
+**The repository half of the fix is already in place.** `next.config.ts` calls
+`foreignCiError()` from [`lib/foreign-ci.ts`](lib/foreign-ci.ts) and throws when
+`WORKERS_CI=1` — the variable Workers Builds
+[injects into its own builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/#default-variables).
+A Workers Builds run now fails while loading the Next config, before it has a
+bundle to promote, and its error names the dashboard step above. The guard sits
+in the config rather than an npm script because that is the one file every
+`next build` loads, whichever command invoked it. It cannot fire on a laptop or
+in GitHub Actions, neither of which sets `WORKERS_CI`. To deliberately move
+production onto Workers Builds later, set `HACKHQ_ALLOW_FOREIGN_CI=1` as a build
+variable and retire `deploy.yml` in the same change — one pipeline, not two.
+
+Two more guards stay, for a build that reaches production some other way (a
+rollback, a hand deploy): `deploy.yml` re-checks the served build two minutes
+after verifying it and fails, leaving the `production` tag where it was, if the
+build changed underneath it; and `site_freshness.yml` names the Clerk handshake
+for what it is and re-runs `deploy.yml` with **force** when it finds one, so
+production is put back within the hour while the run stays red.
 
 The local tooling for Cloudflare is live, not vestigial: `wrangler.jsonc`,
 `open-next.config.ts` and the `preview` / `deploy` / `cf-typegen` scripts are
