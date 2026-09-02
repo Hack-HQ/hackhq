@@ -131,6 +131,46 @@
     "source": "Jose-Gael-Cruz-Lopez"
   },
   {
+    "id": "457b8532-c5bf-40cc-91db-c7ba6cc92098",
+    "company_name": "Amazon",
+    "title": "Build, Ship, Shape: Amazon Developer Hackathon \u2014 Aug 31 \u2013 Oct 23, 2026",
+    "url": "https://amazonappdev2026.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$138,000 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "devpost",
+    "deadline": "2026-10-23",
+    "startDate": "2026-08-31",
+    "endDate": "2026-10-23"
+  },
+  {
+    "id": "5affa8cf-068a-4144-850c-eb3c885f7267",
+    "company_name": "Amazon Web Services",
+    "title": "Agents for Humans Hackathon \u2014 Aug 10 \u2013 Sep 14, 2026 (Online Hackathon; Registration Open)",
+    "url": "https://agentsforhumans.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$40,000 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "devpost",
+    "deadline": "2026-09-14",
+    "startDate": "2026-08-10",
+    "endDate": "2026-09-14"
+  },
+  {
     "id": "2692ab55-1780-4899-9d82-a6341d063bf2",
     "company_name": "AMD \u00d7 lablab.ai",
     "title": "AMD Developer Hackathon: ACT III \u2014 Oct 12\u201318, 2026 (Hybrid Hackathon; Registration Open)",
@@ -149,6 +189,25 @@
     "source": "lablab.ai",
     "startDate": "2026-10-12",
     "endDate": "2026-10-18"
+  },
+  {
+    "id": "d9e3cd99-2d83-49c0-bf7a-83e40497f887",
+    "company_name": "Apart Research",
+    "title": "AI Incident Response Sprint \u2014 Sep 11\u201313, 2026 (AI Safety Research Hackathon; Sign-Up Open)",
+    "url": "https://apartresearch.com/sprints/ai-incident-response-sprint-2026-09-11-to-2026-09-13",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$2,000 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "organizer-site",
+    "startDate": "2026-09-11",
+    "endDate": "2026-09-13"
   },
   {
     "id": "49a161ac-6a1c-42e2-974f-3fddacee42dd",
@@ -264,6 +323,26 @@
     "deadline": "2026-08-03"
   },
   {
+    "id": "18141686-a0f8-4c8f-97c5-5d59de9c02a4",
+    "company_name": "Banana Hacks",
+    "title": "Banana Hacks 2026 \u2014 Oct 9\u201312, 2026 (Online Generative AI Hackathon; Registration Open)",
+    "url": "https://www.bananahacks.tech",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$10,000+ in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "hackclub",
+    "deadline": "2026-10-08",
+    "startDate": "2026-10-09",
+    "endDate": "2026-10-12"
+  },
+  {
     "id": "b2bf7088-9daa-43d9-acb9-f87d1b4d6bcf",
     "company_name": "Bay Valley Hacks",
     "title": "Bay-Valley Hacks 2026 \u2014 Sep 26, 2026 (High School Hackathon; Registration Open)",
@@ -281,6 +360,65 @@
     "source": "luma",
     "startDate": "2026-09-26",
     "endDate": "2026-09-26"
+  },
+  {
+    "id": "66da7535-111a-4303-8272-6820abdf90f0",
+    "company_name": "Binnovative",
+    "title": "AnimalHack 2026 \u2014 Sep 12\u201313, 2026 (Online Hackathon; Registration Open)",
+    "url": "https://animalhack2026.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "Non-cash prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "hackclub",
+    "deadline": "2026-09-12",
+    "startDate": "2026-09-12",
+    "endDate": "2026-09-13"
+  },
+  {
+    "id": "13214bcb-5d8c-4e32-b4c4-fcf853395506",
+    "company_name": "Bloomreach",
+    "title": "Composable AI Hackathon 2026 \u2014 Sep 21\u201328, 2026 (Virtual Hackathon; Apply to Attend; Approval Required)",
+    "url": "https://luma.com/composableai",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "Sponsored trip to Edge Summit",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "luma",
+    "startDate": "2026-09-21",
+    "endDate": "2026-09-28"
+  },
+  {
+    "id": "c171d9d0-01ee-4ae7-bf2c-ba1fc1d41577",
+    "company_name": "CALL-E",
+    "title": "CALL-E: Your Code Is Calling \u2014 Jul 23 \u2013 Sep 14, 2026 (Online Hackathon; Registration Open)",
+    "url": "https://call-e.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$10,000 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "devpost",
+    "deadline": "2026-09-14",
+    "startDate": "2026-07-23",
+    "endDate": "2026-09-14"
   },
   {
     "id": "1e31d21c-0355-494e-a0a2-2431a51301a6",
@@ -761,6 +899,26 @@
     "endDate": "2026-09-27"
   },
   {
+    "id": "f4bb73de-ff33-42da-915b-61640213237f",
+    "company_name": "ETHGlobal",
+    "title": "ETHOnline 2026 \u2014 Sep 4\u201316, 2026 (Async Online Hackathon; Apply to Attend; Approval Required)",
+    "url": "https://ethglobal.com/events/ethonline2026",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$74,500+ in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "ethglobal",
+    "deadline": "2026-09-06",
+    "startDate": "2026-09-04",
+    "endDate": "2026-09-16"
+  },
+  {
     "id": "2b690c43-980f-4f0e-9bba-5df83de17e4a",
     "company_name": "EU Space Programme (EUSPA)",
     "title": "12th CASSINI Hackathon: EU Space for Peace and Resilience \u2014 Nov 27\u201329, 2026 (Multi-City; Registration Opening Soon)",
@@ -778,6 +936,25 @@
     "source": "organizer-site",
     "startDate": "2026-11-27",
     "endDate": "2026-11-29"
+  },
+  {
+    "id": "984e5317-0e9d-4800-908e-8edc4ccb3a79",
+    "company_name": "European Commission (European Defence Fund)",
+    "title": "EUDIS Defence Hackathon Autumn 2026 \u2014 Oct 15\u201317, 2026 (Multi-City EU Defence-Tech Hackathon; Registration Open)",
+    "url": "https://eudis-hackathon.eu/",
+    "locations": [
+      "Multiple cities"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "organizer-site",
+    "startDate": "2026-10-15",
+    "endDate": "2026-10-17"
   },
   {
     "id": "0e934c6a-12d9-4012-b651-9d572cc07dc1",
@@ -858,6 +1035,26 @@
     "endDate": "2026-10-25"
   },
   {
+    "id": "d02166d8-007b-44bd-9e2d-1ba0fbe145de",
+    "company_name": "Gateway Garden State Initiative (GatewayGS)",
+    "title": "GatewayHacks 2026: Software & AI \u2014 Sep 1 \u2013 Oct 2, 2026 (Virtual Student Hackathon; Registration Open)",
+    "url": "https://gatewayhacks-2026.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$591,585 in prizes (mostly sponsor credits)",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "devpost",
+    "deadline": "2026-10-02",
+    "startDate": "2026-09-01",
+    "endDate": "2026-10-02"
+  },
+  {
     "id": "75963be6-c3ec-4e17-8a24-a773022d5b25",
     "company_name": "General Learning",
     "title": "General Learning Hacks \u2014 Sep 19\u201320, 2026 (24-Hour EdTech & AI Hackathon; Registration Open)",
@@ -894,6 +1091,45 @@
     "id": "0ef7e14a-5cc6-40ac-ba08-e0ccee428673",
     "startDate": "2026-09-18",
     "endDate": "2026-09-19"
+  },
+  {
+    "id": "f33bdb4b-b1e4-4858-8ade-32174e2b425e",
+    "company_name": "GitHub",
+    "title": "GitHub Game Off 2026 \u2014 Nov 1 \u2013 Dec 1, 2026 (Month-Long Game Jam; Registration Open)",
+    "url": "https://itch.io/jam/game-off-2026",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "organizer-site",
+    "startDate": "2026-11-01",
+    "endDate": "2026-12-01"
+  },
+  {
+    "id": "3a50bebb-79f3-4380-a92d-3b484721c78b",
+    "company_name": "Google Cloud",
+    "title": "Agentic Cinema: The Blockbuster Hackathon \u2014 Jul 27 \u2013 Sep 9, 2026 (Online Hackathon; Registration Open)",
+    "url": "https://agentic-cinema.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$75,000 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "devpost",
+    "deadline": "2026-09-09",
+    "startDate": "2026-07-27",
+    "endDate": "2026-09-09"
   },
   {
     "id": "47e80d5a-7317-40c8-aa9e-dd9ef058d65c",
@@ -1431,6 +1667,25 @@
     "endDate": "2026-11-08"
   },
   {
+    "id": "432d4aa4-4a9a-4b42-a842-58529ca0d228",
+    "company_name": "IEEE Blockchain T\u00fcrkiye Group",
+    "title": "IEEE ClimateChain Global Hackathon \u2014 Oct 5\u201325, 2026 (Online Student Hackathon; Registration Open)",
+    "url": "https://ieee-climatechain-hack.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$3,000+ in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "devpost",
+    "startDate": "2026-10-05",
+    "endDate": "2026-10-25"
+  },
+  {
     "id": "82697f6f-599f-4f08-b607-15db3f16e191",
     "company_name": "IEEE University of Toronto",
     "title": "MakeUofT 2027 \u2014 Feb 13\u201314, 2027 (Makeathon; Applications Coming Soon)",
@@ -1448,6 +1703,25 @@
     "source": "mlh",
     "startDate": "2027-02-13",
     "endDate": "2027-02-14"
+  },
+  {
+    "id": "06ee5fff-0b24-414e-8af4-dfe7efc62038",
+    "company_name": "Illinois Wesleyan University",
+    "title": "HackTitan 2027 \u2014 Feb 2\u20134, 2027 (Student Hackathon; Registration Open)",
+    "url": "https://hacktitan.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$10,000 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "devpost",
+    "startDate": "2027-02-02",
+    "endDate": "2027-02-04"
   },
   {
     "id": "b1b101f8-41a0-524e-8a3b-128f48c7450a",
@@ -1532,6 +1806,26 @@
     "endDate": "2026-10-04"
   },
   {
+    "id": "19964bb9-ec0e-4dd1-8e10-da03ea377652",
+    "company_name": "lablab.ai",
+    "title": "AI Infra Summit Hackathon 2026 \u2014 Sep 10\u201317, 2026 (Hybrid Hackathon; Enrollment Open; On-Site by Invitation)",
+    "url": "https://lablab.ai/ai-hackathons/ai-infra-summit-hackathon",
+    "locations": [
+      "Santa Clara, CA",
+      "Online"
+    ],
+    "format": "Hybrid",
+    "prize": "$21,000+ in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "lablab.ai",
+    "startDate": "2026-09-10",
+    "endDate": "2026-09-17"
+  },
+  {
     "id": "dc86acac-4fce-434c-8a8b-595a1780b652",
     "company_name": "lablab.ai",
     "title": "TechEx Amsterdam Hackathon 2026 \u2014 Oct 16\u201320, 2026 (Hybrid: Online Build Oct 16\u201319, On-Site Oct 19\u201320; Applications Open)",
@@ -1569,6 +1863,25 @@
     "source": "devpost",
     "startDate": "2026-10-24",
     "endDate": "2026-10-25"
+  },
+  {
+    "id": "bf86868a-d252-4332-8daf-1c06185ccfae",
+    "company_name": "LaunchHacks",
+    "title": "LaunchHacks V \u2014 Dec 11\u201315, 2026 (High School Hackathon; Registration Open)",
+    "url": "https://launchhacks-v.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$17,575 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "devpost",
+    "startDate": "2026-12-11",
+    "endDate": "2026-12-15"
   },
   {
     "company_name": "Lincoln Financial Group",
@@ -1631,6 +1944,25 @@
     "archive_note": "Auto-archived 2026-08-14 \u2014 event ended 2026-08-13"
   },
   {
+    "id": "b9ca698b-aaf5-4b04-9045-85123ec7e6fe",
+    "company_name": "Major League Hacking",
+    "title": "Global Hack Week: Builders Week \u2014 Nov 6\u201312, 2026",
+    "url": "https://events.mlh.com/events/14729-global-hack-week-builders-week",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "Swag + prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "mlh",
+    "startDate": "2026-11-06",
+    "endDate": "2026-11-12"
+  },
+  {
     "id": "421c6652-25a9-42c9-9ac9-5396f32396f5",
     "company_name": "Major League Hacking",
     "title": "Global Hack Week: Data \u2014 Sep 11\u201317, 2026",
@@ -1648,6 +1980,25 @@
     "source": "Jose-Gael-Cruz-Lopez",
     "startDate": "2026-09-11",
     "endDate": "2026-09-17"
+  },
+  {
+    "id": "b8d2fdb4-19d9-4232-95cd-a511480f0cb8",
+    "company_name": "Major League Hacking",
+    "title": "Global Hack Week: Hacktoberfest \u2014 Oct 9\u201315, 2026",
+    "url": "https://events.mlh.com/events/14553-global-hack-week-hacktoberfest",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "Swag + prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "mlh",
+    "startDate": "2026-10-09",
+    "endDate": "2026-10-15"
   },
   {
     "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
@@ -1909,6 +2260,46 @@
     "id": "04555631-8888-4d5a-b192-384c42fa0577",
     "date_posted": 1783821900,
     "date_updated": 1785980875
+  },
+  {
+    "id": "46a93c24-7196-4f2d-941b-24fee7981341",
+    "company_name": "OpenAI",
+    "title": "The WebMCP Challenge \u2014 Aug 25 \u2013 Sep 3, 2026 (Online Hackathon; Registration Open)",
+    "url": "https://webmcp.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$35,000 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "devpost",
+    "deadline": "2026-09-03",
+    "startDate": "2026-08-25",
+    "endDate": "2026-09-03"
+  },
+  {
+    "id": "a7d88dbb-0c8f-475e-a439-69de6042ebed",
+    "company_name": "OpenCV Foundation",
+    "title": "OpenCV AI Competition 2026, powered by AWS \u2014 Aug 26 \u2013 Oct 26, 2026",
+    "url": "https://opencv26.devpost.com/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$20,250 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "devpost",
+    "deadline": "2026-10-26",
+    "startDate": "2026-08-26",
+    "endDate": "2026-10-26"
   },
   {
     "id": "43a7a3d5-82cc-42c0-b4b5-a14048ebebfb",
@@ -2357,6 +2748,26 @@
     "endDate": "2026-11-01"
   },
   {
+    "id": "19decbab-52c2-4f80-9d7a-31e5fa24951b",
+    "company_name": "Shooting Stars Foundation",
+    "title": "IBM Z Datathon 2026 \u2014 Oct 17\u201318, 2026 (24-Hour Student Datathon; Registration Open)",
+    "url": "https://www.starhacks.org/ibm-z-datathon-2026",
+    "locations": [
+      "Multiple cities",
+      "Online"
+    ],
+    "format": "Hybrid",
+    "prize": "$50,000+ in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "organizer-site",
+    "startDate": "2026-10-17",
+    "endDate": "2026-10-18"
+  },
+  {
     "id": "c6e47456-0509-482b-ab4e-7cb591c51b1c",
     "company_name": "Showerhacks",
     "title": "Showerhacks \u2014 Sep 26, 2026 (One-Day Hackathon; Registration Open)",
@@ -2642,6 +3053,25 @@
     "deadline": "2026-10-29",
     "startDate": "2026-10-30",
     "endDate": "2026-10-31"
+  },
+  {
+    "id": "c56d5457-0035-4d3b-82cb-d5d3d01234b3",
+    "company_name": "U.S. House of Representatives",
+    "title": "Congressional App Challenge 2026 \u2014 Submissions Due Oct 26, 2026 (Middle & High School Coding Competition; Registration Open)",
+    "url": "https://www.congressionalappchallenge.us/",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788361635,
+    "date_updated": 1788361635,
+    "source": "organizer-site",
+    "deadline": "2026-10-26",
+    "endDate": "2026-10-26"
   },
   {
     "id": "f24a6927-f19d-462f-b78f-add1f892010f",
