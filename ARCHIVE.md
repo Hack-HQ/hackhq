@@ -24,6 +24,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | OregonHacks | OregonHacks 2026 | Virtual | Online | :lock: | Jul 30, 2026 |
 | 🔒 **[CLOSED]** | Pixel Forge | Pixel Forge AI Hackathon | Virtual | Online | :lock: | Jul 30, 2026 |
 | 🔒 **[CLOSED]** | Stellic | The Pathfinders Challenge | Virtual | Online | :lock: | Jul 27, 2026 |
+| 🔒 **[CLOSED]** | HopHacks | HopHacks 2026 (Student Hackathon; Applications Open) | In-Person | Baltimore, MD | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | Stanford | TreeHacks 2026 — Feb 13–15, 2026 | In-Person | Stanford, CA | :lock: | Jul 17, 2026 |
 | 🔒 **[CLOSED]** | localhost:nyc | Checkout: The Travel & Hospitality Hackathon — Aug 9, 2026 | In-Person | New York, NY | :lock: | Jul 12, 2026 |
 | 🔒 **[CLOSED]** | OnlyExit Hacker House | Hack Your Way Into the Hacker House — Jul 18, 2026 | In-Person | New York, NY | :lock: | Jul 12, 2026 |

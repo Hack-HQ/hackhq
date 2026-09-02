@@ -81,6 +81,91 @@ class Matching(unittest.TestCase):
         self.assertEqual(freshness.missing_listings([item], html), [])
 
 
+class ExactComparison(unittest.TestCase):
+    """The preferred path: ids and visible fields against /site-data/listings.json."""
+
+    def test_identical_snapshots_report_nothing(self):
+        repo = [listing(id="a"), listing(id="b", title="Other")]
+        live = [dict(x) for x in repo]
+        self.assertEqual(
+            freshness.diff_listings(repo, live), {"missing": [], "stale": [], "extra": []}
+        )
+
+    def test_a_listing_added_after_the_build_is_missing(self):
+        old = listing(id="a")
+        new = listing(id="b", title="Added Later")
+        diff = freshness.diff_listings([old, new], [old])
+        self.assertEqual(diff["missing"], [new])
+        self.assertEqual(diff["stale"], [])
+
+    def test_a_listing_closed_after_the_build_is_stale(self):
+        """The case the textual check could never see: the URL is still on the
+        page, but the site says OPEN while the repository says closed."""
+        live = listing(id="a", state="open", active=True)
+        repo = listing(id="a", state="closed", active=False)
+        diff = freshness.diff_listings([repo], [live])
+        self.assertEqual(diff["stale"], [repo])
+        self.assertEqual(diff["missing"], [])
+
+    def test_date_updated_alone_is_not_staleness(self):
+        live = listing(id="a", date_updated=1)
+        repo = listing(id="a", date_updated=2)
+        self.assertEqual(freshness.diff_listings([repo], [live])["stale"], [])
+
+    def test_a_listing_removed_from_the_repo_is_extra(self):
+        gone = listing(id="z", title="Rolled Back")
+        diff = freshness.diff_listings([], [gone])
+        self.assertEqual(diff["extra"], [gone])
+
+    def test_url_split_across_rsc_chunks_is_not_a_false_positive_here(self):
+        """The failure that motivated this path: the id comparison does not
+        depend on where the HTML serializer broke a string."""
+        item = listing(id="a", url="https://treehacks.com/")
+        self.assertEqual(freshness.diff_listings([item], [dict(item)])["missing"], [])
+        # ...whereas the textual fallback would report it missing.
+        html = 'x\\"url\\":\\"https://treeh' + '"]);self.__next_f.push([1,"' + 'acks.com/\\"'
+        self.assertEqual(freshness.missing_listings([item], html), [item])
+
+
+class VisitorProbe(unittest.TestCase):
+    """A browser-shaped GET / must get the page, and a Clerk dev handshake must
+    be named as such rather than reported as a generic redirect or 500."""
+
+    def test_200_is_ok(self):
+        self.assertEqual(freshness.classify_document_response(200, ""), ("ok", ""))
+
+    def test_redirect_to_a_clerk_dev_instance_is_named(self):
+        verdict, detail = freshness.classify_document_response(
+            307,
+            "https://in-example-12.clerk.accounts.dev/v1/client/handshake?redirect_url=x",
+        )
+        self.assertEqual(verdict, "clerk_dev_instance")
+        self.assertIn("clerk.accounts.dev", detail)
+        self.assertNotIn("redirect_url", detail, "query string is noise in a summary")
+
+    def test_other_redirects_are_reported_as_redirects(self):
+        verdict, _ = freshness.classify_document_response(301, "https://www.example.com/")
+        self.assertEqual(verdict, "redirect")
+
+    def test_server_errors_are_errors(self):
+        verdict, detail = freshness.classify_document_response(500, "")
+        self.assertEqual(verdict, "error")
+        self.assertIn("500", detail)
+
+    def test_the_fix_text_names_the_cause(self):
+        self.assertIn("pk_test_", freshness.CLERK_DEV_FIX)
+        self.assertIn("Workers Builds", freshness.CLERK_DEV_FIX)
+
+
+class CommitsBehind(unittest.TestCase):
+    def test_unknown_sha_is_none(self):
+        self.assertIsNone(freshness.commits_behind("unknown"))
+        self.assertIsNone(freshness.commits_behind(""))
+
+    def test_a_sha_git_has_never_seen_is_none_not_an_exception(self):
+        self.assertIsNone(freshness.commits_behind("0" * 40))
+
+
 class Configuration(unittest.TestCase):
     def test_site_url_has_no_trailing_slash(self):
         """fetch_site appends "/", so a trailing slash here would request "//"."""
@@ -89,12 +174,17 @@ class Configuration(unittest.TestCase):
     def test_request_headers_look_like_a_browser(self):
         """Clerk answers non-document requests differently.
 
-        Without an HTML Accept header the middleware returns a handshake or a
-        404 rather than the page a visitor gets, and this check would be
-        reasoning about a response no real user ever sees.
+        Without an HTML Accept header the middleware never starts a handshake,
+        so the visitor probe would pass a deployment that bounces every real
+        visitor into a development instance.
         """
         self.assertIn("text/html", freshness.HEADERS["accept"])
         self.assertIn("Mozilla/5.0", freshness.HEADERS["user-agent"])
+
+    def test_data_requests_bypass_caches(self):
+        """The data files are verified right after a deploy; a cached copy from
+        before it would report the previous build as current."""
+        self.assertEqual(freshness.DATA_HEADERS["cache-control"], "no-cache")
 
 
 if __name__ == "__main__":

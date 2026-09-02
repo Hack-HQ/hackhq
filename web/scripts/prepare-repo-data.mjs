@@ -34,6 +34,7 @@ import {
   readdirSync,
   statSync,
 } from "node:fs";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -99,8 +100,52 @@ writeFileSync(
   JSON.stringify(assetManifest),
 );
 
+// --- public/site-data/: the same listings snapshot, plus which commit it came
+// from, served as static files at /site-data/listings.json and
+// /site-data/build.json.
+//
+// This is how "is the site up to date with the repository?" gets answered
+// exactly. .github/scripts/check_site_freshness.py used to look for each
+// listing's URL inside the home page's RSC payload, and that payload is split
+// into arbitrary <script> chunks — a URL straddling a chunk boundary reads as a
+// missing hackathon (TreeHacks and VTHacks were reported missing from a
+// deployment that contained them, 2026-09-01). Comparing listing ids against a
+// file that IS the deployed snapshot has no such failure mode, and the commit
+// sha says which deploy is live without inferring it from a git tag.
+//
+// Static on purpose: served by the ASSETS binding, so it never passes through
+// middleware (Clerk only sees document requests anyway) and costs no Worker
+// invocation. The site-data directory is gitignored and regenerated every run.
+const siteDataDir = path.join(webRoot, "public", "site-data");
+mkdirSync(siteDataDir, { recursive: true });
+writeFileSync(path.join(siteDataDir, "listings.json"), JSON.stringify(listings));
+
+function commitSha() {
+  // CI first (GitHub Actions, then Cloudflare Workers Builds), then git for a
+  // local build. "unknown" rather than a throw: a build from a tarball with no
+  // .git still has to succeed; it just cannot be matched to a commit.
+  const fromEnv = process.env.GITHUB_SHA || process.env.WORKERS_CI_COMMIT_SHA;
+  if (fromEnv) return fromEnv;
+  try {
+    return execFileSync("git", ["rev-parse", "HEAD"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+  } catch {
+    return "unknown";
+  }
+}
+const buildInfo = {
+  sha: commitSha(),
+  builtAt: new Date().toISOString(),
+  listings: listings.length,
+};
+writeFileSync(path.join(siteDataDir, "build.json"), JSON.stringify(buildInfo));
+
 console.log(
   `[prepare-repo-data] wrote lib/generated/ ` +
     `(${listings.length} listings, ${gallery.length} gallery photos, ` +
-    `${assetManifest.length} assets)`,
+    `${assetManifest.length} assets) and public/site-data/ ` +
+    `(sha ${buildInfo.sha.slice(0, 7)})`,
 );

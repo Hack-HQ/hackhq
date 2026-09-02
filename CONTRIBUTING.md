@@ -133,6 +133,10 @@ Keep the featured set small so it stays meaningful.
 3. **AI extracts** host, hackathon name, location, format, prize, etc. from the page
 4. **Automation adds** the hackathon to the table
 5. **Issue is closed** with a summary of what was added
+6. **The site rebuilds.** The deploy workflow runs as soon as the automation
+   finishes, and the listing is on hacking-hq.com about three minutes later.
+   A *Site freshness* check runs after every deploy and goes red, naming the
+   listing, if it is not. See [`web/README.md` → Deployment](web/README.md#deployment).
 
 ### Opening a PR that adds listings (maintainers)
 

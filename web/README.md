@@ -138,6 +138,14 @@ read remains, which is what keeps the app portable across hosts — see
 | ------------------------- | -------------------------- |
 | Deadline-derived state — "closing soon" flags, day counts, anything computed from the current date | The listings themselves — editing `listings.json`, `README.md`, or `geocodes.json` |
 
+The build also publishes the snapshot it was made from at
+`/site-data/listings.json` and the commit it came from at
+`/site-data/build.json` (static files written by `prepare-repo-data.mjs` into
+`public/site-data/`, gitignored). They exist so that "is the site serving what
+the repository says?" is answered by comparing ids, not by searching page HTML:
+the deploy workflow reads `build.json` before it records a deploy as shipped,
+and `check_site_freshness.py` reads both.
+
 That is exactly what the hour is for (#47): those flags are derived from *today*,
 so a page prerendered last week would otherwise keep serving last week's
 countdown until someone redeployed.
@@ -345,8 +353,8 @@ stats, this configuration does not require a consent banner.
 | `npm test`             | Run the Vitest suite (what CI runs)                  |
 | `npm run copy-assets`  | Refresh `public/repo-assets/` from `../assets/`      |
 | `npm run prepare-data` | Regenerate `lib/generated/` from the repo-root data  |
-| `npm run preview`      | Cloudflare only — currently fails, see [Deployment](#deployment) |
-| `npm run deploy`       | Cloudflare only — currently fails, see [Deployment](#deployment) |
+| `npm run preview`      | Build with OpenNext and run the Worker locally         |
+| `npm run deploy`       | What CI runs; hand use is a last resort, see [Deployment](#deployment) |
 
 `dev`, `build`, and `test` run `copy-assets` and/or `prepare-data` for you; you
 only need them directly after changing something under `../assets/` or the
@@ -367,43 +375,85 @@ between deploys; it does not fetch new content. See [Render model](#render-model
 ## Deployment
 
 Production target: **Cloudflare Workers** — the `hackhq` Worker, serving
-`hacking-hq.com` through OpenNext. The pipeline is
+`hacking-hq.com` through OpenNext. The one pipeline is
 [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml), which builds
 and deploys from `main`.
 
-> An earlier revision of this section said Workers Builds was the pipeline and
-> that no deploy workflow was needed. Workers Builds was never connected to this
-> repo, so nothing deployed automatically at all: production sat on a build from
-> 2026-08-18 for over a week while newer versions were uploaded and never
-> promoted. The workflow above is what actually ships now.
+### How a listing change reaches the site
 
-That pipeline is what makes the listing automation reach users:
-`closing_soon`, `auto_extract`, `contribution_approved`, `update_readmes` and the
-gallery workflows all push commits to `main`, and because listing data is frozen
-into the bundle at build time (see [Render model](#render-model)), each of those
-pushes only reaches users because it triggers a rebuild.
+Listing data is frozen into the bundle at build time (see
+[Render model](#render-model)), so every edit to `listings.json` reaches
+visitors only through a rebuild. The chain, end to end:
 
-That coupling is the thing to protect. **Production must deploy from `main`.**
-Pointing it at a long-lived branch silently strips the site of every automated
-listing update, because those commits land on `main` and nowhere else.
+1. A listing changes on `main` — an approved issue (`auto_extract`,
+   `contribution_approved`), the daily auto-close (`closing_soon`), a
+   regenerated README (`update_readmes`), a gallery commit, or a maintainer's
+   PR merge.
+2. `deploy.yml` starts. Human pushes trigger it directly (`on: push`). Bot
+   pushes cannot — a push made with the default `GITHUB_TOKEN` starts no
+   workflow run — so it also runs whenever one of those bot workflows
+   *completes* (`on: workflow_run`), an event GitHub does deliver. A
+   half-hourly schedule remains as a backstop, but GitHub throttles schedules
+   to every few hours under load (23 runs in 4.5 days, 2026-08-28..09-01), so
+   nothing relies on it any more.
+3. The job compares `main` with the `production` git tag (what was last
+   shipped) and, if `main` has moved: verifies the Worker's runtime secrets,
+   runs the credential preflight, builds, and uploads.
+4. It then confirms the public site is serving that commit —
+   `prepare-repo-data.mjs` writes the build's sha to `/site-data/build.json` —
+   and answers a browser request with 200 rather than a Clerk handshake. Only
+   then does it move the `production` tag.
+5. `site_freshness.yml` runs after every deploy (and hourly): it fetches
+   `/site-data/listings.json` and compares ids and fields with the repository,
+   so a missing, stale or rolled-back listing is a red run with the names in
+   it, not a visitor's bug report.
 
-Three details of the workflow are load-bearing rather than incidental:
+Expected latency from a bot commit to live: about three minutes.
 
-- **The cron is the real trigger, not the push.** The listing bots push to
-  `main` with the default `GITHUB_TOKEN`, and GitHub starts no workflow run for
-  such a push — so `on: push` fires for human commits only. The half-hourly
-  sweep is what ships bot commits. Deleting it reintroduces the freeze.
-- **The `production` git tag is the workflow's memory of what is live.** The
-  sweep deploys only when `main` has moved past it, and only a green deploy
-  moves it. To force a redeploy of an unchanged `main`, run the workflow from
-  the Actions tab with **force** checked.
-- **Workers Builds stays disconnected on purpose.** Two pipelines deploying the
-  same Worker from the same branch would interleave versions with no way to tell
-  which is live, and only this workflow runs the credential preflight.
+**Production must deploy from `main`.** Pointing anything at a long-lived
+branch silently strips the site of every automated listing update, because
+those commits land on `main` and nowhere else.
+
+### Runbook: the site is behind the repository
+
+The *Site freshness* run is red, or a listing you can see in `listings.json`
+is not on hacking-hq.com.
+
+1. Open **Actions → Deploy to Cloudflare**. If the latest run failed, its log
+   says which step: a missing Worker secret, the preflight refusing a test
+   key, the site not serving the new sha, or the visitor probe getting a Clerk
+   handshake.
+2. If no run happened for the commit (a bot workflow was cancelled mid-push,
+   or the `workflow_run` list was edited), run it by hand: **Run workflow** on
+   `main`. Tick **force** to redeploy an unchanged `main`.
+3. If the site serves a sha that is not the tag's, something else deployed the
+   Worker. Check **Cloudflare → Workers & Pages → hackhq → Deployments** for
+   the author, and **Settings → Builds** for a connected repository — see
+   [Workers Builds](#workers-builds-must-be-disabled).
+4. `cd web && npm run deploy` from a laptop is the last resort, and only with
+   production values in the shell or `.env.production.local`; the preflight
+   refuses a `pk_test_` key for the reasons in
+   [Deploying by hand](#deploying-by-hand).
+
+### What the deploy workflow needs
+
+Three details are load-bearing rather than incidental:
+
+- **The `workflow_run` list is the trigger for bot commits.** Every workflow
+  that pushes to `main` must be listed under it; `test_workflows.py` fails
+  when one is missing.
+- **The `production` git tag is the workflow's memory of what is live.** A run
+  deploys only when `main` has moved past it, and only a verified deploy moves
+  it. To force a redeploy of an unchanged `main`, run the workflow from the
+  Actions tab with **force** checked.
+- **One pipeline.** Two pipelines deploying the same Worker from the same
+  branch interleave versions with no way to tell which is live, and only this
+  workflow runs the credential preflight. That is not hypothetical — see
+  [Workers Builds](#workers-builds-must-be-disabled).
 
 Until `CLOUDFLARE_API_TOKEN` exists as a repository secret the workflow skips
-with a warning rather than failing, so production only changes when someone runs
-`npm run deploy` by hand.
+with a warning rather than failing, so production only changes when someone
+runs `npm run deploy` by hand.
 
 ### Deploying by hand
 
@@ -474,28 +524,47 @@ server-side caller — including `/api/tracker`, which the synced tracker depend
 on — fails with *"auth() was called but Clerk can't detect usage of
 clerkMiddleware()"*.
 
-### Workers Builds from `main`
+### Workers Builds (must be disabled)
 
-`wrangler.jsonc`, `open-next.config.ts` and the `preview` / `deploy` /
-`cf-typegen` scripts are all live, not vestigial. The runtime work from #230
-stands — no request-time filesystem dependency — so the app builds and deploys
-for Workers.
+Cloudflare's Git integration for this Worker **is connected** — contrary to
+what this file said until 2026-09-01. It was connected on 2026-08-21 with
+`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` set to a *development* (`pk_test_…`) key as
+its build variable, and its deploy command is `npx wrangler deploy --keep-vars`,
+so it builds every push to `main`, bot pushes included, and promotes the result
+about two minutes after each commit. Every one of those builds sends first-time
+visitors through a Clerk dev-instance handshake and breaks sign-in until the
+next `deploy.yml` run overwrites it with a correct build. The freshness check
+saw that handshake chain as an unexplained HTTP 500 and was red from
+2026-08-28 to 2026-09-01. To re-check the evidence: the Worker versions it
+produced (`npx wrangler versions list`, e.g. `4d71d2ee…` from 2026-09-01
+17:42 UTC) answer a browser request with a 307 to
+`in-chipmunk-71.clerk.accounts.dev`; the ones `deploy.yml` produced answer 200.
 
-| | Cloudflare Workers |
-| --- | --- |
-| Trigger | Workers Builds (Git integration) |
-| Branch | `main` |
-| Build | `npx opennextjs-cloudflare build` |
-| Deploy | `npx wrangler deploy --keep-vars` |
-| Root | `/web` |
+**This is the one manual step left in the sync fix**, because it lives in the
+Cloudflare dashboard rather than in this repository. Either:
 
-Any commit that lands on `main` — a PR merge or a listing workflow's push —
-rebuilds production. On Cloudflare the `NEXT_PUBLIC_*` pair are *build*
-variables (Settings → Build → Variables and secrets) while the rest are
-runtime secrets (Settings → Variables & Secrets), because build variables are
-not readable at runtime. Clerk middleware also reads the publishable key at
-request time, so `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` must be set in **both**
-places.
+- **Workers & Pages → hackhq → Settings → Builds → Disconnect** — removes the
+  integration, which is the clean end state; or
+- keep the integration but stop it deploying: set its deploy command to
+  `npx wrangler versions upload` (Cloudflare's documented way to build without
+  promoting) **and** change its `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` build
+  variable to the production `pk_live_…` key, so a later re-enable cannot ship
+  a dev build.
+
+Until that is done, every bot commit is followed within minutes by a dev-key
+build. `deploy.yml` now chains on the same bot workflows, and its post-deploy
+verification fails loudly — leaving the `production` tag where it was — if it
+finds the other pipeline's build live; the freshness check names the Clerk
+handshake for what it is. Do not re-enable automatic deployments from Workers
+Builds unless `deploy.yml` is retired at the same time — one pipeline, not two.
+
+The local tooling for Cloudflare is live, not vestigial: `wrangler.jsonc`,
+`open-next.config.ts` and the `preview` / `deploy` / `cf-typegen` scripts are
+what CI runs. `NEXT_PUBLIC_*` values are inlined at build time (CI supplies
+them from repository secrets); the rest are runtime secrets on the Worker
+(Settings → Variables & Secrets). Clerk middleware also reads the publishable
+key at request time, so `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` must exist in
+**both** places.
 
 ## Tech stack
 

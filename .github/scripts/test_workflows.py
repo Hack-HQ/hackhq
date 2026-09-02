@@ -189,5 +189,105 @@ class SupabaseSyncTriggers(unittest.TestCase):
         self.assertIn("workflow_dispatch:", text)
 
 
+PUSHES_TO_MAIN = "git push origin main"
+
+
+def workflow_name(text):
+    """The top-level `name:` of a workflow file - what workflow_run addresses."""
+    m = re.search(r"^name:\s*(.+?)\s*$", text, re.MULTILINE)
+    return m.group(1).strip("'\"") if m else None
+
+
+def workflow_run_names(text):
+    """The workflow names listed under `on: workflow_run: workflows:`."""
+    m = re.search(
+        r"^\s*workflow_run:\s*\n\s*workflows:\s*\n((?:\s*-\s*.+\n)+)", text, re.MULTILINE
+    )
+    if m:
+        return [
+            line.strip().lstrip("-").strip().strip("'\"")
+            for line in m.group(1).splitlines()
+            if line.strip()
+        ]
+    m = re.search(r"^\s*workflow_run:\s*\n\s*workflows:\s*\[(.*?)\]", text, re.MULTILINE)
+    if m:
+        return [n.strip().strip("'\"") for n in m.group(1).split(",") if n.strip()]
+    return []
+
+
+class DeployChaining(unittest.TestCase):
+    """Bot commits reach production through workflow_run, not the schedule.
+
+    A push made with the default GITHUB_TOKEN starts no workflow run, and the
+    scheduled sweep that used to cover for that fired every 4-6 hours in
+    practice (2026-08-28..09-01). The completion of the bot workflow itself is
+    an event GitHub does deliver, so deploy.yml lists every workflow that
+    pushes to main under `on: workflow_run`. These tests keep that list true.
+    """
+
+    def pushers(self):
+        return {
+            workflow_name(read(f))
+            for f in workflow_files()
+            if PUSHES_TO_MAIN in read(f) and f != "deploy.yml"
+        }
+
+    def test_every_workflow_that_pushes_to_main_triggers_a_deploy(self):
+        chained = set(workflow_run_names(read("deploy.yml")))
+        self.assertTrue(chained, "deploy.yml no longer chains on workflow_run")
+        missing = self.pushers() - chained
+        self.assertEqual(
+            set(),
+            missing,
+            "these workflows push to main but deploy.yml does not run when "
+            f"they complete, so their commits wait for the throttled sweep: {sorted(missing)}",
+        )
+
+    def test_chained_names_are_real_workflows(self):
+        names = {workflow_name(read(f)) for f in workflow_files()}
+        for target in ("deploy.yml", "site_freshness.yml", "sync_supabase.yml"):
+            for n in workflow_run_names(read(target)):
+                with self.subTest(workflow=target, chained=n):
+                    self.assertIn(
+                        n,
+                        names,
+                        f"{target} chains on a workflow named {n!r}, which no file "
+                        f"declares - a rename would silently break the chain",
+                    )
+
+    def test_deploy_keeps_its_backstops(self):
+        text = read("deploy.yml")
+        self.assertIn("schedule:", text)
+        self.assertIn("workflow_dispatch:", text)
+
+    def test_deploy_verifies_the_public_site_before_moving_the_tag(self):
+        """The upload succeeding is not the commit being live.
+
+        A second pipeline shipped a development build over this workflow's
+        deploys for days (2026-08-27..09-01). The deploy must confirm the site
+        serves its own sha, and only then record it as shipped.
+        """
+        text = read("deploy.yml")
+        verify = text.find("site-data/build.json")
+        tag = text.find("git tag -f production")
+        self.assertNotEqual(verify, -1, "deploy.yml no longer checks /site-data/build.json")
+        self.assertLess(verify, tag, "deploy.yml moves the production tag before verifying")
+
+    def test_freshness_runs_after_every_deploy(self):
+        self.assertIn("Deploy to Cloudflare", workflow_run_names(read("site_freshness.yml")))
+        self.assertEqual("Deploy to Cloudflare", workflow_name(read("deploy.yml")))
+
+    def test_supabase_sync_chains_on_the_listing_writers(self):
+        """Only the workflows that can change listings.json; gallery commits
+        never touch it, so syncing after them would be a wasted write."""
+        chained = set(workflow_run_names(read("sync_supabase.yml")))
+        listing_writers = {
+            workflow_name(read(f))
+            for f in workflow_files()
+            if PUSHES_TO_MAIN in read(f) and "listings.json" in read(f) and f != "deploy.yml"
+        }
+        self.assertEqual(set(), listing_writers - chained)
+
+
 if __name__ == "__main__":
     unittest.main()
