@@ -319,6 +319,30 @@ jobs:
           fi
           echo "visitor probe: 200"
 
+          # Let a competing deploy land, then look again. On 2026-09-02 this
+          # workflow's build passed both checks above and was replaced 55
+          # seconds later by Cloudflare Workers Builds' build of the same commit
+          # (same sha, different builtAt, Clerk development key). A build that
+          # changes underneath us within a couple of minutes is that race, and
+          # the tag must not record this run as what is live.
+          first=$(curl -sS --max-time 20 -H 'cache-control: no-cache' "$SITE_URL/site-data/build.json?settle=$HEAD_SHA" || true)
+          sleep 120
+          second=$(curl -sS --max-time 20 -H 'cache-control: no-cache' "$SITE_URL/site-data/build.json?settled=$HEAD_SHA" || true)
+          if [ "$first" != "$second" ]; then
+            echo "::error::The live build changed within two minutes of this deploy (was: $first, now: $second). \\
+          Another pipeline is deploying this Worker - web/README.md -> Deployment -> Workers Builds."
+            exit 1
+          fi
+          status=$(curl -sS -o /dev/null --max-time 20 -w '%{http_code}' \\
+            -H 'accept: text/html,application/xhtml+xml' \\
+            -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/140.0 Safari/537.36 hackhq-deploy-check' \\
+            "$SITE_URL/")
+          if [ "$status" != "200" ]; then
+            echo "::error::$SITE_URL/ answered HTTP $status to a browser request two minutes after deploying; the build was replaced or is misconfigured."
+            exit 1
+          fi
+          echo "settled: still this build, visitor probe 200"
+
       # Only after a green, verified deploy. The tag is this workflow's memory
       # of what is live, and the scheduled sweep reads it — writing it on
       # failure would mark unshipped work as shipped and skip it forever.

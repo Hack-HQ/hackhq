@@ -157,6 +157,57 @@ class VisitorProbe(unittest.TestCase):
         self.assertIn("Workers Builds", freshness.CLERK_DEV_FIX)
 
 
+class HealOutput(unittest.TestCase):
+    """site_freshness.yml re-runs the deploy only when the script says the
+    failure is a development build on production - a `clerk_dev` output that
+    is written on every run, true or false, so the workflow condition never
+    reads an unset value."""
+
+    def run_main(self, verdict):
+        import os
+        import tempfile
+
+        fd, path = tempfile.mkstemp()
+        os.close(fd)
+        saved = {
+            "fetch_site_data": freshness.fetch_site_data,
+            "probe_document": freshness.probe_document,
+            "load_listings": freshness.load_listings,
+            "commits_behind": freshness.commits_behind,
+        }
+        snapshot = [listing(id="a")]
+        freshness.load_listings = lambda: snapshot
+        freshness.fetch_site_data = lambda: ({"sha": "x" * 40, "builtAt": "t"}, snapshot, None)
+        freshness.probe_document = lambda: (verdict, "detail")
+        freshness.commits_behind = lambda sha: 0
+        old_env = os.environ.get("GITHUB_OUTPUT")
+        os.environ["GITHUB_OUTPUT"] = path
+        try:
+            code = freshness.main()
+            with open(path, encoding="utf-8") as f:
+                return code, f.read()
+        finally:
+            for name, fn in saved.items():
+                setattr(freshness, name, fn)
+            if old_env is None:
+                del os.environ["GITHUB_OUTPUT"]
+            else:
+                os.environ["GITHUB_OUTPUT"] = old_env
+            os.unlink(path)
+
+    def test_a_development_build_sets_clerk_dev_true_and_fails(self):
+        code, out = self.run_main("clerk_dev_instance")
+        self.assertEqual(code, 1)
+        self.assertIn("clerk_dev<<__EOF__\ntrue\n", out)
+        self.assertIn("stale<<__EOF__\ntrue\n", out)
+
+    def test_a_healthy_site_sets_clerk_dev_false_and_passes(self):
+        code, out = self.run_main("ok")
+        self.assertEqual(code, 0)
+        self.assertIn("clerk_dev<<__EOF__\nfalse\n", out)
+        self.assertIn("stale<<__EOF__\nfalse\n", out)
+
+
 class CommitsBehind(unittest.TestCase):
     def test_unknown_sha_is_none(self):
         self.assertIsNone(freshness.commits_behind("unknown"))
