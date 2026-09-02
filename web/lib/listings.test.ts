@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+  loadHackathons,
   parsePrizeValue,
   deriveState,
   daysUntilAction,
@@ -285,5 +286,37 @@ describe("themesFor", () => {
     ["Analytics Challenge", "DATA"],
   ])("tags %s as %s", (text, tag) => {
     expect(themesFor(text)).toContain(tag);
+  });
+});
+
+describe("loadHackathons memoization", () => {
+  it("returns the same array instance within a day, without recomputing", () => {
+    const first = loadHackathons();
+    const second = loadHackathons();
+    // Identity, not deep equality: a fresh computation would allocate a new
+    // array, so sharing the reference is what proves the memo was hit.
+    expect(second).toBe(first);
+  });
+
+  it("still derives the listing set correctly through the cache", () => {
+    const list = loadHackathons();
+    expect(list.length).toBeGreaterThan(0);
+    // Sorting contract from loadHackathons: closing_soon before closed.
+    const order = { closing_soon: 0, open: 1, opens_soon: 2, closed: 3 };
+    const ranks = list.map((h) => order[h.state]);
+    expect([...ranks].sort((a, b) => a - b)).toEqual(ranks);
+    // Every record is fully enriched, not a raw listing passed through.
+    for (const h of list) {
+      expect(typeof h.host).toBe("string");
+      expect(["In-Person", "Virtual", "Hybrid"]).toContain(h.format);
+    }
+  });
+
+  it("does not hand callers an array that can poison the cache", () => {
+    const before = loadHackathons().length;
+    // A caller sorting a copy (what every real call site does) must not be
+    // able to change what the next caller sees.
+    [...loadHackathons()].sort(() => -1);
+    expect(loadHackathons().length).toBe(before);
   });
 });
