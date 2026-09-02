@@ -63,6 +63,13 @@ function Tile({
             src={it.src}
             alt={it.alt}
             draggable={false}
+            // The wall sits below the fold, and every tile repeats the same
+            // handful of URLs - so deferring costs one set of fetches when the
+            // gallery is first scrolled to, and every other tile is a cache
+            // hit. Eager loading pulled the whole set during initial page load
+            // instead, competing with the content above it (#299).
+            loading="lazy"
+            decoding="async"
             className="pointer-events-none h-full w-full select-none object-cover"
           />
         </div>

@@ -13,7 +13,28 @@ export function GlobeHero() {
       video.pause();
       return;
     }
-    video.play().catch(() => {});
+    // `preload="none"` means nothing is fetched until we ask - and we do not
+    // ask until the browser is idle. The poster is already painted, so the
+    // background loop has no business competing with the JS and CSS that make
+    // the page interactive. This was `preload="auto"`, which pulled the whole
+    // file at high priority during initial load and made first paint wait on
+    // several MB of decorative video (#299).
+    let cancelled = false;
+    const start = () => {
+      if (!cancelled) video.play().catch(() => {});
+    };
+    // TypeScript types requestIdleCallback as always present, but it is still
+    // missing in older Safari - hence a typeof guard rather than a truthiness
+    // check (which TS rejects as always-true, TS2774).
+    const hasIdle = typeof window.requestIdleCallback === "function";
+    const handle = hasIdle
+      ? window.requestIdleCallback(start, { timeout: 2000 })
+      : window.setTimeout(start, 500);
+    return () => {
+      cancelled = true;
+      if (hasIdle) window.cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
+    };
   }, []);
 
   return (
@@ -25,7 +46,7 @@ export function GlobeHero() {
             Firefox, Edge, Safari on M3+/A17+) pick the 4K UHD source; everyone
             else falls through to the original 1080p H.264. The codecs param on
             the first <source> is what makes non-AV1 browsers skip it without
-            fetching a byte. The UHD file is 1440p AV1 *8-bit* (12 MiB). It
+            fetching a byte. The UHD file is 1440p AV1 *8-bit* (4.4 MiB). It
             was 4K 10-bit, which froze: 10-bit AV1 has almost no hardware
             decode support, so browsers advertised support, picked it, then
             software-decoded 8.3 MP/frame and could not keep up. 8-bit at
@@ -41,7 +62,7 @@ export function GlobeHero() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="none"
           >
             <source
               src="/rednote-summit-opening-4k.mp4"

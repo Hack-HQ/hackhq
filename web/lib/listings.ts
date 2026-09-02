@@ -127,13 +127,36 @@ export function themesFor(text: string): string[] {
   return out.slice(0, 3);
 }
 
+/**
+ * Memo for loadHackathons, keyed by the current date.
+ *
+ * Every listing's state, badge and countdown is derived from `today`, so the
+ * result is only reusable within the same day - the key is what keeps a
+ * long-lived isolate from serving yesterday's "3 days left". Within one day the
+ * work is pure and identical, and it is not cheap: 185 listings x 12 theme
+ * regexes, plus geocoding, title splitting and prize parsing on each.
+ *
+ * This matters because /my is `force-dynamic` (it calls auth()), so it re-ran
+ * all of it on every single request. That is CPU burned inside the Worker on
+ * every authenticated page view - the thing that put us over the limit in #299.
+ *
+ * Safe to share: no caller mutates the array. Every call site that sorts does
+ * so on a fresh array from a .filter()/.map() chain (deck-order copies with
+ * [...filtered] before sorting), and the client components work on serialized
+ * props rather than this object.
+ */
+let hackathonsCache: { key: string; value: Hackathon[] } | null = null;
+
 export function loadHackathons(): Hackathon[] {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const cacheKey = today.toISOString().slice(0, 10);
+  if (hackathonsCache?.key === cacheKey) return hackathonsCache.value;
+
   // Imported as a compile-time constant, so it is always an array here; the
   // build fails loudly in prepare-repo-data.mjs if the source is malformed.
   const raw = listingsData as RawListing[];
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
 
   // Deterministic jitter so co-located markers don't stack exactly.
   const seen: Record<string, number> = {};
@@ -226,6 +249,7 @@ export function loadHackathons(): Hackathon[] {
     );
   }
 
+  hackathonsCache = { key: cacheKey, value: hackathons };
   return hackathons;
 }
 

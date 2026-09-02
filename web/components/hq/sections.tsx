@@ -187,6 +187,10 @@ function DevReveal({
       <img
         src={src}
         alt={alt}
+        // Contributor portraits sit well below the fold, and the hover overlay
+        // below reuses the same URL, so this defers both with one fetch (#299).
+        loading="lazy"
+        decoding="async"
         className="reveal-base absolute inset-0 h-full w-full object-cover"
       />
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -194,6 +198,8 @@ function DevReveal({
         src={src}
         alt=""
         aria-hidden
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-200 group-hover:opacity-100"
         style={{ WebkitMaskImage: mask, maskImage: mask }}
       />

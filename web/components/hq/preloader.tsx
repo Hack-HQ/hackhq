@@ -12,10 +12,16 @@ import { lockScroll } from "@/lib/scroll-lock";
  */
 
 // Collapse order from the original variants: middle → inner pair → outer pair.
-const BAR_DELAYS_MS = [400, 200, 0, 200, 400];
-const HOLD_MS = 1000;
-const COLLAPSE_MS = 1000;
-const TOTAL_MS = HOLD_MS + 400 + COLLAPSE_MS + 150;
+const BAR_DELAYS_MS = [250, 125, 0, 125, 250];
+// These are a straight tax on every first load: the curtain is purely
+// time-based, holds a scroll lock, and never checks whether the page is ready,
+// so every visitor waited TOTAL_MS before they could do anything. It was
+// 1000/1000 with 400ms of stagger - 2550ms in total - which was the single
+// largest fixed contributor to the site feeling slow (#299). Halved here; the
+// reveal and its easing are unchanged. Raise them back if the beat feels short.
+const HOLD_MS = 400;
+const COLLAPSE_MS = 650;
+const TOTAL_MS = HOLD_MS + 250 + COLLAPSE_MS + 100;
 
 export function Preloader() {
   const [collapsed, setCollapsed] = useState(false);
