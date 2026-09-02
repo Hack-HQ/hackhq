@@ -280,22 +280,28 @@ jobs:
           SITE_URL: https://hacking-hq.com
         run: |
           set -euo pipefail
+          # This build's own record of itself, written by prepare-repo-data.mjs
+          # during the build above. Compared whole, not by sha: a competing
+          # pipeline's build of the same commit carries the same sha, and on
+          # 2026-09-02 a forced redeploy passed a sha-only check against the
+          # very build it was replacing, then failed the browser probe on it.
+          # builtAt makes the record unique per build.
+          expected=$(cat web/public/site-data/build.json)
+          echo "expected: $expected"
           live=""
           for attempt in 1 2 3 4 5 6 7 8; do
             live=$(curl -sS --max-time 20 -H 'cache-control: no-cache' \
-              "$SITE_URL/site-data/build.json?deploy=$HEAD_SHA" \
-              | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).sha||"")}catch{console.log("")}})' \
-              || true)
-            if [ "$live" = "$HEAD_SHA" ]; then break; fi
-            echo "attempt $attempt: site serves '${live:-nothing}', waiting for $HEAD_SHA"
+              "$SITE_URL/site-data/build.json?deploy=$HEAD_SHA" || true)
+            if [ "$live" = "$expected" ]; then break; fi
+            echo "attempt $attempt: site serves '${live:-nothing}', waiting for this build"
             sleep 15
           done
-          if [ "$live" != "$HEAD_SHA" ]; then
-            echo "::error::$SITE_URL is serving ${live:-no build.json} two minutes after deploying $HEAD_SHA. \
+          if [ "$live" != "$expected" ]; then
+            echo "::error::$SITE_URL is serving ${live:-no build.json} two minutes after deploying $HEAD_SHA (expected $expected). \
           Another pipeline may be deploying this Worker (web/README.md -> Deployment), or the upload did not go live."
             exit 1
           fi
-          echo "site serves $HEAD_SHA"
+          echo "site serves this build ($HEAD_SHA)"
 
           # A browser-shaped request must get the page, not a redirect into a
           # Clerk development instance (a build made with a pk_test_ key).
@@ -325,18 +331,13 @@ jobs:
           # (same sha, different builtAt, Clerk development key). A build that
           # changes underneath us within a couple of minutes is that race, and
           # the tag must not record this run as what is live.
-          first=$(curl -sS --max-time 20 -H 'cache-control: no-cache' "$SITE_URL/site-data/build.json?settle=$HEAD_SHA" || true)
           sleep 120
-          second=$(curl -sS --max-time 20 -H 'cache-control: no-cache' "$SITE_URL/site-data/build.json?settled=$HEAD_SHA" || true)
-          if [ "$first" != "$second" ]; then
-            echo "::error::The live build changed within two minutes of this deploy (was: $first, now: $second). \\
-          Another pipeline is deploying this Worker - web/README.md -> Deployment -> Workers Builds."
+          second=$(curl -sS --max-time 20 -H 'cache-control: no-cache' "$SITE_URL/site-data/build.json?settle=$HEAD_SHA" || true)
+          if [ "$second" != "$expected" ]; then
+            echo "::error::The live build changed within two minutes of this deploy (now: ${second:-nothing}, expected: $expected). Another pipeline is deploying this Worker - web/README.md -> Deployment -> Workers Builds."
             exit 1
           fi
-          status=$(curl -sS -o /dev/null --max-time 20 -w '%{http_code}' \\
-            -H 'accept: text/html,application/xhtml+xml' \\
-            -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/140.0 Safari/537.36 hackhq-deploy-check' \\
-            "$SITE_URL/")
+          status=$(curl -sS -o /dev/null --max-time 20 -w '%{http_code}' -H 'accept: text/html,application/xhtml+xml' -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/140.0 Safari/537.36 hackhq-deploy-check' "$SITE_URL/")
           if [ "$status" != "200" ]; then
             echo "::error::$SITE_URL/ answered HTTP $status to a browser request two minutes after deploying; the build was replaced or is misconfigured."
             exit 1
