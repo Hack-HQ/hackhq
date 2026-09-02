@@ -4,6 +4,16 @@ import { dirname } from "node:path";
 
 import type { NextConfig } from "next";
 
+import { foreignCiError } from "./lib/foreign-ci";
+
+// Refuse to build under a CI system that is not this repo's pipeline. Checked
+// here rather than in an npm script because this file is loaded by `next build`
+// however the build was invoked - including by `opennextjs-cloudflare build`,
+// which is the command Cloudflare Workers Builds runs. See lib/foreign-ci.ts
+// for what went wrong and web/README.md -> Deployment -> Workers Builds.
+const foreignCi = foreignCiError(process.env);
+if (foreignCi) throw new Error(foreignCi);
+
 // Single source of repo identity (mirrors lib/repo.ts; kept inline so the
 // config file has no local-module import). Override via NEXT_PUBLIC_REPO_SLUG.
 const REPO_SLUG =

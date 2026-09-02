@@ -277,6 +277,44 @@ class DeployChaining(unittest.TestCase):
         self.assertIn("Deploy to Cloudflare", workflow_run_names(read("site_freshness.yml")))
         self.assertEqual("Deploy to Cloudflare", workflow_name(read("deploy.yml")))
 
+    def test_freshness_does_not_race_the_deploy_it_shares_a_push_with(self):
+        """The freshness push trigger must not fire on listing changes.
+
+        A push that changes listings.json also starts deploy.yml. The check
+        finishes in ~20s and the deploy takes a minute or more, so the check
+        would read the pre-deploy site and report every listing in that push as
+        missing - which is what happened on all three merges of 2026-09-02.
+        The deploy-completion trigger covers those pushes properly.
+        """
+        text = read("site_freshness.yml")
+        m = re.search(r"^on:\n(.*?)^permissions:", text, re.MULTILINE | re.DOTALL)
+        self.assertIsNotNone(m, "could not find the `on:` block in site_freshness.yml")
+        push_block = re.search(
+            r"^  push:\n(?:.*\n)*?(?=^  \w)", m.group(1), re.MULTILINE
+        )
+        self.assertIsNotNone(push_block, "site_freshness.yml lost its push trigger")
+        self.assertNotIn(
+            "listings.json",
+            push_block.group(0),
+            "site_freshness.yml runs on pushes that change listings.json. That push "
+            "also triggers the deploy, so the check races it and reports the "
+            "pre-deploy site as stale on every merge.",
+        )
+
+    def test_the_build_refuses_to_run_under_another_ci_system(self):
+        """Only one pipeline may deploy this Worker.
+
+        Cloudflare Workers Builds promoted its own build over a verified deploy
+        on 2026-09-02. Disconnecting it is a dashboard step; this is the half
+        that lives in the repo, and it has to sit where any `next build` loads
+        it rather than in an npm script the other pipeline does not run.
+        """
+        config = os.path.join(WORKFLOW_DIR, "..", "..", "web", "next.config.ts")
+        with open(config, encoding="utf-8") as f:
+            text = f.read()
+        self.assertIn("foreignCiError", text)
+        self.assertIn("throw new Error", text)
+
     def test_freshness_heals_a_development_build_by_redeploying(self):
         """A build from another pipeline on production is the one failure the
         check can fix itself: dispatch deploy.yml with force. That needs
