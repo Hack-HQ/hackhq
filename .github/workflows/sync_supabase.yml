@@ -22,6 +22,17 @@ on:
     paths:
       - '.github/scripts/listings.json'
       - '.github/scripts/seed_supabase.py'
+  # The bot-written edits the push trigger cannot see: the completion of the
+  # workflow that made them is an event GitHub does deliver, so chain on it.
+  # Same list as deploy.yml; test_workflows.py keeps the two in step.
+  workflow_run:
+    workflows:
+      - Update Closing Soon Badges
+      - Auto-Extract Opportunity
+      - Contribution Approved
+      - Update READMEs
+    types: [completed]
+    branches: [main]
   schedule:
     # Hourly, and in practice the only trigger the bot-written listings ever hit.
     # The site's ISR window is an hour, so syncing faster buys nothing - which is
@@ -45,6 +56,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          # The tip of main, whichever event got us here.
+          ref: main
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.11'

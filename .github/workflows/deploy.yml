@@ -4,11 +4,12 @@ name: Deploy to Cloudflare
 # The pipeline that was missing.
 #
 # Production is a Cloudflare Worker (`hackhq`, serving hacking-hq.com through
-# OpenNext). Nothing ever deployed it automatically: Workers Builds is not
-# connected to this repo and there was no deploy workflow, so shipping meant
-# somebody running `npm run deploy` from a laptop. Between 2026-08-18 and
-# 2026-08-25 nobody did, and production sat on version 138 while six newer
-# versions were uploaded and never promoted.
+# OpenNext). Nothing in this repository deployed it: there was no deploy
+# workflow, so shipping meant somebody running `npm run deploy` from a laptop.
+# Between 2026-08-18 and 2026-08-25 nobody did, and production sat on version
+# 138 while six newer versions were uploaded and never promoted. (Those uploads
+# were Cloudflare Workers Builds, which turned out to be connected after all -
+# see "Why the deploy verifies itself" below.)
 #
 # That matters more than a week of staleness, because of how this site is built:
 # listing data is frozen into the bundle at build time (web/README.md ->
@@ -28,6 +29,35 @@ name: Deploy to Cloudflare
 #   would be the ones it never saw - the same gap sync_supabase.yml documents
 #   and test_workflows.py pins down.
 #
+# Why `workflow_run` and not only the schedule:
+#
+#   GitHub's schedule is best-effort. In practice the */30 sweep fired every
+#   4-6 hours here (2026-08-28..09-01: 23 runs in 4.5 days), so a bot commit at
+#   17:40 UTC shipped at 19:15. The listing bots' own runs are not throttled,
+#   and a workflow_run event fires the moment one of them completes - whoever
+#   pushed the commit. That is now the primary trigger for bot-written
+#   listings; the schedule stays as a backstop for anything that slips past it
+#   (a bot run cancelled mid-push, a manual tag reset).
+#
+#   Every workflow that pushes to main must be listed below, and
+#   test_workflows.py fails if one is missing.
+#
+# Why the deploy verifies itself:
+#
+#   A second pipeline was found shipping this Worker (2026-09-01): Cloudflare
+#   Workers Builds had been connected on 2026-08-21 with a *development* Clerk
+#   publishable key as its build variable, and it built every push to main -
+#   bot pushes included - about two minutes after the commit. Each of those
+#   builds bounced every first visit through a dev-instance handshake and
+#   broke sign-in until this workflow's next sweep overwrote it. Disabling it
+#   is a one-time dashboard step (web/README.md -> Deployment -> Workers
+#   Builds); until then the verification below is what keeps that build from
+#   being recorded as shipped. Either way the lesson stands: "the upload
+#   succeeded" is not "this commit is live". The build publishes the commit it
+#   was made from at /site-data/build.json, and the deploy is only recorded as
+#   shipped once the public site serves that sha and answers a browser request
+#   with 200 rather than a Clerk handshake.
+#
 # This replaces mirror_production_branch.yml, which force-pushed main onto a
 # `vercel` branch for a Vercel Git integration. Production is Cloudflare; that
 # mirror shipped nothing.
@@ -46,11 +76,24 @@ on:
       # copy-repo-assets.mjs copies these into web/public/repo-assets/.
       - 'assets/**'
       - '.github/workflows/deploy.yml'
+  # Bot-written commits. A push made with the default GITHUB_TOKEN starts no
+  # workflow, but the completion of the workflow that made it is a first-class
+  # event. Names, not file names: this is how workflow_run addresses them.
+  workflow_run:
+    workflows:
+      - Update Closing Soon Badges
+      - Auto-Extract Opportunity
+      - Contribution Approved
+      - Update READMEs
+      - Update Gallery
+      - Gallery Photo Approved
+    types: [completed]
+    branches: [main]
   schedule:
-    # Every 30 minutes. This is the trigger the bot-written listing commits
-    # actually hit, and it inherits the cadence from the mirror workflow it
-    # replaces. A sweep that finds nothing new costs one checkout and exits
-    # before installing anything.
+    # Every 30 minutes, as a backstop. GitHub throttles this to every few hours
+    # under load, which is why it is no longer the path bot commits rely on. A
+    # sweep that finds nothing new costs one checkout and exits before
+    # installing anything.
     - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
@@ -82,6 +125,10 @@ jobs:
         with:
           # Full history and tags: the gate below reads refs/tags/production.
           fetch-depth: 0
+          # Always the tip of main. For workflow_run this is the default anyway
+          # (github.sha is the last commit on the default branch), but say so:
+          # a deploy of the bot's pre-push checkout would ship the wrong tree.
+          ref: main
 
       # Deciding "has anything changed" from the git tag rather than from a
       # file diff, because the question is not "did these paths change" but
@@ -219,9 +266,62 @@ jobs:
           NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
         run: npm run deploy
 
-      # Only after a green deploy. The tag is this workflow's memory of what is
-      # live, and the scheduled sweep reads it — writing it on failure would
-      # mark unshipped work as shipped and skip it forever.
+      # The upload succeeding is not the same as this commit being live. Ask the
+      # public site which commit it is serving (prepare-repo-data.mjs writes it
+      # to /site-data/build.json at build time) and how it answers a browser.
+      # Fails the job if either is wrong, which leaves the production tag where
+      # it was so the next trigger tries again - the failure mode this guards
+      # against is a different build winning the race, and a quietly moved tag
+      # would call that shipped.
+      - name: Verify the public site serves this commit
+        if: steps.gate.outputs.deploy == 'true'
+        env:
+          HEAD_SHA: ${{ steps.gate.outputs.head }}
+          SITE_URL: https://hacking-hq.com
+        run: |
+          set -euo pipefail
+          live=""
+          for attempt in 1 2 3 4 5 6 7 8; do
+            live=$(curl -sS --max-time 20 -H 'cache-control: no-cache' \
+              "$SITE_URL/site-data/build.json?deploy=$HEAD_SHA" \
+              | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).sha||"")}catch{console.log("")}})' \
+              || true)
+            if [ "$live" = "$HEAD_SHA" ]; then break; fi
+            echo "attempt $attempt: site serves '${live:-nothing}', waiting for $HEAD_SHA"
+            sleep 15
+          done
+          if [ "$live" != "$HEAD_SHA" ]; then
+            echo "::error::$SITE_URL is serving ${live:-no build.json} two minutes after deploying $HEAD_SHA. \
+          Another pipeline may be deploying this Worker (web/README.md -> Deployment), or the upload did not go live."
+            exit 1
+          fi
+          echo "site serves $HEAD_SHA"
+
+          # A browser-shaped request must get the page, not a redirect into a
+          # Clerk development instance (a build made with a pk_test_ key).
+          status=$(curl -sS -o /dev/null --max-time 20 -w '%{http_code}' \
+            -H 'accept: text/html,application/xhtml+xml' \
+            -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/140.0 Safari/537.36 hackhq-deploy-check' \
+            "$SITE_URL/")
+          if [ "$status" != "200" ]; then
+            location=$(curl -sS -o /dev/null --max-time 20 -w '%{redirect_url}' \
+              -H 'accept: text/html,application/xhtml+xml' \
+              -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/140.0 Safari/537.36 hackhq-deploy-check' \
+              "$SITE_URL/")
+            case "$location" in
+              *clerk.accounts.dev*)
+                echo "::error::$SITE_URL/ redirects browsers to a Clerk DEVELOPMENT instance. \
+          The build was made with a pk_test_ publishable key; the preflight should have refused it." ;;
+              *)
+                echo "::error::$SITE_URL/ answered HTTP $status to a browser request (redirect: '${location:-none}'), expected 200." ;;
+            esac
+            exit 1
+          fi
+          echo "visitor probe: 200"
+
+      # Only after a green, verified deploy. The tag is this workflow's memory
+      # of what is live, and the scheduled sweep reads it — writing it on
+      # failure would mark unshipped work as shipped and skip it forever.
       - name: Record what was deployed
         if: steps.gate.outputs.deploy == 'true'
         env:

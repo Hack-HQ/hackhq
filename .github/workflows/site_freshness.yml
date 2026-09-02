@@ -14,14 +14,17 @@ name: Site freshness
 # happened to predict: no deploy ran, a deploy failed, a deploy shipped from a
 # stale checkout, or the Worker was rolled back.
 #
-# Why the schedule is the real trigger:
-#   Every automated edit to listings.json is pushed to main with the default
-#   GITHUB_TOKEN, and GitHub starts no workflow run for such a push - the same
-#   gap sync_supabase.yml documents and test_workflows.py pins down. The push
-#   trigger below fires for human commits only.
-#
-# Runs at :37, after deploy.yml's :00 and :30 sweeps have had time to finish, so
-# a normal add-then-deploy cycle is never reported as stale.
+# When it runs:
+#   - after every run of the Deploy workflow (workflow_run), so a deploy that
+#     shipped the wrong thing, or a sweep that decided there was nothing to
+#     ship, is checked within minutes rather than at the next hour mark;
+#   - hourly, as a backstop for a Worker rolled back or deployed from outside
+#     CI (which is how a Clerk development build reached production for days
+#     in 2026-08, see check_site_freshness.py);
+#   - on human pushes to the files involved.
+#   A push made with the default GITHUB_TOKEN starts no workflow run, so the
+#   push trigger alone would never see bot-written listings - the same gap
+#   sync_supabase.yml documents and test_workflows.py pins down.
 
 on:
   push:
@@ -30,6 +33,10 @@ on:
       - '.github/scripts/listings.json'
       - '.github/scripts/check_site_freshness.py'
       - '.github/workflows/site_freshness.yml'
+  workflow_run:
+    workflows: ['Deploy to Cloudflare']
+    types: [completed]
+    branches: [main]
   schedule:
     - cron: '37 * * * *'
   workflow_dispatch:
@@ -47,15 +54,20 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          # Full history so the script can say how many commits behind main the
+          # live build is (git rev-list <live sha>..HEAD).
+          fetch-depth: 0
+          ref: main
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.11'
       - run: pip install -r .github/scripts/requirements.txt
 
-      # Fails the job when the site is behind the repo. That is the point: this
-      # workflow exists to convert a silent, visitor-facing problem into a red
-      # run someone gets notified about. The script's output names the missing
-      # hackathons and how to ship them.
+      # Fails the job when the site is behind the repo, or is not serving the
+      # page to browsers. That is the point: this workflow exists to convert a
+      # silent, visitor-facing problem into a red run someone gets notified
+      # about. The script's output names what is wrong and how to fix it.
       - name: Check every listing is live
         id: check
         run: python .github/scripts/check_site_freshness.py

@@ -22,6 +22,9 @@
 
 # generated at build time by scripts/prepare-repo-data.mjs (repo-root data as JSON)
 /lib/generated/
+# generated at build time by scripts/prepare-repo-data.mjs (served at /site-data/*.json
+# so the freshness check can compare the deployed listings snapshot exactly)
+/public/site-data/
 
 # opennext / cloudflare build output
 /.open-next/
