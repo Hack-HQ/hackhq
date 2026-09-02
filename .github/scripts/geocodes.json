@@ -1,9 +1,17 @@
 {
   "$comment": "Single source of truth for globe coordinates. Read by web/lib/geo.ts AND .github/scripts/check_geo_coverage.py. Keys are normalized: lowercase, no trailing country.",
   "coordinates": {
+    "alexandria, egypt": [
+      31.2001,
+      29.9187
+    ],
     "amherst, ma": [
       42.3732,
       -72.5199
+    ],
+    "amsterdam, netherlands": [
+      52.3676,
+      4.9041
     ],
     "ann arbor, mi": [
       42.2808,
@@ -40,6 +48,10 @@
     "brooklyn, ny": [
       40.6782,
       -73.9442
+    ],
+    "burnaby, bc": [
+      49.2488,
+      -122.9805
     ],
     "calgary, ab": [
       51.0447,
@@ -89,6 +101,10 @@
       42.737,
       -84.4839
     ],
+    "espoo, finland": [
+      60.2055,
+      24.6559
+    ],
     "flushing, ny": [
       40.7365,
       -73.8203
@@ -108,6 +124,10 @@
     "hamilton, on": [
       43.2557,
       -79.8711
+    ],
+    "henrico, va": [
+      37.5538,
+      -77.4062
     ],
     "ho chi minh city, vietnam": [
       10.7769,
@@ -129,6 +149,18 @@
       22.5726,
       88.3639
     ],
+    "kraków, poland": [
+      50.0647,
+      19.945
+    ],
+    "lausanne, switzerland": [
+      46.5197,
+      6.6323
+    ],
+    "london, on": [
+      42.9849,
+      -81.2453
+    ],
     "london, uk": [
       51.5074,
       -0.1278
@@ -137,9 +169,21 @@
       34.0522,
       -118.2437
     ],
+    "louisville, ky": [
+      38.2527,
+      -85.7585
+    ],
     "lubbock, tx": [
       33.5779,
       -101.8552
+    ],
+    "manchester, uk": [
+      53.4808,
+      -2.2426
+    ],
+    "manteca, ca": [
+      37.7974,
+      -121.2161
     ],
     "miami, fl": [
       25.7617,
@@ -152,6 +196,18 @@
     "monterrey, mexico": [
       25.6866,
       -100.3161
+    ],
+    "mountain house, ca": [
+      37.7833,
+      -121.5408
+    ],
+    "mumbai, india": [
+      19.076,
+      72.8777
+    ],
+    "munich, germany": [
+      48.1351,
+      11.582
     ],
     "new brunswick, nj": [
       40.4862,
@@ -169,6 +225,10 @@
       40.7357,
       -74.1724
     ],
+    "nottingham, uk": [
+      52.9548,
+      -1.1581
+    ],
     "orlando, fl": [
       28.5384,
       -81.3789
@@ -185,6 +245,10 @@
       40.4406,
       -79.9959
     ],
+    "princeton, nj": [
+      40.3573,
+      -74.6672
+    ],
     "providence, ri": [
       41.824,
       -71.4128
@@ -197,6 +261,10 @@
       32.9483,
       -96.7299
     ],
+    "rome, italy": [
+      41.9028,
+      12.4964
+    ],
     "san antonio, tx": [
       29.4241,
       -98.4936
@@ -208,6 +276,10 @@
     "san francisco, ca": [
       37.7749,
       -122.4194
+    ],
+    "san ramon, ca": [
+      37.7799,
+      -121.978
     ],
     "santa clara, ca": [
       37.3541,
@@ -232,6 +304,10 @@
     "tempe, az": [
       33.4255,
       -111.94
+    ],
+    "tokyo, japan": [
+      35.6764,
+      139.65
     ],
     "toronto, on": [
       43.6532,
@@ -276,6 +352,7 @@
   },
   "unmappable": [
     "tba",
-    "global"
+    "global",
+    "multiple cities"
   ]
 }
