@@ -17,6 +17,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 <!-- ARCHIVE_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----------- | ----------- |
+| 🔒 **[CLOSED]** | OpenAI | The WebMCP Challenge — Aug 25 – Sep 3, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack Club | Stardance | Virtual | Online | :lock: | Aug 27, 2026 |
 | 🔒 **[CLOSED]** | Peddie Computer Science Club | PeddieHacks 2026 — Aug 14–16, 2026 | Virtual | Online | :lock: | Aug 09, 2026 |
 | 🔒 **[CLOSED]** | IBM | IBM Dev Day: Bob in Action + Hackathon — Aug 27–30, 2026 | Virtual | Online | :lock: | Aug 09, 2026 |
@@ -32,6 +33,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | DataHub | Build with DataHub: The Agent Hackathon — Jul 6– Aug 10, 2026 | Virtual | Online | :lock: | Jul 11, 2026 |
 | 🔒 **[CLOSED]** | Cockroach Labs | CockroachDB × AWS Hackathon — Build with Agentic Memory — Jun 30– Aug 18, 2026 | Virtual | Online | :lock: | Jul 11, 2026 |
 | 🔒 **[CLOSED]** | Africa Deep Tech Foundation | Africa Deep Tech Challenge 2026 — The Laptop LLM Challenge | Virtual | Online | :lock: | Jul 11, 2026 |
+| 🔒 **[CLOSED]** | DevNetwork | DevNetwork [API + Cloud + AI] Hackathon 2026 — Aug 17– Sep 3, 2026 | Hybrid | Santa Clara, CA, Online | :lock: | Jul 11, 2026 |
 | 🔒 **[CLOSED]** | OneAquaHealth | OneAquaHealth IEEE Global Hackathon — Sep 16–30, 2026 | Virtual | Online | :lock: | Jul 11, 2026 |
 | 🔒 **[CLOSED]** | University of Waterloo | Hack the North — Sept 18–20, 2026 | In-Person | Toronto, ON | :lock: | Jul 10, 2026 |
 | 🔒 **[CLOSED]** | Carleton University | cuHacking 2026 — Jul 10 – Jul 12, 2026 | In-Person | Ottawa, ON | :lock: | Jul 03, 2026 |
