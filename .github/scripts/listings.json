@@ -2608,14 +2608,16 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788359947,
-    "date_updated": 1788359947,
+    "date_updated": 1788713073,
     "source": "hackclub",
     "startDate": "2026-09-05",
-    "endDate": "2026-09-05"
+    "endDate": "2026-09-05",
+    "date_closed": "2026-09-06",
+    "archive_note": "Auto-archived 2026-09-06 \u2014 event ended 2026-09-05"
   },
   {
     "company_name": "Rice University",
