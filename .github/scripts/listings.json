@@ -910,15 +910,17 @@
     ],
     "format": "Virtual",
     "prize": "$74,500+ in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788361635,
-    "date_updated": 1788361635,
+    "date_updated": 1788806254,
     "source": "ethglobal",
     "deadline": "2026-09-06",
     "startDate": "2026-09-04",
-    "endDate": "2026-09-16"
+    "endDate": "2026-09-16",
+    "date_closed": "2026-09-07",
+    "archive_note": "Auto-archived 2026-09-07 \u2014 deadline passed 2026-09-06"
   },
   {
     "id": "2b690c43-980f-4f0e-9bba-5df83de17e4a",
@@ -1777,15 +1779,17 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788359947,
-    "date_updated": 1788359947,
+    "date_updated": 1788806254,
     "source": "organizer-site",
     "deadline": "2026-09-06",
     "startDate": "2026-11-13",
-    "endDate": "2026-11-15"
+    "endDate": "2026-11-15",
+    "date_closed": "2026-09-07",
+    "archive_note": "Auto-archived 2026-09-07 \u2014 deadline passed 2026-09-06"
   },
   {
     "id": "9f5577d4-2af5-4310-9b0c-9fa441171002",

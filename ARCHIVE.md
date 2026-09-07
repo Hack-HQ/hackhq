@@ -17,7 +17,9 @@ This page is a permanent record of every hackathon that has closed. These are ke
 <!-- ARCHIVE_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----------- | ----------- |
+| 🔒 **[CLOSED]** | ETHGlobal | ETHOnline 2026 — Sep 4–16, 2026 (Async Online Hackathon; Apply to Attend; Approval Required) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | OpenAI | The WebMCP Challenge — Aug 25 – Sep 3, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Junction | Junction 2026: European Tech Renaissance — Nov 13–15, 2026 (48-Hour Hackathon; Applications Open) | In-Person | Espoo, Finland | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Revivals Egypt | RePlay Alexandria: Shipaton Edition — Sep 5, 2026 (4-Hour Build Sprint; Applications Open) | In-Person | Alexandria, Egypt | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack Club | Stardance | Virtual | Online | :lock: | Aug 27, 2026 |
 | 🔒 **[CLOSED]** | Peddie Computer Science Club | PeddieHacks 2026 — Aug 14–16, 2026 | Virtual | Online | :lock: | Aug 09, 2026 |
