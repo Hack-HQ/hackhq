@@ -581,15 +581,17 @@
     ],
     "format": "In-Person",
     "prize": "$4,750 in cash + comma hardware",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788334443,
-    "date_updated": 1788334443,
+    "date_updated": 1788975519,
     "source": "devpost",
     "deadline": "2026-09-08",
     "startDate": "2026-09-18",
-    "endDate": "2026-09-20"
+    "endDate": "2026-09-20",
+    "date_closed": "2026-09-09",
+    "archive_note": "Auto-archived 2026-09-09 \u2014 deadline passed 2026-09-08"
   },
   {
     "id": "0b3da014-fca8-4d8a-990c-dcc4da60363e",
