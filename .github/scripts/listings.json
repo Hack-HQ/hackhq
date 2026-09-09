@@ -1365,6 +1365,25 @@
     "endDate": "2026-09-12"
   },
   {
+    "id": "5a72ba68-dc1e-4fdb-ab1d-805ccd123f08",
+    "company_name": "HackerRank",
+    "title": "HackerRank Orchestrate | September Edition",
+    "url": "https://www.hackerrank.com/hackerrank-orchestrate-september26",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$1,200 in cash prize + opportunities with leading tech companies + HackerRank exclusive merch + $10k for 1st place with Codex",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1788967762,
+    "date_updated": 1788967762,
+    "source": "akeight",
+    "startDate": "2026-09-12",
+    "endDate": "2026-09-12"
+  },
+  {
     "id": "6e9591fd-add1-4e0f-90ea-5002c3fc6c9b",
     "company_name": "HackHarvard",
     "title": "HackHarvard 2026 (Student Hackathon; Applications Open)",
