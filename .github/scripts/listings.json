@@ -892,15 +892,17 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788359947,
-    "date_updated": 1788359947,
+    "date_updated": 1789231680,
     "source": "ethglobal",
     "deadline": "2026-09-11",
     "startDate": "2026-09-25",
-    "endDate": "2026-09-27"
+    "endDate": "2026-09-27",
+    "date_closed": "2026-09-12",
+    "archive_note": "Auto-archived 2026-09-12 \u2014 deadline passed 2026-09-11"
   },
   {
     "id": "f4bb73de-ff33-42da-915b-61640213237f",
@@ -1030,15 +1032,17 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782525600,
-    "date_updated": 1788292416,
+    "date_updated": 1789231680,
     "source": "Jose-Gael-Cruz-Lopez",
     "deadline": "2026-09-11",
     "startDate": "2026-10-24",
-    "endDate": "2026-10-25"
+    "endDate": "2026-10-25",
+    "date_closed": "2026-09-12",
+    "archive_note": "Auto-archived 2026-09-12 \u2014 deadline passed 2026-09-11"
   },
   {
     "id": "d02166d8-007b-44bd-9e2d-1ba0fbe145de",
