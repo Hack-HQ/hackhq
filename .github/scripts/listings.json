@@ -162,15 +162,17 @@
     ],
     "format": "Virtual",
     "prize": "$40,000 in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788361635,
-    "date_updated": 1788361635,
+    "date_updated": 1789495147,
     "source": "devpost",
     "deadline": "2026-09-14",
     "startDate": "2026-08-10",
-    "endDate": "2026-09-14"
+    "endDate": "2026-09-14",
+    "date_closed": "2026-09-15",
+    "archive_note": "Auto-archived 2026-09-15 \u2014 deadline passed 2026-09-14"
   },
   {
     "id": "2692ab55-1780-4899-9d82-a6341d063bf2",
@@ -416,15 +418,17 @@
     ],
     "format": "Virtual",
     "prize": "$10,000 in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788361635,
-    "date_updated": 1788361635,
+    "date_updated": 1789495147,
     "source": "devpost",
     "deadline": "2026-09-14",
     "startDate": "2026-07-23",
-    "endDate": "2026-09-14"
+    "endDate": "2026-09-14",
+    "date_closed": "2026-09-15",
+    "archive_note": "Auto-archived 2026-09-15 \u2014 deadline passed 2026-09-14"
   },
   {
     "id": "1e31d21c-0355-494e-a0a2-2431a51301a6",
