@@ -24,6 +24,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | CALL-E | CALL-E: Your Code Is Calling — Jul 23 – Sep 14, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | ETHGlobal | ETHOnline 2026 — Sep 4–16, 2026 (Async Online Hackathon; Apply to Attend; Approval Required) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Google Cloud | Agentic Cinema: The Blockbuster Hackathon — Jul 27 – Sep 9, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | lablab.ai | AI Infra Summit Hackathon 2026 — Sep 10–17, 2026 (Hybrid Hackathon; Enrollment Open; On-Site by Invitation) | Hybrid | Santa Clara, CA, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | OpenAI | The WebMCP Challenge — Aug 25 – Sep 3, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | AI Tinkerers | AI Tinkerers: Agents, Everywhere — Global Hackathon — Sep 12, 2026 (One-Day Builders Hackathon; Apply to Attend; Approval Required) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | ETHGlobal | ETHGlobal Tokyo 2026 — Sep 25–27, 2026 (Apply to Attend; Approval Required) | In-Person | Tokyo, Japan | :lock: | Sep 02, 2026 |
@@ -32,6 +33,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Junction | Junction 2026: European Tech Renaissance — Nov 13–15, 2026 (48-Hour Hackathon; Applications Open) | In-Person | Espoo, Finland | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Revivals Egypt | RePlay Alexandria: Shipaton Edition — Sep 5, 2026 (4-Hour Build Sprint; Applications Open) | In-Person | Alexandria, Egypt | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | comma.ai | COMMA_HACK 7 — Sep 18–20, 2026 | In-Person | San Diego, CA | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Rice University | Urban Sustainability Hackathon: World Cup 2026 HACK — Jun 23 – Sep 17, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Texas Tech University | HackWesTX 2026 — Sep 12–13, 2026 (Student Hackathon; Registration Open) | In-Person | Lubbock, TX | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack Club | Stardance | Virtual | Online | :lock: | Aug 27, 2026 |
 | 🔒 **[CLOSED]** | Peddie Computer Science Club | PeddieHacks 2026 — Aug 14–16, 2026 | Virtual | Online | :lock: | Aug 09, 2026 |
@@ -67,6 +69,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Hack the 6ix | Hack the 6ix 2026 — Jul 17–19, 2026 | In-Person | Toronto, ON, Canada | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | Hexafalls | Hexafalls 2 — Jul 24–26, 2026 | In-Person | Kolkata, India | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | Major League Hacking | Global Hack Week: Agents — Aug 7–13, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
+| 🔒 **[CLOSED]** | Major League Hacking | Global Hack Week: Data — Sep 11–17, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | XPRIZE | Build with Gemini XPRIZE — May 19 – Aug 17, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | Devpost | H0: Hack the Zero Stack with Vercel v0 and AWS Databases — May 27 – Jun 29, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |
 | 🔒 **[CLOSED]** | Qwen Cloud | Global AI Hackathon Series with Qwen Cloud — May 26 – Jul 20, 2026 | Virtual | Online | :lock: | Jun 27, 2026 |

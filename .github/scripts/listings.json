@@ -1865,14 +1865,16 @@
     ],
     "format": "Hybrid",
     "prize": "$21,000+ in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788361635,
-    "date_updated": 1788361635,
+    "date_updated": 1789752826,
     "source": "lablab.ai",
     "startDate": "2026-09-10",
-    "endDate": "2026-09-17"
+    "endDate": "2026-09-17",
+    "date_closed": "2026-09-18",
+    "archive_note": "Auto-archived 2026-09-18 \u2014 event ended 2026-09-17"
   },
   {
     "id": "dc86acac-4fce-434c-8a8b-595a1780b652",
@@ -2021,14 +2023,16 @@
     ],
     "format": "Virtual",
     "prize": "Swag + prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1782565200,
-    "date_updated": 1786253991,
+    "date_updated": 1789752826,
     "source": "Jose-Gael-Cruz-Lopez",
     "startDate": "2026-09-11",
-    "endDate": "2026-09-17"
+    "endDate": "2026-09-17",
+    "date_closed": "2026-09-18",
+    "archive_note": "Auto-archived 2026-09-18 \u2014 event ended 2026-09-17"
   },
   {
     "id": "b8d2fdb4-19d9-4232-95cd-a511480f0cb8",
@@ -2699,15 +2703,17 @@
     ],
     "format": "Virtual",
     "prize": "$17,500 in cash prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788334443,
-    "date_updated": 1788334443,
+    "date_updated": 1789752826,
     "source": "devpost",
     "deadline": "2026-09-17",
     "startDate": "2026-06-23",
-    "endDate": "2026-09-17"
+    "endDate": "2026-09-17",
+    "date_closed": "2026-09-18",
+    "archive_note": "Auto-archived 2026-09-18 \u2014 deadline passed 2026-09-17"
   },
   {
     "id": "b8d6fa9a-d8a4-47be-a033-078f542c9cb8",
