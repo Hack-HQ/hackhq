@@ -1781,16 +1781,18 @@
     ],
     "format": "In-Person",
     "prize": "Internship consideration; travel covered",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "deadline": "2026-09-18",
     "startDate": "2026-10-16",
     "endDate": "2026-10-17",
     "date_posted": 1786265678,
-    "date_updated": 1786581328,
+    "date_updated": 1789837314,
     "source": "Jose-Gael-Cruz-Lopez",
-    "featured": true
+    "featured": false,
+    "date_closed": "2026-09-19",
+    "archive_note": "Auto-archived 2026-09-19 \u2014 deadline passed 2026-09-18"
   },
   {
     "id": "2fe3f9b8-d850-5198-82c4-8fa011521ea4",
