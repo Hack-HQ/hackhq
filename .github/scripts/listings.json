@@ -1102,15 +1102,17 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "source": "srirae",
     "date_posted": 1784609254,
-    "date_updated": 1788292416,
+    "date_updated": 1789924758,
     "id": "0ef7e14a-5cc6-40ac-ba08-e0ccee428673",
     "startDate": "2026-09-18",
-    "endDate": "2026-09-19"
+    "endDate": "2026-09-19",
+    "date_closed": "2026-09-20",
+    "archive_note": "Auto-archived 2026-09-20 \u2014 event ended 2026-09-19"
   },
   {
     "id": "f33bdb4b-b1e4-4858-8ade-32174e2b425e",
