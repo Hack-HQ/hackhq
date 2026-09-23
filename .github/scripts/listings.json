@@ -409,6 +409,24 @@
     "endDate": "2026-09-28"
   },
   {
+    "id": "7aa8dc07-708e-4587-b6d9-55a55a463820",
+    "company_name": "builderr",
+    "title": "Signalpost company intelligence challenge",
+    "url": "https://builderr.ai/challenges/signalpost",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "$2,500 in prizes",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1790127846,
+    "date_updated": 1790127846,
+    "source": "sohamsinha2018",
+    "endDate": "2026-10-21"
+  },
+  {
     "id": "c171d9d0-01ee-4ae7-bf2c-ba1fc1d41577",
     "company_name": "CALL-E",
     "title": "CALL-E: Your Code Is Calling \u2014 Jul 23 \u2013 Sep 14, 2026 (Online Hackathon; Registration Open)",
