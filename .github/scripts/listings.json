@@ -3640,5 +3640,24 @@
     "source": "luma",
     "startDate": "2026-10-24",
     "endDate": "2026-10-25"
+  },
+  {
+    "id": "ef2df261-e297-44e7-b360-2d450ad1b4fe",
+    "company_name": "Stanford",
+    "title": "TreeHacks 2027 \u2014 Feb 12\u201314, 2027",
+    "url": "https://treehacks.com/",
+    "locations": [
+      "Stanford, CA"
+    ],
+    "format": "In-Person",
+    "prize": "TBA",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1790279977,
+    "date_updated": 1790279977,
+    "source": "organizer-site",
+    "startDate": "2027-02-12",
+    "endDate": "2027-02-14"
   }
 ]
