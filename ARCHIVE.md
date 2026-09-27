@@ -31,9 +31,11 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | lablab.ai | AI Infra Summit Hackathon 2026 — Sep 10–17, 2026 (Hybrid Hackathon; Enrollment Open; On-Site by Invitation) | Hybrid | Santa Clara, CA, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | OpenAI | The WebMCP Challenge — Aug 25 – Sep 3, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | AI Tinkerers | AI Tinkerers: Agents, Everywhere — Global Hackathon — Sep 12, 2026 (One-Day Builders Hackathon; Apply to Attend; Approval Required) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Bay Valley Hacks | Bay-Valley Hacks 2026 — Sep 26, 2026 (High School Hackathon; Registration Open) | In-Person | Mountain House, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Emerald Hacking & Coding Club | Dublin Hacx 2026 — Oct 3, 2026 (High School Hackathon; Registration Open) | In-Person | San Ramon, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | ETHGlobal | ETHGlobal Tokyo 2026 — Sep 25–27, 2026 (Apply to Attend; Approval Required) | In-Person | Tokyo, Japan | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack the Track | Hack the Track 2026 — Sep 11–12, 2026 (High School Hackathon; Registration Open) | In-Person | Louisville, KY | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Hack-Nation | Hack-Nation Global AI Hackathon 7 — Oct 3–4, 2026 (24-Hour Hybrid AI Hackathon; Rolling Applications Open) | Hybrid | Cambridge, MA, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hacker Fund | VISION HACK 2026 — Sep 12, 2026 (12-Hour Youth Hackathon; Apply to Attend; Approval Required) | In-Person | Los Angeles, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Junction | Junction 2026: European Tech Renaissance — Nov 13–15, 2026 (48-Hour Hackathon; Applications Open) | In-Person | Espoo, Finland | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Revivals Egypt | RePlay Alexandria: Shipaton Edition — Sep 5, 2026 (4-Hour Build Sprint; Applications Open) | In-Person | Alexandria, Egypt | :lock: | Sep 02, 2026 |
@@ -41,6 +43,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Coffee and Code Philadelphia | AI Agent Hackathon — Sep 20, 2026 (One-Day Hackathon; Registration Open) | In-Person | Philadelphia, PA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | comma.ai | COMMA_HACK 7 — Sep 18–20, 2026 | In-Person | San Diego, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Rice University | Urban Sustainability Hackathon: World Cup 2026 HACK — Jun 23 – Sep 17, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Showerhacks | Showerhacks — Sep 26, 2026 (One-Day Hackathon; Registration Open) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | General Learning | General Learning Hacks — Sep 19–20, 2026 (24-Hour EdTech & AI Hackathon; Registration Open) | In-Person | Hong Kong | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Texas Tech University | HackWesTX 2026 — Sep 12–13, 2026 (Student Hackathon; Registration Open) | In-Person | Lubbock, TX | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack Club | Stardance | Virtual | Online | :lock: | Aug 27, 2026 |
