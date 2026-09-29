@@ -3176,15 +3176,17 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788359947,
-    "date_updated": 1788359947,
+    "date_updated": 1790709013,
     "source": "organizer-site",
     "deadline": "2026-09-28",
     "startDate": "2026-11-13",
-    "endDate": "2026-11-15"
+    "endDate": "2026-11-15",
+    "date_closed": "2026-09-29",
+    "archive_note": "Auto-archived 2026-09-29 \u2014 deadline passed 2026-09-28"
   },
   {
     "id": "250fe6fd-de66-4a21-802d-c82226b3b208",
@@ -3739,15 +3741,17 @@
     ],
     "format": "In-Person",
     "prize": "$100,000+ in credits (Supabase, Anthropic, Stripe, Vercel)",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1790709013,
     "source": "organizer-site",
     "deadline": "2026-09-28",
     "startDate": "2026-10-03",
-    "endDate": "2026-10-03"
+    "endDate": "2026-10-03",
+    "date_closed": "2026-09-29",
+    "archive_note": "Auto-archived 2026-09-29 \u2014 deadline passed 2026-09-28"
   },
   {
     "company_name": "SwampHacks",
