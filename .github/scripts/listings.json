@@ -1371,14 +1371,16 @@
     ],
     "format": "In-Person",
     "prize": "US$5,000+ prize pool",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1790794289,
     "source": "luma",
     "startDate": "2026-09-29",
-    "endDate": "2026-09-29"
+    "endDate": "2026-09-29",
+    "date_closed": "2026-09-30",
+    "archive_note": "Auto-archived 2026-09-30 \u2014 event ended 2026-09-29"
   },
   {
     "id": "13958605-c981-4428-a3ac-0fdfc82c4da3",
@@ -3644,15 +3646,17 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1790794289,
     "source": "mlh",
     "deadline": "2026-09-29",
     "startDate": "2026-10-09",
-    "endDate": "2026-10-10"
+    "endDate": "2026-10-10",
+    "date_closed": "2026-09-30",
+    "archive_note": "Auto-archived 2026-09-30 \u2014 deadline passed 2026-09-29"
   },
   {
     "id": "efb231e9-7e4f-439c-bf1e-077464fe8be5",
@@ -3905,14 +3909,16 @@
     ],
     "format": "In-Person",
     "prize": "Main-stage pitch to VCs at The AI Conference",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788334443,
-    "date_updated": 1788334443,
+    "date_updated": 1790794289,
     "source": "luma",
     "startDate": "2026-09-29",
-    "endDate": "2026-09-29"
+    "endDate": "2026-09-29",
+    "date_closed": "2026-09-30",
+    "archive_note": "Auto-archived 2026-09-30 \u2014 event ended 2026-09-29"
   },
   {
     "id": "25135231-e73d-419c-96dd-5922a244153c",

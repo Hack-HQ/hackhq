@@ -17,8 +17,10 @@ This page is a permanent record of every hackathon that has closed. These are ke
 <!-- ARCHIVE_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----------- | ----------- |
+| 🔒 **[CLOSED]** | Flower Labs / Nebius | Collaborative Agent Hackathon @ Stanford 2026 — Sep 29, 2026 | In-Person | Stanford, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | IBM / lablab.ai | IBM Bob 2.0 Hackathon — Sep 25–27, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Jaseci Labs | JacHacks a2Tech — Sep 26–27, 2026 | In-Person | Ann Arbor, MI | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | SSTC Bhilai (HackBIOS) | HackBIOS 2K26 — Oct 9–10, 2026 | In-Person | Bhilai, India | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Supabase | Supabase Select 2026 Hackathon — Oct 3, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | University of Missouri (TigerHacks) | TigerHacks 2026 — Sep 25–27, 2026 | In-Person | Columbia, MO | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | HackerRank | HackerRank Orchestrate \| September Edition | Virtual | Online | :lock: | Sep 09, 2026 |
@@ -48,6 +50,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | European Defense Tech Hub × NUS Enterprise | Singapore Defense Tech Hackathon 2026 — Sep 25–27, 2026 (Applications Open; Approval Required) | In-Person | Singapore | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Rice University | Urban Sustainability Hackathon: World Cup 2026 HACK — Jun 23 – Sep 17, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Showerhacks | Showerhacks — Sep 26, 2026 (One-Day Hackathon; Registration Open) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | The AI Conference × [SF] HackerSquad | The AI Conference Hack Day 2026 — Sep 29, 2026 (One-Day Build; Approval Required) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | General Learning | General Learning Hacks — Sep 19–20, 2026 (24-Hour EdTech & AI Hackathon; Registration Open) | In-Person | Hong Kong | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack the Hill | Hack the Hill III — Sep 25–27, 2026 (Student Hackathon; Applications Open) | In-Person | Ottawa, ON | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Temple University | OwlHacks 2026 — Sep 26–27, 2026 (Student Hackathon; Registration Open) | In-Person | Philadelphia, PA | :lock: | Sep 02, 2026 |
