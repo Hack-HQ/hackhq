@@ -21,6 +21,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Flower Labs / Nebius | Collaborative Agent Hackathon @ Stanford 2026 — Sep 29, 2026 | In-Person | Stanford, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | IBM / lablab.ai | IBM Bob 2.0 Hackathon — Sep 25–27, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Jaseci Labs | JacHacks a2Tech — Sep 26–27, 2026 | In-Person | Ann Arbor, MI | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | LIDERA Community x Calouste Gulbenkian Foundation | Hackathon Climate U 2026 — Oct 10, 2026 | In-Person | Lisbon, Portugal | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | SSTC Bhilai (HackBIOS) | HackBIOS 2K26 — Oct 9–10, 2026 | In-Person | Bhilai, India | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Supabase | Supabase Select 2026 Hackathon — Oct 3, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | University of Missouri (TigerHacks) | TigerHacks 2026 — Sep 25–27, 2026 | In-Person | Columbia, MO | :lock: | Sep 24, 2026 |

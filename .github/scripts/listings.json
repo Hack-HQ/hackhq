@@ -2516,15 +2516,17 @@
     ],
     "format": "In-Person",
     "prize": "\u20ac1,500 to winning team",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1790967708,
     "source": "organizer-site",
     "deadline": "2026-10-01",
     "startDate": "2026-10-10",
-    "endDate": "2026-10-10"
+    "endDate": "2026-10-10",
+    "date_closed": "2026-10-02",
+    "archive_note": "Auto-archived 2026-10-02 \u2014 deadline passed 2026-10-01"
   },
   {
     "company_name": "Lincoln Financial Group",
