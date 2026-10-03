@@ -3978,14 +3978,16 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1791049780,
     "source": "luma",
     "startDate": "2026-10-02",
-    "endDate": "2026-10-02"
+    "endDate": "2026-10-02",
+    "date_closed": "2026-10-03",
+    "archive_note": "Auto-archived 2026-10-03 \u2014 event ended 2026-10-02"
   },
   {
     "id": "041eb82b-b8f7-4de7-bd8a-b7520366e586",
@@ -4495,15 +4497,17 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1784608191,
-    "date_updated": 1790290336,
+    "date_updated": 1791049780,
     "source": "srirae",
     "deadline": "2026-10-02",
     "startDate": "2026-10-03",
-    "endDate": "2026-10-04"
+    "endDate": "2026-10-04",
+    "date_closed": "2026-10-03",
+    "archive_note": "Auto-archived 2026-10-03 \u2014 deadline passed 2026-10-02"
   },
   {
     "id": "6b363f65-cd6a-47e3-8d2d-031776f25933",

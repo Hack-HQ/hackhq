@@ -24,6 +24,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | LIDERA Community x Calouste Gulbenkian Foundation | Hackathon Climate U 2026 — Oct 10, 2026 | In-Person | Lisbon, Portugal | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | SSTC Bhilai (HackBIOS) | HackBIOS 2K26 — Oct 9–10, 2026 | In-Person | Bhilai, India | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Supabase | Supabase Select 2026 Hackathon — Oct 3, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | tokens& | Real-Time Video Agents Hack SF 2026 — Oct 2, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | University of Missouri (TigerHacks) | TigerHacks 2026 — Sep 25–27, 2026 | In-Person | Columbia, MO | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | HackerRank | HackerRank Orchestrate \| September Edition | Virtual | Online | :lock: | Sep 09, 2026 |
 | 🔒 **[CLOSED]** | Amazon Web Services | Agents for Humans Hackathon — Aug 10 – Sep 14, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
@@ -72,6 +73,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Girls Who Code at GSU | HackHers — Sep 18–19, 2026 (Registration Open) | In-Person | Atlanta, GA | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | HopHacks | HopHacks 2026 (Student Hackathon; Applications Open) | In-Person | Baltimore, MD | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | hackUMBC | hackUMBC 2026 — Sep 26–27, 2026 | In-Person | Catonsville, MD | :lock: | Jul 20, 2026 |
+| 🔒 **[CLOSED]** | UTSA ACM | RowdyHacks XII: Hack & Heist — Oct 3–4, 2026 (Student Hackathon; Registration Open) | In-Person | San Antonio, TX | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | Stanford | TreeHacks 2026 — Feb 13–15, 2026 | In-Person | Stanford, CA | :lock: | Jul 17, 2026 |
 | 🔒 **[CLOSED]** | localhost:nyc | Checkout: The Travel & Hospitality Hackathon — Aug 9, 2026 | In-Person | New York, NY | :lock: | Jul 12, 2026 |
 | 🔒 **[CLOSED]** | OnlyExit Hacker House | Hack Your Way Into the Hacker House — Jul 18, 2026 | In-Person | New York, NY | :lock: | Jul 12, 2026 |
