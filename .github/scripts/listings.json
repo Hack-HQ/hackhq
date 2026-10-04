@@ -2560,14 +2560,16 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1791136844,
     "source": "linkedin",
     "startDate": "2026-10-02",
-    "endDate": "2026-10-03"
+    "endDate": "2026-10-03",
+    "date_closed": "2026-10-04",
+    "archive_note": "Auto-archived 2026-10-04 \u2014 event ended 2026-10-03"
   },
   {
     "id": "76d95c1a-9603-43d7-ab9f-60f92c2ea977",
@@ -4698,13 +4700,15 @@
     ],
     "format": "In-Person",
     "prize": "Prizes and credits (amount TBA)",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1791136844,
     "source": "luma",
     "startDate": "2026-10-03",
-    "endDate": "2026-10-03"
+    "endDate": "2026-10-03",
+    "date_closed": "2026-10-04",
+    "archive_note": "Auto-archived 2026-10-04 \u2014 event ended 2026-10-03"
   }
 ]
