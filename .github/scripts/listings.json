@@ -4579,15 +4579,17 @@
     ],
     "format": "Virtual",
     "prize": "$6,000 prize pool",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1791314378,
     "source": "organizer-site",
     "deadline": "2026-10-05",
     "startDate": "2026-09-26",
-    "endDate": "2026-10-05"
+    "endDate": "2026-10-05",
+    "date_closed": "2026-10-06",
+    "archive_note": "Auto-archived 2026-10-06 \u2014 deadline passed 2026-10-05"
   },
   {
     "id": "9d4ebcaa-e7f0-4734-8c7f-2c8ef79e48a6",
