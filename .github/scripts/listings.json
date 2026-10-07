@@ -883,15 +883,17 @@
     ],
     "format": "In-Person",
     "prize": "US$24,500 (non-cash prize value)",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1791402391,
     "source": "devpost",
     "deadline": "2026-10-06",
     "startDate": "2026-09-16",
-    "endDate": "2026-10-06"
+    "endDate": "2026-10-06",
+    "date_closed": "2026-10-07",
+    "archive_note": "Auto-archived 2026-10-07 \u2014 deadline passed 2026-10-06"
   },
   {
     "company_name": "DataHub",
