@@ -406,15 +406,17 @@
     ],
     "format": "Virtual",
     "prize": "$500 cash + sponsor licenses & domains",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788361635,
-    "date_updated": 1790290336,
+    "date_updated": 1791573508,
     "source": "hackclub",
     "deadline": "2026-10-08",
     "startDate": "2026-10-09",
-    "endDate": "2026-10-12"
+    "endDate": "2026-10-12",
+    "date_closed": "2026-10-09",
+    "archive_note": "Auto-archived 2026-10-09 \u2014 deadline passed 2026-10-08"
   },
   {
     "id": "b2bf7088-9daa-43d9-acb9-f87d1b4d6bcf",
