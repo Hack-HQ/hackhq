@@ -4015,14 +4015,16 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1791656112,
     "source": "luma",
     "startDate": "2026-10-09",
-    "endDate": "2026-10-09"
+    "endDate": "2026-10-09",
+    "date_closed": "2026-10-10",
+    "archive_note": "Auto-archived 2026-10-10 \u2014 event ended 2026-10-09"
   },
   {
     "id": "e4ceb4a7-adab-470b-a00f-29a9fe66f710",

@@ -29,6 +29,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | SSTC Bhilai (HackBIOS) | HackBIOS 2K26 — Oct 9–10, 2026 | In-Person | Bhilai, India | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Supabase | Supabase Select 2026 Hackathon — Oct 3, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | tokens& | Real-Time Video Agents Hack SF 2026 — Oct 2, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | tokens& / AWS Builder Loft | Cyberdefense Hackathon 2026 — Oct 9, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | University of Missouri (TigerHacks) | TigerHacks 2026 — Sep 25–27, 2026 | In-Person | Columbia, MO | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | University of Wisconsin-Green Bay | HackGB 2026 — Oct 17–18, 2026 | In-Person | Green Bay, WI | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | WeAreDevelopers / BAND | WeAreDevelopers x BAND: Dark Factory Hackathon — Sep 26 – Oct 5, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
