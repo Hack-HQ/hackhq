@@ -21,6 +21,8 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Databricks | Databricks AI Social Impact (DAISI) Challenge Singapore — Sep 16 – Oct 6, 2026 | In-Person | Singapore | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | European Defense Tech Hub (EDTH) | European Defense Tech Hackathon London 2026 — Oct 2–4, 2026 | In-Person | London, UK | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Flower Labs / Nebius | Collaborative Agent Hackathon @ Stanford 2026 — Sep 29, 2026 | In-Person | Stanford, CA | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | Forever 22 / Google DeepMind / Betaworks | The New Agentic Economy Hackathon 2026 — Oct 10, 2026 | In-Person | New York, NY | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | ForgeHacks | ForgeHacks Online 2026 — Oct 3–10, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | IBM / lablab.ai | IBM Bob 2.0 Hackathon — Sep 25–27, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Iterate / futurebio.xyz | London AI x Science Hackathon 2026 — Oct 3–4, 2026 | In-Person | London, UK | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Jaseci Labs | JacHacks a2Tech — Sep 26–27, 2026 | In-Person | Ann Arbor, MI | :lock: | Sep 24, 2026 |
@@ -28,11 +30,13 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | LithuaniaBIO / LSMU (BIO-RED, EU co-financed) | BIO-RED Cross-Regional Hackathon Kaunas 2026 — Oct 2–3, 2026 | In-Person | Kaunas, Lithuania | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | SSTC Bhilai (HackBIOS) | HackBIOS 2K26 — Oct 9–10, 2026 | In-Person | Bhilai, India | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Supabase | Supabase Select 2026 Hackathon — Oct 3, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | TecNM Campus Saltillo | Road To Tech Hackathon 2026 (TecNM Campus Saltillo) — Oct 9–10, 2026 | In-Person | Saltillo, Mexico | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | tokens& | Real-Time Video Agents Hack SF 2026 — Oct 2, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | tokens& / AWS Builder Loft | Cyberdefense Hackathon 2026 — Oct 9, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | University of Missouri (TigerHacks) | TigerHacks 2026 — Sep 25–27, 2026 | In-Person | Columbia, MO | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | University of Wisconsin-Green Bay | HackGB 2026 — Oct 17–18, 2026 | In-Person | Green Bay, WI | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | WeAreDevelopers / BAND | WeAreDevelopers x BAND: Dark Factory Hackathon — Sep 26 – Oct 5, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | {Tech: Europe} / Google DeepMind | {Tech: Europe} Agentic AI Hack Zürich 2026 — Oct 10, 2026 | In-Person | Zürich, Switzerland | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | {Tech: Europe} / Google DeepMind / Norrsken | {Tech: Europe} Agentic AI Hack Stockholm 2026 — Oct 3, 2026 | In-Person | Stockholm, Sweden | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | HackerRank | HackerRank Orchestrate \| September Edition | Virtual | Online | :lock: | Sep 09, 2026 |
 | 🔒 **[CLOSED]** | Amazon Web Services | Agents for Humans Hackathon — Aug 10 – Sep 14, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
@@ -53,6 +57,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Hack the Track | Hack the Track 2026 — Sep 11–12, 2026 (High School Hackathon; Registration Open) | In-Person | Louisville, KY | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack-Nation | Hack-Nation Global AI Hackathon 7 — Oct 3–4, 2026 (24-Hour Hybrid AI Hackathon; Rolling Applications Open) | Hybrid | Cambridge, MA, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hacker Fund | VISION HACK 2026 — Sep 12, 2026 (12-Hour Youth Hackathon; Apply to Attend; Approval Required) | In-Person | Los Angeles, CA | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Hyphen-Hacks | Hyphen-Hacks 2026 — Oct 10, 2026 (High School Hackathon; Sign-Up Form Open) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Junction | Junction 2026: European Tech Renaissance — Nov 13–15, 2026 (48-Hour Hackathon; Applications Open) | In-Person | Espoo, Finland | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Princeton University | HackPrinceton Fall 2026 — Nov 13–15, 2026 (Student Hackathon; Applications Opening Soon) | In-Person | Princeton, NJ | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Proidea | HackYeah 2026 — Oct 3–4, 2026 (Europe's Largest Stationary Hackathon; Registration Open) | In-Person | Kraków, Poland | :lock: | Sep 02, 2026 |
