@@ -53,6 +53,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Gateway Garden State Initiative (GatewayGS) | GatewayHacks 2026: Software & AI — Sep 1 – Oct 2, 2026 (Virtual Student Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Google Cloud | Agentic Cinema: The Blockbuster Hackathon — Jul 27 – Sep 9, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | lablab.ai | AI Infra Summit Hackathon 2026 — Sep 10–17, 2026 (Hybrid Hackathon; Enrollment Open; On-Site by Invitation) | Hybrid | Santa Clara, CA, Online | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Major League Hacking | Global Hack Week: Hacktoberfest — Oct 9–15, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | OpenAI | The WebMCP Challenge — Aug 25 – Sep 3, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | AI Tinkerers | AI Tinkerers: Agents, Everywhere — Global Hackathon — Sep 12, 2026 (One-Day Builders Hackathon; Apply to Attend; Approval Required) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Bay Valley Hacks | Bay-Valley Hacks 2026 — Sep 26, 2026 (High School Hackathon; Registration Open) | In-Person | Mountain House, CA | :lock: | Sep 02, 2026 |
@@ -88,6 +89,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Hack Club | Stardance | Virtual | Online | :lock: | Aug 27, 2026 |
 | 🔒 **[CLOSED]** | Peddie Computer Science Club | PeddieHacks 2026 — Aug 14–16, 2026 | Virtual | Online | :lock: | Aug 09, 2026 |
 | 🔒 **[CLOSED]** | IBM | IBM Dev Day: Bob in Action + Hackathon — Aug 27–30, 2026 | Virtual | Online | :lock: | Aug 09, 2026 |
+| 🔒 **[CLOSED]** | JPMorgan Chase | 2027 Data for Good Hackathon — Oct 16–17, 2026 (Leads to Data & AI Program Internship) | In-Person | Brooklyn, NY | :lock: | Aug 09, 2026 |
 | 🔒 **[CLOSED]** | JPMorgan Chase | 2027 Code for Good Hackathon — Brooklyn Oct 16–17 & Columbus Nov 6–7, 2026 (Leads to Software Engineer Program Internship) | In-Person | Brooklyn, NY, Columbus, OH | :lock: | Aug 09, 2026 |
 | 🔒 **[CLOSED]** | hacklanta.dev | Hacklanta '26 — Oct 9–11, 2026 | In-Person | Atlanta, GA | :lock: | Aug 07, 2026 |
 | 🔒 **[CLOSED]** | HackKnight | HackKnight 2026 — Oct 9–11, 2026 (Student Hackathon; Applications Open) | In-Person | Flushing, NY | :lock: | Aug 06, 2026 |

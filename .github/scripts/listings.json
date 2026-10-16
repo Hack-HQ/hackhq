@@ -2347,15 +2347,17 @@
     ],
     "format": "In-Person",
     "prize": "Internship consideration; travel covered",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "deadline": "2026-10-15",
     "startDate": "2026-10-16",
     "endDate": "2026-10-17",
     "date_posted": 1786265690,
-    "date_updated": 1786265690,
-    "source": "Jose-Gael-Cruz-Lopez"
+    "date_updated": 1792172997,
+    "source": "Jose-Gael-Cruz-Lopez",
+    "date_closed": "2026-10-16",
+    "archive_note": "Auto-archived 2026-10-16 \u2014 deadline passed 2026-10-15"
   },
   {
     "id": "260f4bac-9075-4096-9ed8-38c9a3283d73",
@@ -2695,14 +2697,16 @@
     ],
     "format": "Virtual",
     "prize": "Swag + prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788361635,
-    "date_updated": 1788361635,
+    "date_updated": 1792172997,
     "source": "mlh",
     "startDate": "2026-10-09",
-    "endDate": "2026-10-15"
+    "endDate": "2026-10-15",
+    "date_closed": "2026-10-16",
+    "archive_note": "Auto-archived 2026-10-16 \u2014 event ended 2026-10-15"
   },
   {
     "id": "fbc4968c-1522-4304-a25e-8b86f7003adb",
