@@ -20,6 +20,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | AssemblyAI / lablab.ai | AssemblyAI Voice Agent Hackathon — Sep 1–30, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Colosseum | Crypto World's Fair (Colosseum) — Sep 14 – Oct 12, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Databricks | Databricks AI Social Impact (DAISI) Challenge Singapore — Sep 16 – Oct 6, 2026 | In-Person | Singapore | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | Daytona | Daytona HackSprint w/ Arize AI NYC — Oct 16, 2026 | In-Person | New York, NY | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | European Defense Tech Hub (EDTH) | European Defense Tech Hackathon London 2026 — Oct 2–4, 2026 | In-Person | London, UK | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Flower Labs / Nebius | Collaborative Agent Hackathon @ Stanford 2026 — Sep 29, 2026 | In-Person | Stanford, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Forever 22 / Google DeepMind / Betaworks | The New Agentic Economy Hackathon 2026 — Oct 10, 2026 | In-Person | New York, NY | :lock: | Sep 24, 2026 |
@@ -70,6 +71,8 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Revivals Egypt | RePlay Alexandria: Shipaton Edition — Sep 5, 2026 (4-Hour Build Sprint; Applications Open) | In-Person | Alexandria, Egypt | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Rutgers University | HackRU Fall 2026 — Oct 10–11, 2026 (Student Hackathon; Registration Open) | In-Person | New Brunswick, NJ | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | SFU Surge | StormHacks 2026 — Oct 3–4, 2026 (Student Hackathon; Applications Open) | In-Person | Burnaby, BC | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | UniCS, University of Manchester | GreatUniHack 2026 — Nov 7–8, 2026 (Student Hackathon; Applications Open) | In-Person | Manchester, UK | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | aiLights Association | Hack Apertus Online — Oct 1–16, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Arcade AI × Cambridge China AI Association | Cambridge × Arcade AI Hackathon — Oct 3–4, 2026 | Hybrid | Cambridge, UK, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Arizona State University | Hacks for Humanity 2026 — Oct 9–11, 2026 | In-Person | Tempe, AZ | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Coffee and Code Philadelphia | AI Agent Hackathon — Sep 20, 2026 (One-Day Hackathon; Registration Open) | In-Person | Philadelphia, PA | :lock: | Sep 02, 2026 |
