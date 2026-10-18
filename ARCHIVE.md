@@ -33,9 +33,11 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | LIDERA Community x Calouste Gulbenkian Foundation | Hackathon Climate U 2026 — Oct 10, 2026 | In-Person | Lisbon, Portugal | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | LithuaniaBIO / LSMU (BIO-RED, EU co-financed) | BIO-RED Cross-Regional Hackathon Kaunas 2026 — Oct 2–3, 2026 | In-Person | Kaunas, Lithuania | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Rutgers Robert Wood Johnson Medical School | Rutgers Health Hack 2026 — Oct 9–11, 2026 | In-Person | New Brunswick, NJ | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | Sound Credit Union & UW Tacoma | HuskyHack 2026 — Oct 17, 2026 | In-Person | Tacoma, WA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | SSTC Bhilai (HackBIOS) | HackBIOS 2K26 — Oct 9–10, 2026 | In-Person | Bhilai, India | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Supabase | Supabase Select 2026 Hackathon — Oct 3, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | TecNM Campus Saltillo | Road To Tech Hackathon 2026 (TecNM Campus Saltillo) — Oct 9–10, 2026 | In-Person | Saltillo, Mexico | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | tokens& | Real-Time Video Agents Hack London 2026 — Oct 17, 2026 | In-Person | London, UK | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | tokens& | Real-Time Video Agents Hack SF 2026 — Oct 2, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | tokens& / AWS Builder Loft | Cyberdefense Hackathon 2026 — Oct 9, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | University of Missouri (TigerHacks) | TigerHacks 2026 — Sep 25–27, 2026 | In-Person | Columbia, MO | :lock: | Sep 24, 2026 |
@@ -51,6 +53,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Bloomreach | Composable AI Hackathon 2026 — Sep 21–28, 2026 (Virtual Hackathon; Apply to Attend; Approval Required) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | CALL-E | CALL-E: Your Code Is Calling — Jul 23 – Sep 14, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | ETHGlobal | ETHOnline 2026 — Sep 4–16, 2026 (Async Online Hackathon; Apply to Attend; Approval Required) | Virtual | Online | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | European Commission (European Defence Fund) | EUDIS Defence Hackathon Autumn 2026 — Oct 15–17, 2026 (Multi-City EU Defence-Tech Hackathon; Registration Open) | In-Person | Multiple cities | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Gateway Garden State Initiative (GatewayGS) | GatewayHacks 2026: Software & AI — Sep 1 – Oct 2, 2026 (Virtual Student Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Google Cloud | Agentic Cinema: The Blockbuster Hackathon — Jul 27 – Sep 9, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | lablab.ai | AI Infra Summit Hackathon 2026 — Sep 10–17, 2026 (Hybrid Hackathon; Enrollment Open; On-Site by Invitation) | Hybrid | Santa Clara, CA, Online | :lock: | Sep 02, 2026 |

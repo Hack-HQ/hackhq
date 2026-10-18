@@ -1272,14 +1272,16 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788361635,
-    "date_updated": 1788361635,
+    "date_updated": 1792343215,
     "source": "organizer-site",
     "startDate": "2026-10-15",
-    "endDate": "2026-10-17"
+    "endDate": "2026-10-17",
+    "date_closed": "2026-10-18",
+    "archive_note": "Auto-archived 2026-10-18 \u2014 event ended 2026-10-17"
   },
   {
     "id": "0e934c6a-12d9-4012-b651-9d572cc07dc1",
@@ -3687,14 +3689,16 @@
     ],
     "format": "In-Person",
     "prize": "$18,000 in cash",
-    "state": "opens_soon",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1792343215,
     "source": "devpost",
     "startDate": "2026-10-17",
-    "endDate": "2026-10-17"
+    "endDate": "2026-10-17",
+    "date_closed": "2026-10-18",
+    "archive_note": "Auto-archived 2026-10-18 \u2014 event ended 2026-10-17"
   },
   {
     "id": "13ffdc5d-3e32-4b9c-869d-d288902a0770",
@@ -4013,14 +4017,16 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1792343215,
     "source": "luma",
     "startDate": "2026-10-17",
-    "endDate": "2026-10-17"
+    "endDate": "2026-10-17",
+    "date_closed": "2026-10-18",
+    "archive_note": "Auto-archived 2026-10-18 \u2014 event ended 2026-10-17"
   },
   {
     "id": "32ab30ac-9c04-412d-9dd9-d92836235bf3",
