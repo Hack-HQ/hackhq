@@ -22,6 +22,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Databricks | Databricks AI Social Impact (DAISI) Challenge Singapore — Sep 16 – Oct 6, 2026 | In-Person | Singapore | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Daytona | Daytona HackSprint w/ Arize AI NYC — Oct 16, 2026 | In-Person | New York, NY | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | European Defense Tech Hub (EDTH) | European Defense Tech Hackathon London 2026 — Oct 2–4, 2026 | In-Person | London, UK | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | European Defense Tech Hub (EDTH) | European Defense Tech Hackathon Sofia 2026 — Oct 16–18, 2026 | In-Person | Sofia, Bulgaria | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Flower Labs / Nebius | Collaborative Agent Hackathon @ Stanford 2026 — Sep 29, 2026 | In-Person | Stanford, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Forever 22 / Google DeepMind / Betaworks | The New Agentic Economy Hackathon 2026 — Oct 10, 2026 | In-Person | New York, NY | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | ForgeHacks | ForgeHacks Online 2026 — Oct 3–10, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
@@ -30,8 +31,10 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Iterate / futurebio.xyz | London AI x Science Hackathon 2026 — Oct 3–4, 2026 | In-Person | London, UK | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Jaseci Labs | JacHacks a2Tech — Sep 26–27, 2026 | In-Person | Ann Arbor, MI | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Kappa Theta Pi at University of South Carolina | PalmettoHacks 2026 — Oct 10–11, 2026 | In-Person | Columbia, SC | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | KCL Womxn in STEM, Imperial Womxn in SET, UCL Women in STEM | IKU Womxn in STEM Hackathon 2026 — Oct 17–18, 2026 | In-Person | London, UK | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | LIDERA Community x Calouste Gulbenkian Foundation | Hackathon Climate U 2026 — Oct 10, 2026 | In-Person | Lisbon, Portugal | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | LithuaniaBIO / LSMU (BIO-RED, EU co-financed) | BIO-RED Cross-Regional Hackathon Kaunas 2026 — Oct 2–3, 2026 | In-Person | Kaunas, Lithuania | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | Nebius / NVIDIA / {Tech: Europe} | Nebius Build Week Hackathon Berlin 2026 — Oct 18, 2026 | In-Person | Berlin, Germany | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Rutgers Robert Wood Johnson Medical School | Rutgers Health Hack 2026 — Oct 9–11, 2026 | In-Person | New Brunswick, NJ | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Sound Credit Union & UW Tacoma | HuskyHack 2026 — Oct 17, 2026 | In-Person | Tacoma, WA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | SSTC Bhilai (HackBIOS) | HackBIOS 2K26 — Oct 9–10, 2026 | In-Person | Bhilai, India | :lock: | Sep 24, 2026 |
@@ -59,7 +62,10 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | lablab.ai | AI Infra Summit Hackathon 2026 — Sep 10–17, 2026 (Hybrid Hackathon; Enrollment Open; On-Site by Invitation) | Hybrid | Santa Clara, CA, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Major League Hacking | Global Hack Week: Hacktoberfest — Oct 9–15, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | OpenAI | The WebMCP Challenge — Aug 25 – Sep 3, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Shooting Stars Foundation | IBM Z Datathon 2026 — Oct 17–18, 2026 (24-Hour Student Datathon; Registration Open) | Hybrid | Multiple cities, Online | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | 804 Hacks | 804 Hacks 2026 — Oct 18, 2026 (Student Hackathon, Ages 13–18; Registration Open) | In-Person | Richmond, VA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | AI Tinkerers | AI Tinkerers: Agents, Everywhere — Global Hackathon — Sep 12, 2026 (One-Day Builders Hackathon; Apply to Attend; Approval Required) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | AMD × lablab.ai | AMD Developer Hackathon: ACT III — Oct 12–18, 2026 (Hybrid Hackathon; Registration Open) | Hybrid | <details><summary>4 locations</summary>Rome, Italy, Milan, Italy, Imperia, Italy, Online</details> | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Bay Valley Hacks | Bay-Valley Hacks 2026 — Sep 26, 2026 (High School Hackathon; Registration Open) | In-Person | Mountain House, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Emerald Hacking & Coding Club | Dublin Hacx 2026 — Oct 3, 2026 (High School Hackathon; Registration Open) | In-Person | San Ramon, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | ETHGlobal | ETHGlobal Tokyo 2026 — Sep 25–27, 2026 (Apply to Attend; Approval Required) | In-Person | Tokyo, Japan | :lock: | Sep 02, 2026 |
@@ -75,6 +81,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Rutgers University | HackRU Fall 2026 — Oct 10–11, 2026 (Student Hackathon; Registration Open) | In-Person | New Brunswick, NJ | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | SFU Surge | StormHacks 2026 — Oct 3–4, 2026 (Student Hackathon; Applications Open) | In-Person | Burnaby, BC | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | UniCS, University of Manchester | GreatUniHack 2026 — Nov 7–8, 2026 (Student Hackathon; Applications Open) | In-Person | Manchester, UK | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | University of Maryland | Technica 2026 — Oct 17–18, 2026 (Hybrid Student Hackathon; Registration Open) | Hybrid | College Park, MD, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | aiLights Association | Hack Apertus Online — Oct 1–16, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Arcade AI × Cambridge China AI Association | Cambridge × Arcade AI Hackathon — Oct 3–4, 2026 | Hybrid | Cambridge, UK, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Arizona State University | Hacks for Humanity 2026 — Oct 9–11, 2026 | In-Person | Tempe, AZ | :lock: | Sep 02, 2026 |
@@ -109,6 +116,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Girls Who Code at GSU | HackHers — Sep 18–19, 2026 (Registration Open) | In-Person | Atlanta, GA | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | HopHacks | HopHacks 2026 (Student Hackathon; Applications Open) | In-Person | Baltimore, MD | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | hackUMBC | hackUMBC 2026 — Sep 26–27, 2026 | In-Person | Catonsville, MD | :lock: | Jul 20, 2026 |
+| 🔒 **[CLOSED]** | SwampHacks | SwampHacks XII — Oct 16–18, 2026 (Student Hackathon) | In-Person | Gainesville, FL | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | UTSA ACM | RowdyHacks XII: Hack & Heist — Oct 3–4, 2026 (Student Hackathon; Registration Open) | In-Person | San Antonio, TX | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | Stanford | TreeHacks 2026 — Feb 13–15, 2026 | In-Person | Stanford, CA | :lock: | Jul 17, 2026 |
 | 🔒 **[CLOSED]** | localhost:nyc | Checkout: The Travel & Hospitality Hackathon — Aug 9, 2026 | In-Person | New York, NY | :lock: | Jul 12, 2026 |
@@ -128,10 +136,14 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Florida International University | ShellHacks 2026 (Florida's Largest Hackathon; Registration Open) | In-Person | Miami, FL | :lock: | Jul 11, 2026 |
 | 🔒 **[CLOSED]** | New Jersey Institute of Technology | GirlHacks 2026 (Women in Computing Hackathon; Registration Open) | In-Person | Newark, NJ | :lock: | Jul 11, 2026 |
 | 🔒 **[CLOSED]** | University of Pittsburgh | SteelHacks XIII (Student Hackathon; Applications Open) | In-Person | Pittsburgh, PA | :lock: | Jul 11, 2026 |
+| 🔒 **[CLOSED]** | DubHacks | DubHacks 2026 — Oct 17–18, 2026 (Collegiate Hackathon; Applications Open) | In-Person | Seattle, WA | :lock: | Jul 10, 2026 |
+| 🔒 **[CLOSED]** | Hack the Valley | Hack the Valley 11 (Applications Open) | In-Person | Toronto, ON | :lock: | Jul 10, 2026 |
+| 🔒 **[CLOSED]** | HackHarvard | HackHarvard 2026 — Oct 16–18, 2026 (Student Hackathon; Applications Open) | In-Person | Cambridge, MA | :lock: | Jul 10, 2026 |
 | 🔒 **[CLOSED]** | HackNC | HackNC 2026 — Oct 9–11, 2026 (Student Hackathon; Registration Open) | In-Person | Chapel Hill, NC | :lock: | Jul 10, 2026 |
 | 🔒 **[CLOSED]** | University of Michigan Dearborn | Hack Dearborn 2026 — Oct 3–4, 2026 | In-Person | Dearborn, MI | :lock: | Jul 10, 2026 |
 | 🔒 **[CLOSED]** | University of Waterloo | Hack the North — Sept 18–20, 2026 | In-Person | Toronto, ON | :lock: | Jul 10, 2026 |
 | 🔒 **[CLOSED]** | Virginia Tech | VTHacks Code for the Cup — Fall 2026 | In-Person | Blacksburg, VA | :lock: | Jul 10, 2026 |
+| 🔒 **[CLOSED]** | UCLA | LA Hacks AI Hackathon 2026 — Oct 17–18, 2026 | In-Person | Los Angeles, CA | :lock: | Jul 04, 2026 |
 | 🔒 **[CLOSED]** | Carleton University | cuHacking 2026 — Jul 10 – Jul 12, 2026 | In-Person | Ottawa, ON | :lock: | Jul 03, 2026 |
 | 🔒 **[CLOSED]** | CS Girlies | CS Girlies Annual Hackathon - Technology For Wellness — Aug 14 – Aug 16, 2026 | Virtual | Online | :lock: | Jul 03, 2026 |
 | 🔒 **[CLOSED]** | AITHORS × Okareo | First Ever Agent Evalathon — Jul 6–13, 2026 | Virtual | Online | :lock: | Jul 02, 2026 |
