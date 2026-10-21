@@ -2515,14 +2515,16 @@
     ],
     "format": "Hybrid",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788359947,
-    "date_updated": 1788359947,
+    "date_updated": 1792607216,
     "source": "lablab.ai",
     "startDate": "2026-10-16",
-    "endDate": "2026-10-20"
+    "endDate": "2026-10-20",
+    "date_closed": "2026-10-21",
+    "archive_note": "Auto-archived 2026-10-21 \u2014 event ended 2026-10-20"
   },
   {
     "id": "cd59a5bf-61fe-42cf-8b03-9524562a910f",

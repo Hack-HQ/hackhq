@@ -74,6 +74,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Hacker Fund | VISION HACK 2026 — Sep 12, 2026 (12-Hour Youth Hackathon; Apply to Attend; Approval Required) | In-Person | Los Angeles, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hyphen-Hacks | Hyphen-Hacks 2026 — Oct 10, 2026 (High School Hackathon; Sign-Up Form Open) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Junction | Junction 2026: European Tech Renaissance — Nov 13–15, 2026 (48-Hour Hackathon; Applications Open) | In-Person | Espoo, Finland | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | lablab.ai | TechEx Amsterdam Hackathon 2026 — Oct 16–20, 2026 (Hybrid: Online Build Oct 16–19, On-Site Oct 19–20; Applications Open) | Hybrid | Amsterdam, Netherlands, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Princeton High School | hackPHS 2026: Into the Skies — Oct 10–11, 2026 (High School Hackathon; Registration Open) | In-Person | Princeton, NJ | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Princeton University | HackPrinceton Fall 2026 — Nov 13–15, 2026 (Student Hackathon; Applications Opening Soon) | In-Person | Princeton, NJ | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Proidea | HackYeah 2026 — Oct 3–4, 2026 (Europe's Largest Stationary Hackathon; Registration Open) | In-Person | Kraków, Poland | :lock: | Sep 02, 2026 |
