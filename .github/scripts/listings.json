@@ -519,13 +519,15 @@
     ],
     "format": "Virtual",
     "prize": "$2,500 in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790127846,
-    "date_updated": 1790127846,
+    "date_updated": 1792693336,
     "source": "sohamsinha2018",
-    "endDate": "2026-10-21"
+    "endDate": "2026-10-21",
+    "date_closed": "2026-10-22",
+    "archive_note": "Auto-archived 2026-10-22 \u2014 event ended 2026-10-21"
   },
   {
     "id": "c171d9d0-01ee-4ae7-bf2c-ba1fc1d41577",

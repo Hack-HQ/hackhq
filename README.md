@@ -75,7 +75,6 @@ Hackathons are the fastest way to build something real, meet your future team, a
 <!-- HACKATHONS_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |
-| 🔥 **[CLOSING SOON]** | builderr | Signalpost company intelligence challenge | Virtual | Online | $2,500 in prizes | — | <a href="https://builderr.ai/challenges/signalpost"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Sep 22, 2026 |
 | 🔥 **[CLOSING SOON]** | Data Science & Informatics at UF (UF AI Days) | Gator Hack V 2026 — Oct 23–25, 2026 | In-Person | Gainesville, FL | TBA | — | <a href="https://ufgatorhack.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Sep 24, 2026 |
 | 🔥 **[CLOSING SOON]** | Amazon | Build, Ship, Shape: Amazon Developer Hackathon — Aug 31 – Oct 23, 2026 | Virtual | Online | $138,000 in prizes | Oct 23, 2026 | <a href="https://amazonappdev2026.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Sep 02, 2026 |
 | 🔥 **[CLOSING SOON]** | Encode Club | Encode London Hackathon and Conference 2026 — Oct 23–25, 2026 | In-Person | London, UK | TBA | — | <a href="https://luma.com/encode-london-2026"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Sep 02, 2026 |

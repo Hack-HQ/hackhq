@@ -48,6 +48,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | WeAreDevelopers / BAND | WeAreDevelopers x BAND: Dark Factory Hackathon — Sep 26 – Oct 5, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | {Tech: Europe} / Google DeepMind | {Tech: Europe} Agentic AI Hack Zürich 2026 — Oct 10, 2026 | In-Person | Zürich, Switzerland | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | {Tech: Europe} / Google DeepMind / Norrsken | {Tech: Europe} Agentic AI Hack Stockholm 2026 — Oct 3, 2026 | In-Person | Stockholm, Sweden | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | builderr | Signalpost company intelligence challenge | Virtual | Online | :lock: | Sep 22, 2026 |
 | 🔒 **[CLOSED]** | HackerRank | HackerRank Orchestrate \| September Edition | Virtual | Online | :lock: | Sep 09, 2026 |
 | 🔒 **[CLOSED]** | Amazon Web Services | Agents for Humans Hackathon — Aug 10 – Sep 14, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Apart Research | AI Incident Response Sprint — Sep 11–13, 2026 (AI Safety Research Hackathon; Sign-Up Open) | Virtual | Online | :lock: | Sep 02, 2026 |
