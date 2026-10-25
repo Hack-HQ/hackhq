@@ -83,6 +83,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Revivals Egypt | RePlay Alexandria: Shipaton Edition — Sep 5, 2026 (4-Hour Build Sprint; Applications Open) | In-Person | Alexandria, Egypt | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Rutgers University | HackRU Fall 2026 — Oct 10–11, 2026 (Student Hackathon; Registration Open) | In-Person | New Brunswick, NJ | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | SFU Surge | StormHacks 2026 — Oct 3–4, 2026 (Student Hackathon; Applications Open) | In-Person | Burnaby, BC | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Sierra Hacks | Sierra Hacks 2026 — Oct 24, 2026 (High School Hackathon; Registration Open) | In-Person | Manteca, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | UniCS, University of Manchester | GreatUniHack 2026 — Nov 7–8, 2026 (Student Hackathon; Applications Open) | In-Person | Manchester, UK | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | University of Maryland | Technica 2026 — Oct 17–18, 2026 (Hybrid Student Hackathon; Registration Open) | Hybrid | College Park, MD, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | aiLights Association | Hack Apertus Online — Oct 1–16, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |

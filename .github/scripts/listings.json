@@ -3657,14 +3657,16 @@
     ],
     "format": "In-Person",
     "prize": "$15,000 in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788359947,
-    "date_updated": 1788359947,
+    "date_updated": 1792949250,
     "source": "hackclub",
     "startDate": "2026-10-24",
-    "endDate": "2026-10-24"
+    "endDate": "2026-10-24",
+    "date_closed": "2026-10-25",
+    "archive_note": "Auto-archived 2026-10-25 \u2014 event ended 2026-10-24"
   },
   {
     "id": "a922c091-25af-434c-80a7-96a5d611b5a3",
