@@ -23,6 +23,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Data Science & Informatics at UF (UF AI Days) | Gator Hack V 2026 — Oct 23–25, 2026 | In-Person | Gainesville, FL | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Databricks | Databricks AI Social Impact (DAISI) Challenge Singapore — Sep 16 – Oct 6, 2026 | In-Person | Singapore | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Daytona | Daytona HackSprint w/ Arize AI NYC — Oct 16, 2026 | In-Person | New York, NY | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | Devpost | Build With AI: Basics — Sep 22 – Oct 26, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | European Defense Tech Hub (EDTH) | European Defense Tech Hackathon London 2026 — Oct 2–4, 2026 | In-Person | London, UK | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | European Defense Tech Hub (EDTH) | European Defense Tech Hackathon Sofia 2026 — Oct 16–18, 2026 | In-Person | Sofia, Bulgaria | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Flower Labs / Nebius | Collaborative Agent Hackathon @ Stanford 2026 — Sep 29, 2026 | In-Person | Stanford, CA | :lock: | Sep 24, 2026 |
@@ -69,7 +70,9 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | lablab.ai | AI Infra Summit Hackathon 2026 — Sep 10–17, 2026 (Hybrid Hackathon; Enrollment Open; On-Site by Invitation) | Hybrid | Santa Clara, CA, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Major League Hacking | Global Hack Week: Hacktoberfest — Oct 9–15, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | OpenAI | The WebMCP Challenge — Aug 25 – Sep 3, 2026 (Online Hackathon; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | OpenCV Foundation | OpenCV AI Competition 2026, powered by AWS — Aug 26 – Oct 26, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Shooting Stars Foundation | IBM Z Datathon 2026 — Oct 17–18, 2026 (24-Hour Student Datathon; Registration Open) | Hybrid | Multiple cities, Online | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | U.S. House of Representatives | Congressional App Challenge 2026 — Submissions Due Oct 26, 2026 (Middle & High School Coding Competition; Registration Open) | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | 804 Hacks | 804 Hacks 2026 — Oct 18, 2026 (Student Hackathon, Ages 13–18; Registration Open) | In-Person | Richmond, VA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | AI Tinkerers | AI Tinkerers: Agents, Everywhere — Global Hackathon — Sep 12, 2026 (One-Day Builders Hackathon; Apply to Attend; Approval Required) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | AMD × lablab.ai | AMD Developer Hackathon: ACT III — Oct 12–18, 2026 (Hybrid Hackathon; Registration Open) | Hybrid | <details><summary>4 locations</summary>Rome, Italy, Milan, Italy, Imperia, Italy, Online</details> | :lock: | Sep 02, 2026 |
