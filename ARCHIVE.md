@@ -17,6 +17,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 <!-- ARCHIVE_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----------- | ----------- |
+| 🔒 **[CLOSED]** | Amazon Web Services | AWS CDS Agentic AI Partner Hackathon — Sep 14 – Oct 28, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | AssemblyAI / lablab.ai | AssemblyAI Voice Agent Hackathon — Sep 1–30, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | CharlestonHacks | HarborHack 2026: Agent In The Loop — Oct 23–25, 2026 | In-Person | Charleston, SC | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Colosseum | Crypto World's Fair (Colosseum) — Sep 14 – Oct 12, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
