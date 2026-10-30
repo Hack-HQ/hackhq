@@ -4134,15 +4134,17 @@
     ],
     "format": "In-Person",
     "prize": "\u20ac4,000+ in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788359947,
-    "date_updated": 1788359947,
+    "date_updated": 1793386824,
     "source": "luma",
     "deadline": "2026-10-29",
     "startDate": "2026-10-30",
-    "endDate": "2026-10-31"
+    "endDate": "2026-10-31",
+    "date_closed": "2026-10-30",
+    "archive_note": "Auto-archived 2026-10-30 \u2014 deadline passed 2026-10-29"
   },
   {
     "id": "c56d5457-0035-4d3b-82cb-d5d3d01234b3",
