@@ -2929,15 +2929,17 @@
     ],
     "format": "Virtual",
     "prize": "$50,000+ in prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788334443,
-    "date_updated": 1788334443,
+    "date_updated": 1793470639,
     "source": "devpost",
     "deadline": "2026-10-30",
     "startDate": "2026-08-26",
-    "endDate": "2026-10-30"
+    "endDate": "2026-10-30",
+    "date_closed": "2026-10-31",
+    "archive_note": "Auto-archived 2026-10-31 \u2014 deadline passed 2026-10-30"
   },
   {
     "id": "91e1f610-aacd-4c73-9563-09968fd9dc7d",

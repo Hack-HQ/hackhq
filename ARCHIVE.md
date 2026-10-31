@@ -108,6 +108,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | European Defense Tech Hub × NUS Enterprise | Singapore Defense Tech Hackathon 2026 — Sep 25–27, 2026 (Applications Open; Approval Required) | In-Person | Singapore | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | KIET Group of Institutions | InnoHacks 4.0 — Oct 10–11, 2026 (Student Hackathon; Applications Open) | In-Person | Ghaziabad, India | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | LarpHacks | LarpHacks — Oct 24–25, 2026 | In-Person | Toronto, ON | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Nebius × NVIDIA | Nebius x NVIDIA Global AI Hackathon — Aug 26 – Oct 30, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Rice University | Urban Sustainability Hackathon: World Cup 2026 HACK — Jun 23 – Sep 17, 2026 | Virtual | Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Showerhacks | Showerhacks — Sep 26, 2026 (One-Day Hackathon; Registration Open) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | The AI Conference × [SF] HackerSquad | The AI Conference Hack Day 2026 — Sep 29, 2026 (One-Day Build; Approval Required) | In-Person | San Francisco, CA | :lock: | Sep 02, 2026 |
