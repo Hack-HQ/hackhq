@@ -116,6 +116,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | General Learning | General Learning Hacks — Sep 19–20, 2026 (24-Hour EdTech & AI Hackathon; Registration Open) | In-Person | Hong Kong | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack the Hill | Hack the Hill III — Sep 25–27, 2026 (Student Hackathon; Applications Open) | In-Person | Ottawa, ON | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Penn State | HackPSU Fall 2026 — Oct 24–25, 2026 (Student Hackathon; Applications Open) | In-Person | University Park, PA | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Shaheed Sukhdev College of Business Studies | hackCBS 9.0 — Oct 31 – Nov 1, 2026 (Student Hackathon; Registration Open) | In-Person | New Delhi, India | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Temple University | OwlHacks 2026 — Sep 26–27, 2026 (Student Hackathon; Registration Open) | In-Person | Philadelphia, PA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Texas Tech University | HackWesTX 2026 — Sep 12–13, 2026 (Student Hackathon; Registration Open) | In-Person | Lubbock, TX | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | University of Florida | Gator Quant Hacks 2026 — Oct 2–4, 2026 (Quant Finance Hackathon; Applications Open) | In-Person | Gainesville, FL | :lock: | Sep 02, 2026 |

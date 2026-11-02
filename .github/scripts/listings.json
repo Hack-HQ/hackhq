@@ -3619,14 +3619,16 @@
     ],
     "format": "In-Person",
     "prize": "INR 1 Lakh in cash + credits",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788332772,
-    "date_updated": 1790290336,
+    "date_updated": 1793659018,
     "source": "mlh",
     "startDate": "2026-10-31",
-    "endDate": "2026-11-01"
+    "endDate": "2026-11-01",
+    "date_closed": "2026-11-02",
+    "archive_note": "Auto-archived 2026-11-02 \u2014 event ended 2026-11-01"
   },
   {
     "id": "19decbab-52c2-4f80-9d7a-31e5fa24951b",
