@@ -40,6 +40,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | LithuaniaBIO / LSMU (BIO-RED, EU co-financed) | BIO-RED Cross-Regional Hackathon Kaunas 2026 — Oct 2–3, 2026 | In-Person | Kaunas, Lithuania | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Nebius / NVIDIA / {Tech: Europe} | Nebius Build Week Hackathon Berlin 2026 — Oct 18, 2026 | In-Person | Berlin, Germany | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Oxford University students (OxHack) | OxHack '26 — Oct 24–25, 2026 | In-Person | Oxford, UK | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | Perfect Corp | YouCam API Skin AI & eCommerce VTO Hackathon — Sep 29 – Nov 2, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Rutgers Robert Wood Johnson Medical School | Rutgers Health Hack 2026 — Oct 9–11, 2026 | In-Person | New Brunswick, NJ | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Sound Credit Union & UW Tacoma | HuskyHack 2026 — Oct 17, 2026 | In-Person | Tacoma, WA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | SSTC Bhilai (HackBIOS) | HackBIOS 2K26 — Oct 9–10, 2026 | In-Person | Bhilai, India | :lock: | Sep 24, 2026 |

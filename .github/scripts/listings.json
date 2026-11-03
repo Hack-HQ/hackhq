@@ -3216,15 +3216,17 @@
     ],
     "format": "Virtual",
     "prize": "$6,000 in cash",
-    "state": "opens_soon",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1793737555,
     "source": "devpost",
     "deadline": "2026-11-02",
     "startDate": "2026-09-29",
-    "endDate": "2026-11-02"
+    "endDate": "2026-11-02",
+    "date_closed": "2026-11-03",
+    "archive_note": "Auto-archived 2026-11-03 \u2014 deadline passed 2026-11-02"
   },
   {
     "id": "4f232f08-b904-4d75-a0e2-a31c2b247a5b",
