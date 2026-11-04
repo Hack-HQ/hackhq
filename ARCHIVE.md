@@ -80,6 +80,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | AMD × lablab.ai | AMD Developer Hackathon: ACT III — Oct 12–18, 2026 (Hybrid Hackathon; Registration Open) | Hybrid | <details><summary>4 locations</summary>Rome, Italy, Milan, Italy, Imperia, Italy, Online</details> | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Bay Valley Hacks | Bay-Valley Hacks 2026 — Sep 26, 2026 (High School Hackathon; Registration Open) | In-Person | Mountain House, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Emerald Hacking & Coding Club | Dublin Hacx 2026 — Oct 3, 2026 (High School Hackathon; Registration Open) | In-Person | San Ramon, CA | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | ETHGlobal | ETHGlobal Mumbai 2026 — Nov 5–7, 2026 (Apply to Attend; Approval Required) | In-Person | Mumbai, India | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | ETHGlobal | ETHGlobal Tokyo 2026 — Sep 25–27, 2026 (Apply to Attend; Approval Required) | In-Person | Tokyo, Japan | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack the Track | Hack the Track 2026 — Sep 11–12, 2026 (High School Hackathon; Registration Open) | In-Person | Louisville, KY | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack-Nation | Hack-Nation Global AI Hackathon 7 — Oct 3–4, 2026 (24-Hour Hybrid AI Hackathon; Rolling Applications Open) | Hybrid | Cambridge, MA, Online | :lock: | Sep 02, 2026 |
