@@ -1622,6 +1622,25 @@
     "endDate": "2026-12-01"
   },
   {
+    "id": "dbe7181d-d119-4bfa-91fd-6e479a1f59be",
+    "company_name": "Go Next Level Hub",
+    "title": "Go Next Level Hub: AI Consulting Infrastructure",
+    "url": "https://gonextlevelhub.com/entry-path",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "\u2014",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1793982361,
+    "date_updated": 1793982361,
+    "source": "AIChaperones",
+    "startDate": "2026-10-15",
+    "endDate": "2026-11-15"
+  },
+  {
     "id": "3a50bebb-79f3-4380-a92d-3b484721c78b",
     "company_name": "Google Cloud",
     "title": "Agentic Cinema: The Blockbuster Hackathon \u2014 Jul 27 \u2013 Sep 9, 2026 (Online Hackathon; Registration Open)",
