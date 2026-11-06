@@ -2145,6 +2145,25 @@
     "archive_note": "Auto-archived 2026-09-28 \u2014 event ended 2026-09-27"
   },
   {
+    "id": "0721f95a-5fce-445a-8b03-121c98979b19",
+    "company_name": "Homingo",
+    "title": "Homingo Hackathon 2026",
+    "url": "https://hackathon.homingo.co.in",
+    "locations": [
+      "Online"
+    ],
+    "format": "Virtual",
+    "prize": "\u20b95,000",
+    "state": "open",
+    "active": true,
+    "is_visible": true,
+    "date_posted": 1793982403,
+    "date_updated": 1793982403,
+    "source": "yusuf-khaan",
+    "startDate": "2026-11-21",
+    "endDate": "2026-12-06"
+  },
+  {
     "company_name": "HopHacks",
     "title": "HopHacks 2026 (Student Hackathon; Applications Open)",
     "url": "https://www.hophacks.com",
