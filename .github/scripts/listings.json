@@ -2755,14 +2755,16 @@
     ],
     "format": "Virtual",
     "prize": "Swag + prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788361635,
-    "date_updated": 1788361635,
+    "date_updated": 1794602815,
     "source": "mlh",
     "startDate": "2026-11-06",
-    "endDate": "2026-11-12"
+    "endDate": "2026-11-12",
+    "date_closed": "2026-11-13",
+    "archive_note": "Auto-archived 2026-11-13 \u2014 event ended 2026-11-12"
   },
   {
     "id": "421c6652-25a9-42c9-9ac9-5396f32396f5",
