@@ -3996,14 +3996,16 @@
     ],
     "format": "In-Person",
     "prize": "Gift cards for top teams",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788359947,
-    "date_updated": 1790290336,
+    "date_updated": 1794771385,
     "source": "web-search",
     "startDate": "2026-11-07",
-    "endDate": "2026-11-14"
+    "endDate": "2026-11-14",
+    "date_closed": "2026-11-15",
+    "archive_note": "Auto-archived 2026-11-15 \u2014 event ended 2026-11-14"
   },
   {
     "id": "6870ec4c-c132-4aa3-ba8d-043102557443",
