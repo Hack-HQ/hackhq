@@ -17,6 +17,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 <!-- ARCHIVE_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----------- | ----------- |
+| 🔒 **[CLOSED]** | Go Next Level Hub | Go Next Level Hub: AI Consulting Infrastructure | Virtual | Online | :lock: | Nov 06, 2026 |
 | 🔒 **[CLOSED]** | Amazon Web Services | AWS CDS Agentic AI Partner Hackathon — Sep 14 – Oct 28, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | AssemblyAI / lablab.ai | AssemblyAI Voice Agent Hackathon — Sep 1–30, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | BioEng4Youth | BioHacks 2026 — Nov 7–8, 2026 | In-Person | Hamilton, ON | :lock: | Sep 24, 2026 |
@@ -27,6 +28,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Databricks | Databricks AI Social Impact (DAISI) Challenge Singapore — Sep 16 – Oct 6, 2026 | In-Person | Singapore | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Daytona | Daytona HackSprint w/ Arize AI NYC — Oct 16, 2026 | In-Person | New York, NY | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Devpost | Build With AI: Basics — Sep 22 – Oct 26, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | Emory University (Project Emory) | Emory Hacks 2026 — Nov 13–15, 2026 | In-Person | Atlanta, GA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | European Defense Tech Hub (EDTH) | European Defense Tech Hackathon London 2026 — Oct 2–4, 2026 | In-Person | London, UK | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | European Defense Tech Hub (EDTH) | European Defense Tech Hackathon Sofia 2026 — Oct 16–18, 2026 | In-Person | Sofia, Bulgaria | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Flower Labs / Nebius | Collaborative Agent Hackathon @ Stanford 2026 — Sep 29, 2026 | In-Person | Stanford, CA | :lock: | Sep 24, 2026 |
@@ -55,6 +57,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | tokens& / AWS Builder Loft | Cyberdefense Hackathon 2026 — Oct 9, 2026 | In-Person | San Francisco, CA | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | University of Missouri (TigerHacks) | TigerHacks 2026 — Sep 25–27, 2026 | In-Person | Columbia, MO | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | University of Wisconsin-Green Bay | HackGB 2026 — Oct 17–18, 2026 | In-Person | Green Bay, WI | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | University of Wisconsin–Madison (MadHacks) | MadHacks 2026 — Nov 14–15, 2026 | In-Person | Madison, WI | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Vultr / lablab.ai | Vultr: Agent Rush Hackathon — Nov 3–8, 2026 | Hybrid | Salt Lake City, UT, Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | WeAreDevelopers / BAND | WeAreDevelopers x BAND: Dark Factory Hackathon — Sep 26 – Oct 5, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | York College of Pennsylvania | YCP Hacks 2026 — Nov 6–8, 2026 | In-Person | York, PA | :lock: | Sep 24, 2026 |
@@ -88,6 +91,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | Emerald Hacking & Coding Club | Dublin Hacx 2026 — Oct 3, 2026 (High School Hackathon; Registration Open) | In-Person | San Ramon, CA | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | ETHGlobal | ETHGlobal Mumbai 2026 — Nov 5–7, 2026 (Apply to Attend; Approval Required) | In-Person | Mumbai, India | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | ETHGlobal | ETHGlobal Tokyo 2026 — Sep 25–27, 2026 (Apply to Attend; Approval Required) | In-Person | Tokyo, Japan | :lock: | Sep 02, 2026 |
+| 🔒 **[CLOSED]** | Hack Club | Haven 2026 — Nov 14–15, 2026 (Global Teen Game Jam, Ages 13–18; Sign-Ups Open) | In-Person | Multiple cities | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack the Track | Hack the Track 2026 — Sep 11–12, 2026 (High School Hackathon; Registration Open) | In-Person | Louisville, KY | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hack-Nation | Hack-Nation Global AI Hackathon 7 — Oct 3–4, 2026 (24-Hour Hybrid AI Hackathon; Rolling Applications Open) | Hybrid | Cambridge, MA, Online | :lock: | Sep 02, 2026 |
 | 🔒 **[CLOSED]** | Hacker Fund | VISION HACK 2026 — Sep 12, 2026 (12-Hour Youth Hackathon; Apply to Attend; Approval Required) | In-Person | Los Angeles, CA | :lock: | Sep 02, 2026 |
@@ -147,6 +151,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | OregonHacks | OregonHacks 2026 | Virtual | Online | :lock: | Jul 30, 2026 |
 | 🔒 **[CLOSED]** | Pixel Forge | Pixel Forge AI Hackathon | Virtual | Online | :lock: | Jul 30, 2026 |
 | 🔒 **[CLOSED]** | RevenueCat | Shipaton 2026 | Virtual | Online | :lock: | Jul 30, 2026 |
+| 🔒 **[CLOSED]** | NASA | NASA Space Apps Challenge 2026 — Nov 14–15, 2026 (Registration Open) | Hybrid | Global | :lock: | Jul 30, 2026 |
 | 🔒 **[CLOSED]** | Stellic | The Pathfinders Challenge | Virtual | Online | :lock: | Jul 27, 2026 |
 | 🔒 **[CLOSED]** | Tec ACM | HackMTY 2026 — Sep 11–13, 2026 (Registration Open) | In-Person | Monterrey, Mexico | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | CougarCS | CodeRED Orion — Oct 10–11, 2026 | In-Person | Houston, TX | :lock: | Jul 20, 2026 |
@@ -155,6 +160,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | hackUMBC | hackUMBC 2026 — Sep 26–27, 2026 | In-Person | Catonsville, MD | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | SwampHacks | SwampHacks XII — Oct 16–18, 2026 (Student Hackathon) | In-Person | Gainesville, FL | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | HackUTD | HackUTD 2026: Zero Day — Nov 7–8, 2026 (Student Hackathon; Applications Open) | In-Person | Richardson, TX | :lock: | Jul 20, 2026 |
+| 🔒 **[CLOSED]** | DurHack | DurHack 2026 — Nov 14–15, 2026 (Student Hackathon; Tickets Open Sep 30) | In-Person | Durham, UK | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | UTSA ACM | RowdyHacks XII: Hack & Heist — Oct 3–4, 2026 (Student Hackathon; Registration Open) | In-Person | San Antonio, TX | :lock: | Jul 20, 2026 |
 | 🔒 **[CLOSED]** | Stanford | TreeHacks 2026 — Feb 13–15, 2026 | In-Person | Stanford, CA | :lock: | Jul 17, 2026 |
 | 🔒 **[CLOSED]** | localhost:nyc | Checkout: The Travel & Hospitality Hackathon — Aug 9, 2026 | In-Person | New York, NY | :lock: | Jul 12, 2026 |
@@ -188,6 +194,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | CS Girlies | CS Girlies Annual Hackathon - Technology For Wellness — Aug 14 – Aug 16, 2026 | Virtual | Online | :lock: | Jul 03, 2026 |
 | 🔒 **[CLOSED]** | AITHORS × Okareo | First Ever Agent Evalathon — Jul 6–13, 2026 | Virtual | Online | :lock: | Jul 02, 2026 |
 | 🔒 **[CLOSED]** | Ramp | Builders Cup 2026 (One-Day Hackathon for Students Graduating 2027+) | In-Person | New York, NY | :lock: | Jul 02, 2026 |
+| 🔒 **[CLOSED]** | UMass Amherst | HackUMass XIV — Nov 13–15, 2026 (36-Hour Student Hackathon; Pre-Registration Open) | In-Person | Amherst, MA | :lock: | Jul 02, 2026 |
 | 🔒 **[CLOSED]** | HackBeanpot | HackBeanpot (Student Hackathon; Next Cycle Not Yet Posted) | In-Person | Boston, MA | :lock: | Jun 29, 2026 |
 | 🔒 **[CLOSED]** | Arya Health | Healthcare Hack NYC (Powered by Arya Health) | In-Person | New York, NY | :lock: | Jun 28, 2026 |
 | 🔒 **[CLOSED]** | Cerebral Valley | The Future of Agentic AI in Healthcare (Abridge × Anthropic × Lightspeed) | In-Person | San Francisco, CA | :lock: | Jun 28, 2026 |
