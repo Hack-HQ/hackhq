@@ -75,7 +75,6 @@ Hackathons are the fastest way to build something real, meet your future team, a
 <!-- HACKATHONS_TABLE_START -->
 | Status | Host | Hackathon | Format | Location | Prize | Deadline | Application | Date Posted |
 | ------ | ---- | --------- | ------ | -------- | ----- | -------- | ----------- | ----------- |
-| 🔥 **[CLOSING SOON]** | Meta | Meta VR Start Developer Competition 2026 — Sep 24 – Nov 18, 2026 | Virtual | Online | $1,000,000 in cash | Nov 18, 2026 | <a href="https://start-developer-competition-26.devpost.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Sep 24, 2026 |
 | 🔥 **[CLOSING SOON]** | Hack Club | Snowglobe 2026 — Nov 20–22, 2026 (Girls-Only High School Hackathon; Qualification Portal Open) | In-Person | San Francisco, CA | Hardware prizes | — | <a href="https://snowglobe.hackclub.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Sep 02, 2026 |
 | 🔥 **[CLOSING SOON]** | Homingo | Homingo Hackathon 2026 | Virtual | Online | ₹5,000 | — | <a href="https://hackathon.homingo.co.in"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Nov 06, 2026 |
 | 🔥 **[CLOSING SOON]** | EPFL | LauzHack 2026 — Nov 21–22, 2026 (Student Hackathon; Applications Open) | In-Person | Lausanne, Switzerland | TBA | — | <a href="https://lauzhack.com/"><img src="https://img.shields.io/badge/Register-blue?style=for-the-badge" alt="Register"></a> | Sep 02, 2026 |

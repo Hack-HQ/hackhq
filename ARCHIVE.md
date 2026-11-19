@@ -43,6 +43,7 @@ This page is a permanent record of every hackathon that has closed. These are ke
 | 🔒 **[CLOSED]** | KCL Womxn in STEM, Imperial Womxn in SET, UCL Women in STEM | IKU Womxn in STEM Hackathon 2026 — Oct 17–18, 2026 | In-Person | London, UK | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | LIDERA Community x Calouste Gulbenkian Foundation | Hackathon Climate U 2026 — Oct 10, 2026 | In-Person | Lisbon, Portugal | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | LithuaniaBIO / LSMU (BIO-RED, EU co-financed) | BIO-RED Cross-Regional Hackathon Kaunas 2026 — Oct 2–3, 2026 | In-Person | Kaunas, Lithuania | :lock: | Sep 24, 2026 |
+| 🔒 **[CLOSED]** | Meta | Meta VR Start Developer Competition 2026 — Sep 24 – Nov 18, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Nebius / NVIDIA / {Tech: Europe} | Nebius Build Week Hackathon Berlin 2026 — Oct 18, 2026 | In-Person | Berlin, Germany | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Oxford University students (OxHack) | OxHack '26 — Oct 24–25, 2026 | In-Person | Oxford, UK | :lock: | Sep 24, 2026 |
 | 🔒 **[CLOSED]** | Perfect Corp | YouCam API Skin AI & eCommerce VTO Hackathon — Sep 29 – Nov 2, 2026 | Virtual | Online | :lock: | Sep 24, 2026 |

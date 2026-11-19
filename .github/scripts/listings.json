@@ -2879,15 +2879,17 @@
     ],
     "format": "Virtual",
     "prize": "$1,000,000 in cash",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1790290336,
-    "date_updated": 1790290336,
+    "date_updated": 1795125545,
     "source": "devpost",
     "deadline": "2026-11-18",
     "startDate": "2026-09-24",
-    "endDate": "2026-11-18"
+    "endDate": "2026-11-18",
+    "date_closed": "2026-11-19",
+    "archive_note": "Auto-archived 2026-11-19 \u2014 deadline passed 2026-11-18"
   },
   {
     "id": "0561c850-2219-4de3-8279-a6d0ea003e55",
