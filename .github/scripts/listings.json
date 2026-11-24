@@ -1202,14 +1202,16 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788359947,
-    "date_updated": 1790290336,
+    "date_updated": 1795483789,
     "source": "organizer-site",
     "startDate": "2026-11-21",
-    "endDate": "2026-11-22"
+    "endDate": "2026-11-22",
+    "date_closed": "2026-11-23",
+    "archive_note": "Auto-archived 2026-11-23 \u2014 event ended 2026-11-22"
   },
   {
     "id": "843c21dc-1295-474f-a600-efe4d21c8397",
@@ -1709,14 +1711,16 @@
     ],
     "format": "In-Person",
     "prize": "Hardware prizes",
-    "state": "open",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788359947,
-    "date_updated": 1788359947,
+    "date_updated": 1795483789,
     "source": "hackclub",
     "startDate": "2026-11-20",
-    "endDate": "2026-11-22"
+    "endDate": "2026-11-22",
+    "date_closed": "2026-11-23",
+    "archive_note": "Auto-archived 2026-11-23 \u2014 event ended 2026-11-22"
   },
   {
     "id": "2d2c9516-ea6c-4c12-a45a-4ba8dbd98150",
@@ -4809,14 +4813,16 @@
     ],
     "format": "In-Person",
     "prize": "TBA",
-    "state": "opens_soon",
-    "active": true,
+    "state": "closed",
+    "active": false,
     "is_visible": true,
     "date_posted": 1788359947,
-    "date_updated": 1788359947,
+    "date_updated": 1795483789,
     "source": "organizer-site",
     "startDate": "2026-11-20",
-    "endDate": "2026-11-22"
+    "endDate": "2026-11-22",
+    "date_closed": "2026-11-23",
+    "archive_note": "Auto-archived 2026-11-23 \u2014 event ended 2026-11-22"
   },
   {
     "id": "7abb3da9-14e0-445f-9170-4322a2943a25",
